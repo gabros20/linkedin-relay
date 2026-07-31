@@ -40,3 +40,20 @@ Autonomous — no human gate until the goal is met.
 
 - 2026-08-01 — workspace created; preflight passed for all three panel engines.
 - 2026-08-01 — Phase 1 dispatched (R1–R5).
+- 2026-08-01 — R1, R3, R4, R5 delivered. **R2 failed twice** (idled without writing its file); root
+  cause was tool latency, not the agent — `xrelay search` takes 2–4 min per query and the agent's own
+  timeouts killed it. Controller ran the 15-query `xrelay batch` sweep directly (364 deduped posts),
+  then dispatched R2b to analyse the archive. R2b delivered.
+- 2026-08-01 — Phase 3 round 1: three independent proposals (P1 Codex 3.0k words, P2 Grok 3.9k,
+  P3 Fable 3.2k). Six live disagreements identified.
+- 2026-08-01 — Phase 3 round 2: cross-critique on those six. **All three panelists changed position.**
+  Grok reversed on five, Fable on four, Codex held its line and was adopted on four. Consensus
+  reached on every point; `batch` resolved 2–1 toward cut-from-v1.
+- 2026-08-01 — Phase 4: `docs/DESIGN.md` + `docs/PLAN.md` + README + CLAUDE.md written, research
+  copied to `docs/research/`, repo scaffolded and committed (`9588f9c`).
+
+## Stop condition — met
+
+Converged design document and phased plan exist in a scaffolded repo. Implementation is deliberately
+not started: the design's own Phase 0 gate must run first, and it is a manual one-afternoon
+experiment, not a coding task.
