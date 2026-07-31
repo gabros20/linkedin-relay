@@ -1,0 +1,12 @@
+node_modules/
+dist/
+*.log
+
+# Research artifacts that are large, re-derivable, or contain third-party personal data
+.orchestrate/raw/corpus.json
+.orchestrate/raw/r2-archive.json
+
+# Captured LinkedIn traffic — NEVER commit. Fixtures must be redacted by hand first.
+captures/
+*.har
+cookies.json

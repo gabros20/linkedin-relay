@@ -1,0 +1,18 @@
+{
+  "name": "linkedin-relay-mcp",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Deep research over LinkedIn from your own account — CLI (lnrelay) + read-only MCP shim + Claude Code skill. Design stage; no implementation yet.",
+  "type": "module",
+  "license": "MIT",
+  "bin": {
+    "lnrelay": "./dist/cli.js",
+    "linkedin-relay-mcp": "./dist/mcp-shim.js"
+  },
+  "scripts": {
+    "check": "bun run typecheck && bun run lint && bun test"
+  },
+  "engines": {
+    "bun": ">=1.1.0"
+  }
+}
