@@ -72,15 +72,57 @@ export const CONTRACTS: Record<string, OperationContract> = {
     capturedAt: '2026-08-01',
   },
 
-  // Observed on a live post page but not yet exercised by us, so it cannot back
-  // a shipped command until someone runs it and it returns 200.
   reactions: {
     name: 'reactions',
     transport: 'voyager-graphql',
     path: `${VOYAGER}/graphql`,
     queryId: 'voyagerSocialDashReactions.41ebf31a9f4c4a84e35a49d5abc9010b',
+    provenance: 'verified',
+    capturedAt: '2026-08-02',
+  },
+
+  // Comments. The variables carry a COMPOSITE socialDetailUrn assembled from the
+  // post's own urn, repeated, plus a highlightedReply placeholder:
+  //
+  //   urn:li:fsd_socialDetail:(<postUrn>,<postUrn>,urn:li:highlightedReply:-)
+  //
+  // Two things were established by probing rather than assumed. Our codec's
+  // percent-encoding of that urn's colons and parens is REQUIRED — the literal
+  // form returns 400. And an `urn:li:activity:` post urn works directly, so
+  // `post` does not need a feed lookup to find the ugcPost form first.
+  comments: {
+    name: 'comments',
+    transport: 'voyager-graphql',
+    path: `${VOYAGER}/graphql`,
+    queryId: 'voyagerSocialDashComments.afec6d88d7810d45548797a8dac4fb87',
+    provenance: 'verified',
+    capturedAt: '2026-08-02',
+  },
+
+  // Discovered and returns 200, but the projection is useless: 39 KB containing
+  // one `guideFetcher` wrapper and no name, tagline, description or headcount.
+  // The same trap as the thin profile projection, so it stays unverified and
+  // `company` does not ship. The richer path is probably
+  // voyagerOrganizationDashViewWrapper with an organizationalPageUrn, which
+  // first requires resolving that urn — unfinished work, not a dead end.
+  company: {
+    name: 'company',
+    transport: 'voyager-graphql',
+    path: `${VOYAGER}/graphql`,
+    queryId: 'voyagerOrganizationDashCompanies.148b1aebfadd0a455f32806df656c3c1',
     provenance: 'discovered',
-    capturedAt: '2026-08-01',
+    capturedAt: '2026-08-02',
+  },
+
+  // A job CARDS list, not a job detail. Observed on /jobs/collections/recommended
+  // and never exercised; `job` needs a detail endpoint we have not captured.
+  jobCards: {
+    name: 'jobCards',
+    transport: 'voyager-graphql',
+    path: `${VOYAGER}/graphql`,
+    queryId: 'voyagerJobsDashJobCards.e5b6b761ede078dabe8ad857aa42c220',
+    provenance: 'discovered',
+    capturedAt: '2026-08-02',
   },
 };
 

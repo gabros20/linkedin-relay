@@ -100,7 +100,7 @@ export const COMMANDS: CommandDef[] = [
       '       returnedCount 0 is a FAILED FETCH, not an empty thread.',
     audience: ['cli', 'mcp'],
     risk: 'read',
-    implemented: false,
+    implemented: true,
   },
   {
     name: 'reactions',
@@ -109,7 +109,7 @@ export const COMMANDS: CommandDef[] = [
     usage: 'lnrelay reactions <activity-urn> [--limit N] [--reactors]',
     audience: ['cli', 'mcp'],
     risk: 'read',
-    implemented: false,
+    implemented: true,
   },
   {
     name: 'company',

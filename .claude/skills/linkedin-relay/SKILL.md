@@ -33,6 +33,9 @@ search          cheap  — cast wide, rank on the returned headline/location
   ↓ pick 2-3 finalists from the search rows alone, not by reading each one
 profile         mid    — deep-read ONLY the finalists
 feed            mid    — what the user's network is posting right now
+  ↓ feed rows carry likes/comments counts — rank on those before reading a thread
+post            exp    — a post's comment thread
+reactions       mid    — who engaged with a post
 whoami          cheap  — who we are authenticated as
 risk / budget   free   — check standing BEFORE spending
 ```
@@ -69,8 +72,36 @@ Don't tell the user the profile is empty — it isn't.
 ```
 feed [limit:1-20]
 ```
-Returns posts with `author`, `posted`, `text`, `url`. Promoted posts are dropped and counted in
-`meta.excludedCount`, so `returnedCount` being lower than `limit` is usually ads, not failure.
+Returns posts with `author`, `posted`, `text`, `url`, plus `likes`, `comments` and `threadUrn`.
+Promoted posts are dropped and counted in `meta.excludedCount`, so `returnedCount` being lower than
+`limit` is usually ads, not failure.
+
+**Use the engagement counts to decide what to read.** A post with 601 comments and one with 3 cost
+the same to fetch but are worth very different amounts. `threadUrn` is what `post` and `reactions`
+take — pass it straight through rather than reconstructing it.
+
+### `post` — expensive. The full read.
+```
+post urn:"<activity-urn | feed-update URL>" [limit:1-100]
+```
+The comment thread on a post. Accepts a bare `urn:li:activity:…`, a
+`urn:li:ugcPost:…`, or a `linkedin.com/feed/update/…` URL — no prior lookup needed.
+
+Returns comments with `author`, `headline`, `text`, `postedAt`, `url`. `meta.state` is `unknown`:
+this is the first page and pagination is not followed yet, so **never report a comment count as
+complete**. Nested replies are not supported — a comment with replies does not carry them.
+
+Read only the finalists. Feed and search rows already tell you how many comments a post has; use
+that to decide whether the thread is worth a call.
+
+### `reactions` — medium. Who engaged.
+```
+reactions urn:"<activity-urn | feed-update URL>" [limit:1-100]
+```
+Who reacted and with which reaction type. Returns `name`, `headline`, `reaction`, `url`. Useful for
+mapping who is paying attention to a topic — often more informative than the comments.
+
+Same pagination caveat: `meta.state` is `unknown`.
 
 ### `whoami` — cheap. Who we are.
 Confirms the session works and which account it is. Good first call in a fresh session.

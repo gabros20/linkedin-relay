@@ -77,6 +77,10 @@ const DECORATION_FRAGMENTS = [
   'miniprofile',
   'minicompany',
   'videoplaymetadata',
+  'hidecommentaction',
+  'followingstate',
+  'followaction',
+  'connectaction',
 ];
 
 function typeOf(node: Entity): string {
@@ -113,7 +117,15 @@ function isDecoration(node: Entity): boolean {
  * Whether we recognise this type as one we have actually seen. Used ONLY to
  * count unknowns for reporting — never to decide whether to keep something.
  */
-const KNOWN_CONTENT = ['updatev2', 'profile', 'jobposting', 'company', 'comment', 'entityresult'];
+const KNOWN_CONTENT = [
+  'updatev2',
+  'profile',
+  'jobposting',
+  'company',
+  'comment',
+  'reaction',
+  'entityresult',
+];
 
 function isKnown(node: Entity): boolean {
   const t = typeOf(node).toLowerCase();

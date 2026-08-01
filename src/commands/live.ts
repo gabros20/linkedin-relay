@@ -2,8 +2,13 @@
 // session, call the engine, and shape the envelope. All the interesting
 // behaviour lives in engine/.
 
-import { createEngine, type EngineResult, type SearchKind } from '../engine/index.ts';
-import type { ParseResult } from '../engine/parse.ts';
+import {
+  type Collection,
+  createEngine,
+  type EngineResult,
+  type SearchKind,
+} from '../engine/index.ts';
+
 import {
   LAUNCH_HINT,
   loadSession,
@@ -130,7 +135,54 @@ export async function runSearch(
   return ok('search', { query, kind, ...collection(result.value, raw) });
 }
 
+export async function runPost(
+  urn: string | undefined,
+  limit: number,
+  raw = false,
+): Promise<Envelope> {
+  const postUrn = normalisePostUrn(urn);
+  if (postUrn === undefined) {
+    return err(
+      'post',
+      'INVALID_INPUT',
+      'a post urn or feed URL is required',
+      'lnrelay post <activity-urn|https://www.linkedin.com/feed/update/...>',
+    );
+  }
+  const ctx = withSession('post');
+  if ('ok' in ctx) return ctx;
+
+  const result = await ctx.engine.post(postUrn, limit);
+  if (!result.ok) return toEnvelope('post', result);
+  return ok('post', { urn: postUrn, ...collection(result.value, raw) });
+}
+
+export async function runReactions(
+  urn: string | undefined,
+  limit: number,
+  raw = false,
+): Promise<Envelope> {
+  const postUrn = normalisePostUrn(urn);
+  if (postUrn === undefined) {
+    return err('reactions', 'INVALID_INPUT', 'a post urn or feed URL is required');
+  }
+  const ctx = withSession('reactions');
+  if ('ok' in ctx) return ctx;
+
+  const result = await ctx.engine.reactions(postUrn, limit);
+  if (!result.ok) return toEnvelope('reactions', result);
+  return ok('reactions', { urn: postUrn, ...collection(result.value, raw) });
+}
+
 // ─── shaping ──────────────────────────────────────────────────────────────────
+
+/** Accept a bare urn or a feed permalink; both carry the post identity. */
+function normalisePostUrn(input: string | undefined): string | undefined {
+  if (input === undefined || input === '') return undefined;
+  const found = input.match(/urn:li:(?:activity|ugcPost|share):\d+/);
+  if (found !== null) return found[0];
+  return /^\d+$/.test(input) ? `urn:li:activity:${input}` : undefined;
+}
 
 /** A URL, a public id, or a bare urn all reduce to the member identity. */
 function normaliseMemberId(input: string): string {
@@ -146,9 +198,10 @@ function normaliseMemberId(input: string): string {
  * wrap every string in a TextViewModel. `--raw` keeps the original node
  * alongside, for when a shape has drifted and you need to see what arrived.
  */
-function collection(parsed: ParseResult, raw: boolean): Record<string, unknown> {
+function collection(result: Collection, raw: boolean): Record<string, unknown> {
+  const { parsed, index } = result;
   const items = raw
-    ? parsed.items.map((node) => ({ ...shapeEntity(node), raw: node }))
-    : shapeAll(parsed.items);
+    ? parsed.items.map((node) => ({ ...shapeEntity(node, index), raw: node }))
+    : shapeAll(parsed.items, index);
   return { items, meta: parsed.meta };
 }

@@ -74,19 +74,47 @@ function shapeSearchRow(node: Entity): Shaped {
   });
 }
 
-function shapePost(node: Entity): Shaped {
+/**
+ * Engagement counts are two references away from the post:
+ *
+ *   UpdateV2 --*socialDetail--> SocialDetail --*totalSocialActivityCounts--> counts
+ *
+ * The parser drops both intermediate nodes as decorations, which is correct —
+ * they are not content — so without the index a post has no like or comment
+ * count at all. Engagement is the main ranking signal for research, so it is
+ * worth the two hops.
+ *
+ * The same SocialDetail also carries the post's **ugcPost** URN, which is NOT
+ * the activity URN in `updateMetadata` (verified live: activity …8686600193 vs
+ * ugcPost …7814144000). Reactions and comments key off the ugcPost form, so
+ * this is where that mapping comes from — it cannot be derived.
+ */
+function shapePost(node: Entity, index?: Map<string, Entity>): Shaped {
   const meta = node.updateMetadata as { urn?: unknown } | undefined;
   const actor = node.actor as { name?: unknown; subDescription?: unknown } | undefined;
   const urn = typeof meta?.urn === 'string' ? meta.urn : undefined;
+
+  const social = deref(node, '*socialDetail', index);
+  const counts =
+    social === undefined ? undefined : deref(social, '*totalSocialActivityCounts', index);
+
   return defined({
     type: typeOf(node),
     urn,
+    threadUrn: typeof social?.urn === 'string' ? social.urn : undefined,
     author: text(actor?.name),
     // `text()` already trims; LinkedIn pads these with trailing spaces.
     posted: text(actor?.subDescription),
     text: text(node.commentary),
+    likes: numberOf(counts?.numLikes),
+    comments: numberOf(counts?.numComments),
+    shares: numberOf(counts?.numShares ?? social?.totalShares),
     url: urn === undefined ? undefined : `https://www.linkedin.com/feed/update/${urn}/`,
   });
+}
+
+function numberOf(value: unknown): number | undefined {
+  return typeof value === 'number' ? value : undefined;
 }
 
 /**
@@ -102,6 +130,7 @@ function deref(
   if (index === undefined) return undefined;
   const ref = node[key];
   if (typeof ref === 'string') return index.get(ref);
+  if (ref === undefined) return undefined;
   if (ref !== null && typeof ref === 'object') {
     for (const [k, v] of Object.entries(ref as Record<string, unknown>)) {
       if (k.startsWith('*') && typeof v === 'string') return index.get(v);
@@ -158,12 +187,58 @@ function shapeMember(node: Entity): Shaped {
   });
 }
 
+/**
+ * A comment. The author lives under `commenter` as a lockup (title/subtitle/
+ * navigationUrl), and the comment's own like count is another two-hop
+ * dereference through its socialDetail — same chain as a post.
+ */
+function shapeComment(node: Entity, index?: Map<string, Entity>): Shaped {
+  const commenter = node.commenter as Entity | undefined;
+  const social = deref(node, '*socialDetail', index);
+  const counts =
+    social === undefined ? undefined : deref(social, '*totalSocialActivityCounts', index);
+
+  return defined({
+    type: typeOf(node),
+    urn: typeof node.urn === 'string' ? node.urn : undefined,
+    author: text(commenter?.title),
+    headline: text(commenter?.subtitle),
+    authorUrl: cleanUrl(commenter?.navigationUrl),
+    text: text(node.comment) ?? text(node.commentary),
+    likes: numberOf(counts?.numLikes),
+    postedAt:
+      typeof node.createdAt === 'number' ? new Date(node.createdAt).toISOString() : undefined,
+    edited: node.edited === true ? true : undefined,
+    url: cleanUrl(node.permalink),
+  });
+}
+
+/** A reactor — who reacted, and with which reaction. */
+function shapeReaction(node: Entity, index?: Map<string, Entity>): Shaped {
+  const lockup = node.reactorLockup as Entity | undefined;
+  const actorUrn = typeof node.actorUrn === 'string' ? node.actorUrn : undefined;
+  const profile = actorUrn === undefined ? undefined : index?.get(actorUrn);
+
+  return defined({
+    type: typeOf(node),
+    urn: actorUrn,
+    name: text(lockup?.title),
+    headline: text(lockup?.subtitle) ?? text(profile?.headline),
+    reaction: typeof node.reactionType === 'string' ? node.reactionType : undefined,
+    url: cleanUrl(lockup?.navigationUrl),
+  });
+}
+
 /** Shape one entity into a flat row, dispatching on its type. */
-export function shapeEntity(node: Entity): Shaped {
+export function shapeEntity(node: Entity, index?: Map<string, Entity>): Shaped {
   try {
     const t = (typeOf(node) ?? '').toLowerCase();
     if (t.includes('entityresultviewmodel')) return shapeSearchRow(node);
-    if (t.includes('update')) return shapePost(node);
+    // Order matters: Comment and Reaction are checked before the broader
+    // 'update' and 'profile' fragments, which would otherwise swallow them.
+    if (t.endsWith('social.comment')) return shapeComment(node, index);
+    if (t.endsWith('social.reaction')) return shapeReaction(node, index);
+    if (t.includes('update')) return shapePost(node, index);
     if (t.includes('profile')) return shapeMember(node);
 
     // Unrecognised: report the type and make a best effort, so a new shape
@@ -179,6 +254,6 @@ export function shapeEntity(node: Entity): Shaped {
   }
 }
 
-export function shapeAll(items: Entity[]): Shaped[] {
-  return items.map(shapeEntity);
+export function shapeAll(items: Entity[], index?: Map<string, Entity>): Shaped[] {
+  return items.map((node) => shapeEntity(node, index));
 }

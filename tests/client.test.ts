@@ -117,9 +117,17 @@ describe('contracts', () => {
     }
   });
 
+  // `company` returns 200 but with a projection carrying no name, tagline or
+  // description — the same trap as the thin profile projection. It stays
+  // unverified, so the command cannot ship, which is the rule working.
   test('a merely discovered contract cannot back a command', () => {
-    expect(CONTRACTS.reactions?.provenance).toBe('discovered');
-    expect(contractFor('reactions')).toBeUndefined();
+    expect(CONTRACTS.company?.provenance).toBe('discovered');
+    expect(contractFor('company')).toBeUndefined();
+  });
+
+  test('a contract promoted to verified becomes available', () => {
+    expect(CONTRACTS.comments?.provenance).toBe('verified');
+    expect(contractFor('comments')).toBeDefined();
   });
 
   test('every contract records when it was captured', () => {

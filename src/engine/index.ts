@@ -18,8 +18,10 @@ import { encodeVariables } from './restli.ts';
 export interface Engine {
   whoami(): Promise<EngineResult<Entity | undefined>>;
   profile(memberId: string): Promise<EngineResult<ProfileResult | undefined>>;
-  feed(limit: number): Promise<EngineResult<ParseResult>>;
-  search(kind: SearchKind, query: string, limit: number): Promise<EngineResult<ParseResult>>;
+  feed(limit: number): Promise<EngineResult<Collection>>;
+  search(kind: SearchKind, query: string, limit: number): Promise<EngineResult<Collection>>;
+  post(postUrn: string, limit: number): Promise<EngineResult<Collection>>;
+  reactions(postUrn: string, limit: number): Promise<EngineResult<Collection>>;
 }
 
 export type SearchKind = 'people' | 'companies' | 'jobs';
@@ -29,6 +31,12 @@ export type SearchKind = 'people' | 'companies' | 'jobs';
  * current position and education as URN references into `included[]`, so the
  * caller needs the index to make sense of the profile node.
  */
+/** A parsed collection plus the side-table its entities reference. */
+export interface Collection {
+  parsed: ParseResult;
+  index: Map<string, Entity>;
+}
+
 export interface ProfileResult {
   profile: Entity;
   index: Map<string, Entity>;
@@ -113,13 +121,64 @@ export function createEngine(session: Session, deps?: Partial<ClientDeps>): Engi
       const url = `${contract.path}?q=chronFeed&count=${limit}&start=0`;
       const res = await client.request({ url, spendClass: 'page', operation: 'feed' });
       if (!res.ok) return res;
+      const envelope = res.json as { included?: unknown };
       return {
         ok: true,
-        value: parseCollection(res.json, {
-          operation: 'feed',
-          contractCapturedAt: contract.capturedAt,
-        }),
+        value: {
+          parsed: parseCollection(res.json, {
+            operation: 'feed',
+            contractCapturedAt: contract.capturedAt,
+          }),
+          index: indexIncluded(envelope.included),
+        },
       };
+    },
+
+    async post(postUrn, limit) {
+      const contract = contractFor('comments');
+      if (contract === undefined) return missingContract('comments');
+
+      const variables = encodeVariables({
+        count: Math.min(limit, 100),
+        numReplies: 1,
+        socialDetailUrn: socialDetailUrn(postUrn),
+        sortOrder: 'RELEVANCE',
+        start: 0,
+      });
+      const url = `${contract.path}?includeWebMetadata=true&variables=${variables}&queryId=${contract.queryId}`;
+      const res = await client.request({ url, spendClass: 'page', operation: 'comments' });
+      if (!res.ok) return res;
+
+      const parsed = parseCollection(res.json, {
+        operation: 'comments',
+        contractCapturedAt: contract.capturedAt,
+        // A page of many; we follow no cursor yet, so never claim exhaustion.
+        truncated: true,
+      });
+      const envelope = res.json as { included?: unknown };
+      return { ok: true, value: { parsed, index: indexIncluded(envelope.included) } };
+    },
+
+    async reactions(postUrn, limit) {
+      const contract = contractFor('reactions');
+      if (contract === undefined) return missingContract('reactions');
+
+      const variables = encodeVariables({
+        count: Math.min(limit, 100),
+        start: 0,
+        threadUrn: postUrn,
+      });
+      const url = `${contract.path}?includeWebMetadata=true&variables=${variables}&queryId=${contract.queryId}`;
+      const res = await client.request({ url, spendClass: 'page', operation: 'reactions' });
+      if (!res.ok) return res;
+
+      const parsed = parseCollection(res.json, {
+        operation: 'reactions',
+        contractCapturedAt: contract.capturedAt,
+        truncated: true,
+      });
+      const envelope = res.json as { included?: unknown };
+      return { ok: true, value: { parsed, index: indexIncluded(envelope.included) } };
     },
 
     async search(kind, query, limit) {
@@ -148,9 +207,20 @@ export function createEngine(session: Session, deps?: Partial<ClientDeps>): Engi
       });
       parsed.items = parsed.items.slice(0, limit);
       parsed.meta.returnedCount = parsed.items.length;
-      return { ok: true, value: parsed };
+      const envelope = res.json as { included?: unknown };
+      return { ok: true, value: { parsed, index: indexIncluded(envelope.included) } };
     },
   };
+}
+
+/**
+ * The composite urn the comments endpoint keys off: the post's own urn,
+ * repeated, plus a highlightedReply placeholder. Assembled rather than fetched
+ * — verified working with an `urn:li:activity:` urn, so `post` needs no prior
+ * lookup to find the ugcPost form.
+ */
+function socialDetailUrn(postUrn: string): string {
+  return `urn:li:fsd_socialDetail:(${postUrn},${postUrn},urn:li:highlightedReply:-)`;
 }
 
 /** LinkedIn's own claimed total, used to detect a claimed-but-empty fetch. */

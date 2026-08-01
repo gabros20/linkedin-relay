@@ -19,7 +19,14 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import { z } from 'zod';
-import { runFeed, runProfile, runSearch, runWhoami } from './commands/live.ts';
+import {
+  runFeed,
+  runPost,
+  runProfile,
+  runReactions,
+  runSearch,
+  runWhoami,
+} from './commands/live.ts';
 import { runBudget, runDoctor, runRisk } from './commands/local.ts';
 import { mcpCommands } from './commands/registry.ts';
 import { shouldRunAsEntry } from './entry.ts';
@@ -125,6 +132,34 @@ export function buildServer(): McpServer {
       `means ads were filtered, not that the fetch failed. ${READING_CONTRACT} ${NO_RETRY}`,
     { limit: z.number().int().min(1).max(20).optional().describe('default 10') },
     async ({ limit }) => reply(await runFeed(limit ?? 10)),
+  );
+
+  server.tool(
+    'post',
+    "A LinkedIn post's comment thread. EXPENSIVE — read only finalists. Accepts a bare " +
+      'urn:li:activity:…, a urn:li:ugcPost:…, or a linkedin.com/feed/update/… URL; no prior lookup ' +
+      'is needed. Feed and search rows already report how many comments a post has, so use that to ' +
+      'decide whether the thread is worth a call. `meta.state` is always "unknown" — this is the ' +
+      'first page and pagination is not followed, so NEVER report a comment count as complete. ' +
+      `Nested replies are not supported and a comment with replies does not carry them. ${READING_CONTRACT} ${NO_RETRY}`,
+    {
+      urn: z.string().min(1).describe('activity/ugcPost urn, or a feed-update URL'),
+      limit: z.number().int().min(1).max(100).optional().describe('default 20'),
+    },
+    async ({ urn, limit }) => reply(await runPost(urn, limit ?? 20)),
+  );
+
+  server.tool(
+    'reactions',
+    'Who reacted to a LinkedIn post, and with which reaction. MEDIUM cost. Often more informative ' +
+      'than the comments for mapping who is paying attention to a topic. Same input forms as ' +
+      '`post`. `meta.state` is always "unknown" — first page only, so do not report a total. ' +
+      `${READING_CONTRACT} ${NO_RETRY}`,
+    {
+      urn: z.string().min(1).describe('activity/ugcPost urn, or a feed-update URL'),
+      limit: z.number().int().min(1).max(100).optional().describe('default 20'),
+    },
+    async ({ urn, limit }) => reply(await runReactions(urn, limit ?? 20)),
   );
 
   return server;

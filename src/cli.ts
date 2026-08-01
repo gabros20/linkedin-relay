@@ -1,5 +1,13 @@
 import { bool, num, parseArgs } from './args.ts';
-import { runFeed, runLogin, runProfile, runSearch, runWhoami } from './commands/live.ts';
+import {
+  runFeed,
+  runLogin,
+  runPost,
+  runProfile,
+  runReactions,
+  runSearch,
+  runWhoami,
+} from './commands/live.ts';
 import { runBudget, runDoctor, runRisk } from './commands/local.ts';
 import { findCommand, helpText } from './commands/registry.ts';
 import { shouldRunAsEntry } from './entry.ts';
@@ -49,6 +57,10 @@ export async function dispatch(argv: string[], now: number): Promise<Envelope> {
       return runProfile(args.positionals[0], bool(args, 'raw'));
     case 'feed':
       return runFeed(num(args, 'limit') ?? 10, bool(args, 'raw'));
+    case 'post':
+      return runPost(args.positionals[0], num(args, 'limit') ?? 20, bool(args, 'raw'));
+    case 'reactions':
+      return runReactions(args.positionals[0], num(args, 'limit') ?? 20, bool(args, 'raw'));
     case 'search':
       return runSearch(
         args.positionals[0],
