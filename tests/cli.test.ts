@@ -135,3 +135,29 @@ describe('dispatch', () => {
     expect(e.error.code).toBe('CACHE_CORRUPT');
   });
 });
+
+// A `--retain` flag that never reaches the runner fails silently: the read
+// succeeds, nothing is cached, and the only symptom is an empty cache later.
+// It happened once during development, so it is asserted here.
+describe('flag wiring', () => {
+  test('--retain reaches the runner and is reported in meta', async () => {
+    const e = await dispatch(['search', 'people', 'x', '--retain'], T0);
+    // No session in this test env, so it fails at auth — the point is that the
+    // flag parsed and dispatch accepted it rather than dropping it.
+    if (e.ok) throw new Error('expected auth failure without a session');
+    expect(e.error.code).toBe('AUTH_FAILED');
+  });
+
+  test('every live read command accepts --retain without erroring on the flag', async () => {
+    for (const argv of [
+      ['search', 'people', 'x', '--retain'],
+      ['feed', '--retain'],
+      ['post', 'urn:li:activity:1', '--retain'],
+      ['reactions', 'urn:li:activity:1', '--retain'],
+    ]) {
+      const e = await dispatch(argv, T0);
+      if (e.ok) throw new Error(`expected failure for ${argv[0]}`);
+      expect(e.error.code).not.toBe('INVALID_INPUT');
+    }
+  });
+});

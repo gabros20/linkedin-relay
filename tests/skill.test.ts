@@ -28,7 +28,7 @@ describe('registry ↔ skill parity', () => {
   test('every MCP-exposed command is documented in the skill', () => {
     const undocumented = mcpCommands()
       .filter((c) => c.implemented)
-      .filter((c) => !new RegExp(`\\b${c.name}\\b`).test(SKILL_MD))
+      .filter((c) => !new RegExp(`\\b${c.name.replace(/-/g, '[-_]')}\\b`).test(SKILL_MD))
       .map((c) => c.name);
     expect(undocumented).toEqual([]);
   });

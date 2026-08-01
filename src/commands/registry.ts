@@ -162,19 +162,29 @@ export const COMMANDS: CommandDef[] = [
     name: 'local',
     cost: 'free — local cache',
     summary: 'Offline search across everything synced. The default research path after a sync.',
-    usage: 'lnrelay local "<query>" [--source connections,my-posts] [--since YYYY-MM-DD]',
+    usage:
+      'lnrelay local "<query>" [--source connections,my-posts,third-party] [--since YYYY-MM-DD] [--limit N]',
     audience: ['cli', 'mcp'],
     risk: 'read',
-    implemented: false,
+    implemented: true,
+  },
+  {
+    name: 'cache-status',
+    cost: 'free — local cache',
+    summary: 'What is cached, per source, with sync checkpoints and the retention policy.',
+    usage: 'lnrelay cache-status',
+    audience: ['cli', 'mcp'],
+    risk: 'local',
+    implemented: true,
   },
   {
     name: 'purge',
     cost: 'free',
     summary: 'Delete cached data. Never contacts LinkedIn.',
-    usage: 'lnrelay purge [--third-party|--all] --confirm',
+    usage: 'lnrelay purge [--all] --confirm     # default scope: third-party only',
     audience: ['cli'],
     risk: 'local',
-    implemented: false,
+    implemented: true,
   },
 
   // ─── writes — Phase 6, official OAuth only, never MCP ──────────────────────

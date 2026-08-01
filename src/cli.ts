@@ -1,4 +1,5 @@
-import { bool, num, parseArgs } from './args.ts';
+import { bool, num, parseArgs, str } from './args.ts';
+import { runCacheStatus, runLocal, runPurge } from './commands/cache.ts';
 import {
   runFeed,
   runLogin,
@@ -49,6 +50,20 @@ export async function dispatch(argv: string[], now: number): Promise<Envelope> {
       return runBudget(now, bool(args, 'reset-cooldown'), bool(args, 'confirm'));
     case 'risk':
       return runRisk(now);
+    case 'local':
+      return runLocal(
+        args.positionals[0],
+        str(args, 'source'),
+        str(args, 'since'),
+        num(args, 'limit') ?? 25,
+      );
+    case 'purge':
+      return runPurge(
+        str(args, 'scope') ?? (bool(args, 'all') ? 'all' : undefined),
+        bool(args, 'confirm'),
+      );
+    case 'cache-status':
+      return runCacheStatus();
     case 'login':
       return runLogin();
     case 'whoami':
@@ -56,17 +71,28 @@ export async function dispatch(argv: string[], now: number): Promise<Envelope> {
     case 'profile':
       return runProfile(args.positionals[0], bool(args, 'raw'));
     case 'feed':
-      return runFeed(num(args, 'limit') ?? 10, bool(args, 'raw'));
+      return runFeed(num(args, 'limit') ?? 10, bool(args, 'raw'), bool(args, 'retain'));
     case 'post':
-      return runPost(args.positionals[0], num(args, 'limit') ?? 20, bool(args, 'raw'));
+      return runPost(
+        args.positionals[0],
+        num(args, 'limit') ?? 20,
+        bool(args, 'raw'),
+        bool(args, 'retain'),
+      );
     case 'reactions':
-      return runReactions(args.positionals[0], num(args, 'limit') ?? 20, bool(args, 'raw'));
+      return runReactions(
+        args.positionals[0],
+        num(args, 'limit') ?? 20,
+        bool(args, 'raw'),
+        bool(args, 'retain'),
+      );
     case 'search':
       return runSearch(
         args.positionals[0],
         args.positionals[1],
         num(args, 'limit') ?? 10,
         bool(args, 'raw'),
+        bool(args, 'retain'),
       );
     default:
       return err(command, 'NOT_IMPLEMENTED', `'${command}' has no runner wired`);

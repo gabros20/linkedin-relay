@@ -106,6 +106,21 @@ Same pagination caveat: `meta.state` is `unknown`.
 ### `whoami` — cheap. Who we are.
 Confirms the session works and which account it is. Good first call in a fresh session.
 
+### `local` — free. The default path after a research session.
+```
+local query:"<terms>" [source:connections,my-posts,third-party] [since:YYYY-MM-DD] [limit:N]
+```
+Offline search over whatever has been retained. **Costs nothing and spends no budget**, so prefer it
+before reaching for a live command — if the answer is already cached, use it.
+
+The cache only fills when a live read is run with `--retain` (CLI). If `meta.cachedTotal` is 0, the
+cache is empty — that is not the same as LinkedIn having nothing, and the response says so.
+
+### `cache-status` — free.
+What is cached per source, sync checkpoints, and the retention policy. Third-party records expire 30
+days after capture: the body is deleted and an identity stub remains, so a re-fetch is a visible
+choice rather than a silent budget charge. Owner data never expires.
+
 ### `risk` / `budget` — free, no network.
 `risk` reports the circuit breaker. **Call it before a research session** rather than discovering a
 lockout one wasted call at a time. `budget` reports spend per class with each cap's provenance.

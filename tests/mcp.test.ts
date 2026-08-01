@@ -53,17 +53,19 @@ describe('the tools an agent gets', () => {
     }
   });
 
+  // `cache_status` is the MCP spelling of the `cache-status` command — MCP tool
+  // names conventionally use underscores. Normalise before comparing.
   test('every registered tool is a command the registry knows', () => {
     const known = new Set(COMMANDS.map((c) => c.name));
     for (const name of registeredTools()) {
-      expect(known.has(name)).toBe(true);
+      expect(known.has(name.replace(/_/g, '-'))).toBe(true);
     }
   });
 
   test('every registered tool is one the registry marks implemented', () => {
     const built = new Set(COMMANDS.filter((c) => c.implemented).map((c) => c.name));
     for (const name of registeredTools()) {
-      expect(built.has(name)).toBe(true);
+      expect(built.has(name.replace(/_/g, '-'))).toBe(true);
     }
   });
 });

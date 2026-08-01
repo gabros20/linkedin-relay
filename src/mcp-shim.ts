@@ -19,6 +19,7 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import { z } from 'zod';
+import { runCacheStatus, runLocal } from './commands/cache.ts';
 import {
   runFeed,
   runPost,
@@ -160,6 +161,30 @@ export function buildServer(): McpServer {
       limit: z.number().int().min(1).max(100).optional().describe('default 20'),
     },
     async ({ urn, limit }) => reply(await runReactions(urn, limit ?? 20)),
+  );
+
+  server.tool(
+    'local',
+    'Search the LOCAL cache. Free — no network call, no budget spent. PREFER THIS before any live ' +
+      'command: if the answer is already cached, there is no reason to spend a request on it. The ' +
+      'cache only fills when the user runs a live read with --retain, so an empty result here means ' +
+      'nothing has been retained yet — NOT that LinkedIn has nothing. Check `meta.cachedTotal`.',
+    {
+      query: z.string().optional().describe('substring match; omit to list everything'),
+      source: z.string().optional().describe('comma-separated: connections,my-posts,third-party'),
+      since: z.string().optional().describe('YYYY-MM-DD'),
+      limit: z.number().int().min(1).max(100).optional().describe('default 25'),
+    },
+    async ({ query, source, since, limit }) => reply(runLocal(query, source, since, limit ?? 25)),
+  );
+
+  server.tool(
+    'cache_status',
+    'What is cached per source, with sync checkpoints and the retention policy. Free, no network. ' +
+      'Third-party records expire 30 days after capture — the body goes, an identity stub stays, so ' +
+      'a re-fetch is a visible choice rather than a silent budget charge.',
+    {},
+    async () => reply(runCacheStatus()),
   );
 
   return server;

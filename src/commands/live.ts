@@ -15,9 +15,10 @@ import {
   mintSessionFromBrowser,
   saveSession,
 } from '../engine/session.ts';
-import { shapeAll, shapeEntity, shapeProfile } from '../format.ts';
+import { type Shaped, shapeAll, shapeEntity, shapeProfile } from '../format.ts';
 import { err, ok } from '../output.ts';
 import type { Envelope } from '../types.ts';
+import { retain } from './cache.ts';
 
 function withSession(command: string): { engine: ReturnType<typeof createEngine> } | Envelope {
   const loaded = loadSession();
@@ -101,13 +102,13 @@ export async function runProfile(memberId: string | undefined, raw = false): Pro
   return ok('profile', raw ? { ...shaped, raw: result.value.profile } : shaped);
 }
 
-export async function runFeed(limit: number, raw = false): Promise<Envelope> {
+export async function runFeed(limit: number, raw = false, keep = false): Promise<Envelope> {
   const ctx = withSession('feed');
   if ('ok' in ctx) return ctx;
 
   const result = await ctx.engine.feed(limit);
   if (!result.ok) return toEnvelope('feed', result);
-  return ok('feed', collection(result.value, raw));
+  return ok('feed', collection(result.value, raw, keep));
 }
 
 export async function runSearch(
@@ -115,6 +116,7 @@ export async function runSearch(
   query: string | undefined,
   limit: number,
   raw = false,
+  keep = false,
 ): Promise<Envelope> {
   if (kind === undefined || !['people', 'companies', 'jobs'].includes(kind)) {
     return err(
@@ -132,13 +134,14 @@ export async function runSearch(
 
   const result = await ctx.engine.search(kind as SearchKind, query, limit);
   if (!result.ok) return toEnvelope('search', result);
-  return ok('search', { query, kind, ...collection(result.value, raw) });
+  return ok('search', { query, kind, ...collection(result.value, raw, keep) });
 }
 
 export async function runPost(
   urn: string | undefined,
   limit: number,
   raw = false,
+  keep = false,
 ): Promise<Envelope> {
   const postUrn = normalisePostUrn(urn);
   if (postUrn === undefined) {
@@ -154,13 +157,14 @@ export async function runPost(
 
   const result = await ctx.engine.post(postUrn, limit);
   if (!result.ok) return toEnvelope('post', result);
-  return ok('post', { urn: postUrn, ...collection(result.value, raw) });
+  return ok('post', { urn: postUrn, ...collection(result.value, raw, keep) });
 }
 
 export async function runReactions(
   urn: string | undefined,
   limit: number,
   raw = false,
+  keep = false,
 ): Promise<Envelope> {
   const postUrn = normalisePostUrn(urn);
   if (postUrn === undefined) {
@@ -171,7 +175,7 @@ export async function runReactions(
 
   const result = await ctx.engine.reactions(postUrn, limit);
   if (!result.ok) return toEnvelope('reactions', result);
-  return ok('reactions', { urn: postUrn, ...collection(result.value, raw) });
+  return ok('reactions', { urn: postUrn, ...collection(result.value, raw, keep) });
 }
 
 // ─── shaping ──────────────────────────────────────────────────────────────────
@@ -198,10 +202,14 @@ function normaliseMemberId(input: string): string {
  * wrap every string in a TextViewModel. `--raw` keeps the original node
  * alongside, for when a shape has drifted and you need to see what arrived.
  */
-function collection(result: Collection, raw: boolean): Record<string, unknown> {
+function collection(result: Collection, raw: boolean, keep = false): Record<string, unknown> {
   const { parsed, index } = result;
+  const shaped = shapeAll(parsed.items, index);
   const items = raw
-    ? parsed.items.map((node) => ({ ...shapeEntity(node, index), raw: node }))
-    : shapeAll(parsed.items, index);
-  return { items, meta: parsed.meta };
+    ? parsed.items.map((node, i) => ({ ...(shaped[i] as Shaped), raw: node }))
+    : shaped;
+
+  const meta: Record<string, unknown> = { ...parsed.meta };
+  if (keep) meta.retained = retain('third-party', shaped);
+  return { items, meta };
 }
