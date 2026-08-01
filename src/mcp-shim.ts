@@ -19,7 +19,7 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import { z } from 'zod';
-import { runCacheStatus, runLocal } from './commands/cache.ts';
+import { runCacheStatus, runLocal, runSourceRead } from './commands/cache.ts';
 import {
   runFeed,
   runPost,
@@ -177,6 +177,21 @@ export function buildServer(): McpServer {
     },
     async ({ query, source, since, limit }) => reply(runLocal(query, source, since, limit ?? 25)),
   );
+
+  for (const source of ['connections', 'my-posts'] as const) {
+    server.tool(
+      source.replace('-', '_'),
+      `The user's own ${source === 'connections' ? 'connections' : 'authored posts'}, read from the ` +
+        'LOCAL cache. Free — no network call, no budget spent. An empty result means the cache has ' +
+        `not been filled, NOT that the user has none: tell them to run \`lnrelay sync ${source}\` ` +
+        'themselves (it is CLI-only). Check `meta.cachedTotal` to tell the two apart.',
+      {
+        query: z.string().optional().describe('substring match; omit to list everything'),
+        limit: z.number().int().min(1).max(100).optional().describe('default 25'),
+      },
+      async ({ query, limit }) => reply(runSourceRead(source, query, limit ?? 25)),
+    );
+  }
 
   server.tool(
     'cache_status',

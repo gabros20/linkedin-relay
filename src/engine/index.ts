@@ -21,6 +21,8 @@ export interface Engine {
   feed(limit: number): Promise<EngineResult<Collection>>;
   search(kind: SearchKind, query: string, limit: number): Promise<EngineResult<Collection>>;
   post(postUrn: string, limit: number): Promise<EngineResult<Collection>>;
+  myPosts(profileUrn: string, limit: number): Promise<EngineResult<Collection>>;
+  connections(limit: number): Promise<EngineResult<Collection>>;
   reactions(postUrn: string, limit: number): Promise<EngineResult<Collection>>;
 }
 
@@ -132,6 +134,66 @@ export function createEngine(session: Session, deps?: Partial<ClientDeps>): Engi
           index: indexIncluded(envelope.included),
         },
       };
+    },
+
+    async myPosts(profileUrn, limit) {
+      const contract = contractFor('myPosts');
+      if (contract === undefined) return missingContract('myPosts');
+
+      const variables = encodeVariables({ count: Math.min(limit, 100), start: 0, profileUrn });
+      const url = `${contract.path}?includeWebMetadata=true&variables=${variables}&queryId=${contract.queryId}`;
+      const res = await client.request({ url, spendClass: 'page', operation: 'myPosts' });
+      if (!res.ok) return res;
+
+      const envelope = res.json as { included?: unknown };
+      return {
+        ok: true,
+        value: {
+          parsed: parseCollection(res.json, {
+            operation: 'myPosts',
+            contractCapturedAt: contract.capturedAt,
+            truncated: true,
+          }),
+          index: indexIncluded(envelope.included),
+        },
+      };
+    },
+
+    /**
+     * Connections are a FILTERED PEOPLE SEARCH, not a list endpoint — LinkedIn
+     * exposes no change stream for them. That is why the cache stores them as a
+     * snapshot and diffs, rather than pretending a watermark exists.
+     */
+    async connections(limit) {
+      const contract = contractFor('search');
+      if (contract === undefined) return missingContract('search');
+
+      const variables = encodeVariables({
+        start: 0,
+        origin: 'FACETED_SEARCH',
+        query: {
+          flagshipSearchIntent: 'SEARCH_SRP',
+          queryParameters: [
+            { key: 'resultType', value: ['PEOPLE'] },
+            { key: 'network', value: ['F'] },
+          ],
+          includeFiltersInResponse: false,
+        },
+      });
+      const url = `${contract.path}?variables=${variables}&queryId=${contract.queryId}`;
+      const res = await client.request({ url, spendClass: 'search', operation: 'connections' });
+      if (!res.ok) return res;
+
+      const parsed = parseCollection(res.json, {
+        operation: 'connections',
+        contractCapturedAt: contract.capturedAt,
+        claimedCount: totalResultCount(res.json),
+        truncated: true,
+      });
+      parsed.items = parsed.items.slice(0, limit);
+      parsed.meta.returnedCount = parsed.items.length;
+      const envelope = res.json as { included?: unknown };
+      return { ok: true, value: { parsed, index: indexIncluded(envelope.included) } };
     },
 
     async post(postUrn, limit) {

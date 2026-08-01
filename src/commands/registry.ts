@@ -141,22 +141,31 @@ export const COMMANDS: CommandDef[] = [
 
   // ─── cache-backed — Phase 4 ────────────────────────────────────────────────
   {
+    name: 'sync',
+    cost: 'medium — 1-2 calls',
+    summary: 'Pull your own posts or connections into the local cache for offline search.',
+    usage: 'lnrelay sync my-posts|connections [--limit N] [--force]',
+    audience: ['cli'],
+    risk: 'read',
+    implemented: true,
+  },
+  {
     name: 'connections',
-    cost: 'cheap local / expensive on --sync',
-    summary: 'Your connections from the local cache. --sync snapshots, --diff shows churn.',
-    usage: 'lnrelay connections [-q "<query>"] [--sync] [--diff] [--force]',
+    cost: 'free — local cache',
+    summary: 'Your connections, from the local cache. Fill it with `sync connections`.',
+    usage: 'lnrelay connections [-q "<query>"] [--limit N]     # free; reads the cache',
     audience: ['cli', 'mcp'],
     risk: 'read',
-    implemented: false,
+    implemented: true,
   },
   {
     name: 'my-posts',
-    cost: 'cheap local / medium on --sync',
-    summary: 'Your own authored posts from the local cache.',
-    usage: 'lnrelay my-posts [-q "<query>"] [--sync]',
+    cost: 'free — local cache',
+    summary: 'Your own authored posts, from the local cache. Fill it with `sync my-posts`.',
+    usage: 'lnrelay my-posts [-q "<query>"] [--limit N]        # free; reads the cache',
     audience: ['cli', 'mcp'],
     risk: 'read',
-    implemented: false,
+    implemented: true,
   },
   {
     name: 'local',
@@ -189,13 +198,24 @@ export const COMMANDS: CommandDef[] = [
 
   // ─── writes — Phase 6, official OAuth only, never MCP ──────────────────────
   {
+    name: 'oauth',
+    cost: 'free',
+    summary: 'OAuth token status for writes. Never prints the token.',
+    usage: 'lnrelay oauth',
+    audience: ['cli'],
+    risk: 'local',
+    implemented: true,
+  },
+  {
     name: 'share',
     cost: '1 call — write',
     summary: "Post to your own feed via LinkedIn's official OAuth scope.",
-    usage: 'lnrelay share "<text>"        # prompts for confirmation; states the risk first',
+    usage:
+      'lnrelay share "<text>" [--visibility public|connections]\n' +
+      '       Stops and asks at an interactive terminal. No TTY = no write, and no network call.',
     audience: ['cli'],
     risk: 'write',
-    implemented: false,
+    implemented: true,
   },
   {
     name: 'comment',
@@ -204,7 +224,7 @@ export const COMMANDS: CommandDef[] = [
     usage: 'lnrelay comment <activity-urn> "<text>"',
     audience: ['cli'],
     risk: 'write',
-    implemented: false,
+    implemented: true,
   },
   {
     name: 'react',
@@ -213,7 +233,7 @@ export const COMMANDS: CommandDef[] = [
     usage: 'lnrelay react <activity-urn> [--type LIKE|PRAISE|EMPATHY|INTEREST|APPRECIATION]',
     audience: ['cli'],
     risk: 'write',
-    implemented: false,
+    implemented: true,
   },
 ];
 

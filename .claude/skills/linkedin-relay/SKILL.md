@@ -116,6 +116,27 @@ before reaching for a live command — if the answer is already cached, use it.
 The cache only fills when a live read is run with `--retain` (CLI). If `meta.cachedTotal` is 0, the
 cache is empty — that is not the same as LinkedIn having nothing, and the response says so.
 
+### `connections` / `my-posts` — free. Cache-backed.
+```
+connections [query] [limit:N]
+my-posts    [query] [limit:N]
+```
+The user's own graph and posts, read from the local cache. **Free — no network call.** If they come
+back empty, the cache has not been filled: tell the user to run `lnrelay sync connections` (or
+`sync my-posts`) rather than reporting that they have none.
+
+### `sync` — CLI-only. Fills the cache.
+```
+lnrelay sync my-posts | lnrelay sync connections [--limit N] [--force]
+```
+Not on this surface — the user runs it. Worth knowing it exists, because after a sync the `local`
+tool can answer questions about their own posts and connections for free.
+
+Connections refuse to re-sync more than once a week without `--force`: it is the most expensive read
+in the tool and connections change slowly. Removals are only applied when the snapshot is complete —
+if LinkedIn claims more connections than were retrieved, none are reported as removed, because they
+were never looked at.
+
 ### `cache-status` — free.
 What is cached per source, sync checkpoints, and the retention policy. Third-party records expire 30
 days after capture: the body is deleted and an identity stub remains, so a re-fetch is a visible
@@ -162,12 +183,20 @@ call again.
 
 ## What this tool will not do
 
-Writes — posting, commenting, reacting, connecting, messaging — are **not on this surface at all**.
-They are CLI-only and require the user to confirm interactively at a terminal. If the user asks you
-to post or message, explain that they need to run it themselves; do not look for a way around it.
+Writes — posting, commenting, reacting — are **not on this surface at all**. They exist as CLI
+commands (`lnrelay share`, `comment`, `react`) and go over LinkedIn's own official OAuth scope, not
+the private API. Each stops at an interactive terminal, shows exactly what it will send, states the
+ToS breach, and requires the user to type a token derived from the content.
 
-Also absent by design: messaging/inbox reading, notifications, nested comment replies, and bulk
-sweeps.
+**Without a terminal there is no write and no network call.** That is deliberate and there is no
+flag that changes it: a flag an agent could set would not be confirming anything. If the user asks
+you to post or comment, tell them the exact command to run themselves. Do not look for a way around
+it, and do not offer one.
+
+Connecting and messaging do not exist at all, in any surface. They are the actions where the
+enforcement reports cluster, and an agent bug there is visible to a third party and unrecoverable.
+
+Also absent by design: inbox reading, notifications, nested comment replies, and bulk sweeps.
 
 ## Honest risk
 

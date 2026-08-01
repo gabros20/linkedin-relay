@@ -50,6 +50,51 @@ Redact by hand into `tests/fixtures/` first; `captures/`, `*.har` and `cookies.j
 
 ---
 
+## Phases 1–6 — COMPLETE (2026-08-02)
+
+All six phases are built, tested and verified live. 249 tests.
+
+| phase | delivered | verified live |
+|---|---|---|
+| **1** skeleton | envelope, error taxonomy, Rest.li codec, permit ledger, cooldown, `entry.ts` | `doctor --offline`, `budget`, `risk` |
+| **2** engine | auth, contracts, classifier, parser, client, session minting | `whoami`, `profile`, `feed`, `search` |
+| **3** research | comments, reactions, engagement counts | `post` (3 comments), `reactions` (5 reactors) |
+| **4** local-first | SQLite, opt-in retention, offline search, purge | `--retain` → `local` with zero network |
+| **5** agent surface | MCP shim, generated skill, parity test | 13 tools over stdio; live `search` and `local` calls |
+| **6** writes | OAuth transport, confirmation capability | gate refuses without a TTY, spending nothing |
+
+### What did NOT ship, and why
+
+- **`company`** — the endpoint returns 200, but with a projection carrying no name, tagline or
+  description. Its contract stays `discovered`, so the verified-only rule keeps the command out. The
+  richer path is probably `voyagerOrganizationDashViewWrapper`, which first needs an
+  `organizationalPageUrn` resolved.
+- **`job` detail** — what was captured is a job-cards list, not a detail endpoint. `search jobs`
+  works; reading one job does not.
+- **Connect, message, invitation handling** — cut by design, not left undone. These are where the
+  enforcement reports cluster and where an agent bug is third-party-visible and unrecoverable.
+  Reconsider `connect`/`follow` only after a quarter of clean read-only operation; never messaging.
+
+### Still owed
+
+1. **The 14-day queryId rotation diff.** Substantially de-risked — a November-2024 search queryId
+   still returned 200 in August 2026 — but never formally measured. Run `scripts/observe.ts` daily
+   and diff.
+2. **OS credential storage.** The session and OAuth token live in mode-0600 files under `~/.lnrelay`.
+   The design calls for the OS keychain; this is a known, written-down debt rather than an oversight.
+3. **Comment pagination.** `post` reads the first page only and reports `state: unknown` rather than
+   claiming exhaustion. Following `paginationToken` is a contained next step.
+4. **Nested comment replies.** Unsolved industry-wide; a comment with replies says so rather than
+   returning an empty array.
+5. **A live OAuth write.** The transport and gate are built and tested, but no post has been sent —
+   the LinkedIn app must be registered by the user first (`lnrelay oauth` prints the steps).
+
+---
+
+## Original phase detail
+
+Kept for the reasoning behind each step.
+
 ## Phase 1 — skeleton, zero network
 
 Everything here is buildable today on verified facts and is worth building even if Phase 0 has not run

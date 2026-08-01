@@ -99,6 +99,17 @@ export const CONTRACTS: Record<string, OperationContract> = {
     capturedAt: '2026-08-02',
   },
 
+  // The member's own posts. Verified 200; returns an empty collection on an
+  // account with no posts, which is a true empty rather than a failure.
+  myPosts: {
+    name: 'myPosts',
+    transport: 'voyager-graphql',
+    path: `${VOYAGER}/graphql`,
+    queryId: 'voyagerFeedDashProfileUpdates.20c70fe0314184158516a7ec004c0408',
+    provenance: 'verified',
+    capturedAt: '2026-08-02',
+  },
+
   // Discovered and returns 200, but the projection is useless: 39 KB containing
   // one `guideFetcher` wrapper and no name, tagline, description or headcount.
   // The same trap as the thin profile projection, so it stays unverified and

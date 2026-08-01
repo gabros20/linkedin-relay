@@ -89,6 +89,26 @@ export function runLocal(
   }
 }
 
+/**
+ * `connections` and `my-posts` are the same offline read as `local`, with the
+ * source pinned. They exist as separate commands because that is how a user
+ * thinks about their own data — `--sync` fills them, they read from cache.
+ */
+export function runSourceRead(
+  command: 'connections' | 'my-posts',
+  query: string | undefined,
+  limit: number,
+): Envelope {
+  const result = runLocal(query, command, undefined, limit);
+  if (!result.ok) return result;
+  const data = result.data as Record<string, unknown>;
+  const meta = data.meta as Record<string, unknown>;
+  if ((meta.cachedTotal as number) === 0 || (meta.returnedCount as number) === 0) {
+    meta.note = `Nothing cached for '${command}'. Run \`lnrelay sync ${command}\` first — this command reads the local cache and makes no network call.`;
+  }
+  return ok(command, data);
+}
+
 export function runPurge(scope: string | undefined, confirmed: boolean): Envelope {
   const target = scope === 'all' ? 'all' : 'third-party';
 

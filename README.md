@@ -1,8 +1,17 @@
 # linkedin-relay
 
-**Status: design complete, nothing implemented.** This repo currently contains research, a converged
-design, and a build plan. No code has been written, deliberately — the design's Phase 0 gate must pass
-first (see [docs/PLAN.md](docs/PLAN.md)).
+**Status: working.** All six phases are built and verified against live LinkedIn. 249 tests.
+
+```
+lnrelay login                              # mint a session from your own Chrome
+lnrelay search people "rust developer"     # 1.4M claimed, ranked rows back
+lnrelay feed                               # your feed, with engagement counts
+lnrelay post <activity-urn>                # a post's comment thread
+lnrelay sync connections && lnrelay local "rust"   # then search offline, free
+```
+
+Also available as an MCP server, so an agent can do the reading — 13 read-only tools, no writes on
+that surface at any price.
 
 A deep-research tool for LinkedIn — a TypeScript CLI (`lnrelay`) + a thin read-only MCP shim
 (`linkedin-relay-mcp`) + a Claude Code skill. Sibling to [`x-relay`](../x-relay),

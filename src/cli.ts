@@ -1,5 +1,5 @@
 import { bool, num, parseArgs, str } from './args.ts';
-import { runCacheStatus, runLocal, runPurge } from './commands/cache.ts';
+import { runCacheStatus, runLocal, runPurge, runSourceRead } from './commands/cache.ts';
 import {
   runFeed,
   runLogin,
@@ -11,6 +11,8 @@ import {
 } from './commands/live.ts';
 import { runBudget, runDoctor, runRisk } from './commands/local.ts';
 import { findCommand, helpText } from './commands/registry.ts';
+import { runSync } from './commands/sync.ts';
+import { runComment, runOauthStatus, runReact, runShare } from './commands/write.ts';
 import { shouldRunAsEntry } from './entry.ts';
 import { err, exitCodeFor, toJson } from './output.ts';
 import type { Envelope } from './types.ts';
@@ -64,8 +66,30 @@ export async function dispatch(argv: string[], now: number): Promise<Envelope> {
       );
     case 'cache-status':
       return runCacheStatus();
+    case 'connections':
+      return runSourceRead(
+        'connections',
+        args.positionals[0] ?? str(args, 'q'),
+        num(args, 'limit') ?? 25,
+      );
+    case 'my-posts':
+      return runSourceRead(
+        'my-posts',
+        args.positionals[0] ?? str(args, 'q'),
+        num(args, 'limit') ?? 25,
+      );
+    case 'sync':
+      return runSync(args.positionals[0], num(args, 'limit') ?? 50, bool(args, 'force'), now);
     case 'login':
       return runLogin();
+    case 'oauth':
+      return runOauthStatus();
+    case 'share':
+      return runShare(args.positionals[0], str(args, 'visibility') ?? 'public', now);
+    case 'comment':
+      return runComment(args.positionals[0], args.positionals[1], now);
+    case 'react':
+      return runReact(args.positionals[0], str(args, 'type') ?? 'LIKE', now);
     case 'whoami':
       return runWhoami(bool(args, 'raw'));
     case 'profile':
