@@ -14,7 +14,18 @@
 // clicking, and no request is issued that the web client would not have made.
 //
 // USAGE
-//   bun run scripts/observe.ts <path>      e.g. /in/tamas-gr/  or  /feed/
+//   bun run scripts/observe.ts <path> [js-to-run-after-load]
+//
+//   bun run scripts/observe.ts /in/tamas-gr/
+//   bun run scripts/observe.ts /feed/
+//   bun run scripts/observe.ts '/search/results/people/?keywords=rust' \
+//     'document.querySelector("button[aria-label=\"Next\"]")?.click()'
+//
+// The optional second argument matters more than it looks. Several LinkedIn
+// pages render their first result set server-side, so a plain navigation
+// issues NO Voyager XHR for the thing you actually care about — search is the
+// clearest case. Driving an in-page action (paginate, expand comments) is what
+// makes the client fetch, and only then can you see the operation.
 //
 // Output: captures/observed-<slug>.json — unique Voyager URLs, plus a
 // queryId → operation index.
@@ -78,11 +89,20 @@ async function main(): Promise<void> {
   };
 
   send('Network.enable', {});
+  send('Page.enable', {});
   await new Promise((r) => setTimeout(r, 500));
   console.log(`navigating to https://www.linkedin.com${path} …`);
   send('Page.navigate', { url: `https://www.linkedin.com${path}` });
 
   await new Promise((r) => setTimeout(r, SETTLE_MS));
+
+  const action = process.argv[3];
+  if (action !== undefined) {
+    console.log(`running in-page action, then settling again …`);
+    send('Runtime.evaluate', { expression: action, awaitPromise: false });
+    await new Promise((r) => setTimeout(r, SETTLE_MS));
+  }
+
   ws.close();
 
   const results = [...seen.values()].sort((a, b) => a.url.localeCompare(b.url));

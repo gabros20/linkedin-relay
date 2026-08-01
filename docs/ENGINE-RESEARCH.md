@@ -155,26 +155,114 @@ Two things worth noting. **`voyagerMessagingGraphQL/graphql` is a distinct base 
 issues 21 calls, which is a useful calibration: our own per-command budgets are far below what
 ordinary browsing generates.
 
+## 5a. Search — ✅ verified, and it largely retires kill criterion #3
+
+The web UI is **fully server-rendered**: navigating to `/search/results/people/?keywords=…`,
+paginating, and toggling network filters all issue full page loads and **zero** Voyager XHRs. There
+is nothing to observe. That is itself worth recording — an observation-only discovery strategy would
+conclude, wrongly, that search has no API.
+
+The API path does exist, and the **November-2024 queryId still works**:
+
+```
+GET /voyager/api/graphql
+  ?variables=(start:0,origin:GLOBAL_SEARCH_HEADER,query:(keywords:rust%20developer,
+     flagshipSearchIntent:SEARCH_SRP,queryParameters:List((key:resultType,value:List(PEOPLE))),
+     includeFiltersInResponse:false))
+  &queryId=voyagerSearchDashClusters.b0928897b71bd00a5a7291755dcd64f0
+→ 200, 56 KB, data.data.searchDashClustersByAll.metadata.totalResultCount = 1,457,213
+```
+
+**`voyagerSearchDashClusters.b0928897b71bd00a5a7291755dcd64f0` was documented in November 2024 and
+still returns 200 in August 2026 — roughly 21 months unchanged.** Kill criterion #3 assumed queryIds
+might rotate faster than a solo maintainer could re-capture, possibly weekly. On this evidence they
+are closer to *build-pinned but long-lived*. The 14-day rotation diff is still worth running, but the
+expected answer has moved a long way toward "stable".
+
+Caveat worth keeping: this is one queryId over one interval. It does not license hardcoding. Contracts
+stay in versioned data with a `capturedAt`, exactly as designed — the finding lowers the maintenance
+estimate, it does not remove the need for the mechanism.
+
+## 5b. `urn:li:activity:` ≠ `urn:li:ugcPost:` — ✅ verified
+
+A post permalink carries an **activity** URN; its own social endpoints key off a **ugcPost** URN, and
+the numbers differ:
+
+```
+permalink   /feed/update/urn:li:activity:7489213448686600193/
+reactions   …&variables=(count:10,start:0,threadUrn:urn:li:ugcPost:7489213447814144000)
+            &queryId=voyagerSocialDashReactions.41ebf31a9f4c4a84e35a49d5abc9010b
+```
+
+So `post` and `reactions` cannot share an identifier naively: the ugcPost URN has to be read out of
+the post response, not derived from the activity id. Assuming they are interchangeable would produce
+`NOT_FOUND` or, worse, another post's reactions.
+
+Also captured — a genuine three-member composite URN, now a regression fixture in
+`tests/restli.test.ts`:
+
+```
+urn:li:fsd_socialDetail:(urn:li:ugcPost:748…,urn:li:ugcPost:748…,urn:li:highlightedReply:-)
+```
+
+The reference client's `split("(")[1].split(",")[0]` returns `"urn"` for this and silently loses the
+rest. Our paren-aware parser returns all three members.
+
+**Comments were not observed.** They load on interaction, and the observed post had none. The comment
+thread queryId is still unknown — the largest gap before `post` can ship.
+
+## 5c. The feed is legacy-namespaced — ✅ verified
+
+`feed/updatesV2?q=chronFeed` returns **`com.linkedin.voyager.feed.*`** types, not `dash`. One page:
+44 `included[]` nodes across 11 distinct `$type`s, of which **5 are the actual posts**
+(`com.linkedin.voyager.feed.render.UpdateV2`); the rest are supporting decorations — `SocialDetail`,
+`SocialActivityCounts`, `SaveAction`, `UpdateActions`, `SocialPermissions`, `HidePostAction`,
+`FollowingInfo`, `MiniProfile`, `MiniCompany`, `VideoPlayMetadata`.
+
+This is the exclusion filter's whole justification in one response: **39 of 44 nodes are not content**.
+An accept-list naming only `UpdateV2` would work until LinkedIn renames it, then silently return an
+empty feed with `ok:true`. Dropping known noise and passing everything else through — counting the
+unknowns into `meta.unknownTypes` — fails the safe way instead.
+
 ## 6. The Rest.li codec is byte-correct — ✅ verified
 
 The web client sent `variables=(memberIdentity:ACoAA…)`. Our `encodeVariables()` produced the
 identical string, and the resulting request returned 200. The codec in `src/engine/restli.ts` is
 validated against real traffic, not just its own unit tests.
 
+**Exercising it against live search also found a real bug in it.** The codec escaped the five
+characters that matter to the Rest.li *grammar* (`( ) , : |`) but not the ones that matter to the
+*URL* the tuple is spliced into. A search for `tom & jerry` would have injected a second query
+parameter — and LinkedIn would have answered with 200 and plausible results for a query we never
+asked. Silent, and exactly the class of failure this project keeps finding.
+
+Now escaped: `% ( ) , : | & # +` and space, with `%` handled first in a single pass so an escape is
+never re-escaped. Re-verified live afterwards: same endpoint, 200, 1,457,213 results.
+
 ## 7. Still unknown
 
-1. **queryId rotation cadence.** The single highest-value open question — kill criterion #3 turns on
-   it. Re-run `scripts/observe.ts` daily for 14 days and diff. Nothing else in this document can be
-   trusted long-term until this is measured.
-2. **Which queryIds back search, comment threads and reactions.** Not observed here; a profile page
-   does not exercise them. Run `observe.ts` against `/search/results/people/?keywords=…`, a post
-   permalink, and `/feed/`.
-3. **The full profile fan-out.** `voyagerIdentityDashProfiles` returns identity only. Which further
-   calls assemble experience, education and skills is unobserved.
+1. **The comment-thread queryId.** Now the largest gap, and the one blocking `post` — the headline
+   research command. Comments load on interaction; observe a post that actually has some, with an
+   in-page action that expands them.
+2. **The full profile fan-out.** `voyagerIdentityDashProfiles` returns identity only, and three
+   distinct queryIds for that operation were observed (`b5c27c04…`, `e9b08094…`, `da93c92b…`) —
+   evidently different projections. Which calls assemble experience, education and skills is
+   unobserved.
+3. **queryId rotation cadence.** Substantially de-risked by §5a (a 21-month-old queryId still works),
+   but not measured. Run the 14-day `observe.ts` diff to confirm.
 4. **`li_at` lifetime.** Unmeasured. Record the issue date and watch for the first `AUTH_FAILED`.
-5. **Real throttle thresholds.** Still zero corroborated numbers. Our caps remain `guessed`.
+5. **Real throttle thresholds.** Still zero corroborated numbers. Our caps remain `guessed`, and
+   nothing in this session's traffic tested them — roughly 8 API calls were made in total.
 6. **Saved items and notifications.** `voyagerIdentityDashNotificationCards` was observed 🔍 but not
    exercised; nothing resembling a saved-items endpoint has been seen at all.
+
+### Method note: observation alone is not enough
+
+Search would have been marked "no API" if we had trusted `observe.ts` and stopped. It is server-
+rendered, so nothing fires. It took a direct probe of a queryId from the *documentation* to establish
+that the endpoint exists and works. Conversely, `profileView` was documented as working and is
+**410 Gone**. Neither source is sufficient alone: **observe to discover, probe to verify, and trust
+only what returned 200 on this machine.**
 
 ## 8. Method notes
 

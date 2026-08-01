@@ -83,6 +83,42 @@ describe('encodeVariables', () => {
       '(profileUrn:urn%3Ali%3Afsd_profile%3AABC123)',
     );
   });
+
+  // The encoded string is spliced into a URL query string, so characters that
+  // are harmless to the Rest.li grammar can still break the REQUEST. A search
+  // for "tom & jerry" would otherwise inject a second query parameter, and the
+  // failure is silent: LinkedIn answers a query you did not ask for.
+  describe('URL-hostile characters in values', () => {
+    test('encodes & so a value cannot inject another query parameter', () => {
+      expect(encodeVariables({ keywords: 'tom & jerry' })).not.toContain('&');
+    });
+
+    test('encodes # so a value cannot truncate the URL into a fragment', () => {
+      expect(encodeVariables({ keywords: 'c#' })).not.toContain('#');
+    });
+
+    test('encodes spaces', () => {
+      expect(encodeVariables({ keywords: 'rust developer' })).toBe('(keywords:rust%20developer)');
+    });
+
+    test('encodes a literal % first, so encoding is not applied twice', () => {
+      // "100%" must become "100%25" — not "100%" left raw, and never a
+      // half-encoded sequence that decodes to something else entirely.
+      expect(encodeVariables({ keywords: '100%' })).toBe('(keywords:100%25)');
+    });
+
+    test('a percent-encoded value survives a decode round-trip intact', () => {
+      const encoded = encodeVariables({ keywords: 'a&b c#d,e' });
+      const value = encoded.slice('(keywords:'.length, -1);
+      expect(decodeURIComponent(value)).toBe('a&b c#d,e');
+    });
+
+    test('keys are left alone — only values are hostile', () => {
+      expect(encodeVariables({ memberIdentity: 'ACoAABkU2Wk' })).toBe(
+        '(memberIdentity:ACoAABkU2Wk)',
+      );
+    });
+  });
 });
 
 // ─── parseTupleUrn ────────────────────────────────────────────────────────────
@@ -113,6 +149,22 @@ describe('parseTupleUrn', () => {
 
   test('returns null on an unbalanced tuple rather than guessing', () => {
     expect(parseTupleUrn('urn:li:fs_updateV2:(urn:li:activity:999,GROUP_FEED')).toBeNull();
+  });
+
+  // Captured verbatim from live 2026-08-01 traffic (docs/ENGINE-RESEARCH.md §5):
+  // the socialDetail URN LinkedIn's own post page sends. The reference client's
+  // split("(")[1].split(",")[0] would return "urn" and lose everything after it.
+  test('parses the real socialDetail tuple observed on a live post page', () => {
+    const parsed = parseTupleUrn(
+      'urn:li:fsd_socialDetail:(urn:li:ugcPost:7489213447814144000,' +
+        'urn:li:ugcPost:7489213447814144000,urn:li:highlightedReply:-)',
+    );
+    expect(parsed?.namespace).toBe('fsd_socialDetail');
+    expect(parsed?.members).toEqual([
+      'urn:li:ugcPost:7489213447814144000',
+      'urn:li:ugcPost:7489213447814144000',
+      'urn:li:highlightedReply:-',
+    ]);
   });
 });
 

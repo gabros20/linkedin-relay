@@ -27,21 +27,39 @@ export type RestliValue =
   | { [key: string]: RestliValue };
 
 /**
- * Characters that carry structural meaning in the grammar. They must be
- * percent-encoded inside a scalar, or the tuple's shape changes silently.
+ * Characters that must be percent-encoded inside a scalar value. Two distinct
+ * hazards, both silent:
+ *
+ *   Grammar    `( ) , : |` change the shape of the tuple. A keyword containing
+ *              a comma would split one value into two.
+ *   URL        `& # + space %` corrupt the query string the tuple is spliced
+ *              into. Searching for "tom & jerry" would inject a second query
+ *              parameter, and LinkedIn would answer a question we never asked
+ *              — returning 200 with plausible results for the wrong query.
+ *
+ * `%` is listed first and handled first, so an already-percent-looking value is
+ * escaped rather than double-decoded into something else.
  */
-const RESERVED = /[(),:|]/g;
-
 const ENCODED: Record<string, string> = {
+  '%': '%25', // MUST be first — see below
   '(': '%28',
   ')': '%29',
   ',': '%2C',
   ':': '%3A',
   '|': '%7C',
+  '&': '%26',
+  '#': '%23',
+  '+': '%2B',
+  ' ': '%20',
 };
+
+const RESERVED = /[%(),:|&#+ ]/g;
 
 function encodeScalar(value: string | number | boolean): string {
   if (typeof value !== 'string') return String(value);
+  // A single pass over the string, replacing each reserved character with its
+  // escape. Because it is one pass, the `%` introduced by an escape is never
+  // itself re-escaped — which is what makes the `%` entry above safe.
   return value.replace(RESERVED, (c) => ENCODED[c] ?? c);
 }
 
