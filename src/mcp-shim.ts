@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+#!/usr/bin/env bun
 // ─── MCP surface ──────────────────────────────────────────────────────────────
 //
 // Thin by contract: this file validates arguments, calls the same runners the
