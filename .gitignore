@@ -10,3 +10,4 @@ dist/
 captures/
 *.har
 cookies.json
+src/generated/

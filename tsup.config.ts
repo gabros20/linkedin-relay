@@ -8,7 +8,10 @@ export default defineConfig({
     'mcp-shim': 'src/mcp-shim.ts',
   },
   format: ['esm'],
-  dts: true,
+  // Declaration generation is off: tsup's dts step crashes against current
+  // TypeScript ("useCaseSensitiveFileNames"), and the shipped artefacts are two
+  // executables, not a types package. Re-enable if this ever becomes a library.
+  dts: false,
   clean: true,
   target: 'node18',
   // No code splitting: each entry is self-contained, so the in-source entry
