@@ -8,9 +8,19 @@ been shown to work.
 
 ---
 
-## Phase 0 — the viability spike (**GATE**)
+## Phase 0 — the viability spike (**GATE — PASSED 2026-08-01**)
 
-**Not in this repo.** A ~50-line throwaway script, run once, by hand.
+> **Result: passed.** `me`, `feed` and the GraphQL profile endpoint all returned 200 from a
+> residential IP with cookie auth and no browser in the request path. No 999, no challenge.
+> One correction to the research: **`profileView` is 410 Gone** — the reference client's core profile
+> endpoint no longer exists, and its live replacement has been captured.
+> Full findings: **[ENGINE-RESEARCH.md](ENGINE-RESEARCH.md)**.
+>
+> Still outstanding from this phase: the **14-day queryId rotation diff** (kill criterion #3), and
+> `observe.ts` runs against search, a post permalink, and the feed to capture the queryIds those
+> commands need.
+
+The procedure, for re-running it:
 
 1. Launch Chrome with a persistent profile, log in manually.
 2. Navigate to `/feed/` — this is specifically what sets `JSESSIONID`.

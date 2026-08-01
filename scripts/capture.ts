@@ -101,9 +101,11 @@ async function main(): Promise<void> {
       `other linkedin cookies present: ${linkedin.map((c) => c.name).join(', ')}\n`,
   );
 
-  // Use the CURRENT browser UA. A stale UA measurably raises the challenge rate
-  // (R3 §5) — never hardcode the Chrome 83 string from the 2024 reference client.
-  const ua = process.env.LNRELAY_UA ?? navigatorUa();
+  // Use the CURRENT browser UA, read from the live browser rather than typed in.
+  // A stale UA measurably raises the challenge rate (R3 §5) — this is exactly
+  // how the 2024 reference client ended up shipping a Chrome 83 string.
+  const ua = process.env.LNRELAY_UA ?? (await browserUa());
+  console.log(`user-agent: ${ua}\n`);
 
   const headers = {
     cookie: `li_at=${liAt.value}; JSESSIONID=${jsession.value}`,
@@ -165,13 +167,19 @@ async function main(): Promise<void> {
   );
 }
 
-function navigatorUa(): string {
-  // A current desktop Chrome UA. Update this alongside your real browser; the
-  // capture prints it so you can see what was actually sent.
-  return (
-    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 ' +
-    '(KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36'
-  );
+/**
+ * The UA of the actual browser holding the session, straight from CDP. Deriving
+ * it beats hardcoding: the string can never drift out of step with the cookies
+ * it is paired with.
+ */
+async function browserUa(): Promise<string> {
+  const res = await fetch(`${CDP}/json/version`);
+  const info = (await res.json()) as { 'User-Agent'?: string };
+  const ua = info['User-Agent'];
+  if (ua === undefined) throw new Error('CDP did not report a User-Agent');
+  // Chrome reports the headless-capable string with "HeadlessChrome"; the real
+  // browser here is headful, but strip it defensively — it is a giveaway.
+  return ua.replace('HeadlessChrome', 'Chrome');
 }
 
 main().catch((e: Error) => {
