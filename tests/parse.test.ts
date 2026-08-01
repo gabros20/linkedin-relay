@@ -160,6 +160,47 @@ describe('exclusion filtering', () => {
     expect(meta.unknownTypes).toEqual([{ type: 'com.linkedin.voyager.feed.UpdateV7', count: 1 }]);
   });
 
+  // Found live: an ad reached the output because a promoted post carries the
+  // SAME $type as a real one. The marker is in the actor's subdescription.
+  // Type is not the only place an entity identifies itself.
+  test('drops a promoted post despite it having a real post type', () => {
+    const feed = {
+      data: { '*elements': ['urn:li:activity:1', 'urn:li:activity:2'] },
+      included: [
+        {
+          entityUrn: 'urn:li:activity:1',
+          $type: 'com.linkedin.voyager.feed.render.UpdateV2',
+          actor: { subDescription: { text: 'Promoted by MailerLite' } },
+          commentary: { text: { text: 'ad copy' } },
+        },
+        {
+          entityUrn: 'urn:li:activity:2',
+          $type: 'com.linkedin.voyager.feed.render.UpdateV2',
+          actor: { subDescription: { text: '3d •' } },
+          commentary: { text: { text: 'a real post' } },
+        },
+      ],
+    };
+    const { items, meta } = parseCollection(feed, { operation: 'feed' });
+    expect(items).toHaveLength(1);
+    expect(meta.excludedCount).toBe(1);
+  });
+
+  test('does not mistake an ordinary post mentioning promotion for an ad', () => {
+    const feed = {
+      data: { '*elements': ['urn:li:activity:1'] },
+      included: [
+        {
+          entityUrn: 'urn:li:activity:1',
+          $type: 'com.linkedin.voyager.feed.render.UpdateV2',
+          actor: { subDescription: { text: '2h •' } },
+          commentary: { text: { text: 'I got promoted today!' } },
+        },
+      ],
+    };
+    expect(parseCollection(feed, { operation: 'feed' }).items).toHaveLength(1);
+  });
+
   test('still drops noise even when its type is only known by fragment', () => {
     const sponsored = {
       data: { '*elements': ['urn:li:activity:1'] },

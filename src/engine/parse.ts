@@ -84,7 +84,21 @@ function typeOf(node: Entity): string {
   return typeof t === 'string' ? t : '';
 }
 
+/**
+ * A promoted feed post carries the SAME `$type` as a real one — the ad marker
+ * lives in the actor's subdescription ("Promoted", "Promoted by <brand>"), not
+ * in the type. Found live: an ad reached the output while every type-level
+ * filter passed, which is the same lesson as the accept-list in a new costume.
+ * Type is not the only place a thing can identify itself.
+ */
+function isPromotedPost(node: Entity): boolean {
+  const actor = node.actor as { subDescription?: { text?: unknown } } | undefined;
+  const sub = actor?.subDescription?.text;
+  return typeof sub === 'string' && /^promoted\b/i.test(sub.trim());
+}
+
 function isNoise(node: Entity): boolean {
+  if (isPromotedPost(node)) return true;
   const t = typeOf(node).toLowerCase();
   if (t === '') return false;
   return DROP_TYPE_FRAGMENTS.some((f) => t.includes(f));

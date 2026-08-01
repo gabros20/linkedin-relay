@@ -1,0 +1,184 @@
+// ─── Presentation ─────────────────────────────────────────────────────────────
+//
+// Pure shaping of Voyager entities into flat, readable rows. No I/O.
+//
+// LinkedIn wraps essentially every piece of display text in a TextViewModel
+// (`{text, textDirection, attributesV2, $type}`), sometimes twice — a post's
+// commentary is `commentary.text.text`. Raw entities are therefore both huge
+// and unreadable, so commands shape by default and keep the raw node behind
+// `--raw` for when a shape has drifted and you need to see what actually came
+// back.
+//
+// Every shaper is defensive: an unrecognised entity still reports its `$type`
+// rather than returning nothing, because the parser deliberately lets unknown
+// types through and silently blanking them here would undo that.
+
+import type { Entity } from './engine/parse.ts';
+import { innerUrn } from './engine/restli.ts';
+
+export interface Shaped {
+  type?: string;
+  urn?: string;
+  name?: string;
+  headline?: string;
+  location?: string;
+  url?: string;
+  text?: string;
+  author?: string;
+  posted?: string;
+  [key: string]: unknown;
+}
+
+/** Pull the string out of a TextViewModel, at either nesting depth. */
+function text(value: unknown): string | undefined {
+  if (typeof value === 'string') return value.trim() || undefined;
+  if (value === null || typeof value !== 'object') return undefined;
+
+  const node = value as { text?: unknown };
+  if (typeof node.text === 'string') return node.text.trim() || undefined;
+  // commentary.text.text — the doubly-wrapped case.
+  if (node.text !== null && typeof node.text === 'object') return text(node.text);
+  return undefined;
+}
+
+function typeOf(node: Entity): string | undefined {
+  const t = node.$type ?? (node as { _type?: unknown })._type;
+  return typeof t === 'string' ? t : undefined;
+}
+
+/** Drop tracking query strings, which differ per request for identical results. */
+function cleanUrl(url: unknown): string | undefined {
+  if (typeof url !== 'string' || url === '') return undefined;
+  const cut = url.indexOf('?');
+  return cut === -1 ? url : url.slice(0, cut);
+}
+
+function defined<T extends Record<string, unknown>>(obj: T): T {
+  for (const key of Object.keys(obj)) {
+    if (obj[key] === undefined) delete obj[key];
+  }
+  return obj;
+}
+
+function shapeSearchRow(node: Entity): Shaped {
+  const entityUrn = typeof node.entityUrn === 'string' ? node.entityUrn : undefined;
+  return defined({
+    type: typeOf(node),
+    // The entity urn is composite — (profileUrn, SEARCH_SRP, DEFAULT) — and the
+    // member identity is its first member.
+    urn: entityUrn === undefined ? undefined : innerUrn(entityUrn),
+    name: text(node.title),
+    headline: text(node.primarySubtitle),
+    location: text(node.secondarySubtitle),
+    url: cleanUrl(node.navigationUrl),
+  });
+}
+
+function shapePost(node: Entity): Shaped {
+  const meta = node.updateMetadata as { urn?: unknown } | undefined;
+  const actor = node.actor as { name?: unknown; subDescription?: unknown } | undefined;
+  const urn = typeof meta?.urn === 'string' ? meta.urn : undefined;
+  return defined({
+    type: typeOf(node),
+    urn,
+    author: text(actor?.name),
+    // `text()` already trims; LinkedIn pads these with trailing spaces.
+    posted: text(actor?.subDescription),
+    text: text(node.commentary),
+    url: urn === undefined ? undefined : `https://www.linkedin.com/feed/update/${urn}/`,
+  });
+}
+
+/**
+ * Resolve a `*`-prefixed URN reference on a node against the side-table.
+ * LinkedIn returns location, current position and education as references, so
+ * a profile without its index is mostly pointers.
+ */
+function deref(
+  node: Entity,
+  key: string,
+  index: Map<string, Entity> | undefined,
+): Entity | undefined {
+  if (index === undefined) return undefined;
+  const ref = node[key];
+  if (typeof ref === 'string') return index.get(ref);
+  if (ref !== null && typeof ref === 'object') {
+    for (const [k, v] of Object.entries(ref as Record<string, unknown>)) {
+      if (k.startsWith('*') && typeof v === 'string') return index.get(v);
+    }
+  }
+  return undefined;
+}
+
+/**
+ * Shape a full profile, resolving the references LinkedIn leaves dangling.
+ *
+ * Note the honest gap: none of the observed projections returns
+ * firstName/lastName/publicIdentifier, so a looked-up profile has no name.
+ * The caller supplied the identifier, so this is a real limit rather than a
+ * silent one — see src/engine/contracts.ts.
+ */
+export function shapeProfile(node: Entity, index?: Map<string, Entity>): Shaped {
+  const base = shapeMember(node);
+  const geo = deref(node, 'geoLocation', index);
+  const position =
+    deref(node, 'profileTopPosition', index) ?? firstOfType(index, 'profile.Position');
+  const education =
+    deref(node, 'profileTopEducation', index) ?? firstOfType(index, 'profile.Education');
+
+  return defined({
+    ...base,
+    location: text(geo?.defaultLocalizedName) ?? text(geo?.localizedName),
+    title: text(position?.title),
+    company: text(position?.companyName),
+    school: text(education?.schoolName),
+  });
+}
+
+function firstOfType(index: Map<string, Entity> | undefined, suffix: string): Entity | undefined {
+  if (index === undefined) return undefined;
+  for (const node of new Set(index.values())) {
+    if (String(node.$type ?? '').endsWith(suffix)) return node;
+  }
+  return undefined;
+}
+
+function shapeMember(node: Entity): Shaped {
+  const first = text(node.firstName);
+  const last = text(node.lastName);
+  const publicId = text(node.publicIdentifier) ?? text(node.publicId);
+  const name = [first, last].filter(Boolean).join(' ');
+  return defined({
+    type: typeOf(node),
+    urn: typeof node.entityUrn === 'string' ? node.entityUrn : undefined,
+    publicId,
+    name: name === '' ? undefined : name,
+    headline: text(node.headline) ?? text(node.occupation),
+    url: publicId === undefined ? undefined : `https://www.linkedin.com/in/${publicId}/`,
+  });
+}
+
+/** Shape one entity into a flat row, dispatching on its type. */
+export function shapeEntity(node: Entity): Shaped {
+  try {
+    const t = (typeOf(node) ?? '').toLowerCase();
+    if (t.includes('entityresultviewmodel')) return shapeSearchRow(node);
+    if (t.includes('update')) return shapePost(node);
+    if (t.includes('profile')) return shapeMember(node);
+
+    // Unrecognised: report the type and make a best effort, so a new shape
+    // shows up as thin data rather than as nothing.
+    return defined({
+      type: typeOf(node),
+      urn: typeof node.entityUrn === 'string' ? node.entityUrn : undefined,
+      name: text(node.title) ?? text(node.name),
+      text: text(node.commentary) ?? text(node.text),
+    });
+  } catch {
+    return defined({ type: typeOf(node) });
+  }
+}
+
+export function shapeAll(items: Entity[]): Shaped[] {
+  return items.map(shapeEntity);
+}

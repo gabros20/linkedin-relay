@@ -224,6 +224,44 @@ An accept-list naming only `UpdateV2` would work until LinkedIn renames it, then
 empty feed with `ok:true`. Dropping known noise and passing everything else through — counting the
 unknowns into `meta.unknownTypes` — fails the safe way instead.
 
+## 5d. Profile projections — ✅ verified, and picking the wrong one looks like success
+
+Three `voyagerIdentityDashProfiles` queryIds appear on a single page load. They are different
+**projections** of one operation, and the difference is not visible from the queryId:
+
+| queryId | variables | result |
+|---|---|---|
+| `b5c27c04…` | `(memberIdentity:<id>)` | **identity only** — `entityUrn` + `versionTag`, 1.3 KB. A 200 containing nothing useful. |
+| `e9b08094…` | `(memberIdentity:<id>)` | **the real profile** — headline, geo, top position, education, 37 KB across 10 nodes. ← shipped |
+| `da93c92b…` | `(profileUrn:urn:li:fsd_profile:<id>)` | 400. Its true variables shape is unknown. |
+
+We shipped `b5c27c04…` first and `lnrelay profile` returned a type and a URN — a perfectly healthy
+200 with no information in it. Worth noting as a distinct failure mode from the ones this design
+already guards: not drift, not an empty result, just the *wrong projection* of a working endpoint.
+
+**None of the three returns `firstName`/`lastName`/`publicIdentifier`.** LinkedIn splits names into a
+projection we have not identified, so a looked-up profile currently has no name attached. The caller
+supplied the identifier, so this is a real limit rather than a silent one — recorded in
+`src/engine/contracts.ts` next to the queryId.
+
+Location, current position and education arrive as URN references into `included[]`, so the profile
+node alone is mostly pointers — `shapeProfile()` takes the index and dereferences them.
+
+## 5e. Promoted posts wear the same `$type` as real ones — ✅ verified
+
+An advertisement reached `lnrelay feed` output while every type-level filter passed, because a
+promoted post is a `com.linkedin.voyager.feed.render.UpdateV2` exactly like an organic one. The only
+marker is in the actor's subdescription:
+
+```
+actor.subDescription.text = "Promoted by MailerLite"
+```
+
+The general lesson, and the reason it is worth a section: **type is not the only place an entity
+identifies itself.** The exclusion filter was built to survive renames of the type field, and it
+does — but an entity can also be noise for reasons the type never expresses. Ads are now dropped on
+that marker and counted in `excludedCount`, so the exclusion stays visible rather than silent.
+
 ## 6. The Rest.li codec is byte-correct — ✅ verified
 
 The web client sent `variables=(memberIdentity:ACoAA…)`. Our `encodeVariables()` produced the

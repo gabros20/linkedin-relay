@@ -51,7 +51,18 @@ export const COMMANDS: CommandDef[] = [
     implemented: true,
   },
 
-  // ─── reads — Phase 2/3, gated on the Phase 0 capture ───────────────────────
+  // ─── session ───────────────────────────────────────────────────────────────
+  {
+    name: 'login',
+    cost: 'free — local browser',
+    summary: 'Mint a session from a logged-in Chrome via DevTools. Stores cookies owner-only.',
+    usage: 'lnrelay login          # start Chrome with --remote-debugging-port=9222 first',
+    audience: ['cli'],
+    risk: 'local',
+    implemented: true,
+  },
+
+  // ─── reads — verified live 2026-08-01 ─────────────────────────────────────
   {
     name: 'whoami',
     cost: '1 call',
@@ -59,7 +70,7 @@ export const COMMANDS: CommandDef[] = [
     usage: 'lnrelay whoami',
     audience: ['cli', 'mcp'],
     risk: 'read',
-    implemented: false,
+    implemented: true,
   },
   {
     name: 'profile',
@@ -68,7 +79,7 @@ export const COMMANDS: CommandDef[] = [
     usage: 'lnrelay profile <public-id|urn|url> [--sections experience,education,skills]',
     audience: ['cli', 'mcp'],
     risk: 'read',
-    implemented: false,
+    implemented: true,
   },
   {
     name: 'search',
@@ -77,7 +88,7 @@ export const COMMANDS: CommandDef[] = [
     usage: 'lnrelay search people|companies|jobs "<query>" [--limit N] [--compact|--fields a,b]',
     audience: ['cli', 'mcp'],
     risk: 'read',
-    implemented: false,
+    implemented: true,
   },
   {
     name: 'post',
@@ -125,7 +136,7 @@ export const COMMANDS: CommandDef[] = [
     usage: 'lnrelay feed [--limit N]',
     audience: ['cli', 'mcp'],
     risk: 'read',
-    implemented: false,
+    implemented: true,
   },
 
   // ─── cache-backed — Phase 4 ────────────────────────────────────────────────
