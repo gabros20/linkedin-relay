@@ -377,13 +377,47 @@ human confirmation: in this family the agent *is* the process invoking the CLI, 
 flag the acting party writes about its own action. It documents intent and obtains consent from
 nobody.
 
-Instead, a write invocation only creates a typed `WritePlan` in `~/.lnrelay/plans/` and returns
-`CONFIRMATION_REQUIRED` with a plan id, exact target, rendered content, transport, reversibility and
-risk. `lnrelay confirm <plan-id>` is CLI-only, requires an interactive TTY, shows the plan again, and
-requires the human to type a short phrase **derived from the plan id** (so `yes | lnrelay confirm`
-fails). It rejects piped input, expired plans (10 min), changed payload hashes, reused plans, and
-owner-URN mismatch. Only `confirm` can construct the unexported `ConfirmedWrite<T>` accepted by the
-write engine. The unconfirmed path makes **zero** network calls.
+Instead, **every write stops and asks the human, at the moment of the write, having first shown
+exactly what it is about to do and what it risks.** Concretely:
+
+```
+$ lnrelay share "shipping something new today"
+
+  ABOUT TO POST TO YOUR LINKEDIN FEED
+  ───────────────────────────────────────────────────────────
+  as       Tamás Gábor (urn:li:person:…)
+  via      official OAuth (w_member_social)
+  content  "shipping something new today"
+  undo     deletable from the LinkedIn UI; the post may be seen first
+
+  This automation breaches LinkedIn User Agreement §8.2 and can
+  permanently restrict this account. 7 of 10 writes left today.
+
+  Type 4f2a to confirm, anything else to abort:
+```
+
+The properties that make this a real boundary, not a formality:
+
+- **No TTY, no write.** Run non-interactively — which is how an agent invokes the CLI — and it
+  returns `CONFIRMATION_REQUIRED` having made **zero** network calls. This is the load-bearing
+  property: an agent cannot complete a write, whatever arguments it composes.
+- **A short token derived from the payload hash**, so `yes | lnrelay share …` fails. Four characters
+  is enough to defeat a blind pipe without becoming friction that motivates an escape hatch.
+- **Only the confirmation path can construct the unexported `ConfirmedWrite<T>`** the write engine
+  accepts, so the guarantee lives in the type system rather than in a forgettable `if`.
+- **No `--yes`, no env var, no config setting.** If the ritual ever proves intolerable, the right
+  conclusion is that this tool should not write for that user — not that the boundary becomes
+  optional.
+
+*Stated honestly in the docs:* a TTY check is an **accident-prevention barrier, not proof of human
+identity** — an agent with terminal control can allocate a pty. Its real value is moving circumvention
+from *accidental* (append a flag) to *deliberate* (construct a pty and echo a payload-specific token).
+Overclaiming unforgeability is how a guard stops being maintained.
+
+*(The panel originally specified a heavier two-step form — a `WritePlan` written to disk, confirmed
+later by a separate `lnrelay confirm <plan-id>` command with a 10-minute expiry. That was calibrated
+for an irreplaceable account. Collapsed to one interactive step at the owner's direction; the
+plan-file form is kept in `.orchestrate/panel/P1-codex.md` should the stakes ever change.)*
 
 There is **no** `--yes`, env-var, or config escape hatch. If the ritual proves intolerable, the right
 conclusion is that this tool should not perform writes for that user — not that the boundary becomes
@@ -477,9 +511,11 @@ Named honestly, because a tool that cannot be abandoned is a tool that will be r
    means detection is behavioural in a way we cannot model, and the blast radius does not justify a
    second attempt on an untestable hypothesis.
 5. **LinkedIn ships any self-serve read scope.** Delete the Voyager engine that afternoon.
-6. **The honest one.** If the user's LinkedIn account is materially load-bearing for their income
-   *right now*, the correct answer is not to run this at all. This belongs in the README's first
-   paragraph, not a footnote.
+6. **The honest one.** This design assumes an account whose loss the owner would genuinely shrug at.
+   That assumption is recorded, not incidental: the owner has confirmed it holds (a fresh account,
+   no accumulated network). **If it ever stops holding, criteria 4 and 5 tighten rather than
+   relax** — a restriction on an account that has since become load-bearing is a reason to stop, not
+   to appeal and continue.
 
 **A browser hot path is not a branch in any of these.** It inherits SDUI opacity and drift, adds DOM
 churn, and per R1 its bug cluster is ambiguous UI state (double-fired messages, Follow-vs-Accept

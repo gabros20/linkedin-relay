@@ -13,20 +13,25 @@ same philosophy.
 
 ## Read this before anything else
 
-**If your LinkedIn account is materially load-bearing for your income right now, do not run this
-tool.** LinkedIn can restrict or permanently ban an account, the appeal process routes through
-third-party identity verification and frequently fails, and unlike an X account a professional
-identity of N years cannot be re-registered. That asymmetry is the strongest single fact in the
-research behind this design, and it argues against the project on its own terms.
-
 This tool **breaches LinkedIn's User Agreement §8.2.** It is not ToS-compliant and this repo will
-never claim it is. It is also not "legally safe": the practical protection for a single-account,
-non-reselling personal tool is that it is not economically worth suing — an economics fact, not a
-property of the design. The Proxycurl founder's own conclusion, after being sued and shutting down, is
-worth quoting exactly: **"Legal does not mean safe."**
+never claim it is. Any account it touches can be restricted or permanently banned, with no reliable
+appeal — the restriction-appeal flow routes through third-party identity verification that is widely
+reported to fail on valid documents.
+
+It is also not "legally safe". The practical protection for a single-account, non-reselling personal
+tool is that it is not economically worth suing — an economics fact, not a property of the design. The
+Proxycurl founder's own conclusion, after being sued and shutting down, is worth quoting exactly:
+**"Legal does not mean safe."**
+
+**Know what you're staking.** A LinkedIn ban is not an X ban: connections, endorsements, message
+history and the channel recruiters use are accumulated over years and cannot be re-registered. Run
+this on an account whose loss you would genuinely shrug at. If your LinkedIn is materially
+load-bearing for your income, that is a real argument against running it at all — weigh it honestly
+rather than skipping past it.
 
 What the design *does* control is account-ban risk, which is a different and more tractable objective.
-That is what most of it is about.
+That is what most of it is about — and why reads are paced as conservatively as writes, why nothing is
+ever retried automatically, and why the tool refuses to keep working after LinkedIn signals once.
 
 ## Why it exists anyway
 

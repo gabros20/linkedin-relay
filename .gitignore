@@ -10,3 +10,6 @@ dist/
 captures/
 *.har
 cookies.json
+
+# Phase 0 capture output — live session tokens + third-party personal data
+captures/
