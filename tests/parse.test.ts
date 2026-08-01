@@ -10,9 +10,21 @@ const FEED = {
   },
   included: [
     // Deliberately out of order — `included[]` is an unordered side-table.
-    { entityUrn: 'urn:li:activity:300', $type: 'com.linkedin.voyager.feed.render.UpdateV2', commentary: 'third' },
-    { entityUrn: 'urn:li:activity:100', $type: 'com.linkedin.voyager.feed.render.UpdateV2', commentary: 'first' },
-    { entityUrn: 'urn:li:activity:200', $type: 'com.linkedin.voyager.feed.render.UpdateV2', commentary: 'second' },
+    {
+      entityUrn: 'urn:li:activity:300',
+      $type: 'com.linkedin.voyager.feed.render.UpdateV2',
+      commentary: 'third',
+    },
+    {
+      entityUrn: 'urn:li:activity:100',
+      $type: 'com.linkedin.voyager.feed.render.UpdateV2',
+      commentary: 'first',
+    },
+    {
+      entityUrn: 'urn:li:activity:200',
+      $type: 'com.linkedin.voyager.feed.render.UpdateV2',
+      commentary: 'second',
+    },
     // Supporting decorations — real types from the live feed capture.
     { entityUrn: 'urn:li:socialDetail:100', $type: 'com.linkedin.voyager.feed.SocialDetail' },
     { entityUrn: 'urn:li:profile:9', $type: 'com.linkedin.voyager.identity.shared.MiniProfile' },
@@ -74,7 +86,10 @@ describe('parseCollection', () => {
   });
 
   test('an unresolved reference makes the result partial, never complete', () => {
-    const broken = { ...FEED, data: { '*elements': [...FEED.data['*elements'], 'urn:li:activity:404'] } };
+    const broken = {
+      ...FEED,
+      data: { '*elements': [...FEED.data['*elements'], 'urn:li:activity:404'] },
+    };
     const { meta } = parseCollection(broken, { operation: 'feed' });
     expect(meta.state).toBe('partial');
     expect(meta.unresolved).toHaveLength(1);
@@ -95,8 +110,16 @@ describe('exclusion filtering', () => {
   const withNoise = {
     data: { '*elements': ['urn:li:activity:1', 'urn:li:activity:2', 'urn:li:activity:3'] },
     included: [
-      { entityUrn: 'urn:li:activity:1', $type: 'com.linkedin.voyager.feed.render.UpdateV2', commentary: 'real' },
-      { entityUrn: 'urn:li:activity:2', $type: 'com.linkedin.voyager.feed.PromotedUpdate', commentary: 'ad' },
+      {
+        entityUrn: 'urn:li:activity:1',
+        $type: 'com.linkedin.voyager.feed.render.UpdateV2',
+        commentary: 'real',
+      },
+      {
+        entityUrn: 'urn:li:activity:2',
+        $type: 'com.linkedin.voyager.feed.PromotedUpdate',
+        commentary: 'ad',
+      },
       { entityUrn: 'urn:li:activity:3', $type: 'com.linkedin.voyager.feed.FeedDiscoveryModule' },
     ],
   };
@@ -116,7 +139,11 @@ describe('exclusion filtering', () => {
     const future = {
       data: { '*elements': ['urn:li:activity:1'] },
       included: [
-        { entityUrn: 'urn:li:activity:1', $type: 'com.linkedin.voyager.feed.render.UpdateV7', commentary: 'new shape' },
+        {
+          entityUrn: 'urn:li:activity:1',
+          $type: 'com.linkedin.voyager.feed.render.UpdateV7',
+          commentary: 'new shape',
+        },
       ],
     };
     const { items, meta } = parseCollection(future, { operation: 'feed' });
@@ -136,7 +163,9 @@ describe('exclusion filtering', () => {
   test('still drops noise even when its type is only known by fragment', () => {
     const sponsored = {
       data: { '*elements': ['urn:li:activity:1'] },
-      included: [{ entityUrn: 'urn:li:activity:1', $type: 'com.linkedin.voyager.feed.SponsoredThing' }],
+      included: [
+        { entityUrn: 'urn:li:activity:1', $type: 'com.linkedin.voyager.feed.SponsoredThing' },
+      ],
     };
     expect(parseCollection(sponsored, { operation: 'feed' }).items).toHaveLength(0);
   });
@@ -153,7 +182,9 @@ describe('claimed vs returned', () => {
 
   test('claimed zero and returned zero is a genuine empty, with no warning', () => {
     const empty = { data: { '*elements': [] }, included: [] };
-    expect(parseCollection(empty, { operation: 'post', claimedCount: 0 }).meta.warnings).toEqual([]);
+    expect(parseCollection(empty, { operation: 'post', claimedCount: 0 }).meta.warnings).toEqual(
+      [],
+    );
   });
 });
 
@@ -180,10 +211,25 @@ describe('cluster/inline reference shape (search)', () => {
       },
     },
     included: [
-      { entityUrn: 'urn:li:fsd_entityResultViewModel:2', $type: 'com.linkedin.voyager.dash.search.EntityResultViewModel', name: 'second' },
-      { entityUrn: 'urn:li:fsd_entityResultViewModel:1', $type: 'com.linkedin.voyager.dash.search.EntityResultViewModel', name: 'first' },
-      { entityUrn: 'urn:li:fsd_entityResultViewModel:3', $type: 'com.linkedin.voyager.dash.search.EntityResultViewModel', name: 'third' },
-      { entityUrn: 'urn:li:fsd_profile:A', $type: 'com.linkedin.voyager.dash.identity.profile.Profile' },
+      {
+        entityUrn: 'urn:li:fsd_entityResultViewModel:2',
+        $type: 'com.linkedin.voyager.dash.search.EntityResultViewModel',
+        name: 'second',
+      },
+      {
+        entityUrn: 'urn:li:fsd_entityResultViewModel:1',
+        $type: 'com.linkedin.voyager.dash.search.EntityResultViewModel',
+        name: 'first',
+      },
+      {
+        entityUrn: 'urn:li:fsd_entityResultViewModel:3',
+        $type: 'com.linkedin.voyager.dash.search.EntityResultViewModel',
+        name: 'third',
+      },
+      {
+        entityUrn: 'urn:li:fsd_profile:A',
+        $type: 'com.linkedin.voyager.dash.identity.profile.Profile',
+      },
       { entityUrn: 'urn:li:x:1', $type: 'com.linkedin.voyager.dash.search.FeedbackCard' },
       { entityUrn: 'urn:li:x:2', $type: 'com.linkedin.voyager.dash.search.LazyLoadedActions' },
     ],
@@ -211,7 +257,11 @@ describe('single-entity responses', () => {
     const me = {
       data: { $type: 'com.linkedin.voyager.common.Me' },
       included: [
-        { entityUrn: 'urn:li:fs_miniProfile:ABC', $type: 'com.linkedin.voyager.identity.shared.MiniProfile', firstName: 'Ada' },
+        {
+          entityUrn: 'urn:li:fs_miniProfile:ABC',
+          $type: 'com.linkedin.voyager.identity.shared.MiniProfile',
+          firstName: 'Ada',
+        },
       ],
     };
     expect(parseSingle(me)?.firstName).toBe('Ada');
@@ -227,7 +277,11 @@ describe('fault isolation', () => {
     const mixed = {
       data: { '*elements': ['urn:li:activity:1', 'urn:li:activity:2'] },
       included: [
-        { entityUrn: 'urn:li:activity:1', $type: 'com.linkedin.voyager.feed.render.UpdateV2', commentary: 'fine' },
+        {
+          entityUrn: 'urn:li:activity:1',
+          $type: 'com.linkedin.voyager.feed.render.UpdateV2',
+          commentary: 'fine',
+        },
         { entityUrn: 'urn:li:activity:2', $type: null, commentary: 'weird' },
       ],
     };

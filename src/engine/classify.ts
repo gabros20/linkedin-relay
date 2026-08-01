@@ -34,32 +34,74 @@ export interface Classification {
 const CHALLENGE_MARKERS = /checkpoint|challenge|captcha|security verification|unusual activity/i;
 const LOGIN_REDIRECT = /\/login|\/uas\/login|session_redirect/i;
 
-function fail(
-  code: string,
-  message: string,
-  extra: Partial<Classification> = {},
-): Classification {
+function fail(code: string, message: string, extra: Partial<Classification> = {}): Classification {
   return { outcome: 'error', code, message, retry: false, ...extra };
+}
+
+const CHALLENGE_HINT =
+  'Open LinkedIn in a real browser, clear the challenge, then `lnrelay budget --reset-cooldown --confirm`.';
+
+/** Redirects carry two very different meanings; confusing them costs a day. */
+function classifyRedirect(location: string): Classification {
+  if (CHALLENGE_MARKERS.test(location)) {
+    return fail('CHALLENGE_DETECTED', `redirected to a challenge: ${location}`, {
+      cooldown: 'CHALLENGE_DETECTED',
+      hint: CHALLENGE_HINT,
+    });
+  }
+  if (LOGIN_REDIRECT.test(location)) {
+    return fail('AUTH_FAILED', 'redirected to the login page', {
+      hint: 'This signature means expired cookies, NOT bot detection. Re-run `lnrelay login`.',
+    });
+  }
+  return fail('FETCH_FAILED', `unexpected redirect to ${location || '(none)'}`);
+}
+
+/** A 200 can still be a failure. Everything here inspects the body. */
+function classifyBody(body: string): Classification {
+  if (CHALLENGE_MARKERS.test(body.slice(0, 4000))) {
+    return fail('CHALLENGE_DETECTED', 'a challenge page was returned with status 200', {
+      cooldown: 'CHALLENGE_DETECTED',
+      hint: CHALLENGE_HINT,
+    });
+  }
+
+  let json: unknown;
+  try {
+    json = JSON.parse(body);
+  } catch {
+    return fail('SCHEMA_DRIFT', 'response was 200 but not JSON', {
+      hint: 'LinkedIn may have served HTML — inspect the raw body.',
+    });
+  }
+
+  const envelope = json as { data?: Record<string, unknown>; included?: unknown[] };
+
+  // An inner status can contradict the HTTP one.
+  const innerStatus = (envelope.data as { status?: number } | undefined)?.status;
+  if (typeof innerStatus === 'number' && innerStatus >= 400) {
+    return fail('SCHEMA_DRIFT', `body carries an inner status ${innerStatus}`, {
+      hint: 'The endpoint answered but reported a failure. Re-capture the operation.',
+    });
+  }
+
+  // The 336-analogue: `data` names URNs that `included` does not contain at
+  // all. The decoration failed wholesale — this is a failed fetch wearing the
+  // costume of an empty result.
+  if (referencesUrns(envelope.data) && (envelope.included?.length ?? 0) === 0) {
+    return fail('SCHEMA_DRIFT', 'data references entities but included[] is empty', {
+      hint: 'Decoration failed wholesale — this is a failed fetch, not an empty result.',
+    });
+  }
+
+  return { outcome: 'ok', retry: false, json };
 }
 
 export function classify(res: RawResponse): Classification {
   const headers = res.headers ?? {};
-  const location = headers.location ?? '';
 
-  // ── Redirects: two very different meanings, and confusing them costs a day ──
   if (res.status >= 300 && res.status < 400) {
-    if (CHALLENGE_MARKERS.test(location)) {
-      return fail('CHALLENGE_DETECTED', `redirected to a challenge: ${location}`, {
-        cooldown: 'CHALLENGE_DETECTED',
-        hint: 'Open LinkedIn in a real browser, clear the challenge, then `lnrelay budget --reset-cooldown --confirm`.',
-      });
-    }
-    if (LOGIN_REDIRECT.test(location)) {
-      return fail('AUTH_FAILED', 'redirected to the login page', {
-        hint: 'This signature means expired cookies, NOT bot detection. Re-run `lnrelay login`.',
-      });
-    }
-    return fail('FETCH_FAILED', `unexpected redirect to ${location || '(none)'}`);
+    return classifyRedirect(headers.location ?? '');
   }
 
   // ── Hard blocks ────────────────────────────────────────────────────────────
@@ -110,43 +152,7 @@ export function classify(res: RawResponse): Classification {
     return fail('FETCH_FAILED', `unexpected status ${res.status}`);
   }
 
-  // ── 200s that are not actually fine ────────────────────────────────────────
-  if (CHALLENGE_MARKERS.test(res.body.slice(0, 4000))) {
-    return fail('CHALLENGE_DETECTED', 'a challenge page was returned with status 200', {
-      cooldown: 'CHALLENGE_DETECTED',
-      hint: 'Open LinkedIn in a real browser, clear the challenge, then `lnrelay budget --reset-cooldown --confirm`.',
-    });
-  }
-
-  let json: unknown;
-  try {
-    json = JSON.parse(res.body);
-  } catch {
-    return fail('SCHEMA_DRIFT', 'response was 200 but not JSON', {
-      hint: 'LinkedIn may have served HTML — inspect the raw body.',
-    });
-  }
-
-  const envelope = json as { data?: Record<string, unknown>; included?: unknown[] };
-
-  // An inner status can contradict the HTTP one.
-  const innerStatus = (envelope.data as { status?: number } | undefined)?.status;
-  if (typeof innerStatus === 'number' && innerStatus >= 400) {
-    return fail('SCHEMA_DRIFT', `body carries an inner status ${innerStatus}`, {
-      hint: 'The endpoint answered but reported a failure. Re-capture the operation.',
-    });
-  }
-
-  // The 336-analogue: `data` names URNs that `included` does not contain at
-  // all. The decoration failed wholesale — this is a failed fetch wearing the
-  // costume of an empty result.
-  if (referencesUrns(envelope.data) && (envelope.included?.length ?? 0) === 0) {
-    return fail('SCHEMA_DRIFT', 'data references entities but included[] is empty', {
-      hint: 'Decoration failed wholesale — this is a failed fetch, not an empty result.',
-    });
-  }
-
-  return { outcome: 'ok', retry: false, json };
+  return classifyBody(res.body);
 }
 
 /** Whether `data` names any URN we would expect `included[]` to resolve. */

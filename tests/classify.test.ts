@@ -56,7 +56,10 @@ describe('challenges', () => {
   });
 
   test('challenge markup in a 200 body still counts', () => {
-    const r = classify({ status: 200, body: '<html><body>Security Verification captcha</body></html>' });
+    const r = classify({
+      status: 200,
+      body: '<html><body>Security Verification captcha</body></html>',
+    });
     expect(r.code).toBe('CHALLENGE_DETECTED');
   });
 });
