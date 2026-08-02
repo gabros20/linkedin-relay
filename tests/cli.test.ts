@@ -161,3 +161,15 @@ describe('flag wiring', () => {
     }
   });
 });
+
+// stdout carries ONLY a JSON envelope. A stack trace there breaks every caller
+// that parses us — which is all of them, including the MCP shim.
+describe('unexpected failures still produce an envelope', () => {
+  test('a corrupt cache file yields an envelope, not a throw', async () => {
+    writeFileSync(join(dir, 'cache.db'), 'not a database');
+    const e = await dispatch(['local', 'anything'], T0);
+    expect(e.ok).toBe(false);
+    if (e.ok) throw new Error('unreachable');
+    expect(e.error.code).toBe('CACHE_CORRUPT');
+  });
+});

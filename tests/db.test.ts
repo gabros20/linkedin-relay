@@ -241,3 +241,53 @@ describe('set difference', () => {
     expect(urnsFor(db, 'connections')).toEqual(new Set(['urn:li:p:2']));
   });
 });
+
+// Found by a real search: `local "szekely"` returned nothing while "székely"
+// returned the record. SQLite's LIKE is not accent-insensitive, and for
+// Hungarian (or any accented) names that makes offline search feel broken —
+// the user types what is on their keyboard, not what LinkedIn stored.
+describe('accent-insensitive search', () => {
+  test('an unaccented query finds an accented name', () => {
+    const db = openDb(T0);
+    upsert(db, 'connections', [row('urn:li:p:1', 'Szabolcs Székely Frontend Developer')], T0);
+    expect(search(db, 'szekely')).toHaveLength(1);
+  });
+
+  test('an accented query still finds it', () => {
+    const db = openDb(T0);
+    upsert(db, 'connections', [row('urn:li:p:1', 'Szabolcs Székely')], T0);
+    expect(search(db, 'székely')).toHaveLength(1);
+  });
+
+  test('an accented query finds an unaccented record', () => {
+    const db = openDb(T0);
+    upsert(db, 'connections', [row('urn:li:p:1', 'szabolcs szekely')], T0);
+    expect(search(db, 'Székely')).toHaveLength(1);
+  });
+
+  test('folding does not make unrelated names collide', () => {
+    const db = openDb(T0);
+    upsert(db, 'connections', [row('urn:li:p:1', 'Székely'), row('urn:li:p:2', 'Kovács')], T0);
+    expect(search(db, 'kovacs')).toHaveLength(1);
+  });
+
+  test('handles other diacritics too, not just Hungarian', () => {
+    const db = openDb(T0);
+    upsert(
+      db,
+      'connections',
+      [row('urn:li:p:1', 'Jenő Lustyik'), row('urn:li:p:2', 'José Núñez')],
+      T0,
+    );
+    expect(search(db, 'jose nunez')).toHaveLength(1);
+    expect(search(db, 'jeno')).toHaveLength(1);
+  });
+
+  // The display value must survive — folding is for matching only.
+  test('the stored record keeps its accents for display', () => {
+    const db = openDb(T0);
+    upsert(db, 'connections', [row('urn:li:p:1', 'Szabolcs Székely')], T0);
+    const found = search(db, 'szekely');
+    expect(JSON.parse(found[0]?.body ?? '{}').text).toBe('Szabolcs Székely');
+  });
+});

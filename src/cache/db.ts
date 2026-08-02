@@ -37,19 +37,35 @@ export interface Record_ {
   expiresAt: number | null;
 }
 
-const SCHEMA = [
+/**
+ * Strip diacritics and lowercase, for matching only.
+ *
+ * SQLite's LIKE is not accent-insensitive, so `local "szekely"` found nothing
+ * while "székely" found the record — the user types what is on their keyboard,
+ * not what LinkedIn stored. Found by a real search on a Hungarian name.
+ *
+ * The folded form is stored ALONGSIDE the original, never instead of it: the
+ * display value keeps its accents.
+ */
+export function fold(value: string): string {
+  return value
+    .normalize('NFD')
+    .replace(/\p{Diacritic}/gu, '')
+    .toLowerCase();
+}
+
+const TABLES = [
   `CREATE TABLE IF NOT EXISTS records (
      urn         TEXT NOT NULL,
      source      TEXT NOT NULL,
      body        TEXT,
      text        TEXT NOT NULL DEFAULT '',
+     textFold    TEXT NOT NULL DEFAULT '',
      firstSeenAt INTEGER NOT NULL,
      updatedAt   INTEGER NOT NULL,
      expiresAt   INTEGER,
      PRIMARY KEY (urn, source)
    )`,
-  'CREATE INDEX IF NOT EXISTS records_source ON records(source)',
-  'CREATE INDEX IF NOT EXISTS records_expires ON records(expiresAt)',
   `CREATE TABLE IF NOT EXISTS checkpoints (
      source          TEXT PRIMARY KEY,
      lastSuccessfulAt INTEGER NOT NULL,
@@ -57,6 +73,16 @@ const SCHEMA = [
      headIds          TEXT NOT NULL DEFAULT '[]',
      state            TEXT NOT NULL DEFAULT 'ok'
    )`,
+];
+
+// Indexes are created AFTER migrations, because an index may reference a column
+// a migration is about to add. Creating them alongside the tables meant an
+// existing store — where CREATE TABLE IF NOT EXISTS is a no-op — tried to index
+// a column it did not have yet, and threw on open.
+const INDEXES = [
+  'CREATE INDEX IF NOT EXISTS records_source ON records(source)',
+  'CREATE INDEX IF NOT EXISTS records_fold ON records(textFold)',
+  'CREATE INDEX IF NOT EXISTS records_expires ON records(expiresAt)',
 ];
 
 export class CacheCorrupt extends Error {
@@ -91,9 +117,38 @@ export function openDb(now = Date.now()): Database {
   }
 
   db.run('PRAGMA journal_mode = WAL');
-  for (const stmt of SCHEMA) db.run(stmt);
+  for (const stmt of TABLES) db.run(stmt);
+  migrate(db);
+  for (const stmt of INDEXES) db.run(stmt);
   sweepExpired(db, now);
   return db;
+}
+
+/**
+ * Additive migrations for stores created before a column existed. Kept
+ * idempotent and additive so an older cache upgrades in place rather than
+ * being discarded — discarding it would trigger a full re-sync, which is the
+ * expensive failure on this platform.
+ */
+function migrate(db: Database): void {
+  const columns = db.query('PRAGMA table_info(records)').all() as { name: string }[];
+  if (!columns.some((c) => c.name === 'textFold')) {
+    db.run("ALTER TABLE records ADD COLUMN textFold TEXT NOT NULL DEFAULT ''");
+  }
+  // Backfill any row that predates the column.
+  const stale = db
+    .query("SELECT urn, source, text FROM records WHERE textFold = '' AND text != ''")
+    .all() as {
+    urn: string;
+    source: string;
+    text: string;
+  }[];
+  if (stale.length > 0) {
+    const update = db.query('UPDATE records SET textFold = ? WHERE urn = ? AND source = ?');
+    db.transaction(() => {
+      for (const r of stale) update.run(fold(r.text), r.urn, r.source);
+    })();
+  }
 }
 
 function quarantine(path: string, reason: string, now: number): CacheCorrupt {
@@ -118,7 +173,7 @@ function quarantine(path: string, reason: string, now: number): CacheCorrupt {
  */
 export function sweepExpired(db: Database, now = Date.now()): number {
   const result = db.run(
-    "UPDATE records SET body = NULL, text = '' WHERE expiresAt IS NOT NULL AND expiresAt <= ? AND body IS NOT NULL",
+    "UPDATE records SET body = NULL, text = '', textFold = '' WHERE expiresAt IS NOT NULL AND expiresAt <= ? AND body IS NOT NULL",
     [now],
   );
   return result.changes;
@@ -136,10 +191,10 @@ export function upsert(
 
   const exists = db.query('SELECT 1 FROM records WHERE urn = ? AND source = ?');
   const write = db.query(
-    `INSERT INTO records (urn, source, body, text, firstSeenAt, updatedAt, expiresAt)
-     VALUES (?, ?, ?, ?, ?, ?, ?)
+    `INSERT INTO records (urn, source, body, text, textFold, firstSeenAt, updatedAt, expiresAt)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?)
      ON CONFLICT(urn, source) DO UPDATE SET
-       body = excluded.body, text = excluded.text,
+       body = excluded.body, text = excluded.text, textFold = excluded.textFold,
        updatedAt = excluded.updatedAt, expiresAt = excluded.expiresAt`,
   );
 
@@ -147,7 +202,16 @@ export function upsert(
     for (const row of rows) {
       if (exists.get(row.urn, source) === null) added++;
       else updated++;
-      write.run(row.urn, source, JSON.stringify(row.body), row.text, now, now, expiresAt);
+      write.run(
+        row.urn,
+        source,
+        JSON.stringify(row.body),
+        row.text,
+        fold(row.text),
+        now,
+        now,
+        expiresAt,
+      );
     }
   })();
 
@@ -176,8 +240,10 @@ export function search(
 
   let sql = `SELECT * FROM records WHERE source IN (${placeholders}) AND body IS NOT NULL`;
   if (query !== '') {
-    sql += ' AND lower(text) LIKE ?';
-    params.push(`%${query.toLowerCase()}%`);
+    // Match on the folded column with a folded query, so "szekely" finds
+    // "Székely" and vice versa.
+    sql += ' AND textFold LIKE ?';
+    params.push(`%${fold(query)}%`);
   }
   if (opts.since !== undefined) {
     sql += ' AND updatedAt >= ?';

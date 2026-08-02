@@ -130,7 +130,17 @@ const entry = shouldRunAsEntry(process.argv[1], import.meta.url, import.meta.mai
 
 if (entry.run) {
   if (entry.warning !== undefined) process.stderr.write(`${entry.warning}\n`);
-  const envelope = await dispatch(process.argv.slice(2), Date.now());
+  // stdout carries ONLY a JSON envelope — including when something throws that
+  // no runner anticipated. A stack trace on stdout would break every caller
+  // that parses us, which is all of them.
+  const envelope = await dispatch(process.argv.slice(2), Date.now()).catch((e: Error) =>
+    err(
+      process.argv[2] ?? 'unknown',
+      'UNEXPECTED',
+      e.message,
+      'This is a bug in lnrelay, not a LinkedIn failure. The stack trace is on stderr.',
+    ),
+  );
   // stdout carries ONLY the JSON envelope. Help text and progress go to stderr.
   if (envelope.command !== 'help') process.stdout.write(`${toJson(envelope)}\n`);
   process.exit(exitCodeFor(envelope));
