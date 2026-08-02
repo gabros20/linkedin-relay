@@ -16,7 +16,7 @@
 // USAGE
 //   bun run scripts/observe.ts <path> [js-to-run-after-load]
 //
-//   bun run scripts/observe.ts /in/tamas-gr/
+//   bun run scripts/observe.ts /in/<your-public-id>/
 //   bun run scripts/observe.ts /feed/
 //   bun run scripts/observe.ts '/search/results/people/?keywords=rust' \
 //     'document.querySelector("button[aria-label=\"Next\"]")?.click()'

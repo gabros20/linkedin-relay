@@ -8,15 +8,15 @@ describe('search result (EntityResultViewModel)', () => {
   const row = {
     $type: 'com.linkedin.voyager.dash.search.EntityResultViewModel',
     entityUrn: 'urn:li:fsd_entityResultViewModel:(urn:li:fsd_profile:ACoAAB7,SEARCH_SRP,DEFAULT)',
-    title: { text: 'Jenő Lustyik', $type: 'com.linkedin.voyager.dash.common.text.TextViewModel' },
+    title: { text: 'Bence Fűzfa', $type: 'com.linkedin.voyager.dash.common.text.TextViewModel' },
     primarySubtitle: { text: 'Software Developer | Go, Python, Rust' },
     secondarySubtitle: { text: 'Budapest' },
     navigationUrl:
-      'https://www.linkedin.com/in/lustyikjeno?miniProfileUrn=urn%3Ali%3Afs_miniProfile',
+      'https://www.linkedin.com/in/lustyikbence?miniProfileUrn=urn%3Ali%3Afs_miniProfile',
   };
 
   test('lifts the name out of its TextViewModel', () => {
-    expect(shapeEntity(row).name).toBe('Jenő Lustyik');
+    expect(shapeEntity(row).name).toBe('Bence Fűzfa');
   });
 
   test('maps the subtitles to headline and location', () => {
@@ -27,7 +27,7 @@ describe('search result (EntityResultViewModel)', () => {
   // The tracking query string is noise and changes per request — keeping it
   // would make otherwise-identical results look different run to run.
   test('strips tracking parameters from the profile url', () => {
-    expect(shapeEntity(row).url).toBe('https://www.linkedin.com/in/lustyikjeno');
+    expect(shapeEntity(row).url).toBe('https://www.linkedin.com/in/lustyikbence');
   });
 
   // entityUrn is a composite: (profileUrn, SEARCH_SRP, DEFAULT). The member
@@ -70,7 +70,7 @@ describe('member profile (MiniProfile)', () => {
     entityUrn: 'urn:li:fs_miniProfile:ACoAABkU2Wk',
     firstName: 'Tamas',
     lastName: 'Gabor',
-    publicIdentifier: 'tamas-gr',
+    publicIdentifier: '<your-public-id>',
     occupation: 'Photographer, Frontend Developer',
   };
 
@@ -83,7 +83,7 @@ describe('member profile (MiniProfile)', () => {
   });
 
   test('builds the profile url from the public identifier', () => {
-    expect(shapeEntity(me).url).toBe('https://www.linkedin.com/in/tamas-gr/');
+    expect(shapeEntity(me).url).toBe('https://www.linkedin.com/in/<your-public-id>/');
   });
 });
 

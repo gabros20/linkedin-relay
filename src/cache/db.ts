@@ -40,8 +40,8 @@ export interface Record_ {
 /**
  * Strip diacritics and lowercase, for matching only.
  *
- * SQLite's LIKE is not accent-insensitive, so `local "szekely"` found nothing
- * while "székely" found the record — the user types what is on their keyboard,
+ * SQLite's LIKE is not accent-insensitive, so `local "kovary"` found nothing
+ * while "kőváry" found the record — the user types what is on their keyboard,
  * not what LinkedIn stored. Found by a real search on a Hungarian name.
  *
  * The folded form is stored ALONGSIDE the original, never instead of it: the
@@ -240,8 +240,8 @@ export function search(
 
   let sql = `SELECT * FROM records WHERE source IN (${placeholders}) AND body IS NOT NULL`;
   if (query !== '') {
-    // Match on the folded column with a folded query, so "szekely" finds
-    // "Székely" and vice versa.
+    // Match on the folded column with a folded query, so "kovary" finds
+    // "Kőváry" and vice versa.
     sql += ' AND textFold LIKE ?';
     params.push(`%${fold(query)}%`);
   }

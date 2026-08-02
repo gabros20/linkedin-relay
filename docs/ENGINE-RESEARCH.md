@@ -117,8 +117,8 @@ substring scan the reference implementation uses.
 one response:
 
 ```
-urn:li:fs_miniProfile:ACoAABkU2WkBwVjyZrBxlHL0ykQ2sXWtJATrBww
-urn:li:fsd_profile:ACoAABkU2WkBwVjyZrBxlHL0ykQ2sXWtJATrBww
+urn:li:fs_miniProfile:<member-id>
+urn:li:fsd_profile:<member-id>
 ```
 
 This is the `core`/`legacy` split that cost x-relay real data, in the flesh. `canonicalUrn()` already

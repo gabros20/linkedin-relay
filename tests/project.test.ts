@@ -2,9 +2,9 @@ import { describe, expect, test } from 'bun:test';
 import { compactRows, project } from '../src/format.ts';
 
 const rows = [
-  { name: 'Jenő Lustyik', headline: 'Software Developer', location: 'Budapest', urn: 'urn:li:p:1' },
+  { name: 'Bence Fűzfa', headline: 'Software Developer', location: 'Budapest', urn: 'urn:li:p:1' },
   {
-    name: 'Szabolcs Székely',
+    name: 'Zsófia Kőváry',
     headline: 'Frontend Developer',
     location: 'Budapest',
     urn: 'urn:li:p:2',
@@ -14,8 +14,8 @@ const rows = [
 describe('--fields', () => {
   test('keeps only the requested keys', () => {
     expect(project(rows, 'name,location')).toEqual([
-      { name: 'Jenő Lustyik', location: 'Budapest' },
-      { name: 'Szabolcs Székely', location: 'Budapest' },
+      { name: 'Bence Fűzfa', location: 'Budapest' },
+      { name: 'Zsófia Kőváry', location: 'Budapest' },
     ]);
   });
 
@@ -25,7 +25,7 @@ describe('--fields', () => {
 
   test('tolerates whitespace around names', () => {
     expect(project(rows, ' name , location ')[0]).toEqual({
-      name: 'Jenő Lustyik',
+      name: 'Bence Fűzfa',
       location: 'Budapest',
     });
   });
@@ -33,7 +33,7 @@ describe('--fields', () => {
   // Silently returning nothing for a typo'd field is the failure mode this
   // project keeps designing against — an empty result that looks like data.
   test('a field no row has is omitted rather than emitted as undefined', () => {
-    expect(project(rows, 'name,nonexistent')[0]).toEqual({ name: 'Jenő Lustyik' });
+    expect(project(rows, 'name,nonexistent')[0]).toEqual({ name: 'Bence Fűzfa' });
   });
 
   test('an empty spec returns the rows untouched', () => {
@@ -47,7 +47,7 @@ describe('--compact', () => {
   });
 
   test('leads with the most identifying field', () => {
-    expect(compactRows(rows)[0]).toContain('Jenő Lustyik');
+    expect(compactRows(rows)[0]).toContain('Bence Fűzfa');
   });
 
   test('includes the headline so a row is rankable without a second call', () => {
