@@ -257,3 +257,77 @@ export function shapeEntity(node: Entity, index?: Map<string, Entity>): Shaped {
 export function shapeAll(items: Entity[], index?: Map<string, Entity>): Shaped[] {
   return items.map((node) => shapeEntity(node, index));
 }
+
+// ─── Output modes ─────────────────────────────────────────────────────────────
+//
+// `--fields` and `--compact` were advertised in the command registry long
+// before they existed — a documented promise the tool did not keep. They exist
+// now, and tests/skill.test.ts asserts that every flag a usage string
+// advertises is actually parsed, so the same drift cannot recur silently.
+//
+// Both are for the same problem: a shaped row is still ~8 keys of JSON, and an
+// agent ranking 25 search results does not need all of them in its context.
+
+/**
+ * Keep only the named keys, in the order named. A key no row carries is
+ * omitted rather than emitted as `undefined` — a field the user misspelled
+ * should not become a column of nulls that looks like missing data.
+ */
+export function project<T extends Record<string, unknown>>(
+  rows: T[],
+  spec: string,
+): Record<string, unknown>[] {
+  const keys = spec
+    .split(',')
+    .map((k) => k.trim())
+    .filter((k) => k !== '');
+  if (keys.length === 0) return rows;
+
+  return rows.map((row) => {
+    const out: Record<string, unknown> = {};
+    for (const key of keys) {
+      if (row[key] !== undefined) out[key] = row[key];
+    }
+    return out;
+  });
+}
+
+/** Fields to lead with, in preference order — most identifying first. */
+const LEAD = ['name', 'author', 'title'];
+const DETAIL = ['headline', 'text', 'location', 'company', 'posted', 'reaction'];
+
+/**
+ * One flat line per row. Reduces a page of search results from kilobytes of
+ * JSON to something scannable, without losing what a ranking decision needs.
+ */
+export function compactRows(rows: Record<string, unknown>[]): string[] {
+  return rows.map((row) => {
+    const parts: string[] = [];
+
+    for (const key of LEAD) {
+      const v = row[key];
+      if (typeof v === 'string' && v !== '') {
+        parts.push(v);
+        break;
+      }
+    }
+    for (const key of DETAIL) {
+      const v = row[key];
+      if (typeof v === 'string' && v !== '') parts.push(v);
+    }
+
+    const counts = ['likes', 'comments']
+      .map((k) => (typeof row[k] === 'number' ? `${row[k]} ${k}` : undefined))
+      .filter((v): v is string => v !== undefined);
+    parts.push(...counts);
+
+    // A row with nothing human-readable still has to identify itself.
+    if (parts.length === 0) {
+      const urn = row.urn ?? row.type;
+      if (typeof urn === 'string') parts.push(urn);
+    }
+
+    // One row, one line — a newline in a post body would break the format.
+    return parts.join(' · ').replace(/\s*\n\s*/g, ' ');
+  });
+}

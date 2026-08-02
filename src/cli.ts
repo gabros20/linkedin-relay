@@ -1,6 +1,7 @@
-import { bool, num, parseArgs, str } from './args.ts';
+import { bool, num, type ParsedArgs, parseArgs, str } from './args.ts';
 import { runCacheStatus, runLocal, runPurge, runSourceRead } from './commands/cache.ts';
 import {
+  type OutputOpts,
   runFeed,
   runLogin,
   runPost,
@@ -16,6 +17,18 @@ import { runComment, runOauthStatus, runReact, runShare } from './commands/write
 import { shouldRunAsEntry } from './entry.ts';
 import { err, exitCodeFor, toJson } from './output.ts';
 import type { Envelope } from './types.ts';
+
+/** The output flags every collection command accepts. */
+function output(args: ParsedArgs): OutputOpts {
+  const opts: OutputOpts = {};
+  if (bool(args, 'raw')) opts.raw = true;
+  if (bool(args, 'quiet')) opts.quiet = true;
+  if (bool(args, 'retain')) opts.retain = true;
+  if (bool(args, 'compact')) opts.compact = true;
+  const fields = str(args, 'fields');
+  if (fields !== undefined) opts.fields = fields;
+  return opts;
+}
 
 export async function dispatch(argv: string[], now: number): Promise<Envelope> {
   const args = parseArgs(argv);
@@ -58,6 +71,7 @@ export async function dispatch(argv: string[], now: number): Promise<Envelope> {
         str(args, 'source'),
         str(args, 'since'),
         num(args, 'limit') ?? 25,
+        output(args),
       );
     case 'purge':
       return runPurge(
@@ -71,12 +85,14 @@ export async function dispatch(argv: string[], now: number): Promise<Envelope> {
         'connections',
         args.positionals[0] ?? str(args, 'q'),
         num(args, 'limit') ?? 25,
+        output(args),
       );
     case 'my-posts':
       return runSourceRead(
         'my-posts',
         args.positionals[0] ?? str(args, 'q'),
         num(args, 'limit') ?? 25,
+        output(args),
       );
     case 'sync':
       return runSync(args.positionals[0], num(args, 'limit') ?? 50, bool(args, 'force'), now);
@@ -95,28 +111,17 @@ export async function dispatch(argv: string[], now: number): Promise<Envelope> {
     case 'profile':
       return runProfile(args.positionals[0], bool(args, 'raw'));
     case 'feed':
-      return runFeed(num(args, 'limit') ?? 10, bool(args, 'raw'), bool(args, 'retain'));
+      return runFeed(num(args, 'limit') ?? 10, output(args));
     case 'post':
-      return runPost(
-        args.positionals[0],
-        num(args, 'limit') ?? 20,
-        bool(args, 'raw'),
-        bool(args, 'retain'),
-      );
+      return runPost(args.positionals[0], num(args, 'limit') ?? 20, output(args));
     case 'reactions':
-      return runReactions(
-        args.positionals[0],
-        num(args, 'limit') ?? 20,
-        bool(args, 'raw'),
-        bool(args, 'retain'),
-      );
+      return runReactions(args.positionals[0], num(args, 'limit') ?? 20, output(args));
     case 'search':
       return runSearch(
         args.positionals[0],
         args.positionals[1],
         num(args, 'limit') ?? 10,
-        bool(args, 'raw'),
-        bool(args, 'retain'),
+        output(args),
       );
     default:
       return err(command, 'NOT_IMPLEMENTED', `'${command}' has no runner wired`);

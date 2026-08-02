@@ -56,7 +56,9 @@ export const COMMANDS: CommandDef[] = [
     name: 'login',
     cost: 'free — local browser',
     summary: 'Mint a session from a logged-in Chrome via DevTools. Stores cookies owner-only.',
-    usage: 'lnrelay login          # start Chrome with --remote-debugging-port=9222 first',
+    usage:
+      'lnrelay login\n' +
+      '       Requires a Chrome started with remote debugging on port 9222 (see docs/PLAN.md).',
     audience: ['cli'],
     risk: 'local',
     implemented: true,
@@ -76,7 +78,10 @@ export const COMMANDS: CommandDef[] = [
     name: 'profile',
     cost: '1 call (+1 per section)',
     summary: 'A member profile. Expensive sections are opt-in.',
-    usage: 'lnrelay profile <public-id|urn|url> [--sections experience,education,skills]',
+    usage:
+      'lnrelay profile <public-id|urn|url> [--raw]\n' +
+      "       Returns headline, location, current title, company and school. LinkedIn's profile\n" +
+      '       projections do not return a name — use the identifier you passed in.',
     audience: ['cli', 'mcp'],
     risk: 'read',
     implemented: true,
@@ -85,7 +90,9 @@ export const COMMANDS: CommandDef[] = [
     name: 'search',
     cost: 'cheap — the net',
     summary: 'Search people, companies or jobs. Cast wide, then deep-read the finalists.',
-    usage: 'lnrelay search people|companies|jobs "<query>" [--limit N] [--compact|--fields a,b]',
+    usage:
+      'lnrelay search people|companies|jobs "<query>" [--limit N]\n' +
+      '       [--compact | --fields a,b,c] [--retain] [--raw]',
     audience: ['cli', 'mcp'],
     risk: 'read',
     implemented: true,
@@ -95,7 +102,7 @@ export const COMMANDS: CommandDef[] = [
     cost: 'expensive — full read',
     summary: 'A post plus its comment thread, cursor-followed.',
     usage:
-      'lnrelay post <activity-urn|url> [--limit N]\n' +
+      'lnrelay post <activity-urn|url> [--limit N] [--compact | --fields a,b] [--retain]\n' +
       '       Check meta.returnedCount / claimedCount / state. claimedCount > 0 with\n' +
       '       returnedCount 0 is a FAILED FETCH, not an empty thread.',
     audience: ['cli', 'mcp'],
@@ -105,8 +112,8 @@ export const COMMANDS: CommandDef[] = [
   {
     name: 'reactions',
     cost: 'medium',
-    summary: 'Who reacted to a post. Aggregate-only by default.',
-    usage: 'lnrelay reactions <activity-urn> [--limit N] [--reactors]',
+    summary: 'Who reacted to a post, and with which reaction.',
+    usage: 'lnrelay reactions <activity-urn|url> [--limit N] [--compact | --fields a,b]',
     audience: ['cli', 'mcp'],
     risk: 'read',
     implemented: true,
@@ -133,7 +140,7 @@ export const COMMANDS: CommandDef[] = [
     name: 'feed',
     cost: 'medium',
     summary: 'Your own chronological feed.',
-    usage: 'lnrelay feed [--limit N]',
+    usage: 'lnrelay feed [--limit N] [--compact | --fields a,b,c] [--retain] [--raw]',
     audience: ['cli', 'mcp'],
     risk: 'read',
     implemented: true,
@@ -153,7 +160,8 @@ export const COMMANDS: CommandDef[] = [
     name: 'connections',
     cost: 'free — local cache',
     summary: 'Your connections, from the local cache. Fill it with `sync connections`.',
-    usage: 'lnrelay connections [-q "<query>"] [--limit N]     # free; reads the cache',
+    usage:
+      'lnrelay connections [-q "<query>"] [--limit N] [--compact | --fields a,b]   # free; cache',
     audience: ['cli', 'mcp'],
     risk: 'read',
     implemented: true,
@@ -162,7 +170,8 @@ export const COMMANDS: CommandDef[] = [
     name: 'my-posts',
     cost: 'free — local cache',
     summary: 'Your own authored posts, from the local cache. Fill it with `sync my-posts`.',
-    usage: 'lnrelay my-posts [-q "<query>"] [--limit N]        # free; reads the cache',
+    usage:
+      'lnrelay my-posts [-q "<query>"] [--limit N] [--compact | --fields a,b]      # free; cache',
     audience: ['cli', 'mcp'],
     risk: 'read',
     implemented: true,
@@ -172,7 +181,8 @@ export const COMMANDS: CommandDef[] = [
     cost: 'free — local cache',
     summary: 'Offline search across everything synced. The default research path after a sync.',
     usage:
-      'lnrelay local "<query>" [--source connections,my-posts,third-party] [--since YYYY-MM-DD] [--limit N]',
+      'lnrelay local "<query>" [--source connections,my-posts,third-party] [--since YYYY-MM-DD]\n' +
+      '       [--limit N] [--compact | --fields a,b,c]',
     audience: ['cli', 'mcp'],
     risk: 'read',
     implemented: true,

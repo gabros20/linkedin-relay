@@ -2,6 +2,7 @@
 // above it is pure and testable, everything below it talks to LinkedIn.
 
 import { cachePath, loadJson, saveJson } from '../cache/store.ts';
+import { progressReporter } from '../progress.ts';
 import type { Session } from './auth.ts';
 import { type Cooldown, emptyLedger, type Ledger } from './budget.ts';
 import { type Client, type ClientDeps, createClient } from './client.ts';
@@ -65,9 +66,11 @@ function missingContract(name: string): EngineResult<never> {
   };
 }
 
-export function createEngine(session: Session, deps?: Partial<ClientDeps>): Engine {
+export function createEngine(session: Session, deps?: Partial<ClientDeps>, quiet = false): Engine {
   const client: Client = createClient(session, {
     fetch: globalThis.fetch,
+    // stdout stays JSON-only; progress is human chatter and goes to stderr.
+    progress: progressReporter(quiet),
     now: () => Date.now(),
     sleep: (ms) => new Promise((r) => setTimeout(r, ms)),
     random: () => Math.random(),

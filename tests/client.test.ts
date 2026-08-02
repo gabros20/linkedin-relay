@@ -241,3 +241,60 @@ describe('client opens the breaker on hostile signals', () => {
     expect(state.calls).toHaveLength(1);
   });
 });
+
+// A paced request waits 3-15s. Silence for that long reads as a hang, so the
+// client narrates — to STDERR, because stdout carries only the JSON envelope.
+describe('progress reporting', () => {
+  test('reports pacing and the request itself', async () => {
+    const messages: string[] = [];
+    const client = createClient(SESSION, {
+      fetch: (async () => res(200, '{"data":{},"included":[]}')) as unknown as typeof fetch,
+      now: () => T0,
+      sleep: async () => {},
+      random: () => 0,
+      progress: (m) => messages.push(m),
+      loadLedger: () => emptyLedger(),
+      saveLedger: () => {},
+      loadCooldown: () => null,
+      saveCooldown: () => {},
+    });
+    await client.request({ url: 'https://x/', spendClass: 'profile', operation: 'feed' });
+    expect(messages.some((m) => /pacing/.test(m))).toBe(true);
+    expect(messages.some((m) => /requesting/.test(m))).toBe(true);
+  });
+
+  test('names the operation, so a multi-call command is followable', async () => {
+    const messages: string[] = [];
+    const client = createClient(SESSION, {
+      fetch: (async () => res(200, '{"data":{},"included":[]}')) as unknown as typeof fetch,
+      now: () => T0,
+      sleep: async () => {},
+      random: () => 0,
+      progress: (m) => messages.push(m),
+      loadLedger: () => emptyLedger(),
+      saveLedger: () => {},
+      loadCooldown: () => null,
+      saveCooldown: () => {},
+    });
+    await client.request({ url: 'https://x/', spendClass: 'search', operation: 'search' });
+    expect(messages[0]).toContain('search');
+  });
+
+  // A refused call should not narrate a request it never made.
+  test('says nothing when the cooldown refuses before any work', async () => {
+    const messages: string[] = [];
+    const client = createClient(SESSION, {
+      fetch: (async () => res(200, '{}')) as unknown as typeof fetch,
+      now: () => T0,
+      sleep: async () => {},
+      random: () => 0,
+      progress: (m) => messages.push(m),
+      loadLedger: () => emptyLedger(),
+      saveLedger: () => {},
+      loadCooldown: () => openCooldown('RATE_LIMITED', T0),
+      saveCooldown: () => {},
+    });
+    await client.request({ url: 'https://x/', spendClass: 'profile', operation: 'feed' });
+    expect(messages).toHaveLength(0);
+  });
+});

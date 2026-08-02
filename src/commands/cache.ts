@@ -12,7 +12,7 @@ import {
   search as searchDb,
   upsert,
 } from '../cache/db.ts';
-import type { Shaped } from '../format.ts';
+import { compactRows, project, type Shaped } from '../format.ts';
 import { err, ok } from '../output.ts';
 import type { Envelope } from '../types.ts';
 
@@ -32,11 +32,24 @@ function corruptEnvelope(command: string, e: unknown): Envelope {
   throw e;
 }
 
+export interface LocalOpts {
+  compact?: boolean;
+  fields?: string;
+}
+
+/** The cache path honours the same output flags as the live path. */
+function render(rows: Record<string, unknown>[], opts: LocalOpts): unknown[] {
+  if (opts.compact === true) return compactRows(rows);
+  if (opts.fields !== undefined && opts.fields !== '') return project(rows, opts.fields);
+  return rows;
+}
+
 export function runLocal(
   query: string | undefined,
   sources: string | undefined,
   since: string | undefined,
   limit: number,
+  opts: LocalOpts = {},
 ): Envelope {
   const requested = sources?.split(',').map((s) => s.trim()) ?? SOURCES;
   const invalid = requested.filter((s) => !SOURCES.includes(s as Source));
@@ -67,12 +80,14 @@ export function runLocal(
     });
     const total = count(db);
 
+    const shaped = rows.map((r) => ({
+      ...(JSON.parse(r.body ?? '{}') as Shaped),
+      source: r.source,
+      cachedAt: new Date(r.updatedAt).toISOString(),
+    }));
+
     return ok('local', {
-      items: rows.map((r) => ({
-        ...(JSON.parse(r.body ?? '{}') as Shaped),
-        source: r.source,
-        cachedAt: new Date(r.updatedAt).toISOString(),
-      })),
+      items: render(shaped, opts),
       meta: {
         returnedCount: rows.length,
         cachedTotal: total,
@@ -98,8 +113,9 @@ export function runSourceRead(
   command: 'connections' | 'my-posts',
   query: string | undefined,
   limit: number,
+  opts: LocalOpts = {},
 ): Envelope {
-  const result = runLocal(query, command, undefined, limit);
+  const result = runLocal(query, command, undefined, limit, opts);
   if (!result.ok) return result;
   const data = result.data as Record<string, unknown>;
   const meta = data.meta as Record<string, unknown>;

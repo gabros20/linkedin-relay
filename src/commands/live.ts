@@ -15,12 +15,22 @@ import {
   mintSessionFromBrowser,
   saveSession,
 } from '../engine/session.ts';
-import { type Shaped, shapeAll, shapeEntity, shapeProfile } from '../format.ts';
+import {
+  compactRows,
+  project,
+  type Shaped,
+  shapeAll,
+  shapeEntity,
+  shapeProfile,
+} from '../format.ts';
 import { err, ok } from '../output.ts';
 import type { Envelope } from '../types.ts';
 import { retain } from './cache.ts';
 
-function withSession(command: string): { engine: ReturnType<typeof createEngine> } | Envelope {
+function withSession(
+  command: string,
+  quiet = false,
+): { engine: ReturnType<typeof createEngine> } | Envelope {
   const loaded = loadSession();
   if (loaded.state === 'corrupt') {
     return err(
@@ -33,7 +43,7 @@ function withSession(command: string): { engine: ReturnType<typeof createEngine>
   if (loaded.state === 'missing') {
     return err(command, 'AUTH_FAILED', 'no session — run `lnrelay login` first', LAUNCH_HINT);
   }
-  return { engine: createEngine(loaded.session) };
+  return { engine: createEngine(loaded.session, undefined, quiet) };
 }
 
 /** Turn an engine failure into an envelope without losing its hint. */
@@ -102,21 +112,20 @@ export async function runProfile(memberId: string | undefined, raw = false): Pro
   return ok('profile', raw ? { ...shaped, raw: result.value.profile } : shaped);
 }
 
-export async function runFeed(limit: number, raw = false, keep = false): Promise<Envelope> {
-  const ctx = withSession('feed');
+export async function runFeed(limit: number, opts: OutputOpts = {}): Promise<Envelope> {
+  const ctx = withSession('feed', opts.quiet === true);
   if ('ok' in ctx) return ctx;
 
   const result = await ctx.engine.feed(limit);
   if (!result.ok) return toEnvelope('feed', result);
-  return ok('feed', collection(result.value, raw, keep));
+  return ok('feed', collection(result.value, opts));
 }
 
 export async function runSearch(
   kind: string | undefined,
   query: string | undefined,
   limit: number,
-  raw = false,
-  keep = false,
+  opts: OutputOpts = {},
 ): Promise<Envelope> {
   if (kind === undefined || !['people', 'companies', 'jobs'].includes(kind)) {
     return err(
@@ -129,19 +138,18 @@ export async function runSearch(
   if (query === undefined || query === '') {
     return err('search', 'INVALID_INPUT', 'a query is required', 'lnrelay search people "<query>"');
   }
-  const ctx = withSession('search');
+  const ctx = withSession('search', opts.quiet === true);
   if ('ok' in ctx) return ctx;
 
   const result = await ctx.engine.search(kind as SearchKind, query, limit);
   if (!result.ok) return toEnvelope('search', result);
-  return ok('search', { query, kind, ...collection(result.value, raw, keep) });
+  return ok('search', { query, kind, ...collection(result.value, opts) });
 }
 
 export async function runPost(
   urn: string | undefined,
   limit: number,
-  raw = false,
-  keep = false,
+  opts: OutputOpts = {},
 ): Promise<Envelope> {
   const postUrn = normalisePostUrn(urn);
   if (postUrn === undefined) {
@@ -152,30 +160,29 @@ export async function runPost(
       'lnrelay post <activity-urn|https://www.linkedin.com/feed/update/...>',
     );
   }
-  const ctx = withSession('post');
+  const ctx = withSession('post', opts.quiet === true);
   if ('ok' in ctx) return ctx;
 
   const result = await ctx.engine.post(postUrn, limit);
   if (!result.ok) return toEnvelope('post', result);
-  return ok('post', { urn: postUrn, ...collection(result.value, raw, keep) });
+  return ok('post', { urn: postUrn, ...collection(result.value, opts) });
 }
 
 export async function runReactions(
   urn: string | undefined,
   limit: number,
-  raw = false,
-  keep = false,
+  opts: OutputOpts = {},
 ): Promise<Envelope> {
   const postUrn = normalisePostUrn(urn);
   if (postUrn === undefined) {
     return err('reactions', 'INVALID_INPUT', 'a post urn or feed URL is required');
   }
-  const ctx = withSession('reactions');
+  const ctx = withSession('reactions', opts.quiet === true);
   if ('ok' in ctx) return ctx;
 
   const result = await ctx.engine.reactions(postUrn, limit);
   if (!result.ok) return toEnvelope('reactions', result);
-  return ok('reactions', { urn: postUrn, ...collection(result.value, raw, keep) });
+  return ok('reactions', { urn: postUrn, ...collection(result.value, opts) });
 }
 
 // ─── shaping ──────────────────────────────────────────────────────────────────
@@ -197,19 +204,40 @@ function normaliseMemberId(input: string): string {
   return input;
 }
 
+/** How the caller wants the rows rendered. */
+export interface OutputOpts {
+  raw?: boolean;
+  retain?: boolean;
+  compact?: boolean;
+  fields?: string;
+  quiet?: boolean;
+}
+
 /**
  * Collections are shaped by default — raw Voyager entities are enormous and
  * wrap every string in a TextViewModel. `--raw` keeps the original node
- * alongside, for when a shape has drifted and you need to see what arrived.
+ * alongside, for when a shape has drifted and you need to see what arrived;
+ * `--compact` and `--fields` go the other way, for when a page of results is
+ * about to land in an agent's context and only the ranking signal matters.
  */
-function collection(result: Collection, raw: boolean, keep = false): Record<string, unknown> {
+function collection(result: Collection, opts: OutputOpts = {}): Record<string, unknown> {
   const { parsed, index } = result;
   const shaped = shapeAll(parsed.items, index);
-  const items = raw
-    ? parsed.items.map((node, i) => ({ ...(shaped[i] as Shaped), raw: node }))
-    : shaped;
 
   const meta: Record<string, unknown> = { ...parsed.meta };
-  if (keep) meta.retained = retain('third-party', shaped);
-  return { items, meta };
+  // Retention always stores the FULL shaped row, never the projected one — a
+  // display choice must not silently narrow what gets cached.
+  if (opts.retain === true) meta.retained = retain('third-party', shaped);
+
+  if (opts.raw === true) {
+    return {
+      items: parsed.items.map((node, i) => ({ ...(shaped[i] as Shaped), raw: node })),
+      meta,
+    };
+  }
+  if (opts.compact === true) return { items: compactRows(shaped), meta };
+  if (opts.fields !== undefined && opts.fields !== '') {
+    return { items: project(shaped, opts.fields), meta };
+  }
+  return { items: shaped, meta };
 }

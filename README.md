@@ -13,6 +13,11 @@ lnrelay sync connections && lnrelay local "rust"   # then search offline, free
 Also available as an MCP server, so an agent can do the reading — 13 read-only tools, no writes on
 that surface at any price.
 
+```bash
+npm i -g linkedin-relay-mcp
+claude mcp add linkedin-relay -s user -- bun "$(npm root -g)/linkedin-relay-mcp/dist/mcp-shim.js"
+```
+
 A deep-research tool for LinkedIn — a TypeScript CLI (`lnrelay`) + a thin read-only MCP shim
 (`linkedin-relay-mcp`) + a Claude Code skill. Sibling to [`x-relay`](../x-relay),
 [`github-relay`](../github-relay) and [`youtube-context`](../youtube-context); same stack, same shape,

@@ -22,6 +22,8 @@ import { type Classification, classify } from './classify.ts';
 
 export interface ClientDeps {
   fetch: typeof globalThis.fetch;
+  /** Human-facing progress, on stderr. Optional so tests stay silent. */
+  progress?: (message: string) => void;
   now: () => number;
   sleep: (ms: number) => Promise<void>;
   /** [0,1). Injected so jitter is deterministic in tests. */
@@ -85,7 +87,11 @@ export function createClient(session: Session, deps: ClientDeps) {
 
     // 3. Pace. Reads are paced as conservatively as writes, because the field
     //    evidence shows restrictions triggered by read velocity alone.
-    await deps.sleep(MIN_GAP_MS + Math.floor(deps.random() * (MAX_GAP_MS - MIN_GAP_MS)));
+    //    That wait is 3-15s and silence during it reads as a hang, so say so.
+    const gap = MIN_GAP_MS + Math.floor(deps.random() * (MAX_GAP_MS - MIN_GAP_MS));
+    deps.progress?.(`${spec.operation}: pacing ${Math.round(gap / 1000)}s before the request…`);
+    await deps.sleep(gap);
+    deps.progress?.(`${spec.operation}: requesting…`);
 
     // 4-5. Fetch, then classify before anyone parses anything.
     const raw = await fetchRaw(spec, session, deps);

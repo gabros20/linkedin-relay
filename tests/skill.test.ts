@@ -82,3 +82,42 @@ describe('the skill teaches the load-bearing distinctions', () => {
     expect(SKILL_MD).toMatch(/not on this surface|CLI-only/i);
   });
 });
+
+// The gap that let --compact and --fields drift: parity checked command NAMES
+// but never the flags their usage strings advertise. A documented flag that
+// does nothing is worse than an undocumented one — the user believes it worked.
+describe('advertised flags actually exist', () => {
+  /** Every `--flag` mentioned in any registry usage string. */
+  function advertisedFlags(): { command: string; flag: string }[] {
+    // Unimplemented commands cannot mislead: they refuse at runtime with
+    // NOT_IMPLEMENTED and are marked in help, so their usage is a sketch of
+    // what they WILL take rather than a promise about today.
+    return COMMANDS.filter((c) => c.implemented).flatMap((c) =>
+      [...c.usage.matchAll(/--([a-z][a-z-]*)/g)].map((m) => ({
+        command: c.name,
+        flag: m[1] as string,
+      })),
+    );
+  }
+
+  test('the audit finds flags at all — it is not vacuous', () => {
+    expect(advertisedFlags().length).toBeGreaterThan(5);
+  });
+
+  test('every advertised flag is read somewhere in the source', () => {
+    const source = [
+      readFileSync(join(import.meta.dir, '..', 'src', 'cli.ts'), 'utf-8'),
+      readFileSync(join(import.meta.dir, '..', 'src', 'commands', 'live.ts'), 'utf-8'),
+      readFileSync(join(import.meta.dir, '..', 'src', 'commands', 'cache.ts'), 'utf-8'),
+      readFileSync(join(import.meta.dir, '..', 'src', 'commands', 'local.ts'), 'utf-8'),
+      readFileSync(join(import.meta.dir, '..', 'src', 'commands', 'sync.ts'), 'utf-8'),
+      readFileSync(join(import.meta.dir, '..', 'src', 'commands', 'write.ts'), 'utf-8'),
+    ].join('\n');
+
+    const missing = advertisedFlags()
+      .filter(({ flag }) => !new RegExp(`['"\`]${flag}['"\`]`).test(source))
+      .map(({ command, flag }) => `${command} --${flag}`);
+
+    expect(missing).toEqual([]);
+  });
+});

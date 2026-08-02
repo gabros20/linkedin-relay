@@ -11,3 +11,6 @@ captures/
 *.har
 cookies.json
 src/generated/
+
+# npm pack output
+*.tgz
