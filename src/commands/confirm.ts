@@ -62,6 +62,11 @@ export function confirmToken(action: string, payload: unknown): string {
  * and a warning shown identically on every action stops being read. A Voyager
  * write really does breach §8.2, and the person approving it should be told
  * that at the moment they approve it, not in a README they read once.
+ *
+ * This says nothing about CONSEQUENCE — whether the thing is public, who gets
+ * notified, whether it can be undone. That varies by action, not by transport,
+ * and each command states it in `reversibility`. Mixing them here produced a
+ * delete prompt warning that the deletion was "public under your name".
  */
 function riskLines(transport: 'oauth' | 'voyager'): string[] {
   return transport === 'oauth'
@@ -71,8 +76,7 @@ function riskLines(transport: 'oauth' | 'voyager'): string[] {
       ]
     : [
         '  This goes over the PRIVATE API, not a sanctioned one. It breaches',
-        '  LinkedIn User Agreement §8.2 and can permanently restrict this',
-        '  account. It is public under your name and cannot be un-seen.',
+        '  LinkedIn User Agreement §8.2 and can permanently restrict this account.',
       ];
 }
 

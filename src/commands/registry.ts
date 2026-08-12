@@ -245,6 +245,17 @@ export const COMMANDS: CommandDef[] = [
     implemented: true,
   },
   {
+    name: 'delete',
+    cost: '1 read + 1 write',
+    summary:
+      'Delete one of your own posts. Reads it first and shows you its text — this is the one ' +
+      'action that cannot be undone.',
+    usage: 'lnrelay delete <urn:li:share:… | urn:li:activity:…>',
+    audience: ['cli'],
+    risk: 'write',
+    implemented: true,
+  },
+  {
     name: 'react',
     cost: '1 call — write',
     summary: 'React to a post via the official OAuth scope. Reversible.',

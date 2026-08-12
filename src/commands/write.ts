@@ -1,9 +1,6 @@
 // Write command runners. Every one of these stops and asks a human before it
 // sends anything, and makes zero network calls on the path where it doesn't.
 
-import { createInterface } from 'node:readline/promises';
-import { cachePath, loadJson, saveJson } from '../cache/store.ts';
-import { emptyLedger, type Ledger, spend, summarise } from '../engine/budget.ts';
 import { createLiveClient } from '../engine/index.ts';
 import type { OAuthToken } from '../engine/oauth-write.ts';
 import {
@@ -15,33 +12,10 @@ import { loadSession } from '../engine/session.ts';
 import { share as voyagerShare } from '../engine/voyager-write.ts';
 import { err, ok } from '../output.ts';
 import type { Envelope } from '../types.ts';
-import { type ConfirmDeps, confirmWrite, type WritePlan } from './confirm.ts';
+import type { ConfirmDeps, WritePlan } from './confirm.ts';
+import { gateWrite, reserve, terminalDeps } from './gate.ts';
 import { loadToken, OAUTH_SETUP } from './token.ts';
 import { chooseTransport, type Transport } from './transport.ts';
-
-function ledger(): Ledger {
-  const result = loadJson<Ledger>(cachePath('budget.json'));
-  return result.state === 'ok' ? result.value : emptyLedger();
-}
-
-function budgetLine(now: number): string {
-  const s = summarise(ledger(), 'write', now);
-  return `${s.remaining} of ${s.cap} writes left today.`;
-}
-
-/** Real terminal I/O. Injected in tests so the gate is exercised without one. */
-function terminalDeps(): ConfirmDeps {
-  return {
-    isTty: process.stdin.isTTY === true && process.stdout.isTTY === true,
-    prompt: async (question: string) => {
-      const rl = createInterface({ input: process.stdin, output: process.stderr });
-      const answer = await rl.question(question);
-      rl.close();
-      return answer;
-    },
-    write: (s: string) => process.stderr.write(s),
-  };
-}
 
 interface WriteContext {
   transport: Transport;
@@ -65,12 +39,8 @@ function prepare(command: string, now: number, via?: 'oauth' | 'voyager'): Write
   if (!choice.ok) {
     return err(command, 'AUTH_FAILED', choice.message, `${choice.hint}\n\n${OAUTH_SETUP}`);
   }
-  // Account for the write BEFORE asking, so a refused budget never reaches a
-  // prompt the user cannot act on.
-  const attempt = spend(ledger(), 'write', now);
-  if ('error' in attempt) {
-    return err(command, attempt.error.code, attempt.error.message, attempt.error.hint);
-  }
+  const refused = reserve(command, now);
+  if (refused !== null) return refused;
   const ctx: WriteContext = { transport: choice.transport, now };
   if (choice.note !== undefined) ctx.note = choice.note;
   return ctx;
@@ -111,12 +81,9 @@ async function gate<T>(
   ctx: WriteContext,
   deps: ConfirmDeps,
 ): Promise<{ confirmed: Parameters<typeof sendShare>[0] } | Envelope> {
-  const outcome = await confirmWrite(plan, budgetLine(ctx.now), deps);
-  if (!outcome.ok) return err(command, outcome.code, outcome.message, outcome.hint);
-  // Only now is the spend committed — an aborted write costs nothing.
-  const attempt = spend(ledger(), 'write', ctx.now);
-  if ('permit' in attempt) saveJson(cachePath('budget.json'), attempt.ledger);
-  return { confirmed: outcome.confirmed as never };
+  const gated = await gateWrite(command, plan, ctx.now, deps);
+  if ('ok' in gated) return gated;
+  return { confirmed: gated.confirmed as never };
 }
 
 export async function runShare(
@@ -137,7 +104,9 @@ export async function runShare(
     action: 'post to your feed',
     payload: { text, visibility: vis },
     summary: [authorLine(ctx.transport), `content  "${text}"`, `audience ${vis}`],
-    reversibility: 'deletable from the LinkedIn UI; the post may be seen first',
+    reversibility:
+      'deletable with `lnrelay delete <urn>`, but it is public under your name the moment it ' +
+      'lands and anyone who saw it cannot un-see it',
     transport: ctx.transport.kind,
   };
 

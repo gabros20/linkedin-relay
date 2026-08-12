@@ -66,8 +66,23 @@ describe('the prompt', () => {
     expect(rendered).toMatch(/permanently restrict/i);
   });
 
-  test('a Voyager write says plainly that it is public and cannot be un-seen', () => {
-    expect(renderPlan({ ...plan, transport: 'voyager' }, BUDGET)).toContain('un-seen');
+  // The transport line says what the SURFACE costs. Consequence — public, who
+  // is notified, whether it can be undone — varies by action and belongs in
+  // `reversibility`. Mixing them produced a delete prompt that warned the
+  // deletion was "public under your name".
+  test('the transport warning does not claim a consequence the action may not have', () => {
+    const deletion = renderPlan(
+      {
+        action: 'delete a post',
+        payload: { urn: 'urn:li:share:1' },
+        summary: ['post     urn:li:share:1'],
+        reversibility: 'NONE. A deleted post is gone.',
+        transport: 'voyager',
+      },
+      BUDGET,
+    );
+    expect(deletion).toContain('§8.2');
+    expect(deletion).not.toContain('public under your name');
   });
 
   test('the transport is visible before the token, not buried after it', () => {

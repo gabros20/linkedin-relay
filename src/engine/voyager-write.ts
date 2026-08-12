@@ -79,6 +79,62 @@ export function sharePayload(text: string, visibility: 'PUBLIC' | 'CONNECTIONS')
 const POST_URN = /urn:li:(share|activity|ugcPost):\d+/;
 
 /**
+ * Whether a urn identifies something this endpoint may be pointed at.
+ *
+ * Checked BEFORE encoding rather than after a failure, because the failure mode
+ * of getting it wrong is not an error — a well-formed request naming the wrong
+ * kind of entity is a request to destroy the wrong kind of thing, and we have
+ * no evidence for what LinkedIn does with one.
+ */
+export function isDeletableUrn(urn: string): boolean {
+  return new RegExp(`^${POST_URN.source}$`).test(urn);
+}
+
+/** The colons are path-hostile; the reference implementations all encode them. */
+export function deleteUrl(urn: string): string {
+  return `${SHARE_URL}/${encodeURIComponent(urn)}`;
+}
+
+/**
+ * Delete one of the owner's own posts. Irreversible — the confirmation gate
+ * upstream is what makes this safe, and it shows the post's text first.
+ */
+export async function deletePost(
+  confirmed: ConfirmedWrite<{ urn: string }>,
+  client: Client,
+): Promise<WriteResult> {
+  const { urn } = confirmed.payload;
+
+  const result = await client.request({
+    url: deleteUrl(urn),
+    method: 'DELETE',
+    spendClass: 'write',
+    operation: 'delete',
+  });
+
+  if (result.ok) return { ok: true, id: urn };
+
+  // A 404 has two meanings that call for opposite actions, and we cannot tell
+  // them apart from here. Saying both beats picking one and being wrong.
+  const notFound = result.code === 'NOT_FOUND';
+  const out: WriteResult = {
+    ok: false,
+    code: result.code,
+    message: result.message,
+  };
+  if (notFound) {
+    out.hint =
+      'Either the post is already gone — in which case nothing more is needed — or this is the ' +
+      'wrong urn namespace for this endpoint. It is documented against `urn:li:share:<id>`; if ' +
+      'you passed an activity or ugcPost urn, the same numeric id under `urn:li:share:` is the ' +
+      'thing to try next.';
+  } else if (result.hint !== undefined) {
+    out.hint = result.hint;
+  }
+  return out;
+}
+
+/**
  * Find the created post's urn anywhere in the response.
  *
  * We have never seen this response body, so this searches rather than reading a

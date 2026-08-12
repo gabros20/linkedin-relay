@@ -1,5 +1,6 @@
 import { bool, num, type ParsedArgs, parseArgs, str } from './args.ts';
 import { runCacheStatus, runLocal, runPurge, runSourceRead } from './commands/cache.ts';
+import { runDelete } from './commands/delete.ts';
 import {
   type OutputOpts,
   runFeed,
@@ -157,6 +158,8 @@ export async function dispatch(argv: string[], now: number): Promise<Envelope> {
       return runComment(args.positionals[0], args.positionals[1], now);
     case 'react':
       return runReact(args.positionals[0], str(args, 'type') ?? 'LIKE', now);
+    case 'delete':
+      return runDelete(args.positionals[0], now, undefined, bool(args, 'quiet'));
     case 'whoami':
       return runWhoami(bool(args, 'raw'));
     case 'profile':
