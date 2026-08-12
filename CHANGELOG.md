@@ -1,3 +1,10 @@
+# [1.1.0](https://github.com/gabros20/linkedin-relay/compare/v1.0.0...v1.1.0) (2026-08-12)
+
+
+### Features
+
+* **oauth:** add the three-legged login that actually obtains a write token ([de0a718](https://github.com/gabros20/linkedin-relay/commit/de0a718a0757aa0eab39b144aaed4653a3d5427b))
+
 # 1.0.0 (2026-08-12)
 
 
