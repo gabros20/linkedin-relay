@@ -16,7 +16,16 @@
 //
 // Both write through the cache's owner-data path, which never expires.
 
-import { CacheCorrupt, openDb, removeUrns, setCheckpoint, upsert, urnsFor } from '../cache/db.ts';
+import {
+  CacheCorrupt,
+  getCheckpoint,
+  openDb,
+  removeUrns,
+  setCheckpoint,
+  upsert,
+  urnsFor,
+} from '../cache/db.ts';
+import type { Engine } from '../engine/index.ts';
 import { createEngine } from '../engine/index.ts';
 import { LAUNCH_HINT, loadSession } from '../engine/session.ts';
 import type { Shaped } from '../format.ts';
@@ -57,6 +66,106 @@ export function diffSnapshot(
   return { removed: [...before].filter((urn) => !seen.has(urn)), complete: true };
 }
 
+type Db = ReturnType<typeof openDb>;
+
+async function syncMyPosts(engine: Engine, db: Db, limit: number, now: number): Promise<Envelope> {
+  // The owner's own profile urn — we ask LinkedIn rather than assume it.
+  const me = await engine.whoami();
+  if (!me.ok) return err('sync', me.code, me.message, me.hint);
+  const profileUrn = typeof me.value?.entityUrn === 'string' ? me.value.entityUrn : undefined;
+  if (profileUrn === undefined) {
+    return err('sync', 'SCHEMA_DRIFT', 'could not determine the owner profile urn');
+  }
+
+  const result = await engine.myPosts(profileUrn, limit);
+  if (!result.ok) return err('sync', result.code, result.message, result.hint);
+
+  const rows = rowsFrom(shapeAll(result.value.parsed.items, result.value.index));
+  const stored = upsert(db, 'my-posts', rows, now);
+
+  setCheckpoint(db, {
+    source: 'my-posts',
+    lastSuccessfulAt: now,
+    newestCreatedAt: null,
+    headIds: rows.slice(0, 5).map((r) => r.urn),
+    state: 'ok',
+  });
+
+  return ok('sync', {
+    source: 'my-posts',
+    ...stored,
+    meta: result.value.parsed.meta,
+    note:
+      rows.length === 0
+        ? 'LinkedIn returned no posts for this account. That is a genuine empty, not a failed fetch — meta.state says which.'
+        : undefined,
+  });
+}
+
+/** The full walk is the priciest read we make, so a recent one blocks another. */
+function tooSoon(db: Db, now: number): Envelope | undefined {
+  const cp = getCheckpoint(db, 'connections');
+  const age = cp === undefined ? Number.POSITIVE_INFINITY : now - cp.lastSuccessfulAt;
+  if (age >= CONNECTIONS_MIN_INTERVAL_MS) return undefined;
+  const days = Math.ceil((CONNECTIONS_MIN_INTERVAL_MS - age) / 86_400_000);
+  return err(
+    'sync',
+    'BUDGET_EXHAUSTED',
+    `connections were synced ${Math.floor(age / 86_400_000)} days ago`,
+    `This is the most expensive read in the tool and connections change slowly. Wait ${days} more day(s), or pass --force.`,
+  );
+}
+
+async function syncConnections(
+  engine: Engine,
+  db: Db,
+  limit: number,
+  force: boolean,
+  now: number,
+): Promise<Envelope> {
+  const before = urnsFor(db, 'connections');
+  if (!force && before.size > 0) {
+    const blocked = tooSoon(db, now);
+    if (blocked !== undefined) return blocked;
+  }
+
+  const result = await engine.connections(limit);
+  if (!result.ok) return err('sync', result.code, result.message, result.hint);
+
+  const rows = rowsFrom(shapeAll(result.value.parsed.items, result.value.index));
+  const stored = upsert(db, 'connections', rows, now);
+
+  // A set difference is only meaningful if we actually saw the whole graph.
+  // When LinkedIn claims more than we retrieved, removals are NOT inferable —
+  // saying otherwise would report people as disconnected because of a limit.
+  const claimed = result.value.parsed.meta.claimedCount;
+  const seen = new Set(rows.map((r) => r.urn));
+  const { removed, complete } = diffSnapshot(before, seen, claimed);
+  if (removed.length > 0) removeUrns(db, 'connections', removed);
+
+  setCheckpoint(db, {
+    source: 'connections',
+    lastSuccessfulAt: now,
+    newestCreatedAt: null,
+    headIds: [],
+    // Honest: a snapshot, never a watermark.
+    state: complete ? 'ok' : 'snapshot-partial',
+  });
+
+  return ok('sync', {
+    source: 'connections',
+    added: stored.added,
+    updated: stored.updated,
+    removed: removed.length,
+    claimed,
+    complete,
+    meta: result.value.parsed.meta,
+    note: complete
+      ? undefined
+      : `Only ${rows.length} of ${claimed} connections were retrieved, so removals could not be determined and none were applied. Raise --limit to complete the snapshot.`,
+  });
+}
+
 export async function runSync(
   source: string | undefined,
   limit: number,
@@ -84,97 +193,9 @@ export async function runSync(
 
   try {
     const db = openDb(now);
-
-    if (source === 'my-posts') {
-      // The owner's own profile urn — we ask LinkedIn rather than assume it.
-      const me = await engine.whoami();
-      if (!me.ok) return err('sync', me.code, me.message, me.hint);
-      const profileUrn = typeof me.value?.entityUrn === 'string' ? me.value.entityUrn : undefined;
-      if (profileUrn === undefined) {
-        return err('sync', 'SCHEMA_DRIFT', 'could not determine the owner profile urn');
-      }
-
-      const result = await engine.myPosts(profileUrn, limit);
-      if (!result.ok) return err('sync', result.code, result.message, result.hint);
-
-      const items = shapeAll(result.value.parsed.items, result.value.index);
-      const rows = rowsFrom(items);
-      const stored = upsert(db, 'my-posts', rows, now);
-
-      setCheckpoint(db, {
-        source: 'my-posts',
-        lastSuccessfulAt: now,
-        newestCreatedAt: null,
-        headIds: rows.slice(0, 5).map((r) => r.urn),
-        state: 'ok',
-      });
-
-      return ok('sync', {
-        source,
-        ...stored,
-        meta: result.value.parsed.meta,
-        note:
-          rows.length === 0
-            ? 'LinkedIn returned no posts for this account. That is a genuine empty, not a failed fetch — meta.state says which.'
-            : undefined,
-      });
-    }
-
-    // ── connections: snapshot + set difference ──────────────────────────────
-    const before = urnsFor(db, 'connections');
-    const existing = before.size;
-
-    if (!force && existing > 0) {
-      const { getCheckpoint } = await import('../cache/db.ts');
-      const cp = getCheckpoint(db, 'connections');
-      const age = cp === undefined ? Number.POSITIVE_INFINITY : now - cp.lastSuccessfulAt;
-      if (age < CONNECTIONS_MIN_INTERVAL_MS) {
-        const days = Math.ceil((CONNECTIONS_MIN_INTERVAL_MS - age) / 86_400_000);
-        return err(
-          'sync',
-          'BUDGET_EXHAUSTED',
-          `connections were synced ${Math.floor(age / 86_400_000)} days ago`,
-          `This is the most expensive read in the tool and connections change slowly. Wait ${days} more day(s), or pass --force.`,
-        );
-      }
-    }
-
-    const result = await engine.connections(limit);
-    if (!result.ok) return err('sync', result.code, result.message, result.hint);
-
-    const items = shapeAll(result.value.parsed.items, result.value.index);
-    const rows = rowsFrom(items);
-    const stored = upsert(db, 'connections', rows, now);
-
-    // A set difference is only meaningful if we actually saw the whole graph.
-    // When LinkedIn claims more than we retrieved, removals are NOT inferable —
-    // saying otherwise would report people as disconnected because of a limit.
-    const claimed = result.value.parsed.meta.claimedCount;
-    const seen = new Set(rows.map((r) => r.urn));
-    const { removed, complete } = diffSnapshot(before, seen, claimed);
-    if (removed.length > 0) removeUrns(db, 'connections', removed);
-
-    setCheckpoint(db, {
-      source: 'connections',
-      lastSuccessfulAt: now,
-      newestCreatedAt: null,
-      headIds: [],
-      // Honest: a snapshot, never a watermark.
-      state: complete ? 'ok' : 'snapshot-partial',
-    });
-
-    return ok('sync', {
-      source,
-      added: stored.added,
-      updated: stored.updated,
-      removed: removed.length,
-      claimed,
-      complete,
-      meta: result.value.parsed.meta,
-      note: complete
-        ? undefined
-        : `Only ${rows.length} of ${claimed} connections were retrieved, so removals could not be determined and none were applied. Raise --limit to complete the snapshot.`,
-    });
+    return source === 'my-posts'
+      ? await syncMyPosts(engine, db, limit, now)
+      : await syncConnections(engine, db, limit, force, now);
   } catch (e) {
     if (e instanceof CacheCorrupt) {
       return err(
