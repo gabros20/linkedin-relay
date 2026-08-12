@@ -11,9 +11,10 @@ import {
   runWhoami,
 } from './commands/live.ts';
 import { runBudget, runDoctor, runRisk } from './commands/local.ts';
+import { runOauthLogin, runOauthLogout, runOauthStatus } from './commands/oauth.ts';
 import { findCommand, helpText } from './commands/registry.ts';
 import { runSync } from './commands/sync.ts';
-import { runComment, runOauthStatus, runReact, runShare } from './commands/write.ts';
+import { runComment, runReact, runShare } from './commands/write.ts';
 import { shouldRunAsEntry } from './entry.ts';
 import { err, exitCodeFor, toJson } from './output.ts';
 import type { Envelope } from './types.ts';
@@ -28,6 +29,27 @@ function output(args: ParsedArgs): OutputOpts {
   const fields = str(args, 'fields');
   if (fields !== undefined) opts.fields = fields;
   return opts;
+}
+
+/** `oauth` carries subcommands; bare `oauth` reports status and writes nothing. */
+async function oauth(args: ParsedArgs): Promise<Envelope> {
+  const sub = args.positionals[0] ?? 'status';
+  if (sub === 'status') return runOauthStatus();
+  if (sub === 'logout') return runOauthLogout();
+  if (sub === 'login') {
+    const opts: { clientId?: string; clientSecret?: string } = {};
+    const id = str(args, 'client-id');
+    const secret = str(args, 'client-secret');
+    if (id !== undefined) opts.clientId = id;
+    if (secret !== undefined) opts.clientSecret = secret;
+    return runOauthLogin(opts);
+  }
+  return err(
+    'oauth',
+    'INVALID_INPUT',
+    `unknown oauth subcommand '${sub}'`,
+    'one of: login, status, logout',
+  );
 }
 
 export async function dispatch(argv: string[], now: number): Promise<Envelope> {
@@ -99,7 +121,7 @@ export async function dispatch(argv: string[], now: number): Promise<Envelope> {
     case 'login':
       return runLogin();
     case 'oauth':
-      return runOauthStatus();
+      return oauth(args);
     case 'share':
       return runShare(args.positionals[0], str(args, 'visibility') ?? 'public', now);
     case 'comment':

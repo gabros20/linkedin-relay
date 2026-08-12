@@ -4,13 +4,9 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { cachePath, loadJson, saveJson } from '../src/cache/store.ts';
 import type { ConfirmDeps } from '../src/commands/confirm.ts';
-import {
-  runComment,
-  runOauthStatus,
-  runReact,
-  runShare,
-  saveToken,
-} from '../src/commands/write.ts';
+import { runOauthStatus } from '../src/commands/oauth.ts';
+import { saveToken } from '../src/commands/token.ts';
+import { runComment, runReact, runShare } from '../src/commands/write.ts';
 
 const T0 = 1_800_000_000_000;
 

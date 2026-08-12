@@ -210,8 +210,14 @@ export const COMMANDS: CommandDef[] = [
   {
     name: 'oauth',
     cost: 'free',
-    summary: 'OAuth token status for writes. Never prints the token.',
-    usage: 'lnrelay oauth',
+    summary:
+      "Obtain and inspect the write credential, over LinkedIn's own self-serve scope. " +
+      'Never prints the token.',
+    usage:
+      'lnrelay oauth login --client-id <id> [--client-secret <secret>]\n' +
+      '       lnrelay oauth status | logout\n' +
+      '       The secret is prompted for if omitted; LINKEDIN_CLIENT_ID / LINKEDIN_CLIENT_SECRET also work.\n' +
+      '       Needs an app you registered: see the hint printed when no token is stored.',
     audience: ['cli'],
     risk: 'local',
     implemented: true,

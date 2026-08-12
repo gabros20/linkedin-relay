@@ -3,7 +3,7 @@
 
 import { createInterface } from 'node:readline/promises';
 import { cachePath, loadJson, saveJson } from '../cache/store.ts';
-import { CAPS, emptyLedger, type Ledger, spend, summarise } from '../engine/budget.ts';
+import { emptyLedger, type Ledger, spend, summarise } from '../engine/budget.ts';
 import type { OAuthToken } from '../engine/oauth-write.ts';
 import {
   comment as sendComment,
@@ -13,29 +13,7 @@ import {
 import { err, ok } from '../output.ts';
 import type { Envelope } from '../types.ts';
 import { type ConfirmDeps, confirmWrite, type WritePlan } from './confirm.ts';
-
-const TOKEN_FILE = 'oauth.json';
-
-export const OAUTH_SETUP = [
-  "No OAuth token stored. Writes go over LinkedIn's OWN self-serve scope rather than the private",
-  'API, which is the one legitimacy wedge an individual actually has — but the app has to be',
-  'registered by you; it cannot be created on your behalf.',
-  '',
-  '  1. https://www.linkedin.com/developers/apps/new — create an app (any LinkedIn Page works).',
-  '  2. Products tab → add "Sign In with LinkedIn using OpenID Connect" AND "Share on LinkedIn".',
-  '     Both are self-serve: no partner review, no verification, no screencast.',
-  '  3. Auth tab → add redirect URL http://localhost:53682/callback',
-  '  4. Run: lnrelay oauth --client-id <id> --client-secret <secret>',
-].join('\n');
-
-function loadToken(): OAuthToken | null {
-  const result = loadJson<OAuthToken>(cachePath(TOKEN_FILE));
-  return result.state === 'ok' ? result.value : null;
-}
-
-export function saveToken(token: OAuthToken): void {
-  saveJson(cachePath(TOKEN_FILE), token);
-}
+import { loadToken, OAUTH_SETUP } from './token.ts';
 
 function ledger(): Ledger {
   const result = loadJson<Ledger>(cachePath('budget.json'));
@@ -69,7 +47,12 @@ interface WriteContext {
 function prepare(command: string, now: number): WriteContext | Envelope {
   const token = loadToken();
   if (token === null) {
-    return err(command, 'AUTH_FAILED', 'no OAuth token — writes need one', OAUTH_SETUP);
+    return err(
+      command,
+      'AUTH_FAILED',
+      'no OAuth token — writes need one',
+      `Run \`lnrelay oauth login --client-id <id>\` first.\n\n${OAUTH_SETUP}`,
+    );
   }
   // Account for the write BEFORE asking, so a refused budget never reaches a
   // prompt the user cannot act on.
@@ -210,17 +193,4 @@ export async function runReact(
   return result.ok
     ? ok('react', { id: result.id })
     : err('react', result.code, result.message, result.hint);
-}
-
-/** Report OAuth setup state. Never prints the token. */
-export function runOauthStatus(): Envelope {
-  const token = loadToken();
-  if (token === null) return err('oauth', 'AUTH_FAILED', 'no OAuth token stored', OAUTH_SETUP);
-  return ok('oauth', {
-    memberUrn: token.memberUrn,
-    expiresAt: new Date(token.expiresAt).toISOString(),
-    expired: token.expiresAt <= Date.now(),
-    scope: 'w_member_social',
-    writeCap: CAPS.write.perDay,
-  });
 }

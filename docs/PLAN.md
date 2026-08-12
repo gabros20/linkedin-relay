@@ -61,7 +61,7 @@ All six phases are built, tested and verified live. 249 tests.
 | **3** research | comments, reactions, engagement counts | `post` (3 comments), `reactions` (5 reactors) |
 | **4** local-first | SQLite, opt-in retention, offline search, purge | `--retain` → `local` with zero network |
 | **5** agent surface | MCP shim, generated skill, parity test | 13 tools over stdio; live `search` and `local` calls |
-| **6** writes | OAuth transport, confirmation capability | gate refuses without a TTY, spending nothing |
+| **6** writes | OAuth login, transport, confirmation capability | gate refuses without a TTY, spending nothing; loopback callback listener exercised on a real socket |
 
 ### What did NOT ship, and why
 
@@ -86,8 +86,13 @@ All six phases are built, tested and verified live. 249 tests.
    claiming exhaustion. Following `paginationToken` is a contained next step.
 4. **Nested comment replies.** Unsolved industry-wide; a comment with replies says so rather than
    returning an empty array.
-5. **A live OAuth write.** The transport and gate are built and tested, but no post has been sent —
-   the LinkedIn app must be registered by the user first (`lnrelay oauth` prints the steps).
+5. **A live OAuth write.** Login, transport and gate are built and tested against injected fetch, but
+   no post has been sent, so the request shapes in `oauth-write.ts` are still written-from-docs rather
+   than verified — the standard this project holds everything else to. The LinkedIn app must be
+   registered by the user first; `lnrelay oauth login` prints the steps.
+
+   Note the one asymmetry that leaves: reads were built by observing and probing live traffic, writes
+   were not. Treat the first live `share` as a Phase-0-style gate, not a formality.
 
 ---
 

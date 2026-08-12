@@ -32,11 +32,28 @@ claude mcp add linkedin-relay -s user -- bun "$(npm root -g)/linkedin-relay-mcp/
 | `post` · `reactions` | a post's comment thread, and who engaged |
 | `sync` · `local` · `connections` · `my-posts` | fill a local cache, then query it for free |
 | `whoami` · `doctor` · `risk` · `budget` · `cache-status` | session, standing and spend |
-| `share` · `comment` · `react` | writes, over LinkedIn's official OAuth scope |
+| `oauth` · `share` · `comment` · `react` | writes, over LinkedIn's official OAuth scope |
 | `purge` | delete cached data |
 
 Every command prints a JSON envelope on stdout. `--compact` and `--fields a,b` trim the output;
 `--raw` keeps the original Voyager node for when a shape has drifted.
+
+## Writing
+
+Reads have no sanctioned path, so they go over Voyager and carry the risk below. Writes *do* have
+one, so they don't get to spend the same currency: posting, commenting and reacting all go over
+`w_member_social`, LinkedIn's own self-serve scope. It needs an app you register yourself — two
+self-serve products, no partner review — and then:
+
+```bash
+lnrelay oauth login --client-id <id>   # opens consent, catches the callback, stores the token
+lnrelay share "text"                   # prints the plan, asks, then posts
+lnrelay oauth status | logout
+```
+
+`lnrelay oauth login` with nothing set up prints the registration steps. Every write stops at an
+interactive terminal and shows exactly what it will send, to whom, and how reversible it is — no
+TTY means no write and no network call. There is no `--yes`.
 
 ## Design in one screen
 
@@ -88,7 +105,7 @@ position under argument. The convergence and the full disagreement record are in
 ## Development
 
 ```bash
-bun run check   # typecheck + lint + 273 tests
+bun run check   # typecheck + lint + 317 tests
 bun run build
 bun run dev -- <command>
 ```

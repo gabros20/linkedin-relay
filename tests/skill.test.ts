@@ -105,19 +105,52 @@ describe('advertised flags actually exist', () => {
   });
 
   test('every advertised flag is read somewhere in the source', () => {
-    const source = [
-      readFileSync(join(import.meta.dir, '..', 'src', 'cli.ts'), 'utf-8'),
-      readFileSync(join(import.meta.dir, '..', 'src', 'commands', 'live.ts'), 'utf-8'),
-      readFileSync(join(import.meta.dir, '..', 'src', 'commands', 'cache.ts'), 'utf-8'),
-      readFileSync(join(import.meta.dir, '..', 'src', 'commands', 'local.ts'), 'utf-8'),
-      readFileSync(join(import.meta.dir, '..', 'src', 'commands', 'sync.ts'), 'utf-8'),
-      readFileSync(join(import.meta.dir, '..', 'src', 'commands', 'write.ts'), 'utf-8'),
-    ].join('\n');
-
     const missing = advertisedFlags()
-      .filter(({ flag }) => !new RegExp(`['"\`]${flag}['"\`]`).test(source))
+      .filter(({ flag }) => !new RegExp(`['"\`]${flag}['"\`]`).test(runnerSource()))
       .map(({ command, flag }) => `${command} --${flag}`);
 
     expect(missing).toEqual([]);
+  });
+});
+
+/** Every file that could parse a flag or print an instruction. */
+function runnerSource(): string {
+  const files = ['cli.ts', 'args.ts'].map((f) => join(import.meta.dir, '..', 'src', f));
+  const commands = ['live', 'cache', 'local', 'sync', 'write', 'oauth', 'token', 'registry'].map(
+    (f) => join(import.meta.dir, '..', 'src', 'commands', `${f}.ts`),
+  );
+  return [...files, ...commands].map((p) => readFileSync(p, 'utf-8')).join('\n');
+}
+
+// The flag audit above checks what the REGISTRY promises. It cannot see a hint
+// string that tells the user to run something — which is exactly how `lnrelay
+// oauth --client-id …` survived for a release pointing at a command that had
+// never been written. Every invocation the tool prints must therefore resolve.
+describe('printed instructions name real commands', () => {
+  /** `lnrelay <word>` as it appears in any user-facing string in the source. */
+  function invocations(): string[] {
+    return [...runnerSource().matchAll(/lnrelay ([a-z][a-z-]*)/g)].map((m) => m[1] as string);
+  }
+
+  test('the audit finds invocations at all — it is not vacuous', () => {
+    expect(invocations().length).toBeGreaterThan(5);
+  });
+
+  test('every command the tool tells you to run exists', () => {
+    const known = new Set([...COMMANDS.map((c) => c.name), 'help']);
+    expect([...new Set(invocations())].filter((name) => !known.has(name))).toEqual([]);
+  });
+
+  // `oauth` grew subcommands; a hint naming a subcommand that dispatch does not
+  // handle fails the same way, one level down.
+  test('every oauth subcommand the tool names is dispatched', () => {
+    const cli = readFileSync(join(import.meta.dir, '..', 'src', 'cli.ts'), 'utf-8');
+    const named = [...runnerSource().matchAll(/lnrelay oauth ([a-z]+)/g)].map(
+      (m) => m[1] as string,
+    );
+    expect(named.length).toBeGreaterThan(0);
+    for (const sub of new Set(named)) {
+      expect(cli).toContain(`'${sub}'`);
+    }
   });
 });
