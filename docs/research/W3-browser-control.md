@@ -197,6 +197,59 @@ directly, which is option 1/2 again with extra plumbing on top.
 
 ---
 
+### 6a. `browser-use`, examined directly (follow-up pass, 2026-08-12)
+
+Read the repo rather than the docs site, because `docs.browser-use.com/llms.txt` indexes the **Cloud**
+product and answers a different question than the one that matters here.
+
+**What it is** (`repo`): 108,937★, MIT, Python, pushed 2026-08-11 — by a wide margin the most popular
+browser-agent library in existence, and genuinely well built. Not a toy.
+
+**It CAN attach to our exact setup** (`repo`, `examples/browser/using_cdp.py`), which is the finding that
+made this worth a second look:
+
+```python
+BrowserSession(browser_profile=BrowserProfile(cdp_url='http://localhost:9222', is_local=True))
+```
+
+That is the same port `lnrelay login` already opens. The claim in the comparison table above that it
+"launches/drives a browser itself" was understated — attaching to an existing debug Chrome is a documented,
+first-class mode, not a workaround.
+
+There is also `Browser.from_system_chrome()`, which drives the user's *real* Chrome profile directly — but
+its own docs say **"Close Chrome completely before running"** (`repo`, `skills/open-source/references/browser.md`).
+Taking over the profile the user browses with, and requiring them to quit their browser first, is worse for
+this project than the separate `--user-data-dir` the tool already uses.
+
+**Three things nonetheless disqualify it as the shipped write path:**
+
+1. **The OSS library is Python-only.** The `browser-use-sdk` on npm is the **Cloud API** SDK — a client for
+   their hosted browsers, i.e. the wrong session entirely. The OSS TypeScript port
+   (`browser-use/browser-use-node`) is **archived**, last pushed 2026-02-25, 30★ (`repo`). So a Bun/TS CLI
+   distributed over `npm i -g` would have to make a Python runtime, `uv`/`pip`, and a model API key into
+   install prerequisites. That is a large tax on every user, including the ones who only ever read.
+2. **Its core abstraction is an LLM agent loop, and there is no first-class scripted mode.** Every example
+   routes through `Agent(task=..., llm=...)`. What looks like a scripted escape hatch — registering custom
+   `Tools` (`examples/browser/playwright_integration.py`) — still has the *model* deciding when to call them;
+   the determinism lives in the tool body, not in the control flow. If you want a fixed sequence you drop to
+   Playwright/CDP directly, which is options 1–2 again.
+3. **Wrong shape for the actual task.** browser-use exists to navigate an *unfamiliar* site toward a goal. We
+   are not navigating anything: we know the exact request. Putting a model in the loop to click a Post button
+   we could POST ourselves adds nondeterminism, token cost and latency to the single operation where the
+   failure mode is public and irreversible.
+
+**Where it would genuinely be the right tool**, stated plainly so this is a scoping judgement and not a
+dismissal: open-ended work where the goal is known but the path is not — "look through my feed and tell me
+which three posts are worth engaging with", or driving a UI flow we have no captured request for. If the
+comment/react urn question (W1 §2-3) proves unanswerable by observation alone, driving the UI once with
+browser-use attached to the debug Chrome, while `observe-write.ts` records, is a reasonable *dev-time*
+discovery move. That is a tool on the bench, not a dependency in the binary.
+
+**Verdict: no change to the recommendation.** Excellent library, wrong job. The reason is not quality — it is
+that a deterministic request beats an agent loop whenever you already know the request, and for `share` we do.
+
+---
+
 ## LinkedIn-specific risk: "phantom success"
 
 Independent of tooling choice, the same source describes LinkedIn's composer producing **success signals for
