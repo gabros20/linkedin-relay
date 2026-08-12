@@ -1,3 +1,11 @@
+# [1.2.0](https://github.com/gabros20/linkedin-relay/compare/v1.1.0...v1.2.0) (2026-08-12)
+
+
+### Features
+
+* **write:** delete a post, and never do it blind ([e8a79de](https://github.com/gabros20/linkedin-relay/commit/e8a79de909ec3e8938e394781c8807d60950d508))
+* **write:** post over Voyager when no OAuth app is available ([9b099db](https://github.com/gabros20/linkedin-relay/commit/9b099dbaba54e95ef00dbdb54f368e1a4d8d7ab2))
+
 # [1.1.0](https://github.com/gabros20/linkedin-relay/compare/v1.0.0...v1.1.0) (2026-08-12)
 
 
