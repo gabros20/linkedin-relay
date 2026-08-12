@@ -31,6 +31,19 @@ function output(args: ParsedArgs): OutputOpts {
   return opts;
 }
 
+/**
+ * Which surface a write goes over.
+ *
+ * A misspelled `--via` is REFUSED rather than ignored. Ignoring it would mean
+ * `--via voyger` silently posts over whichever transport happened to be the
+ * default — the user asked for a specific surface and would be given another.
+ */
+function via(args: ParsedArgs): 'oauth' | 'voyager' | 'invalid' | undefined {
+  const value = str(args, 'via');
+  if (value === undefined) return undefined;
+  return value === 'oauth' || value === 'voyager' ? value : 'invalid';
+}
+
 /** `oauth` carries subcommands; bare `oauth` reports status and writes nothing. */
 async function oauth(args: ParsedArgs): Promise<Envelope> {
   const sub = args.positionals[0] ?? 'status';
@@ -122,8 +135,24 @@ export async function dispatch(argv: string[], now: number): Promise<Envelope> {
       return runLogin();
     case 'oauth':
       return oauth(args);
-    case 'share':
-      return runShare(args.positionals[0], str(args, 'visibility') ?? 'public', now);
+    case 'share': {
+      const surface = via(args);
+      if (surface === 'invalid') {
+        return err(
+          'share',
+          'INVALID_INPUT',
+          `unknown --via '${str(args, 'via') ?? ''}'`,
+          'one of: oauth, voyager. Omit it to prefer OAuth and fall back to Voyager.',
+        );
+      }
+      return runShare(
+        args.positionals[0],
+        str(args, 'visibility') ?? 'public',
+        now,
+        undefined,
+        surface,
+      );
+    }
     case 'comment':
       return runComment(args.positionals[0], args.positionals[1], now);
     case 'react':

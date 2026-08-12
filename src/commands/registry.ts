@@ -225,9 +225,11 @@ export const COMMANDS: CommandDef[] = [
   {
     name: 'share',
     cost: '1 call — write',
-    summary: "Post to your own feed via LinkedIn's official OAuth scope.",
+    summary:
+      "Post to your own feed. Prefers LinkedIn's official OAuth scope, falls back to the " +
+      'private API when no token exists — the prompt always names which.',
     usage:
-      'lnrelay share "<text>" [--visibility public|connections]\n' +
+      'lnrelay share "<text>" [--visibility public|connections] [--via oauth|voyager]\n' +
       '       Stops and asks at an interactive terminal. No TTY = no write, and no network call.',
     audience: ['cli'],
     risk: 'write',

@@ -66,8 +66,19 @@ function missingContract(name: string): EngineResult<never> {
   };
 }
 
-export function createEngine(session: Session, deps?: Partial<ClientDeps>, quiet = false): Engine {
-  const client: Client = createClient(session, {
+/**
+ * A live client on the real cache files. Exported because writes need a client
+ * without needing an Engine — the write surface is not part of the read
+ * contract, but it must share the same ledger, cooldown and pacing, and a
+ * second construction of those would be a second breaker that agrees with the
+ * first only by luck.
+ */
+export function createLiveClient(
+  session: Session,
+  deps?: Partial<ClientDeps>,
+  quiet = false,
+): Client {
+  return createClient(session, {
     fetch: globalThis.fetch,
     // stdout stays JSON-only; progress is human chatter and goes to stderr.
     progress: progressReporter(quiet),
@@ -86,6 +97,10 @@ export function createEngine(session: Session, deps?: Partial<ClientDeps>, quiet
     saveCooldown: (c) => saveJson(cachePath('cooldown.json'), c),
     ...deps,
   });
+}
+
+export function createEngine(session: Session, deps?: Partial<ClientDeps>, quiet = false): Engine {
+  const client: Client = createLiveClient(session, deps, quiet);
 
   return {
     async whoami() {

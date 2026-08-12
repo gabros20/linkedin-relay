@@ -51,10 +51,28 @@ describe('the prompt', () => {
     expect(rendered).toContain('shipping something new today');
   });
 
-  test('states the ToS breach and the ban risk at the moment of the write', () => {
+  // A warning printed identically on every action stops being read. An OAuth
+  // write really is sanctioned, so claiming §8.2 there would be crying wolf —
+  // and would devalue the warning on the transport that has earned it.
+  test('does not claim a ToS breach for a write that is actually sanctioned', () => {
     const rendered = renderPlan(plan, BUDGET);
+    expect(rendered).not.toContain('§8.2');
+    expect(rendered).toContain('sanctioned');
+  });
+
+  test('states the ToS breach and the ban risk for a Voyager write', () => {
+    const rendered = renderPlan({ ...plan, transport: 'voyager' }, BUDGET);
     expect(rendered).toContain('§8.2');
     expect(rendered).toMatch(/permanently restrict/i);
+  });
+
+  test('a Voyager write says plainly that it is public and cannot be un-seen', () => {
+    expect(renderPlan({ ...plan, transport: 'voyager' }, BUDGET)).toContain('un-seen');
+  });
+
+  test('the transport is visible before the token, not buried after it', () => {
+    const rendered = renderPlan({ ...plan, transport: 'voyager' }, BUDGET);
+    expect(rendered.indexOf('PRIVATE API')).toBeLessThan(rendered.indexOf('to confirm'));
   });
 
   test('states reversibility honestly rather than implying a clean undo', () => {

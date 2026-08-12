@@ -298,3 +298,75 @@ describe('progress reporting', () => {
     expect(messages).toHaveLength(0);
   });
 });
+
+// Writes need a request body, which reads never did. The risk is asymmetric:
+// a malformed GET returns nothing, a malformed POST publishes something.
+describe('request bodies', () => {
+  function recording(status = 200) {
+    const seen: RequestInit[] = [];
+    const client = createClient(SESSION, {
+      fetch: (async (_url: string, init: RequestInit) => {
+        seen.push(init);
+        return res(status, '{"data":{},"included":[]}');
+      }) as unknown as typeof fetch,
+      now: () => T0,
+      sleep: async () => {},
+      random: () => 0,
+      loadLedger: () => emptyLedger(),
+      saveLedger: () => {},
+      loadCooldown: () => null,
+      saveCooldown: () => {},
+    });
+    return { client, seen };
+  }
+
+  test('serialises the body as JSON', async () => {
+    const { client, seen } = recording();
+    await client.request({
+      url: 'https://x/',
+      method: 'POST',
+      body: { commentaryV2: { text: 'hi' } },
+      spendClass: 'write',
+      operation: 'share',
+    });
+    expect(JSON.parse(String(seen[0]?.body))).toEqual({ commentaryV2: { text: 'hi' } });
+  });
+
+  test('declares the content type, which Voyager requires on a write', async () => {
+    const { client, seen } = recording();
+    await client.request({
+      url: 'https://x/',
+      method: 'POST',
+      body: {},
+      spendClass: 'write',
+      operation: 'share',
+    });
+    const headers = seen[0]?.headers as Record<string, string>;
+    expect(headers['content-type']).toBe('application/json; charset=UTF-8');
+  });
+
+  test('a read still carries no body and no content type', async () => {
+    const { client, seen } = recording();
+    await client.request({ url: 'https://x/', spendClass: 'profile', operation: 'feed' });
+    expect(seen[0]?.body).toBeUndefined();
+    const headers = seen[0]?.headers as Record<string, string> | undefined;
+    expect(headers?.['content-type']).toBeUndefined();
+  });
+
+  // The auth headers are the same on a write; losing them would 401, but
+  // losing them SILENTLY on the write path only is the kind of asymmetry that
+  // survives a test suite that only ever exercises reads.
+  test('a write still carries the session cookies and csrf token', async () => {
+    const { client, seen } = recording();
+    await client.request({
+      url: 'https://x/',
+      method: 'POST',
+      body: {},
+      spendClass: 'write',
+      operation: 'share',
+    });
+    const headers = seen[0]?.headers as Record<string, string>;
+    expect(headers.cookie).toContain('li_at=');
+    expect(headers['csrf-token']).toBe('ajax:1234567890');
+  });
+});

@@ -55,6 +55,27 @@ export function confirmToken(action: string, payload: unknown): string {
     .slice(0, 4);
 }
 
+/**
+ * The risk sentence, which differs by transport because the truth differs.
+ *
+ * An OAuth write really is sanctioned — saying otherwise would be crying wolf,
+ * and a warning shown identically on every action stops being read. A Voyager
+ * write really does breach §8.2, and the person approving it should be told
+ * that at the moment they approve it, not in a README they read once.
+ */
+function riskLines(transport: 'oauth' | 'voyager'): string[] {
+  return transport === 'oauth'
+    ? [
+        "  This write itself is sanctioned — it uses LinkedIn's own",
+        '  w_member_social scope. The reads this tool performs are not.',
+      ]
+    : [
+        '  This goes over the PRIVATE API, not a sanctioned one. It breaches',
+        '  LinkedIn User Agreement §8.2 and can permanently restrict this',
+        '  account. It is public under your name and cannot be un-seen.',
+      ];
+}
+
 export function renderPlan<T>(plan: WritePlan<T>, budgetLine: string): string {
   const token = confirmToken(plan.action, plan.payload);
   const lines = [
@@ -65,8 +86,7 @@ export function renderPlan<T>(plan: WritePlan<T>, budgetLine: string): string {
     `  via      ${plan.transport === 'oauth' ? 'official OAuth (w_member_social)' : 'Voyager (private API)'}`,
     `  undo     ${plan.reversibility}`,
     '',
-    '  This automation breaches LinkedIn User Agreement §8.2 and can',
-    '  permanently restrict this account.',
+    ...riskLines(plan.transport),
     `  ${budgetLine}`,
     '',
     `  Type ${token} to confirm, anything else to abort: `,

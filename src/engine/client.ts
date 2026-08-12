@@ -39,6 +39,8 @@ export interface RequestSpec {
   spendClass: SpendClass;
   operation: string;
   method?: string;
+  /** Serialised as JSON when present. Reads carry none and must stay that way. */
+  body?: unknown;
 }
 
 export type ClientResult =
@@ -127,10 +129,16 @@ async function fetchRaw(
   session: Session,
   deps: ClientDeps,
 ): Promise<{ status: number; body: string; headers: Record<string, string> } | null> {
+  // A body is added only when there is one, so the read path keeps sending
+  // exactly the six headers that were verified against live traffic.
+  const requestHeaders = buildHeaders(session);
+  if (spec.body !== undefined) requestHeaders['content-type'] = 'application/json; charset=UTF-8';
+
   try {
     const res = await deps.fetch(spec.url, {
       method: spec.method ?? 'GET',
-      headers: buildHeaders(session),
+      headers: requestHeaders,
+      ...(spec.body === undefined ? {} : { body: JSON.stringify(spec.body) }),
       // Manual, so a login or checkpoint redirect is classified rather than
       // silently followed into an HTML page that parses as "no data".
       redirect: 'manual',

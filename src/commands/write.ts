@@ -4,16 +4,20 @@
 import { createInterface } from 'node:readline/promises';
 import { cachePath, loadJson, saveJson } from '../cache/store.ts';
 import { emptyLedger, type Ledger, spend, summarise } from '../engine/budget.ts';
+import { createLiveClient } from '../engine/index.ts';
 import type { OAuthToken } from '../engine/oauth-write.ts';
 import {
   comment as sendComment,
   react as sendReact,
   share as sendShare,
 } from '../engine/oauth-write.ts';
+import { loadSession } from '../engine/session.ts';
+import { share as voyagerShare } from '../engine/voyager-write.ts';
 import { err, ok } from '../output.ts';
 import type { Envelope } from '../types.ts';
 import { type ConfirmDeps, confirmWrite, type WritePlan } from './confirm.ts';
 import { loadToken, OAUTH_SETUP } from './token.ts';
+import { chooseTransport, type Transport } from './transport.ts';
 
 function ledger(): Ledger {
   const result = loadJson<Ledger>(cachePath('budget.json'));
@@ -40,19 +44,26 @@ function terminalDeps(): ConfirmDeps {
 }
 
 interface WriteContext {
-  token: OAuthToken;
+  transport: Transport;
   now: number;
+  note?: string;
 }
 
-function prepare(command: string, now: number): WriteContext | Envelope {
-  const token = loadToken();
-  if (token === null) {
-    return err(
-      command,
-      'AUTH_FAILED',
-      'no OAuth token — writes need one',
-      `Run \`lnrelay oauth login --client-id <id>\` first.\n\n${OAUTH_SETUP}`,
-    );
+/** The urn a write is authored as, for the confirmation summary. */
+function authorLine(transport: Transport): string {
+  return transport.kind === 'oauth'
+    ? `as       ${transport.token.memberUrn}`
+    : `as       ${transport.session.ownerUrn ?? 'you (browser session)'}`;
+}
+
+function prepare(command: string, now: number, via?: 'oauth' | 'voyager'): WriteContext | Envelope {
+  const session = loadSession();
+  const choice = chooseTransport(
+    { token: loadToken(), session: session.state === 'ok' ? session.session : null, now },
+    via,
+  );
+  if (!choice.ok) {
+    return err(command, 'AUTH_FAILED', choice.message, `${choice.hint}\n\n${OAUTH_SETUP}`);
   }
   // Account for the write BEFORE asking, so a refused budget never reaches a
   // prompt the user cannot act on.
@@ -60,7 +71,38 @@ function prepare(command: string, now: number): WriteContext | Envelope {
   if ('error' in attempt) {
     return err(command, attempt.error.code, attempt.error.message, attempt.error.hint);
   }
-  return { token, now };
+  const ctx: WriteContext = { transport: choice.transport, now };
+  if (choice.note !== undefined) ctx.note = choice.note;
+  return ctx;
+}
+
+/**
+ * OAuth-only operations. `comment` and `react` exist over Voyager, but the one
+ * OSS sample for each contradicts this project's own verified read-side
+ * findings on which urn identifies the target (docs/research/W1 §2-3). Shipping
+ * a guessed urn contract would fail silently or comment on the wrong post, so
+ * they refuse until a real capture settles it.
+ */
+function oauthToken(ctx: WriteContext): OAuthToken {
+  if (ctx.transport.kind !== 'oauth') {
+    // Unreachable: requireOauth runs first. Throwing beats a cast that would
+    // let a future edit silently send a Voyager write down the OAuth path.
+    throw new Error('oauthToken called on a non-oauth transport');
+  }
+  return ctx.transport.token;
+}
+
+function requireOauth(command: string, ctx: WriteContext): Envelope | null {
+  if (ctx.transport.kind === 'oauth') return null;
+  return err(
+    command,
+    'NOT_IMPLEMENTED',
+    `'${command}' is not implemented over the private API`,
+    `Only 'share' is. The one available sample for ${command} disagrees with this tool's own ` +
+      "verified read-side finding about which urn identifies the target, and a wrong urn doesn't " +
+      'error — it acts on the wrong post. Run `bun run scripts/observe-write.ts`, perform the ' +
+      'action by hand once, and the capture settles it. See docs/research/W1-voyager-writes.md.',
+  );
 }
 
 async function gate<T>(
@@ -82,32 +124,41 @@ export async function runShare(
   visibility: string,
   now = Date.now(),
   deps: ConfirmDeps = terminalDeps(),
+  via?: 'oauth' | 'voyager',
 ): Promise<Envelope> {
   if (text === undefined || text.trim() === '') {
     return err('share', 'INVALID_INPUT', 'text is required', 'lnrelay share "<text>"');
   }
   const vis = visibility === 'connections' ? 'CONNECTIONS' : 'PUBLIC';
-  const ctx = prepare('share', now);
+  const ctx = prepare('share', now, via);
   if ('ok' in ctx) return ctx;
 
   const plan: WritePlan<{ text: string; visibility: 'PUBLIC' | 'CONNECTIONS' }> = {
     action: 'post to your feed',
     payload: { text, visibility: vis },
-    summary: [`as       ${ctx.token.memberUrn}`, `content  "${text}"`, `audience ${vis}`],
+    summary: [authorLine(ctx.transport), `content  "${text}"`, `audience ${vis}`],
     reversibility: 'deletable from the LinkedIn UI; the post may be seen first',
-    transport: 'oauth',
+    transport: ctx.transport.kind,
   };
 
   const gated = await gate('share', plan, ctx, deps);
   if ('ok' in gated) return gated;
 
-  const result = await sendShare(gated.confirmed, ctx.token, {
-    fetch: globalThis.fetch,
-    now: () => now,
+  const result =
+    ctx.transport.kind === 'oauth'
+      ? await sendShare(gated.confirmed, ctx.transport.token, {
+          fetch: globalThis.fetch,
+          now: () => now,
+        })
+      : await voyagerShare(gated.confirmed, createLiveClient(ctx.transport.session));
+
+  if (!result.ok) return err('share', result.code, result.message, result.hint);
+  return ok('share', {
+    id: result.id ?? null,
+    transport: ctx.transport.kind,
+    url: 'url' in result ? result.url : undefined,
+    note: 'note' in result ? result.note : ctx.note,
   });
-  return result.ok
-    ? ok('share', { id: result.id, url: result.url })
-    : err('share', result.code, result.message, result.hint);
 }
 
 export async function runComment(
@@ -126,11 +177,13 @@ export async function runComment(
   }
   const ctx = prepare('comment', now);
   if ('ok' in ctx) return ctx;
+  const unsupported = requireOauth('comment', ctx);
+  if (unsupported !== null) return unsupported;
 
   const plan: WritePlan<{ postUrn: string; text: string }> = {
     action: 'comment on a post',
     payload: { postUrn, text },
-    summary: [`as       ${ctx.token.memberUrn}`, `on       ${postUrn}`, `content  "${text}"`],
+    summary: [authorLine(ctx.transport), `on       ${postUrn}`, `content  "${text}"`],
     reversibility: 'deletable from the LinkedIn UI; the author is notified immediately',
     transport: 'oauth',
   };
@@ -138,7 +191,7 @@ export async function runComment(
   const gated = await gate('comment', plan, ctx, deps);
   if ('ok' in gated) return gated;
 
-  const result = await sendComment(gated.confirmed as never, ctx.token, {
+  const result = await sendComment(gated.confirmed as never, oauthToken(ctx), {
     fetch: globalThis.fetch,
     now: () => now,
   });
@@ -174,11 +227,13 @@ export async function runReact(
   }
   const ctx = prepare('react', now);
   if ('ok' in ctx) return ctx;
+  const unsupported = requireOauth('react', ctx);
+  if (unsupported !== null) return unsupported;
 
   const plan: WritePlan<{ postUrn: string; type: string }> = {
     action: 'react to a post',
     payload: { postUrn, type: reaction },
-    summary: [`as       ${ctx.token.memberUrn}`, `on       ${postUrn}`, `reaction ${reaction}`],
+    summary: [authorLine(ctx.transport), `on       ${postUrn}`, `reaction ${reaction}`],
     reversibility: 'removable from the LinkedIn UI; the author is notified immediately',
     transport: 'oauth',
   };
@@ -186,7 +241,7 @@ export async function runReact(
   const gated = await gate('react', plan, ctx, deps);
   if ('ok' in gated) return gated;
 
-  const result = await sendReact(gated.confirmed as never, ctx.token, {
+  const result = await sendReact(gated.confirmed as never, oauthToken(ctx), {
     fetch: globalThis.fetch,
     now: () => now,
   });
