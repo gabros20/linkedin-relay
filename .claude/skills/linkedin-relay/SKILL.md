@@ -183,10 +183,14 @@ call again.
 
 ## What this tool will not do
 
-Writes — posting, commenting, reacting — are **not on this surface at all**. They exist as CLI
-commands (`lnrelay share`, `comment`, `react`) and go over LinkedIn's own official OAuth scope, not
-the private API. Each stops at an interactive terminal, shows exactly what it will send, states the
-ToS breach, and requires the user to type a token derived from the content.
+Writes — posting, commenting, reacting, deleting — are **not on this surface at all**. They exist as
+CLI commands (`lnrelay share`, `comment`, `react`, `delete`). Each stops at an interactive terminal,
+shows exactly what it will send and over which surface, and requires the user to type a token
+derived from the content.
+
+`share` prefers LinkedIn's official OAuth scope and falls back to the private API when the user has
+no developer app — the prompt always names which, and a Voyager write states the ToS breach. If a
+user asks why writing needs an app at all, the answer is in `docs/DECISION-writes.md`.
 
 **Without a terminal there is no write and no network call.** That is deliberate and there is no
 flag that changes it: a flag an agent could set would not be confirming anything. If the user asks

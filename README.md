@@ -32,7 +32,7 @@ claude mcp add linkedin-relay -s user -- bun "$(npm root -g)/linkedin-relay-mcp/
 | `post` · `reactions` | a post's comment thread, and who engaged |
 | `sync` · `local` · `connections` · `my-posts` | fill a local cache, then query it for free |
 | `whoami` · `doctor` · `risk` · `budget` · `cache-status` | session, standing and spend |
-| `oauth` · `share` · `comment` · `react` | writes, over LinkedIn's official OAuth scope |
+| `oauth` · `share` · `comment` · `react` · `delete` | writes — OAuth when available, private API otherwise |
 | `purge` | delete cached data |
 
 Every command prints a JSON envelope on stdout. `--compact` and `--fields a,b` trim the output;
@@ -48,12 +48,16 @@ self-serve products, no partner review — and then:
 ```bash
 lnrelay oauth login --client-id <id>   # opens consent, catches the callback, stores the token
 lnrelay share "text"                   # prints the plan, asks, then posts
-lnrelay oauth status | logout
+lnrelay delete <urn>                   # reads the post back and shows it before destroying it
 ```
 
-`lnrelay oauth login` with nothing set up prints the registration steps. Every write stops at an
-interactive terminal and shows exactly what it will send, to whom, and how reversible it is — no
-TTY means no write and no network call. There is no `--yes`.
+**No company, no Page, no app?** Then that route is closed to you, and `share` falls back to the
+private API using the same session your reads use. It breaches §8.2 and puts the account at risk;
+the prompt says so, names the transport, and asks anyway. An expired OAuth token is never silently
+demoted to it. Reasoning and alternatives: **[docs/DECISION-writes.md](docs/DECISION-writes.md)**.
+
+Every write stops at an interactive terminal and shows exactly what it will send, over which
+surface, and how reversible it is — no TTY means no write and no network call. There is no `--yes`.
 
 ## Design in one screen
 
@@ -105,7 +109,7 @@ position under argument. The convergence and the full disagreement record are in
 ## Development
 
 ```bash
-bun run check   # typecheck + lint + 317 tests
+bun run check   # typecheck + lint + 366 tests
 bun run build
 bun run dev -- <command>
 ```
