@@ -91,7 +91,6 @@ fallback is allowed — the silence is not.
 | Confirm gate, budget ledger, breaker, pacing | Unchanged, already applied to writes |
 | `share` over OAuth | Built, unusable without a Page |
 | `comment` / `react` over Voyager | **Deliberately refuse** — see §5 |
-| `delete` | Not built |
 
 **Closed 2026-08-13.** The `share` payload — the convergent shape of four independent OSS clients —
 was right first time. It created a real public post and LinkedIn answered **201 Created**. `share`
@@ -125,42 +124,40 @@ guessing.
 
 ## 6. Build order
 
-### Next — `delete`, before anything else is verified
+### ✅ Done — `delete`, built before verifying anything else
 
-Non-obvious but correct. Reasons:
+Non-obvious but correct, and it paid off: it is the best-evidenced operation in the research (W1 §4,
+one implementation demonstrably run against production asserting a real `204`), it makes every later
+test reversible, and it covers the scariest way `share` could have been subtly wrong —
+`visibleToConnectionsOnly` is a **boolean**, inverted from OAuth's enum, so a backwards mapping
+would publish a connections-only post to the open web.
 
-- It is the **best-evidenced operation in the whole research** (W1 §4): two independent
-  implementations, one of which — Polypost's `cdp-delete-share.mjs` — was demonstrably run against
-  production and asserts on a real `204`.
-- It makes every subsequent test **reversible**. Right now the only remedy for a bad test post is the
-  LinkedIn UI.
-- It specifically covers the scariest way `share` could be subtly wrong: `visibleToConnectionsOnly` is
-  a **boolean**, inverted from OAuth's `visibility` enum. If that mapping is backwards, a
-  connections-only post goes public. Delete is the remedy.
+`DELETE /voyager/api/contentcreation/normShares/{url-encoded urn}`.
 
-`DELETE /voyager/api/contentcreation/normShares/{url-encoded urn}` — headers: `csrf-token` +
-`x-restli-protocol-version` only.
+### ✅ Done — `share` verified live, 2026-08-13
 
-### Then — verify `share` live
+Right first time. See §4.
 
-One throwaway post whose text is harmless at either visibility. Wrong payload costs a 4xx and posts
-nothing. Right payload returns a urn, which `delete` then removes.
+### Next — exercise `delete` against the verification post
+
+The 204 path has never run. Deleting the test post is both the cleanup and the proof.
 
 ### Then — capture, and unblock `comment` + `react`
 
 `bun run scripts/observe-write.ts`, perform each action once by hand in the debug Chrome. The capture
-settles both urn contracts from ground truth instead of from a single contradicted sample. Credentials
-are redacted before anything touches disk.
+settles both urn contracts from ground truth instead of from a single contradicted sample.
+Credentials are redacted before anything touches disk.
 
 ### Optional, later — transport C (in-page `fetch` over CDP)
 
 The genuinely novel option, and the only one with no mature reference implementation (W2 found only
 0–3★ hobby repos). Issue the request *from inside the logged-in page*: real cookies, real Origin,
 real TLS fingerprint — because it really is the browser making the call — while the payload stays
-ours, so it keeps A's determinism and loses none of it to DOM coupling.
+ours, so it keeps A's determinism.
 
-Worth building if evidence ever emerges that raw HTTP is fingerprinted at the TLS layer. Not worth
-building on speculation.
+Worth building if evidence ever emerges that raw HTTP is fingerprinted at the TLS layer. **Note that
+the first live write went through cleanly on a residential IP with plain Bun `fetch`**, which is a
+data point against that concern, though one post is not a sample.
 
 ---
 
