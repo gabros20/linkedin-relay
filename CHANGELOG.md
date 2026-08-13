@@ -1,3 +1,10 @@
+## [1.3.1](https://github.com/gabros20/linkedin-relay/compare/v1.3.0...v1.3.1) (2026-08-13)
+
+
+### Bug Fixes
+
+* **classify:** a write's response is a receipt, not a read contract ([00a5fc2](https://github.com/gabros20/linkedin-relay/commit/00a5fc26859a0365fd4fea4a2ad37747d3d8378d))
+
 # [1.3.0](https://github.com/gabros20/linkedin-relay/compare/v1.2.3...v1.3.0) (2026-08-13)
 
 
