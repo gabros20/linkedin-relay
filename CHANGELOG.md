@@ -1,3 +1,10 @@
+## [1.5.1](https://github.com/gabros20/linkedin-relay/compare/v1.5.0...v1.5.1) (2026-08-13)
+
+
+### Bug Fixes
+
+* **comment:** account for the harvest, which was invisible traffic ([d9e5ff8](https://github.com/gabros20/linkedin-relay/commit/d9e5ff841ca2db8e2c369daf690015a92be802b6))
+
 # [1.5.0](https://github.com/gabros20/linkedin-relay/compare/v1.4.0...v1.5.0) (2026-08-13)
 
 
