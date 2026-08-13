@@ -104,3 +104,61 @@ remains unimplemented over this surface rather than shipped on a guess.
   names are not the UI labels: PRAISE renders as "Celebrate", INTEREST as "Insightful".
 - `comment`: still refuses, now with a specific reason instead of "the one sample is unverified".
 - W1 §2–3 are superseded. The samples there describe endpoints the current client does not call.
+
+---
+
+## Addendum — commenting IS automatable, without a browser (2026-08-13)
+
+The section above concluded `createComment` is not replayable because its payload carries a
+`trackingId` from the feed render and an opaque `commentBoxStateId` binding key. Both facts hold. The
+conclusion drawn from them — that this needs a driven browser — was **wrong**.
+
+### The binding key is half derivable
+
+```
+commentBoxText-CgsIgIC6tO+ggf/PAQ--C6B_POCUy-WtfBFZljzw4nBJWJuFXssdgUqs8M9nh0FeedType_FEED_DETAIL
+               └── segment A ───┘└──────────── segment B ───────────┘└──── suffix ────┘
+```
+
+**Segment A is the post id.** Base64 (with `-` standing in for `=` padding) of a protobuf message
+whose one field is the activity id, zigzag-encoded as `sint64`:
+
+```
+CgsIgIC6tO+ggf/PAQ--  ->  0a0b 08 8080bab4efa081ffcf01
+                          field 1 (bytes, len 11) -> nested varint 14987422137400066048
+                          14987422137400066048 = 2 x 7493711068700033024   (zigzag of the id)
+```
+
+**Segment B is 31 opaque bytes** — a server-issued screen/component state id, not derivable. The
+suffix is a feed-type enum (`FeedType_FEED_DETAIL` on a permalink, `FeedType_FEED` in the main feed),
+so the key is context-dependent and the harvested one must match the screen used.
+
+### Where the tokens come from
+
+`POST /flagship-web/rsc-action/actions/component` **consumes** `commentBoxStateId`; it does not
+produce it. The key originates in the SDUI screen render.
+
+**And that render is a plain authenticated GET.** Verified live:
+
+```
+GET https://www.linkedin.com/feed/update/urn:li:activity:<id>/
+    cookie: li_at + JSESSIONID     (no csrf-token, no browser, no CDP)
+-> 200, ~2.8 MB of HTML containing commentBoxStateId, commentBoxText-<key>, trackingId
+```
+
+### So the flow is two requests, fully automatable
+
+1. `GET` the post permalink with session cookies; scrape `commentBoxText-…` and `trackingId`.
+2. `POST .../server-request?sduiid=com.linkedin.sdui.comments.createComment` with the harvested key,
+   the text under `requestedArguments.states[].value`, and the key echoed in `requestedStateKeys`.
+
+The binding key was CONSTANT across two comments on the same post, so step 1 is once per post.
+
+### Costs and cautions, honestly
+
+- Step 1 is a **~2.8 MB HTML fetch**, far heavier than any Voyager read here. It deserves its own
+  spend class rather than being counted as a cheap read.
+- Scraping a rendered page is the most drift-prone thing in this codebase. It must fail loudly when
+  the key is absent, never post with a stale or empty binding.
+- Segment B's semantics are **unknown**: whether it expires, is per-session or per-screen-instance is
+  not established — only that it was stable across two comments minutes apart.
