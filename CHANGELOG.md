@@ -1,3 +1,10 @@
+# [1.3.0](https://github.com/gabros20/linkedin-relay/compare/v1.2.3...v1.3.0) (2026-08-13)
+
+
+### Features
+
+* **react:** implement reactions from a live capture of LinkedIn's SDUI surface ([d8a451c](https://github.com/gabros20/linkedin-relay/commit/d8a451c3349316dd4df7ac8c6642458a02ec46ce))
+
 ## [1.2.3](https://github.com/gabros20/linkedin-relay/compare/v1.2.2...v1.2.3) (2026-08-13)
 
 
