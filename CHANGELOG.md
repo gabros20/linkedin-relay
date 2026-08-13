@@ -1,3 +1,10 @@
+# [1.5.0](https://github.com/gabros20/linkedin-relay/compare/v1.4.0...v1.5.0) (2026-08-13)
+
+
+### Features
+
+* **comment:** build the SDUI comment payload and harvest its tokens ([63cc6c5](https://github.com/gabros20/linkedin-relay/commit/63cc6c58f269dab6e601d35ce4f204deb03fcc3a))
+
 # [1.4.0](https://github.com/gabros20/linkedin-relay/compare/v1.3.3...v1.4.0) (2026-08-13)
 
 
