@@ -3,8 +3,8 @@
 Consolidates `docs/research/W1-W4` and the DESIGN.md §2 revision into one place, because the
 reasoning had scattered across four research lanes and three commits.
 
-**Status: decided and built for `share`. Unverified against live traffic. `comment`/`react` blocked
-on one capture.**
+**Status: `share` VERIFIED LIVE 2026-08-13 — a real post, HTTP 201. `delete` built but not yet
+exercised. `comment`/`react` blocked on one capture.**
 
 ---
 
@@ -85,16 +85,24 @@ fallback is allowed — the silence is not.
 
 | Piece | State |
 |---|---|
-| `engine/voyager-write.ts` — `share` | Built, 350 tests green, **payload not live-verified** |
+| `engine/voyager-write.ts` — `share` | ✅ **Verified live 2026-08-13 — 201 Created, real post** |
+| `engine/voyager-write.ts` — `delete` | Built, not yet exercised |
 | `commands/transport.ts` — transport choice | Built and tested |
 | Confirm gate, budget ledger, breaker, pacing | Unchanged, already applied to writes |
 | `share` over OAuth | Built, unusable without a Page |
 | `comment` / `react` over Voyager | **Deliberately refuse** — see §5 |
 | `delete` | Not built |
 
-**The honest gap:** the `share` payload is the convergent shape of four independent OSS clients, one
-pushed 2026-08-10. Every *read* in this tool was learned by observing live traffic and verified by a
-200 on this machine. This write has not met that standard, and the module says so at the top.
+**Closed 2026-08-13.** The `share` payload — the convergent shape of four independent OSS clients —
+was right first time. It created a real public post and LinkedIn answered **201 Created**. `share`
+now meets the same bar as every read in this tool: it returned a success status on this machine.
+
+It also exposed a bug worth recording. The classifier accepted **only** 200, because reads never
+return anything else, so that first successful post was reported as `FETCH_FAILED: unexpected status
+201` *after the post was already live*. Reporting a success as a failure is the worst direction to
+be wrong in for a write: the user re-runs the command and posts twice. `delete` returns 204 and
+would have failed identically. Fixed to accept any 2xx, with an empty body treated as a normal write
+outcome rather than the "claimed but empty" drift a read would signal.
 
 ---
 

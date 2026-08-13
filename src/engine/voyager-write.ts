@@ -28,11 +28,22 @@
 // composer can post the wrong text, post twice, or report success on a UI that
 // never submitted — and a write is publicly visible under the owner's name.
 //
-// PROVENANCE OF THE PAYLOAD, which matters more than usual here: unlike every
-// read in this tool, this shape has NOT been observed from live traffic. It is
-// the convergent shape of four independent OSS clients (docs/research/W1).
-// `scripts/observe-write.ts` exists to replace this with a real capture; until
-// it has been, treat a 4xx as "our guess was wrong" before "LinkedIn changed".
+// PROVENANCE OF THE PAYLOAD:
+//
+//   share   ✅ VERIFIED LIVE 2026-08-13. The body below, sent with the six
+//           standard headers and the two cookies, created a real public post
+//           on the owner's feed. LinkedIn answered **201 Created**. The shape
+//           came from four converging OSS clients (docs/research/W1) and was
+//           right first time.
+//
+//   delete  Not yet exercised. Best-evidenced operation in the research, but
+//           still `repo` evidence.
+//
+// The 201 is worth recording for a second reason: the classifier accepted only
+// 200, because reads never return anything else, so that first successful post
+// was reported to the user as FETCH_FAILED — after it had already gone live.
+// Reporting a success as a failure is the worst direction to be wrong here: it
+// invites a re-run, and the re-run posts twice. See classify.ts.
 
 import type { ConfirmedWrite } from '../commands/confirm.ts';
 import type { Client } from './client.ts';

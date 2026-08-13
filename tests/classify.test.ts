@@ -136,3 +136,48 @@ describe('other statuses', () => {
     expect(r.retry).toBe(false);
   });
 });
+
+// Reads only ever return 200, so the classifier was written to accept only
+// 200 — and then rejected the first real write with "unexpected status 201".
+// The post had in fact been created. Reporting a success as a failure is the
+// worst direction to be wrong in here: it invites a re-run, and the re-run
+// posts a second time.
+describe('write statuses are successes', () => {
+  test('201 Created is a success — the first live share returned it', () => {
+    expect(classify({ status: 201, body: '', headers: {} }).outcome).not.toBe('error');
+  });
+
+  test('204 No Content is a success — this is what delete returns', () => {
+    expect(classify({ status: 204, body: '', headers: {} }).outcome).not.toBe('error');
+  });
+
+  test('200 still works, and reads are unaffected', () => {
+    const res = { status: 200, body: '{"data":{},"included":[]}', headers: {} };
+    expect(classify(res).outcome).not.toBe('error');
+  });
+
+  // An empty body is normal for 201/204 and must not be mistaken for the
+  // "claimed but empty" drift that a 200 with no `included` would signal.
+  test('an empty body on 204 is not treated as schema drift', () => {
+    const c = classify({ status: 204, body: '', headers: {} });
+    expect(c.code).toBeUndefined();
+  });
+
+  test('a 2xx we have never seen is still accepted rather than failed', () => {
+    expect(classify({ status: 202, body: '', headers: {} }).outcome).not.toBe('error');
+  });
+
+  // The bug was a missing success case, not a missing failure case. Widening
+  // it must not swallow the statuses the breaker depends on.
+  test('the hostile statuses are still failures', () => {
+    for (const status of [400, 401, 403, 404, 410, 429, 999]) {
+      expect(classify({ status, body: '{}', headers: {} }).outcome).toBe('error');
+    }
+  });
+
+  test('a 3xx redirect is still not a success', () => {
+    expect(classify({ status: 302, body: '', headers: { location: '/login' } }).outcome).toBe(
+      'error',
+    );
+  });
+});

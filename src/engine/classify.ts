@@ -148,9 +148,20 @@ export function classify(res: RawResponse): Classification {
     return fail('NOT_FOUND', 'no such resource');
   }
 
-  if (res.status !== 200) {
+  if (res.status < 200 || res.status >= 300) {
     return fail('FETCH_FAILED', `unexpected status ${res.status}`);
   }
+
+  // Writes answer 201 Created and 204 No Content with an empty body. Reads
+  // never do either, which is how this was missed until the first live share
+  // came back 201 and was reported as a failure — after the post had been
+  // created. That is the worst direction to be wrong in: a user told their
+  // post failed re-runs the command and posts twice.
+  //
+  // An empty body is therefore a normal write outcome and must not reach
+  // classifyBody, whose whole job is detecting a READ that returned nothing
+  // when it claimed otherwise.
+  if (res.body.trim() === '') return { outcome: 'ok', retry: false, json: null };
 
   return classifyBody(res.body);
 }
