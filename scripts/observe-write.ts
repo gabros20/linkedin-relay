@@ -59,26 +59,44 @@ async function main(): Promise<void> {
   const seconds = Number(process.argv[2] ?? 120);
   mkdirSync(OUT, { recursive: true });
 
-  const list = (await (await fetch(`${CDP}/json/list`)).json()) as {
-    type: string;
-    url: string;
+  // Attach at the BROWSER level, not to one page.
+  //
+  // The first version of this script picked a single page target at startup.
+  // That silently misses everything the moment the user navigates to a new
+  // tab, and it missed a real comment during the first capture attempt — the
+  // comment landed on LinkedIn and the observer recorded nothing, which is the
+  // most dangerous kind of failure for a tool whose job is observing. Browser
+  // level + auto-attach covers every tab, iframe and worker, including ones
+  // opened after we start watching.
+  const version = (await (await fetch(`${CDP}/json/version`)).json()) as {
     webSocketDebuggerUrl?: string;
-  }[];
-  const page = list.find((t) => t.type === 'page' && t.webSocketDebuggerUrl !== undefined);
-  if (page?.webSocketDebuggerUrl === undefined) {
-    throw new Error('no debuggable page — run `lnrelay login` first, or start Chrome with --remote-debugging-port=9222');
+  };
+  if (version.webSocketDebuggerUrl === undefined) {
+    throw new Error('no browser-level CDP endpoint — is Chrome running with --remote-debugging-port=9222?');
   }
 
-  const ws = new WebSocket(page.webSocketDebuggerUrl);
+  const ws = new WebSocket(version.webSocketDebuggerUrl);
   await new Promise<void>((res) => {
     ws.onopen = () => res();
   });
 
+  let id = 100;
+  const send = (method: string, params: unknown, sessionId?: string): void => {
+    const msg: Record<string, unknown> = { id: id++, method, params };
+    if (sessionId !== undefined) msg.sessionId = sessionId;
+    ws.send(JSON.stringify(msg));
+  };
+
   const captured: Captured[] = [];
+  const sessions = new Set<string>();
+
   ws.onmessage = (ev) => {
     const msg = JSON.parse(String(ev.data)) as {
       method?: string;
+      sessionId?: string;
       params?: {
+        sessionId?: string;
+        targetInfo?: { type: string; url: string };
         request?: {
           url: string;
           method: string;
@@ -87,6 +105,26 @@ async function main(): Promise<void> {
         };
       };
     };
+
+    // Every new target gets Network enabled on its own session.
+    if (msg.method === 'Target.attachedToTarget') {
+      const sessionId = msg.params?.sessionId;
+      if (sessionId !== undefined && !sessions.has(sessionId)) {
+        sessions.add(sessionId);
+        send('Network.enable', {}, sessionId);
+        // RECURSE. Attaching at the browser level yields the page targets, but
+        // not the workers underneath them — and a browser-level-only attach saw
+        // 1 session where this sees 8. A comment that demonstrably landed was
+        // missed twice before this line existed.
+        send(
+          'Target.setAutoAttach',
+          { autoAttach: true, waitForDebuggerOnStart: false, flatten: true },
+          sessionId,
+        );
+      }
+      return;
+    }
+
     if (msg.method !== 'Network.requestWillBeSent') return;
     const req = msg.params?.request;
     if (req === undefined) return;
@@ -111,17 +149,20 @@ async function main(): Promise<void> {
     }
   };
 
-  ws.send(JSON.stringify({ id: 1, method: 'Network.enable', params: {} }));
+  send('Target.setDiscoverTargets', { discover: true });
+  send('Target.setAutoAttach', { autoAttach: true, waitForDebuggerOnStart: false, flatten: true });
+  await new Promise((r) => setTimeout(r, 800));
 
-  console.log(`watching for Voyager writes for ${seconds}s.`);
-  console.log('go to the browser and perform ONE action — post, comment, or react.\n');
+  console.log(`watching ALL tabs and workers for Voyager writes for ${seconds}s.`);
+  console.log(`${sessions.size} target(s) attached.`);
+  console.log('go to the browser and perform the action(s).\n');
   await new Promise((r) => setTimeout(r, seconds * 1000));
   ws.close();
 
   if (captured.length === 0) {
     console.log('\nno mutating Voyager request seen.');
-    console.log('if you did act, the client may route writes through a different host or a');
-    console.log('service worker — worth knowing, and worth recording in ENGINE-RESEARCH.md.');
+    console.log('if you did act, the client may route writes through a host or worker this');
+    console.log('still does not see — worth recording in ENGINE-RESEARCH.md rather than retrying blind.');
     return;
   }
 
@@ -129,7 +170,7 @@ async function main(): Promise<void> {
   const stamp = new Date().toISOString().replace(/[:.]/g, '-');
   const file = join(OUT, `write-${stamp}.json`);
   writeFileSync(file, JSON.stringify(captured, null, 2));
-  console.log(`\n${captured.length} mutating call(s) captured → ${file}`);
+  console.log(`\n${captured.length} mutating call(s) captured -> ${file}`);
 }
 
 main().catch((e: Error) => {
