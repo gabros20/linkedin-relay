@@ -238,8 +238,13 @@ export const COMMANDS: CommandDef[] = [
   {
     name: 'comment',
     cost: '1 call — write',
-    summary: 'Comment on a post. OAuth only — see the hint; not replayable over the private API.',
-    usage: 'lnrelay comment <activity-urn> "<text>"',
+    summary:
+      'Comment on a post. Harvests the binding tokens from the rendered page first — ' +
+      'no browser needed, but it costs one heavy read.',
+    usage:
+      'lnrelay comment <activity-urn> "<text>"\n' +
+      '       Fetches the post page (~2.8 MB) to harvest a binding key and trackingId, proves the\n' +
+      '       key belongs to that post, then asks. UNVERIFIED: never yet replayed successfully.',
     audience: ['cli'],
     risk: 'write',
     implemented: true,

@@ -1,9 +1,11 @@
 // Write command runners. Every one of these stops and asks a human before it
 // sends anything, and makes zero network calls on the path where it doesn't.
 
+import { buildHeaders } from '../engine/auth.ts';
 import { createLiveClient } from '../engine/index.ts';
-import type { OAuthToken } from '../engine/oauth-write.ts';
-import { comment as sendComment, share as sendShare } from '../engine/oauth-write.ts';
+import { share as sendShare } from '../engine/oauth-write.ts';
+import { type CommentTokens, comment as sduiComment } from '../engine/sdui-comment.ts';
+import { extractCommentTokens } from '../engine/sdui-harvest.ts';
 import {
   type Reaction,
   reactionLabel,
@@ -46,30 +48,6 @@ function prepare(command: string, now: number, via?: 'oauth' | 'voyager'): Write
   const ctx: WriteContext = { transport: choice.transport, now };
   if (choice.note !== undefined) ctx.note = choice.note;
   return ctx;
-}
-
-/** OAuth-only operations — currently just `comment`. See requireOauth. */
-function oauthToken(ctx: WriteContext): OAuthToken {
-  if (ctx.transport.kind !== 'oauth') {
-    // Unreachable: requireOauth runs first. Throwing beats a cast that would
-    // let a future edit silently send a Voyager write down the OAuth path.
-    throw new Error('oauthToken called on a non-oauth transport');
-  }
-  return ctx.transport.token;
-}
-
-function requireOauth(command: string, ctx: WriteContext): Envelope | null {
-  if (ctx.transport.kind === 'oauth') return null;
-  return err(
-    command,
-    'NOT_IMPLEMENTED',
-    `'${command}' is not implemented over the private API`,
-    'Commenting was captured from the live client on 2026-08-13 and is NOT replayable as a ' +
-      'single request: com.linkedin.sdui.comments.createComment carries a trackingId from the ' +
-      'feed render and an opaque binding key that only exists once a page has been rendered. ' +
-      'Reaching it means fetching the SDUI screen first to harvest both. `share`, `delete` and ' +
-      '`react` work over the private API. See docs/research/W5-sdui-writes.md.',
-  );
 }
 
 async function gate<T>(
@@ -131,6 +109,46 @@ export async function runShare(
   });
 }
 
+/** The numeric id inside an activity urn, or null. */
+function activityIdOf(urn: string): string | null {
+  return /^urn:li:(?:activity|ugcPost|share):(\d+)$/.exec(urn)?.[1] ?? null;
+}
+
+/**
+ * Fetch the rendered post page and harvest the comment tokens.
+ *
+ * This is a ~2.8 MB HTML GET, far heavier than any Voyager read here, and it
+ * is unavoidable: the trackingId changes on every render, so it cannot be
+ * cached even though the binding key can.
+ */
+async function harvest(
+  activityId: string,
+  session: Parameters<typeof createLiveClient>[0],
+): Promise<{ ok: true; tokens: CommentTokens } | Envelope> {
+  const headers = buildHeaders(session);
+  let html: string;
+  try {
+    const res = await fetch(`https://www.linkedin.com/feed/update/urn:li:activity:${activityId}/`, {
+      headers: {
+        cookie: headers.cookie ?? '',
+        'user-agent': headers['user-agent'] ?? '',
+        accept: 'text/html',
+      },
+      redirect: 'manual',
+    });
+    if (res.status !== 200) {
+      return err('comment', 'FETCH_FAILED', `the post page returned ${res.status}`);
+    }
+    html = await res.text();
+  } catch (e) {
+    return err('comment', 'FETCH_FAILED', `could not load the post page: ${(e as Error).message}`);
+  }
+
+  const found = extractCommentTokens(html, activityId);
+  if (!found.ok) return err('comment', 'SCHEMA_DRIFT', found.message, found.hint);
+  return { ok: true, tokens: { bindingKey: found.bindingKey, trackingId: found.trackingId } };
+}
+
 export async function runComment(
   postUrn: string | undefined,
   text: string | undefined,
@@ -145,28 +163,55 @@ export async function runComment(
       'lnrelay comment <urn> "<text>"',
     );
   }
-  const ctx = prepare('comment', now);
-  if ('ok' in ctx) return ctx;
-  const unsupported = requireOauth('comment', ctx);
-  if (unsupported !== null) return unsupported;
+  const activityId = activityIdOf(postUrn);
+  if (activityId === null) {
+    return err('comment', 'INVALID_INPUT', `'${postUrn}' does not identify a post`);
+  }
 
-  const plan: WritePlan<{ postUrn: string; text: string }> = {
+  // The TTY check comes BEFORE the harvest, not just before the send. Harvesting
+  // is a network call, and this tool's guarantee is "no TTY, no write AND no
+  // network call on that path" — an agent shelling out non-interactively must
+  // not cause LinkedIn traffic it cannot then use.
+  if (!deps.isTty) {
+    return err(
+      'comment',
+      'CONFIRMATION_REQUIRED',
+      'commenting needs a human to confirm it at an interactive terminal',
+      'No terminal is attached, so nothing was sent and no network call was made.',
+    );
+  }
+
+  const ctx = prepare('comment', now, 'voyager');
+  if ('ok' in ctx) return ctx;
+  if (ctx.transport.kind !== 'voyager') {
+    return err('comment', 'NOT_IMPLEMENTED', 'commenting is only implemented over the private API');
+  }
+
+  // Harvest after that, but before asking: a human should not approve a comment
+  // we then turn out to be unable to send, and the tokens are part of what is
+  // being approved.
+  const harvested = await harvest(activityId, ctx.transport.session);
+  if ('ok' in harvested && harvested.ok !== true) return harvested as Envelope;
+  if (!('tokens' in harvested)) return harvested as Envelope;
+
+  const plan: WritePlan<{ activityId: string; text: string; tokens: CommentTokens }> = {
     action: 'comment on a post',
-    payload: { postUrn, text },
+    payload: { activityId, text, tokens: harvested.tokens },
     summary: [authorLine(ctx.transport), `on       ${postUrn}`, `content  "${text}"`],
-    reversibility: 'deletable from the LinkedIn UI; the author is notified immediately',
-    transport: 'oauth',
+    reversibility:
+      'deletable from the LinkedIn UI; the author is notified immediately and cannot un-see it',
+    transport: 'voyager',
   };
 
   const gated = await gate('comment', plan, ctx, deps);
   if ('ok' in gated) return gated;
 
-  const result = await sendComment(gated.confirmed as never, oauthToken(ctx), {
-    fetch: globalThis.fetch,
-    now: () => now,
-  });
+  const result = await sduiComment(
+    gated.confirmed as never,
+    createLiveClient(ctx.transport.session),
+  );
   return result.ok
-    ? ok('comment', { id: result.id })
+    ? ok('comment', { id: result.id, on: postUrn })
     : err('comment', result.code, result.message, result.hint);
 }
 

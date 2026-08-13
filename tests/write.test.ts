@@ -79,6 +79,7 @@ describe('no TTY, no write', () => {
 
   test('comment refuses without a terminal', async () => {
     withToken();
+    withSession();
     const e = await runComment('urn:li:activity:1', 'nice', T0, noTty);
     if (e.ok) throw new Error('expected refusal');
     expect(e.error.code).toBe('CONFIRMATION_REQUIRED');
@@ -181,5 +182,28 @@ describe('a write spends exactly once', () => {
     const before = writesSpent();
     await runReact('urn:li:activity:1', 'LIKE', T0, noTty);
     expect(writesSpent()).toBe(before);
+  });
+});
+
+// Commenting must fetch the rendered post page to harvest its binding tokens.
+// That is a network call, so the TTY check has to come BEFORE it — not merely
+// before the send — or an agent shelling out non-interactively causes LinkedIn
+// traffic it can never use.
+describe('no TTY means no network, not just no write', () => {
+  test('comment refuses before fetching anything', async () => {
+    withSession();
+    let fetched = false;
+    const realFetch = globalThis.fetch;
+    globalThis.fetch = (async () => {
+      fetched = true;
+      return new Response('', { status: 200 });
+    }) as typeof fetch;
+    try {
+      const e = await runComment('urn:li:activity:7493711068700033024', 'hi', T0, noTty);
+      expect(e.ok).toBe(false);
+      expect(fetched).toBe(false);
+    } finally {
+      globalThis.fetch = realFetch;
+    }
   });
 });
