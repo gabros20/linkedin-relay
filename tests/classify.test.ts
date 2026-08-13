@@ -231,3 +231,23 @@ describe('a write response is not validated like a read', () => {
     expect(classify(challenge, { expectJson: false }).outcome).toBe('error');
   });
 });
+
+// LinkedIn's SDUI responses are RSC streams that DESCRIBE the actions available
+// on an entity — which is how the delete and edit contracts were discovered
+// without capturing any browser traffic. Dropping the body would throw that
+// away.
+describe('a non-JSON write response keeps its body', () => {
+  test('the raw stream is carried through', () => {
+    const c = classify(
+      { status: 200, body: '2:I[45613,[],""]', headers: {} },
+      { expectJson: false },
+    );
+    expect(c.raw).toBe('2:I[45613,[],""]');
+  });
+
+  test('a JSON write body is both parsed and kept raw', () => {
+    const c = classify({ status: 200, body: '{"a":1}', headers: {} }, { expectJson: false });
+    expect((c.json as { a: number }).a).toBe(1);
+    expect(c.raw).toBe('{"a":1}');
+  });
+});

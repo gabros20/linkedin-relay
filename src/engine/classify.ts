@@ -20,6 +20,8 @@ export interface RawResponse {
 
 export interface Classification {
   outcome: 'ok' | 'error';
+  /** The unparsed body, kept for surfaces whose response is not JSON. */
+  raw?: string;
   code?: string;
   message?: string;
   hint?: string;
@@ -195,11 +197,14 @@ export function classify(res: RawResponse, opts: ClassifyOpts = {}): Classificat
 
   if (opts.expectJson === false) {
     // Parse opportunistically: some writes do answer JSON and the caller can
-    // use it, but a body we cannot parse is not an error on this path.
+    // use it, but a body we cannot parse is not an error on this path. The raw
+    // text is carried through either way — LinkedIn's SDUI surface answers with
+    // an RSC stream that DESCRIBES its available actions, and that description
+    // is the most useful thing in the response.
     try {
-      return { outcome: 'ok', retry: false, json: JSON.parse(res.body) as unknown };
+      return { outcome: 'ok', retry: false, json: JSON.parse(res.body) as unknown, raw: res.body };
     } catch {
-      return { outcome: 'ok', retry: false, json: null };
+      return { outcome: 'ok', retry: false, json: null, raw: res.body };
     }
   }
 
