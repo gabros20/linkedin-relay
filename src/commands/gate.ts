@@ -52,17 +52,36 @@ export function reserve(command: string, now: number): Envelope | null {
 
 export type Gated<T> = { confirmed: unknown; payload: T } | Envelope;
 
-/** Ask a human, then commit the spend. Makes no network call either way. */
+export interface GateOpts {
+  /**
+   * Whether this gate is the thing that accounts for the write.
+   *
+   * client.ts is documented as "the only place that spends budget", and for
+   * any transport that goes through it that is true — so the gate must only
+   * ASK, never account, or the same write is billed twice. It was: every
+   * Voyager and SDUI write cost two, and the prompt counted 6 → 4 → 2 across
+   * three reactions until the daily cap locked the user out of their own tool.
+   *
+   * Defaults to true because the OAuth transport issues its own fetch and
+   * never reaches the client, so there the gate is the only place that can.
+   */
+  commitSpend?: boolean;
+}
+
+/** Ask a human. Makes no network call either way. */
 export async function gateWrite<T>(
   command: string,
   plan: WritePlan<T>,
   now: number,
   deps: ConfirmDeps,
+  opts: GateOpts = {},
 ): Promise<Gated<T>> {
   const outcome = await confirmWrite(plan, budgetLine(now), deps);
   if (!outcome.ok) return err(command, outcome.code, outcome.message, outcome.hint);
-  // Only now is the spend committed — an aborted write costs nothing.
-  const attempt = spend(ledger(), 'write', now);
-  if ('permit' in attempt) saveJson(cachePath('budget.json'), attempt.ledger);
+  // Only after approval is anything committed — an aborted write costs nothing.
+  if (opts.commitSpend !== false) {
+    const attempt = spend(ledger(), 'write', now);
+    if ('permit' in attempt) saveJson(cachePath('budget.json'), attempt.ledger);
+  }
   return { confirmed: outcome.confirmed, payload: plan.payload };
 }

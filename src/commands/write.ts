@@ -78,7 +78,11 @@ async function gate<T>(
   ctx: WriteContext,
   deps: ConfirmDeps,
 ): Promise<{ confirmed: Parameters<typeof sendShare>[0] } | Envelope> {
-  const gated = await gateWrite(command, plan, ctx.now, deps);
+  // Only the OAuth transport issues its own fetch; everything else goes
+  // through the client, which does its own accounting.
+  const gated = await gateWrite(command, plan, ctx.now, deps, {
+    commitSpend: ctx.transport.kind === 'oauth',
+  });
   if ('ok' in gated) return gated;
   return { confirmed: gated.confirmed as never };
 }

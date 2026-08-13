@@ -135,7 +135,10 @@ export async function runDelete(
     transport: 'voyager',
   };
 
-  const gated = await gateWrite('delete', plan, now, deps ?? terminalDeps());
+  // The client accounts for the DELETE itself.
+  const gated = await gateWrite('delete', plan, now, deps ?? terminalDeps(), {
+    commitSpend: false,
+  });
   if ('ok' in gated) return gated;
 
   const result = await deletePost(gated.confirmed as never, createLiveClient(session.session));

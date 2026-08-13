@@ -4,6 +4,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { cachePath, loadJson, saveJson } from '../src/cache/store.ts';
 import type { ConfirmDeps } from '../src/commands/confirm.ts';
+import { gateWrite } from '../src/commands/gate.ts';
 import { runOauthStatus } from '../src/commands/oauth.ts';
 import { saveToken } from '../src/commands/token.ts';
 import { runComment, runReact, runShare } from '../src/commands/write.ts';
@@ -129,5 +130,56 @@ describe('the write budget is enforced before the prompt', () => {
     const e = await runShare('hello', 'public', T0, noTty);
     if (e.ok) throw new Error('expected refusal');
     expect(e.error.code).toBe('BUDGET_EXHAUSTED');
+  });
+});
+
+// The gate commits a write spend, and the client commits another for the same
+// operation, so every Voyager/SDUI write cost TWO. Observed live: the prompt
+// counted down 6 → 4 → 2 across three reactions. It went unnoticed because
+// OAuth writes bypass the client entirely and therefore spend once.
+//
+// A budget that over-counts is not a safe-side error: it locks the user out of
+// their own tool early, and it did.
+describe('a write spends exactly once', () => {
+  function writesSpent(): number {
+    const r = loadJson<{ spends: Record<string, number[]> }>(cachePath('budget.json'));
+    return r.state === 'ok' ? (r.value.spends.write?.length ?? 0) : 0;
+  }
+
+  const yes: ConfirmDeps = {
+    isTty: true,
+    prompt: async (q: string) => /Type (\w+) to confirm/.exec(q)?.[1] ?? '',
+    write: () => {},
+  };
+  const plan = {
+    action: 'react to a post',
+    payload: { urn: 'urn:li:activity:1' },
+    summary: [],
+    reversibility: 'x',
+    transport: 'voyager' as const,
+  };
+
+  // The client is documented as "the only place that spends budget". For a
+  // transport that goes through it, the gate must therefore only ASK, never
+  // account — or the same write is billed twice.
+  test('the gate does not account for a write the client will account for', async () => {
+    withSession();
+    await gateWrite('react', plan, T0, yes, { commitSpend: false });
+    expect(writesSpent()).toBe(0);
+  });
+
+  // OAuth writes never touch the client, so there the gate is the only place
+  // that can account for them and must.
+  test('the gate does account when nothing else will', async () => {
+    withSession();
+    await gateWrite('share', plan, T0, yes);
+    expect(writesSpent()).toBe(1);
+  });
+
+  test('an aborted write still costs nothing', async () => {
+    withSession();
+    const before = writesSpent();
+    await runReact('urn:li:activity:1', 'LIKE', T0, noTty);
+    expect(writesSpent()).toBe(before);
   });
 });
