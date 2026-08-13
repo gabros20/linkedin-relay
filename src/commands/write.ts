@@ -177,17 +177,27 @@ export async function runComment(
       'lnrelay comment <urn> "<text>"',
     );
   }
-  // The urn decides the operation: a post urn creates a comment, a comment urn
-  // edits that comment. No flag to remember, and no way to mean one and get the
-  // other — the two urn shapes are disjoint.
-  const editing = parseCommentUrn(postUrn);
-  const activityId = editing?.activityId ?? activityIdOf(postUrn);
+  // A comment urn is REFUSED here rather than treated as an edit. Someone
+  // holding one most likely wants to reply to it, and silently overwriting it
+  // instead would be the worst possible reading of the command. Editing has its
+  // own verb; overloading is right when the operation is the same on different
+  // types (`delete`), wrong when the operations differ.
+  if (parseCommentUrn(postUrn) !== null) {
+    return err(
+      'comment',
+      'INVALID_INPUT',
+      'that is a comment urn, not a post urn',
+      `To change its text: lnrelay edit ${postUrn} "<text>". Replying to a comment is not ` +
+        'implemented — pass the POST urn to add a top-level comment.',
+    );
+  }
+  const activityId = activityIdOf(postUrn);
   if (activityId === null) {
     return err(
       'comment',
       'INVALID_INPUT',
-      `'${postUrn}' identifies neither a post nor a comment`,
-      'Pass urn:li:activity:<id> to comment, or a comment urn to edit that comment.',
+      `'${postUrn}' does not identify a post`,
+      'Pass urn:li:activity:<id>.',
     );
   }
 
@@ -217,43 +227,94 @@ export async function runComment(
   if ('ok' in harvested && harvested.ok !== true) return harvested as Envelope;
   if (!('tokens' in harvested)) return harvested as Envelope;
 
-  const plan: WritePlan<{
-    activityId: string;
-    text: string;
-    tokens: CommentTokens;
-    edit?: CommentRef;
-  }> = {
-    action: editing === null ? 'comment on a post' : 'edit your comment',
-    payload: {
-      activityId,
-      text,
-      tokens: harvested.tokens,
-      ...(editing === null ? {} : { edit: editing }),
-    },
-    summary: [
-      authorLine(ctx.transport),
-      `on       ${postUrn}`,
-      `${editing === null ? 'content ' : 'new text'} "${text}"`,
-    ],
+  const plan: WritePlan<{ activityId: string; text: string; tokens: CommentTokens }> = {
+    action: 'comment on a post',
+    payload: { activityId, text, tokens: harvested.tokens },
+    summary: [authorLine(ctx.transport), `on       ${postUrn}`, `content  "${text}"`],
     reversibility:
-      editing === null
-        ? 'deletable with `lnrelay delete <comment-urn>`; the author is notified immediately'
-        : 'editable again; LinkedIn marks the comment edited and the original is not recoverable here',
+      'deletable with `lnrelay delete <comment-urn>`; the author is notified immediately',
     transport: 'voyager',
   };
 
   const gated = await gate('comment', plan, ctx, deps);
   if ('ok' in gated) return gated;
 
-  const client = createLiveClient(ctx.transport.session);
-  const result =
-    editing === null
-      ? await sduiComment(gated.confirmed as never, client)
-      : await runCommentAction(editing, UPDATE_OP, harvested.tokens.trackingId, client, text);
-
+  const result = await sduiComment(
+    gated.confirmed as never,
+    createLiveClient(ctx.transport.session),
+  );
   return result.ok
-    ? ok('comment', { on: postUrn, edited: editing !== null })
+    ? ok('comment', { on: postUrn })
     : err('comment', result.code, result.message, result.hint);
+}
+
+/** Change the text of a comment you wrote. Its own verb, deliberately. */
+export async function runEdit(
+  commentUrn: string | undefined,
+  text: string | undefined,
+  now = Date.now(),
+  deps: ConfirmDeps = terminalDeps(),
+): Promise<Envelope> {
+  if (commentUrn === undefined || text === undefined || text.trim() === '') {
+    return err(
+      'edit',
+      'INVALID_INPUT',
+      'a comment urn and the new text are required',
+      'lnrelay edit <comment-urn> "<text>"',
+    );
+  }
+  const ref: CommentRef | null = parseCommentUrn(commentUrn);
+  if (ref === null) {
+    return err(
+      'edit',
+      'INVALID_INPUT',
+      `'${commentUrn}' is not a comment urn`,
+      'Only comments can be edited here — a published post cannot. Get the urn from ' +
+        '`lnrelay post <activity-urn>`.',
+    );
+  }
+
+  if (!deps.isTty) {
+    return err(
+      'edit',
+      'CONFIRMATION_REQUIRED',
+      'editing needs a human to confirm it at an interactive terminal',
+      'No terminal is attached, so nothing was sent and no network call was made.',
+    );
+  }
+
+  const ctx = prepare('edit', now, 'voyager');
+  if ('ok' in ctx) return ctx;
+  if (ctx.transport.kind !== 'voyager') {
+    return err('edit', 'NOT_IMPLEMENTED', 'editing is only implemented over the private API');
+  }
+
+  const harvested = await harvest(ref.activityId, ctx.transport.session, now);
+  if (!('tokens' in harvested)) return harvested as Envelope;
+
+  const plan: WritePlan<{ urn: string; text: string }> = {
+    action: 'edit your comment',
+    payload: { urn: commentUrn, text },
+    summary: [authorLine(ctx.transport), `comment  ${commentUrn}`, `new text "${text}"`],
+    reversibility:
+      'editable again, but the previous text is NOT recoverable here and LinkedIn marks the ' +
+      'comment as edited',
+    transport: 'voyager',
+  };
+
+  const gated = await gate('edit', plan, ctx, deps);
+  if ('ok' in gated) return gated;
+
+  const result = await runCommentAction(
+    ref,
+    UPDATE_OP,
+    harvested.tokens.trackingId,
+    createLiveClient(ctx.transport.session),
+    text,
+  );
+  return result.ok
+    ? ok('edit', { edited: commentUrn })
+    : err('edit', result.code, result.message, result.hint);
 }
 
 const REACTIONS: readonly string[] = SDUI_REACTIONS;

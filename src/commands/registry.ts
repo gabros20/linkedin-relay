@@ -239,13 +239,12 @@ export const COMMANDS: CommandDef[] = [
     name: 'comment',
     cost: '1 call — write',
     summary:
-      'Add a comment, or edit one of yours — the urn decides which. Harvests its binding ' +
-      'tokens from the rendered page; no browser needed, but it costs one heavy read.',
+      'Add a comment to a post. Harvests its binding tokens from the rendered page; no browser ' +
+      'needed, but it costs one heavy read.',
     usage:
-      'lnrelay comment <activity-urn> "<text>"      # add a comment\n' +
-      '       lnrelay comment <comment-urn>  "<text>"      # EDIT that comment\n' +
-      '       The urn decides which. Fetches the post page (~2.8 MB) to harvest a binding key and\n' +
-      '       trackingId, and proves the key belongs to that post before asking.',
+      'lnrelay comment <activity-urn> "<text>"\n' +
+      '       Fetches the post page (~2.8 MB) to harvest a binding key and trackingId, and proves\n' +
+      '       the key belongs to that post before asking. To change a comment, see `edit`.',
     audience: ['cli'],
     risk: 'write',
     implemented: true,
@@ -259,6 +258,17 @@ export const COMMANDS: CommandDef[] = [
     usage:
       'lnrelay delete <activity-urn>     # a post; shows you its text before destroying it\n' +
       '       lnrelay delete <comment-urn>      # a comment; the server decides if you may',
+    audience: ['cli'],
+    risk: 'write',
+    implemented: true,
+  },
+  {
+    name: 'edit',
+    cost: '1 read + 1 write',
+    summary:
+      'Change the text of a comment you wrote. Its own verb, so a comment urn can never be ' +
+      'mistaken for something to comment ON.',
+    usage: 'lnrelay edit <comment-urn> "<text>"',
     audience: ['cli'],
     risk: 'write',
     implemented: true,
