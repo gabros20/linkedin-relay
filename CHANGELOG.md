@@ -1,3 +1,10 @@
+# [1.6.0](https://github.com/gabros20/linkedin-relay/compare/v1.5.1...v1.6.0) (2026-08-13)
+
+
+### Features
+
+* **comments:** edit and delete, discovered by asking the server ([44942cc](https://github.com/gabros20/linkedin-relay/commit/44942cc1fce69fa4fe4b66c644404a6e1746a053))
+
 ## [1.5.1](https://github.com/gabros20/linkedin-relay/compare/v1.5.0...v1.5.1) (2026-08-13)
 
 
