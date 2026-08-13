@@ -162,3 +162,41 @@ The binding key was CONSTANT across two comments on the same post, so step 1 is 
   the key is absent, never post with a stale or empty binding.
 - Segment B's semantics are **unknown**: whether it expires, is per-session or per-screen-instance is
   not established — only that it was stable across two comments minutes apart.
+
+---
+
+## Replying to a comment — investigated, NOT solved (2026-08-13)
+
+Edit and delete were discovered by asking the server: the comment "…" menu is a contract listing
+that returns each action with fully-populated arguments. **Replying does not appear there**, and the
+reason is structural rather than an oversight in the search.
+
+What the evidence shows:
+
+- **Reply is a client-side toggle, not a server action.** The reply button carries
+  `viewName: "comment-reply"` and flips `replyCommentBoxDisplayBinding-urn:li:comment:(…)`. Nothing
+  is sent when it is pressed; it just reveals a box.
+- **The submit therefore goes through `createComment`**, the same operation a top-level comment uses.
+- **The box bindings are keyed by the PARENT COMMENT urn**, not by the opaque post binding a
+  top-level comment uses. All 25 slots appear in that form:
+  `commentBoxText-urn:li:comment:(urn:li:activity:<post>,<comment>)`, `…CharCount-…`, `…IsSaving-…`.
+
+And here is the blocker. That comment-keyed binding is **the same shape the EDIT box uses**. So the
+binding alone cannot be what distinguishes a reply from an edit — the difference has to be the
+operation (`createComment` vs `updateComment`) plus, presumably, a parent reference inside the
+`createComment` payload.
+
+**The name and shape of that parent field is unknown.** It is not in the menu stream, not in the
+rendered page, and not in any capture taken so far, because no reply was ever performed while
+observing. Guessing a field name here is exactly the failure this project refuses: a `createComment`
+that silently omits the parent posts a TOP-LEVEL comment on someone's post instead of a reply —
+public, under the owner's name, and wrong in a way no status code reports.
+
+### What would settle it
+
+One capture. With `bun run scripts/observe-write.ts` running, reply to any comment by hand once. The
+`createComment` payload that results differs from the captured top-level one by exactly the fields
+that mean "this is a reply", and a structural diff against the existing capture names them
+immediately.
+
+That is a two-minute job at a desk with the debug Chrome, and it cannot be done from a phone.
