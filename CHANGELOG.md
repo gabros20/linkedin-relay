@@ -1,3 +1,10 @@
+## [1.3.2](https://github.com/gabros20/linkedin-relay/compare/v1.3.1...v1.3.2) (2026-08-13)
+
+
+### Bug Fixes
+
+* **budget:** a write was billed twice, locking the user out early ([6f32d73](https://github.com/gabros20/linkedin-relay/commit/6f32d73dd360ae1487a7488cf0e45048fb87ee28))
+
 ## [1.3.1](https://github.com/gabros20/linkedin-relay/compare/v1.3.0...v1.3.1) (2026-08-13)
 
 
