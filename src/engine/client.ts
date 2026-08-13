@@ -100,7 +100,14 @@ export function createClient(session: Session, deps: ClientDeps) {
     if (raw === null) {
       return { ok: false, code: 'FETCH_FAILED', message: 'the request could not be completed' };
     }
-    const classification = classify(raw);
+    // A read's body is a contract; a write's body is a receipt. Validating a
+    // write response read-shaped is what made a successful reaction report
+    // SCHEMA_DRIFT — and made the user retry a write that had already landed.
+    //
+    // Keyed on the METHOD, not on whether a body was sent: `delete` sends no
+    // body and is still a write.
+    const isRead = (spec.method ?? 'GET') === 'GET';
+    const classification = classify(raw, { expectJson: isRead });
 
     // 6. A throttle, block or challenge opens the breaker for every process.
     if (classification.cooldown !== undefined) {

@@ -57,14 +57,24 @@ function classifyRedirect(location: string): Classification {
   return fail('FETCH_FAILED', `unexpected redirect to ${location || '(none)'}`);
 }
 
+/**
+ * A challenge served with status 200, if this body is one.
+ *
+ * Split out of classifyBody because it applies to EVERY path: a write must not
+ * skip the challenge check just because its body is not a read contract.
+ */
+function challengeIn(body: string): Classification | null {
+  if (!CHALLENGE_MARKERS.test(body.slice(0, 4000))) return null;
+  return fail('CHALLENGE_DETECTED', 'a challenge page was returned with status 200', {
+    cooldown: 'CHALLENGE_DETECTED',
+    hint: CHALLENGE_HINT,
+  });
+}
+
 /** A 200 can still be a failure. Everything here inspects the body. */
 function classifyBody(body: string): Classification {
-  if (CHALLENGE_MARKERS.test(body.slice(0, 4000))) {
-    return fail('CHALLENGE_DETECTED', 'a challenge page was returned with status 200', {
-      cooldown: 'CHALLENGE_DETECTED',
-      hint: CHALLENGE_HINT,
-    });
-  }
+  const challenge = challengeIn(body);
+  if (challenge !== null) return challenge;
 
   let json: unknown;
   try {
@@ -97,7 +107,22 @@ function classifyBody(body: string): Classification {
   return { outcome: 'ok', retry: false, json };
 }
 
-export function classify(res: RawResponse): Classification {
+export interface ClassifyOpts {
+  /**
+   * Whether the body is a contract to validate (a read) or a receipt (a write).
+   *
+   * A read's body must be a Voyager envelope, and a body that is not one means
+   * something went wrong even under a 200. A WRITE's body is whatever the
+   * surface feels like returning — LinkedIn's SDUI endpoints answer with a
+   * React Server Components stream, which is not JSON and never will be.
+   *
+   * Defaults to true so reads keep their contract and nothing loosens by
+   * omission.
+   */
+  expectJson?: boolean;
+}
+
+export function classify(res: RawResponse, opts: ClassifyOpts = {}): Classification {
   const headers = res.headers ?? {};
 
   if (res.status >= 300 && res.status < 400) {
@@ -162,6 +187,21 @@ export function classify(res: RawResponse): Classification {
   // classifyBody, whose whole job is detecting a READ that returned nothing
   // when it claimed otherwise.
   if (res.body.trim() === '') return { outcome: 'ok', retry: false, json: null };
+
+  // A challenge is served with status 200 and an HTML body on ANY path, so it
+  // is checked before the read/write split — a write must not walk past it.
+  const challenge = challengeIn(res.body);
+  if (challenge !== null) return challenge;
+
+  if (opts.expectJson === false) {
+    // Parse opportunistically: some writes do answer JSON and the caller can
+    // use it, but a body we cannot parse is not an error on this path.
+    try {
+      return { outcome: 'ok', retry: false, json: JSON.parse(res.body) as unknown };
+    } catch {
+      return { outcome: 'ok', retry: false, json: null };
+    }
+  }
 
   return classifyBody(res.body);
 }

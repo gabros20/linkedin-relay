@@ -6,6 +6,7 @@ import type { OAuthToken } from '../engine/oauth-write.ts';
 import { comment as sendComment, share as sendShare } from '../engine/oauth-write.ts';
 import {
   type Reaction,
+  reactionLabel,
   REACTIONS as SDUI_REACTIONS,
   react as sduiReact,
 } from '../engine/sdui-write.ts';
@@ -203,11 +204,12 @@ export async function runReact(
     summary: [
       authorLine(ctx.transport),
       `on       ${postUrn}`,
-      `reaction ${remove ? `${reaction} (REMOVING)` : reaction}`,
+      `reaction ${reaction} — shows as "${reactionLabel(reaction as Reaction)}"${remove ? ' (REMOVING)' : ''}`,
     ],
     reversibility: remove
       ? 'you can react again; the author may have been notified the first time'
-      : 'removable with `lnrelay react <urn> --remove`; the author is notified immediately',
+      : `removable with \`lnrelay react ${postUrn} --remove --type ${reaction}\` — the type is ` +
+        'required, LinkedIn deletes a specific reaction; the author is notified immediately',
     transport: 'voyager',
   };
 

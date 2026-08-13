@@ -49,6 +49,25 @@ export const REACTIONS = [
 
 export type Reaction = (typeof REACTIONS)[number];
 
+/**
+ * What each enum actually renders as in the UI. These do NOT match: `PRAISE`
+ * shows as "Celebrate", `INTEREST` as "Insightful". Verified live — a
+ * `--type PRAISE` produced a Celebrate. Surfaced in the confirmation prompt so
+ * nobody discovers the mismatch by putting the wrong reaction on a real post.
+ */
+const LABELS: Record<Reaction, string> = {
+  LIKE: 'Like',
+  PRAISE: 'Celebrate',
+  EMPATHY: 'Love',
+  INTEREST: 'Insightful',
+  APPRECIATION: 'Support',
+  ENTERTAINMENT: 'Funny',
+};
+
+export function reactionLabel(reaction: Reaction): string {
+  return LABELS[reaction];
+}
+
 export function reactionUrl(op: 'create' | 'delete'): string {
   return `${SDUI_ACTION}?sduiid=com.linkedin.sdui.reactions.${op}`;
 }

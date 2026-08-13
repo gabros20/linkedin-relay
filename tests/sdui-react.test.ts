@@ -1,6 +1,7 @@
 import { describe, expect, test } from 'bun:test';
 import {
   REACTIONS,
+  reactionLabel,
   reactionPayload,
   reactionUrl,
   sduiBody,
@@ -106,5 +107,23 @@ describe('the request body', () => {
   test('a delete carries the reaction type being removed', () => {
     const d = sduiBody('delete', targetFor('urn:li:activity:71'), 'INTEREST');
     expect(d.requestedArguments.payload.reactionType).toBe('ReactionType_INTEREST');
+  });
+});
+
+// LinkedIn's enum names are not its UI labels: PRAISE renders as "Celebrate",
+// INTEREST as "Insightful". Verified live — `--type PRAISE` produced a
+// Celebrate. Someone picking a reaction should not have to discover that by
+// posting the wrong one to a real person's post.
+describe('reaction labels', () => {
+  test('maps each enum to the label the UI actually shows', () => {
+    expect(reactionLabel('PRAISE')).toBe('Celebrate');
+    expect(reactionLabel('INTEREST')).toBe('Insightful');
+    expect(reactionLabel('LIKE')).toBe('Like');
+  });
+
+  test('every reaction has a label — no silent gaps', () => {
+    for (const r of REACTIONS) {
+      expect(reactionLabel(r).length).toBeGreaterThan(0);
+    }
   });
 });

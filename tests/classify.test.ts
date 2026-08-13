@@ -181,3 +181,53 @@ describe('write statuses are successes', () => {
     );
   });
 });
+
+// THIRD instance of one root cause: response handling written for reads, then
+// applied to writes. First 201 was rejected as an "unexpected status". Then 204
+// would have been. Now a write that succeeded was reported as SCHEMA_DRIFT
+// because its body is not JSON — LinkedIn's SDUI surface answers with a React
+// Server Components stream. The reaction landed; the tool said it failed; the
+// user retried three times and spent six writes.
+//
+// A read's body is a contract we validate. A write's body is a receipt.
+describe('a write response is not validated like a read', () => {
+  const rsc = { status: 200, body: '2:I[45613,[],""]\n0:["$@1",null]\n', headers: {} };
+
+  test('a non-JSON 200 on a write is a success', () => {
+    expect(classify(rsc, { expectJson: false }).outcome).not.toBe('error');
+  });
+
+  test('the same body on a READ is still schema drift — reads keep their contract', () => {
+    const c = classify(rsc, { expectJson: true });
+    expect(c.outcome).toBe('error');
+    expect(c.code).toBe('SCHEMA_DRIFT');
+  });
+
+  test('reads validate by default, so nothing loosens by omission', () => {
+    expect(classify(rsc).outcome).toBe('error');
+  });
+
+  test('a write that does return JSON still has it parsed', () => {
+    const c = classify(
+      { status: 200, body: '{"urn":"urn:li:share:1"}', headers: {} },
+      {
+        expectJson: false,
+      },
+    );
+    expect((c.json as { urn: string }).urn).toBe('urn:li:share:1');
+  });
+
+  // Widening the success path must not swallow the signals the breaker needs.
+  test('hostile statuses still fail on a write', () => {
+    for (const status of [401, 429, 999]) {
+      expect(classify({ status, body: 'x', headers: {} }, { expectJson: false }).outcome).toBe(
+        'error',
+      );
+    }
+  });
+
+  test('a challenge page is still caught on a write path', () => {
+    const challenge = { status: 200, body: '<html>checkpoint/challenge</html>', headers: {} };
+    expect(classify(challenge, { expectJson: false }).outcome).toBe('error');
+  });
+});
