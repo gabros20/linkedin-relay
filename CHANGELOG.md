@@ -1,3 +1,10 @@
+# [1.4.0](https://github.com/gabros20/linkedin-relay/compare/v1.3.3...v1.4.0) (2026-08-13)
+
+
+### Features
+
+* **harvest:** derive and verify the tokens a comment needs, no browser ([462ca79](https://github.com/gabros20/linkedin-relay/commit/462ca79a00d1e7635da80cd9877f7e2dff0291cc))
+
 ## [1.3.3](https://github.com/gabros20/linkedin-relay/compare/v1.3.2...v1.3.3) (2026-08-13)
 
 
