@@ -17,6 +17,7 @@
 // so that case is reported rather than refused, and the prompt says plainly
 // that it is proceeding blind.
 
+import { CacheCorrupt, openDb, removeUrns } from '../cache/db.ts';
 import { createEngine, createLiveClient } from '../engine/index.ts';
 import { LAUNCH_HINT, loadSession } from '../engine/session.ts';
 import { deletePost, isDeletableUrn } from '../engine/voyager-write.ts';
@@ -78,6 +79,33 @@ async function lookup(urn: string, quiet: boolean): Promise<Shaped | undefined> 
   const posts = await engine.myPosts(profileUrn, LOOKUP_LIMIT);
   if (!posts.ok) return undefined;
   return findOwnPost(shapeAll(posts.value.parsed.items, posts.value.index), urn);
+}
+
+/**
+ * The urn to drop from the local cache after a delete, or null.
+ *
+ * `sync my-posts` upserts and never evicts, so without this a deleted post
+ * lingers and `my-posts` keeps listing something that no longer exists —
+ * observed live, LinkedIn returning 1 post while the cache held 2.
+ *
+ * Only a SUCCESSFUL delete evicts. A failed one means the post is still there,
+ * and dropping it from the cache would hide a post that still exists under the
+ * owner's name — the opposite of the problem being fixed.
+ */
+export function evictionTarget(result: { ok: boolean; id?: string | null }): string | null {
+  if (!result.ok) return null;
+  return typeof result.id === 'string' && result.id !== '' ? result.id : null;
+}
+
+/** Drop the row locally. A cache failure must not report the delete as failed. */
+function evict(urn: string | null, now: number): boolean {
+  if (urn === null) return false;
+  try {
+    return removeUrns(openDb(now), 'my-posts', [urn]) > 0;
+  } catch (e) {
+    if (e instanceof CacheCorrupt) return false;
+    throw e;
+  }
 }
 
 export async function runDelete(
@@ -142,7 +170,9 @@ export async function runDelete(
   if ('ok' in gated) return gated;
 
   const result = await deletePost(gated.confirmed as never, createLiveClient(session.session));
-  return result.ok
-    ? ok('delete', { deleted: urn, verified: post !== undefined })
-    : err('delete', result.code, result.message, result.hint);
+  if (!result.ok) return err('delete', result.code, result.message, result.hint);
+
+  // LinkedIn has it gone; drop our copy so `my-posts` stops listing it.
+  const evicted = evict(evictionTarget(result), now);
+  return ok('delete', { deleted: urn, verified: post !== undefined, evictedFromCache: evicted });
 }

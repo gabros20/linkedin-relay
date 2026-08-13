@@ -3,8 +3,8 @@
 Consolidates `docs/research/W1-W4` and the DESIGN.md §2 revision into one place, because the
 reasoning had scattered across four research lanes and three commits.
 
-**Status: `share` VERIFIED LIVE 2026-08-13 — a real post, HTTP 201. `delete` built but not yet
-exercised. `comment`/`react` blocked on one capture.**
+**Status: `share`, `delete` and `react`/un-react ALL VERIFIED LIVE 2026-08-13. `comment` is
+captured and deliberately not shipped — see §5.**
 
 ---
 
@@ -86,7 +86,8 @@ fallback is allowed — the silence is not.
 | Piece | State |
 |---|---|
 | `engine/voyager-write.ts` — `share` | ✅ **Verified live 2026-08-13 — 201 Created, real post** |
-| `engine/voyager-write.ts` — `delete` | Built, not yet exercised |
+| `engine/voyager-write.ts` — `delete` | ✅ **Verified live — post removed, confirmed server-side** |
+| `engine/sdui-write.ts` — `react` / un-react | ✅ **Verified live over LinkedIn's SDUI surface** |
 | `commands/transport.ts` — transport choice | Built and tested |
 | Confirm gate, budget ledger, breaker, pacing | Unchanged, already applied to writes |
 | `share` over OAuth | Built, unusable without a Page |

@@ -99,6 +99,8 @@ remains unimplemented over this surface rather than shipped on a guess.
 
 ## What this changes
 
-- `react` / un-react: **implemented** in `src/engine/sdui-write.ts` from this capture.
+- `react` / un-react: **implemented and VERIFIED LIVE** in `src/engine/sdui-write.ts`. A
+  `--type PRAISE` produced a Celebrate on a real post, and `--remove` took it back. Note the enum
+  names are not the UI labels: PRAISE renders as "Celebrate", INTEREST as "Insightful".
 - `comment`: still refuses, now with a specific reason instead of "the one sample is unverified".
 - W1 §2–3 are superseded. The samples there describe endpoints the current client does not call.

@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'bun:test';
 import type { ConfirmedWrite } from '../src/commands/confirm.ts';
-import { findOwnPost, previewLines } from '../src/commands/delete.ts';
+import { evictionTarget, findOwnPost, previewLines } from '../src/commands/delete.ts';
 import { deletePost, deleteUrl, isDeletableUrn } from '../src/engine/voyager-write.ts';
 
 function confirmed<T>(payload: T): ConfirmedWrite<T> {
@@ -126,5 +126,27 @@ describe('the preview shown before deleting', () => {
   test('a long post is truncated rather than flooding the prompt', () => {
     const lines = previewLines({ urn: 'u', text: 'x'.repeat(1000) });
     expect(lines.join('\n').length).toBeLessThan(400);
+  });
+});
+
+// `sync my-posts` upserts and never evicts, so a deleted post lingers in the
+// cache and `my-posts` keeps listing something that no longer exists. Verified
+// live: after a successful delete LinkedIn returned 1 post while the cache
+// still held 2.
+//
+// Connections solve this with a snapshot diff, but that machinery exists
+// because absence from a LIMITED fetch does not prove removal. Here nothing
+// needs inferring — we deleted it, so we know.
+describe('a deleted post leaves the cache too', () => {
+  test('the urn to evict is the one that was deleted', () => {
+    expect(evictionTarget({ ok: true, id: 'urn:li:activity:7' })).toBe('urn:li:activity:7');
+  });
+
+  test('a FAILED delete evicts nothing — the post is still there', () => {
+    expect(evictionTarget({ ok: false, code: 'NOT_FOUND', message: 'x' })).toBeNull();
+  });
+
+  test('a success with no urn evicts nothing rather than guessing', () => {
+    expect(evictionTarget({ ok: true, id: null })).toBeNull();
   });
 });
