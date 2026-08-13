@@ -1,3 +1,10 @@
+## [1.2.1](https://github.com/gabros20/linkedin-relay/compare/v1.2.0...v1.2.1) (2026-08-13)
+
+
+### Bug Fixes
+
+* **classify:** accept 201 and 204 — a write is not a failed read ([a92fe28](https://github.com/gabros20/linkedin-relay/commit/a92fe289220922245925707056a5c890bbfbe31e))
+
 # [1.2.0](https://github.com/gabros20/linkedin-relay/compare/v1.1.0...v1.2.0) (2026-08-12)
 
 
