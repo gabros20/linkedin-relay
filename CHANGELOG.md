@@ -1,3 +1,16 @@
+# [2.0.0](https://github.com/gabros20/linkedin-relay/compare/v1.7.0...v2.0.0) (2026-08-13)
+
+
+* refactor(comment)!: editing gets its own verb ([24de4b1](https://github.com/gabros20/linkedin-relay/commit/24de4b1cc6bc53dde0dd60eb1b09ae98d8f56cbf))
+
+
+### BREAKING CHANGES
+
+* `lnrelay comment <comment-urn> "text"` no longer edits that
+comment; it is refused. Use `lnrelay edit <comment-urn> "text"`.
+
+462 tests.
+
 # [1.7.0](https://github.com/gabros20/linkedin-relay/compare/v1.6.0...v1.7.0) (2026-08-13)
 
 
