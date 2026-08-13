@@ -1,3 +1,10 @@
+## [1.2.3](https://github.com/gabros20/linkedin-relay/compare/v1.2.2...v1.2.3) (2026-08-13)
+
+
+### Bug Fixes
+
+* **observe:** watch every tab and worker, not one page ([f8c40c9](https://github.com/gabros20/linkedin-relay/commit/f8c40c94c805a094f86f1795f129bb1ed266a561))
+
 ## [1.2.2](https://github.com/gabros20/linkedin-relay/compare/v1.2.1...v1.2.2) (2026-08-13)
 
 
