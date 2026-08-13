@@ -101,6 +101,16 @@ export const CONTRACTS: Record<string, OperationContract> = {
 
   // The member's own posts. Verified 200; returns an empty collection on an
   // account with no posts, which is a true empty rather than a failure.
+  // Needs the `fsd_profile` namespace, NOT the `fs_miniProfile` urn `whoami`
+  // returns — the legacy form answers 200 with an empty result rather than an
+  // error. That was invisible until the account had a post to return, and is
+  // why engine.myPosts canonicalises the urn before sending it.
+  //
+  // KNOWN INCOMPLETE (2026-08-13): with the namespace fixed this returns the
+  // owner's posts, but a post created minutes earlier did not appear here, nor
+  // in `feed`, over ~1.5 hours. Whether that is an indexing lag or a coverage
+  // limit of this projection is UNRESOLVED — do not treat this endpoint as an
+  // authoritative "all my posts" until it is settled.
   myPosts: {
     name: 'myPosts',
     transport: 'voyager-graphql',

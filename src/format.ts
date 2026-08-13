@@ -89,10 +89,31 @@ function shapeSearchRow(node: Entity): Shaped {
  * ugcPost …7814144000). Reactions and comments key off the ugcPost form, so
  * this is where that mapping comes from — it cannot be derived.
  */
-function shapePost(node: Entity, index?: Map<string, Entity>): Shaped {
+/**
+ * A post's own urn, from whichever of the two live shapes it is.
+ *
+ * `com.linkedin.voyager.feed.render.UpdateV2` carries it in `updateMetadata`.
+ * Its dash sibling `com.linkedin.voyager.dash.feed.Update` — what `myPosts`
+ * returns — has no `updateMetadata` at all, and hides the activity urn in the
+ * first member of a composite entityUrn tuple:
+ *
+ *   urn:li:fsd_update:(urn:li:activity:662…,MEMBER_SHARES,DEBUG_REASON,…)
+ *
+ * Handling only the first shape made every post from `my-posts` arrive with no
+ * urn, which left `delete` unable to identify the post it was about to destroy.
+ */
+function postUrn(node: Entity): string | undefined {
   const meta = node.updateMetadata as { urn?: unknown } | undefined;
+  if (typeof meta?.urn === 'string') return meta.urn;
+
+  const entityUrn = node.entityUrn;
+  if (typeof entityUrn !== 'string') return undefined;
+  return /urn:li:(activity|ugcPost|share):\d+/.exec(entityUrn)?.[0];
+}
+
+function shapePost(node: Entity, index?: Map<string, Entity>): Shaped {
   const actor = node.actor as { name?: unknown; subDescription?: unknown } | undefined;
-  const urn = typeof meta?.urn === 'string' ? meta.urn : undefined;
+  const urn = postUrn(node);
 
   const social = deref(node, '*socialDetail', index);
   const counts =

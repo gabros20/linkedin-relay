@@ -100,3 +100,51 @@ describe('unknown shapes', () => {
     expect(() => shapeEntity({ $type: null, title: 'not an object' })).not.toThrow();
   });
 });
+
+// The dash-namespaced sibling of UpdateV2, returned by `myPosts`. It carries
+// no `updateMetadata` at all — its identity is the first member of a composite
+// entityUrn tuple, the same convention search results use. Missing this made
+// every post from `my-posts` arrive with no urn, which in turn made `delete`
+// unable to find the post it was about to destroy.
+describe('feed post (dash Update)', () => {
+  const post = {
+    $type: 'com.linkedin.voyager.dash.feed.Update',
+    entityUrn:
+      'urn:li:fsd_update:(urn:li:activity:6620492574320930816,MEMBER_SHARES,DEBUG_REASON,DEFAULT,false)',
+    commentary: { text: { text: 'Skatch to Code developer tool!' } },
+    actor: { name: { text: 'Tamas Gabor' }, subDescription: { text: '6yr •' } },
+  };
+
+  test('extracts the activity urn from the composite entity urn', () => {
+    expect(shapeEntity(post).urn).toBe('urn:li:activity:6620492574320930816');
+  });
+
+  test('builds a permalink, which needs that urn', () => {
+    expect(shapeEntity(post).url).toBe(
+      'https://www.linkedin.com/feed/update/urn:li:activity:6620492574320930816/',
+    );
+  });
+
+  test('still reads the commentary and author', () => {
+    expect(shapeEntity(post).text).toBe('Skatch to Code developer tool!');
+    expect(shapeEntity(post).author).toBe('Tamas Gabor');
+  });
+
+  // The legacy shape must keep working — both are live at once.
+  test('does not break UpdateV2, which identifies itself differently', () => {
+    const legacy = {
+      $type: 'com.linkedin.voyager.feed.render.UpdateV2',
+      commentary: { text: { text: 'x' } },
+      updateMetadata: { urn: 'urn:li:activity:111' },
+    };
+    expect(shapeEntity(legacy).urn).toBe('urn:li:activity:111');
+  });
+
+  test('a composite carrying no post urn yields no urn rather than a tuple', () => {
+    const odd = {
+      $type: 'com.linkedin.voyager.dash.feed.Update',
+      entityUrn: 'urn:li:fsd_update:(x,y)',
+    };
+    expect(shapeEntity(odd).urn).toBeUndefined();
+  });
+});

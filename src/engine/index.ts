@@ -14,7 +14,7 @@ import {
   parseCollection,
   parseSingle,
 } from './parse.ts';
-import { encodeVariables } from './restli.ts';
+import { canonicalUrn, encodeVariables } from './restli.ts';
 
 export interface Engine {
   whoami(): Promise<EngineResult<Entity | undefined>>;
@@ -158,7 +158,16 @@ export function createEngine(session: Session, deps?: Partial<ClientDeps>, quiet
       const contract = contractFor('myPosts');
       if (contract === undefined) return missingContract('myPosts');
 
-      const variables = encodeVariables({ count: Math.min(limit, 100), start: 0, profileUrn });
+      // `whoami` answers with an `fs_miniProfile` urn; this is a DASH endpoint
+      // and wants `fsd_profile`. The legacy form returns 200 with an empty
+      // result — no error, no warning — which is why this shipped as
+      // "verified": the account had no posts when the contract was captured,
+      // so empty was indistinguishable from working.
+      const variables = encodeVariables({
+        count: Math.min(limit, 100),
+        start: 0,
+        profileUrn: canonicalUrn(profileUrn),
+      });
       const url = `${contract.path}?includeWebMetadata=true&variables=${variables}&queryId=${contract.queryId}`;
       const res = await client.request({ url, spendClass: 'page', operation: 'myPosts' });
       if (!res.ok) return res;
