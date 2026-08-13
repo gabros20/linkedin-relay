@@ -238,7 +238,7 @@ export const COMMANDS: CommandDef[] = [
   {
     name: 'comment',
     cost: '1 call — write',
-    summary: 'Comment on a post via the official OAuth scope.',
+    summary: 'Comment on a post. OAuth only — see the hint; not replayable over the private API.',
     usage: 'lnrelay comment <activity-urn> "<text>"',
     audience: ['cli'],
     risk: 'write',
@@ -258,8 +258,10 @@ export const COMMANDS: CommandDef[] = [
   {
     name: 'react',
     cost: '1 call — write',
-    summary: 'React to a post via the official OAuth scope. Reversible.',
-    usage: 'lnrelay react <activity-urn> [--type LIKE|PRAISE|EMPATHY|INTEREST|APPRECIATION]',
+    summary: "React to a post or comment, over LinkedIn's SDUI surface. Reversible with --remove.",
+    usage:
+      'lnrelay react <activity-urn | comment-urn> [--type LIKE|PRAISE|EMPATHY|INTEREST|APPRECIATION|ENTERTAINMENT]\n' +
+      '       lnrelay react <urn> --remove          # take the reaction back',
     audience: ['cli'],
     risk: 'write',
     implemented: true,

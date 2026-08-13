@@ -31,6 +31,20 @@ function withToken() {
   saveToken({ accessToken: 'x', memberUrn: 'urn:li:person:ME', expiresAt: T0 + 86_400_000 });
 }
 
+/**
+ * A browser session. `react` needs one specifically: reacting was found to go
+ * over LinkedIn's SDUI surface with cookie auth, not over OAuth, so a token
+ * alone no longer reaches that gate.
+ */
+function withSession() {
+  saveJson(cachePath('session.json'), {
+    liAt: 'a'.repeat(40),
+    jsessionId: '"ajax:1"',
+    userAgent: 'Mozilla/5.0',
+    capturedAt: '2026-08-01',
+  });
+}
+
 describe('writes need OAuth, and say how to get it', () => {
   test('share without a token explains the self-serve setup', async () => {
     const e = await runShare('hello', 'public', T0, noTty);
@@ -70,7 +84,7 @@ describe('no TTY, no write', () => {
   });
 
   test('react refuses without a terminal', async () => {
-    withToken();
+    withSession();
     const e = await runReact('urn:li:activity:1', 'LIKE', T0, noTty);
     if (e.ok) throw new Error('expected refusal');
     expect(e.error.code).toBe('CONFIRMATION_REQUIRED');

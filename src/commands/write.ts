@@ -3,11 +3,12 @@
 
 import { createLiveClient } from '../engine/index.ts';
 import type { OAuthToken } from '../engine/oauth-write.ts';
+import { comment as sendComment, share as sendShare } from '../engine/oauth-write.ts';
 import {
-  comment as sendComment,
-  react as sendReact,
-  share as sendShare,
-} from '../engine/oauth-write.ts';
+  type Reaction,
+  REACTIONS as SDUI_REACTIONS,
+  react as sduiReact,
+} from '../engine/sdui-write.ts';
 import { loadSession } from '../engine/session.ts';
 import { share as voyagerShare } from '../engine/voyager-write.ts';
 import { err, ok } from '../output.ts';
@@ -46,13 +47,7 @@ function prepare(command: string, now: number, via?: 'oauth' | 'voyager'): Write
   return ctx;
 }
 
-/**
- * OAuth-only operations. `comment` and `react` exist over Voyager, but the one
- * OSS sample for each contradicts this project's own verified read-side
- * findings on which urn identifies the target (docs/research/W1 §2-3). Shipping
- * a guessed urn contract would fail silently or comment on the wrong post, so
- * they refuse until a real capture settles it.
- */
+/** OAuth-only operations — currently just `comment`. See requireOauth. */
 function oauthToken(ctx: WriteContext): OAuthToken {
   if (ctx.transport.kind !== 'oauth') {
     // Unreachable: requireOauth runs first. Throwing beats a cast that would
@@ -68,10 +63,11 @@ function requireOauth(command: string, ctx: WriteContext): Envelope | null {
     command,
     'NOT_IMPLEMENTED',
     `'${command}' is not implemented over the private API`,
-    `Only 'share' is. The one available sample for ${command} disagrees with this tool's own ` +
-      "verified read-side finding about which urn identifies the target, and a wrong urn doesn't " +
-      'error — it acts on the wrong post. Run `bun run scripts/observe-write.ts`, perform the ' +
-      'action by hand once, and the capture settles it. See docs/research/W1-voyager-writes.md.',
+    'Commenting was captured from the live client on 2026-08-13 and is NOT replayable as a ' +
+      'single request: com.linkedin.sdui.comments.createComment carries a trackingId from the ' +
+      'feed render and an opaque binding key that only exists once a page has been rendered. ' +
+      'Reaching it means fetching the SDUI screen first to harvest both. `share`, `delete` and ' +
+      '`react` work over the private API. See docs/research/W5-sdui-writes.md.',
   );
 }
 
@@ -169,21 +165,22 @@ export async function runComment(
     : err('comment', result.code, result.message, result.hint);
 }
 
-const REACTIONS = ['LIKE', 'PRAISE', 'EMPATHY', 'INTEREST', 'APPRECIATION', 'ENTERTAINMENT'];
+const REACTIONS: readonly string[] = SDUI_REACTIONS;
 
 export async function runReact(
   postUrn: string | undefined,
   type: string,
   now = Date.now(),
   deps: ConfirmDeps = terminalDeps(),
+  remove = false,
 ): Promise<Envelope> {
   const reaction = type.toUpperCase();
   if (postUrn === undefined) {
     return err(
       'react',
       'INVALID_INPUT',
-      'a post urn is required',
-      'lnrelay react <urn> [--type LIKE]',
+      'a post or comment urn is required',
+      'lnrelay react <urn> [--type LIKE] [--remove]',
     );
   }
   if (!REACTIONS.includes(reaction)) {
@@ -194,27 +191,31 @@ export async function runReact(
       `one of: ${REACTIONS.join(', ')}`,
     );
   }
-  const ctx = prepare('react', now);
+  const ctx = prepare('react', now, 'voyager');
   if ('ok' in ctx) return ctx;
-  const unsupported = requireOauth('react', ctx);
-  if (unsupported !== null) return unsupported;
+  if (ctx.transport.kind !== 'voyager') {
+    return err('react', 'NOT_IMPLEMENTED', 'reacting is only implemented over the private API');
+  }
 
-  const plan: WritePlan<{ postUrn: string; type: string }> = {
-    action: 'react to a post',
-    payload: { postUrn, type: reaction },
-    summary: [authorLine(ctx.transport), `on       ${postUrn}`, `reaction ${reaction}`],
-    reversibility: 'removable from the LinkedIn UI; the author is notified immediately',
-    transport: 'oauth',
+  const plan: WritePlan<{ urn: string; type: Reaction; remove: boolean }> = {
+    action: remove ? 'remove a reaction' : 'react to a post',
+    payload: { urn: postUrn, type: reaction as Reaction, remove },
+    summary: [
+      authorLine(ctx.transport),
+      `on       ${postUrn}`,
+      `reaction ${remove ? `${reaction} (REMOVING)` : reaction}`,
+    ],
+    reversibility: remove
+      ? 'you can react again; the author may have been notified the first time'
+      : 'removable with `lnrelay react <urn> --remove`; the author is notified immediately',
+    transport: 'voyager',
   };
 
   const gated = await gate('react', plan, ctx, deps);
   if ('ok' in gated) return gated;
 
-  const result = await sendReact(gated.confirmed as never, oauthToken(ctx), {
-    fetch: globalThis.fetch,
-    now: () => now,
-  });
+  const result = await sduiReact(gated.confirmed as never, createLiveClient(ctx.transport.session));
   return result.ok
-    ? ok('react', { id: result.id })
+    ? ok('react', { id: result.id, removed: remove })
     : err('react', result.code, result.message, result.hint);
 }

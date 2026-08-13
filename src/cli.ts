@@ -157,7 +157,13 @@ export async function dispatch(argv: string[], now: number): Promise<Envelope> {
     case 'comment':
       return runComment(args.positionals[0], args.positionals[1], now);
     case 'react':
-      return runReact(args.positionals[0], str(args, 'type') ?? 'LIKE', now);
+      return runReact(
+        args.positionals[0],
+        str(args, 'type') ?? 'LIKE',
+        now,
+        undefined,
+        bool(args, 'remove'),
+      );
     case 'delete':
       return runDelete(args.positionals[0], now, undefined, bool(args, 'quiet'));
     case 'whoami':

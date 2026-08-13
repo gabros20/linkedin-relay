@@ -36,6 +36,15 @@ const SECRET_HEADERS = new Set(['cookie', 'csrf-token', 'set-cookie', 'authoriza
 
 const MUTATING = new Set(['POST', 'PUT', 'PATCH', 'DELETE']);
 
+/**
+ * Known telemetry, excluded so the signal is readable. `to11y` is the
+ * numeronym for observability; both it and `tapie` use randomised paths and
+ * binary bodies. Excluding by name is safe here in a way an accept-list is
+ * not: a new write endpoint shows up, a new telemetry endpoint is just noise.
+ */
+const TELEMETRY =
+  /to11y|tapie|sensorCollect|realtimeFrontendClientConnectivityTracking|protechts\.net|\/li\/track/;
+
 interface Captured {
   method: string;
   url: string;
@@ -128,8 +137,13 @@ async function main(): Promise<void> {
     if (msg.method !== 'Network.requestWillBeSent') return;
     const req = msg.params?.request;
     if (req === undefined) return;
-    if (!req.url.includes('/voyager/api/')) return;
     if (!MUTATING.has(req.method)) return;
+    // NOT voyager-only. Reactions go to /flagship-web/rsc-action/ (SDUI over
+    // React Server Components), an entirely different surface — a voyager-only
+    // filter was structurally blind to them and reported "no writes seen"
+    // while reactions were demonstrably landing. Filter out the known
+    // telemetry instead, and record everything else.
+    if (TELEMETRY.test(req.url)) return;
 
     const entry: Captured = { method: req.method, url: req.url, headers: redact(req.headers) };
     if (req.postData !== undefined) {
@@ -145,7 +159,7 @@ async function main(): Promise<void> {
     const path = new URL(req.url).pathname.replace('/voyager/api/', '');
     console.log(`\n  ${req.method} ${path}`);
     if (entry.postData !== undefined) {
-      console.log(`  body: ${JSON.stringify(entry.postData).slice(0, 400)}`);
+      console.log(`  body: ${JSON.stringify(entry.postData).slice(0, 1500)}`);
     }
   };
 
@@ -153,7 +167,7 @@ async function main(): Promise<void> {
   send('Target.setAutoAttach', { autoAttach: true, waitForDebuggerOnStart: false, flatten: true });
   await new Promise((r) => setTimeout(r, 800));
 
-  console.log(`watching ALL tabs and workers for Voyager writes for ${seconds}s.`);
+  console.log(`watching ALL tabs and workers for write traffic for ${seconds}s.`);
   console.log(`${sessions.size} target(s) attached.`);
   console.log('go to the browser and perform the action(s).\n');
   await new Promise((r) => setTimeout(r, seconds * 1000));
