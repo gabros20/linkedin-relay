@@ -239,12 +239,13 @@ export const COMMANDS: CommandDef[] = [
     name: 'comment',
     cost: '1 call — write',
     summary:
-      'Comment on a post. Harvests the binding tokens from the rendered page first — ' +
-      'no browser needed, but it costs one heavy read.',
+      'Add a comment, or edit one of yours — the urn decides which. Harvests its binding ' +
+      'tokens from the rendered page; no browser needed, but it costs one heavy read.',
     usage:
-      'lnrelay comment <activity-urn> "<text>"\n' +
-      '       Fetches the post page (~2.8 MB) to harvest a binding key and trackingId, proves the\n' +
-      '       key belongs to that post, then asks. UNVERIFIED: never yet replayed successfully.',
+      'lnrelay comment <activity-urn> "<text>"      # add a comment\n' +
+      '       lnrelay comment <comment-urn>  "<text>"      # EDIT that comment\n' +
+      '       The urn decides which. Fetches the post page (~2.8 MB) to harvest a binding key and\n' +
+      '       trackingId, and proves the key belongs to that post before asking.',
     audience: ['cli'],
     risk: 'write',
     implemented: true,
@@ -253,9 +254,11 @@ export const COMMANDS: CommandDef[] = [
     name: 'delete',
     cost: '1 read + 1 write',
     summary:
-      'Delete one of your own posts. Reads it first and shows you its text — this is the one ' +
-      'action that cannot be undone.',
-    usage: 'lnrelay delete <urn:li:share:… | urn:li:activity:…>',
+      'Delete one of your own posts or comments. Reads a post back and shows its text first — ' +
+      'this is the one action that cannot be undone.',
+    usage:
+      'lnrelay delete <activity-urn>     # a post; shows you its text before destroying it\n' +
+      '       lnrelay delete <comment-urn>      # a comment; the server decides if you may',
     audience: ['cli'],
     risk: 'write',
     implemented: true,

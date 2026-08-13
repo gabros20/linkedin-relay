@@ -248,3 +248,22 @@ export async function runCommentAction(
   }
   return { ok: true, operation };
 }
+
+/**
+ * Parse any of the three live comment-urn forms into its two ids.
+ *
+ * They do not agree on member order. `post` returns the `fsd_comment` form with
+ * the COMMENT id first; the other two put the activity first, one of them
+ * without its `urn:li:` prefix. Both members are bare numbers, so reading them
+ * positionally and getting it backwards is undetectable downstream — the action
+ * simply lands on the wrong thing. Hence matching by shape, never by position.
+ */
+export function parseCommentUrn(urn: string): CommentRef | null {
+  const fsd = /^urn:li:fsd_comment:\((\d+),urn:li:activity:(\d+)\)$/.exec(urn);
+  if (fsd !== null) return { commentId: fsd[1] as string, activityId: fsd[2] as string };
+
+  const plain = /^urn:li:comment:\((?:urn:li:)?activity:(\d+),(\d+)\)$/.exec(urn);
+  if (plain !== null) return { activityId: plain[1] as string, commentId: plain[2] as string };
+
+  return null;
+}

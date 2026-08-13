@@ -18,14 +18,22 @@
 // that it is proceeding blind.
 
 import { CacheCorrupt, openDb, removeUrns } from '../cache/db.ts';
+import { buildHeaders } from '../engine/auth.ts';
 import { createEngine, createLiveClient } from '../engine/index.ts';
+import { extractCommentTokens } from '../engine/sdui-harvest.ts';
+import {
+  type CommentRef,
+  DELETE_OP,
+  parseCommentUrn,
+  runCommentAction,
+} from '../engine/sdui-menu.ts';
 import { LAUNCH_HINT, loadSession } from '../engine/session.ts';
 import { deletePost, isDeletableUrn } from '../engine/voyager-write.ts';
 import { type Shaped, shapeAll } from '../format.ts';
 import { err, ok } from '../output.ts';
 import type { Envelope } from '../types.ts';
 import type { ConfirmDeps, WritePlan } from './confirm.ts';
-import { gateWrite, reserve, terminalDeps } from './gate.ts';
+import { gateWrite, recordHarvestSpend, reserve, terminalDeps } from './gate.ts';
 
 /** How many of the owner's recent posts to search for the one being deleted. */
 const LOOKUP_LIMIT = 50;
@@ -108,6 +116,83 @@ function evict(urn: string | null, now: number): boolean {
   }
 }
 
+/**
+ * Deleting a COMMENT is a different surface from deleting a post: SDUI rather
+ * than Voyager, and the payload comes from the action menu the server offers on
+ * that comment. That also means the menu is the permission check — a comment
+ * you cannot delete simply has no delete action, so we never send one blindly.
+ */
+async function deleteComment(
+  ref: CommentRef,
+  urn: string,
+  now: number,
+  deps: ConfirmDeps,
+): Promise<Envelope> {
+  if (!deps.isTty) {
+    return err(
+      'delete',
+      'CONFIRMATION_REQUIRED',
+      'deleting needs a human to confirm it at an interactive terminal',
+      'No terminal is attached, so nothing was sent and no network call was made.',
+    );
+  }
+
+  const session = loadSession();
+  if (session.state !== 'ok') {
+    return err('delete', 'AUTH_FAILED', 'no LinkedIn session', LAUNCH_HINT);
+  }
+
+  const refused = reserve('delete', now);
+  if (refused !== null) return refused;
+
+  const headers = buildHeaders(session.session);
+  let html: string;
+  try {
+    const res = await fetch(
+      `https://www.linkedin.com/feed/update/urn:li:activity:${ref.activityId}/`,
+      {
+        headers: {
+          cookie: headers.cookie ?? '',
+          'user-agent': headers['user-agent'] ?? '',
+          accept: 'text/html',
+        },
+        redirect: 'manual',
+      },
+    );
+    if (res.status !== 200) {
+      return err('delete', 'FETCH_FAILED', `the parent post page returned ${res.status}`);
+    }
+    html = await res.text();
+  } catch (e) {
+    return err('delete', 'FETCH_FAILED', `could not load the parent post: ${(e as Error).message}`);
+  }
+  recordHarvestSpend(now);
+
+  const tokens = extractCommentTokens(html, ref.activityId);
+  if (!tokens.ok) return err('delete', 'SCHEMA_DRIFT', tokens.message, tokens.hint);
+
+  const plan: WritePlan<{ urn: string }> = {
+    action: 'delete your comment',
+    payload: { urn },
+    summary: [`comment  ${urn}`, `on post  urn:li:activity:${ref.activityId}`],
+    reversibility: 'NONE. A deleted comment is gone, with its replies and reactions.',
+    transport: 'voyager',
+  };
+
+  const gated = await gateWrite('delete', plan, now, deps, { commitSpend: false });
+  if ('ok' in gated) return gated;
+
+  const result = await runCommentAction(
+    ref,
+    DELETE_OP,
+    tokens.trackingId,
+    createLiveClient(session.session),
+  );
+  return result.ok
+    ? ok('delete', { deleted: urn, kind: 'comment' })
+    : err('delete', result.code, result.message, result.hint);
+}
+
 export async function runDelete(
   urn: string | undefined,
   now = Date.now(),
@@ -122,12 +207,16 @@ export async function runDelete(
       'lnrelay delete <urn:li:share:… | urn:li:activity:…>',
     );
   }
+  // A comment urn routes to an entirely different surface.
+  const asComment = parseCommentUrn(urn);
+  if (asComment !== null) return deleteComment(asComment, urn, now, deps ?? terminalDeps());
+
   if (!isDeletableUrn(urn)) {
     return err(
       'delete',
       'INVALID_INPUT',
       `'${urn}' does not identify a post`,
-      'Expected urn:li:share:<id>, urn:li:activity:<id> or urn:li:ugcPost:<id>. Refusing before ' +
+      'Expected a post urn (urn:li:share|activity|ugcPost:<id>) or a comment urn. Refusing before ' +
         'encoding it, because a well-formed request naming the wrong kind of entity is a request ' +
         'to destroy the wrong kind of thing.',
     );

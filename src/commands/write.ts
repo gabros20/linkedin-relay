@@ -7,6 +7,12 @@ import { share as sendShare } from '../engine/oauth-write.ts';
 import { type CommentTokens, comment as sduiComment } from '../engine/sdui-comment.ts';
 import { extractCommentTokens } from '../engine/sdui-harvest.ts';
 import {
+  type CommentRef,
+  parseCommentUrn,
+  runCommentAction,
+  UPDATE_OP,
+} from '../engine/sdui-menu.ts';
+import {
   type Reaction,
   reactionLabel,
   REACTIONS as SDUI_REACTIONS,
@@ -171,9 +177,18 @@ export async function runComment(
       'lnrelay comment <urn> "<text>"',
     );
   }
-  const activityId = activityIdOf(postUrn);
+  // The urn decides the operation: a post urn creates a comment, a comment urn
+  // edits that comment. No flag to remember, and no way to mean one and get the
+  // other — the two urn shapes are disjoint.
+  const editing = parseCommentUrn(postUrn);
+  const activityId = editing?.activityId ?? activityIdOf(postUrn);
   if (activityId === null) {
-    return err('comment', 'INVALID_INPUT', `'${postUrn}' does not identify a post`);
+    return err(
+      'comment',
+      'INVALID_INPUT',
+      `'${postUrn}' identifies neither a post nor a comment`,
+      'Pass urn:li:activity:<id> to comment, or a comment urn to edit that comment.',
+    );
   }
 
   // The TTY check comes BEFORE the harvest, not just before the send. Harvesting
@@ -202,24 +217,42 @@ export async function runComment(
   if ('ok' in harvested && harvested.ok !== true) return harvested as Envelope;
   if (!('tokens' in harvested)) return harvested as Envelope;
 
-  const plan: WritePlan<{ activityId: string; text: string; tokens: CommentTokens }> = {
-    action: 'comment on a post',
-    payload: { activityId, text, tokens: harvested.tokens },
-    summary: [authorLine(ctx.transport), `on       ${postUrn}`, `content  "${text}"`],
+  const plan: WritePlan<{
+    activityId: string;
+    text: string;
+    tokens: CommentTokens;
+    edit?: CommentRef;
+  }> = {
+    action: editing === null ? 'comment on a post' : 'edit your comment',
+    payload: {
+      activityId,
+      text,
+      tokens: harvested.tokens,
+      ...(editing === null ? {} : { edit: editing }),
+    },
+    summary: [
+      authorLine(ctx.transport),
+      `on       ${postUrn}`,
+      `${editing === null ? 'content ' : 'new text'} "${text}"`,
+    ],
     reversibility:
-      'deletable from the LinkedIn UI; the author is notified immediately and cannot un-see it',
+      editing === null
+        ? 'deletable with `lnrelay delete <comment-urn>`; the author is notified immediately'
+        : 'editable again; LinkedIn marks the comment edited and the original is not recoverable here',
     transport: 'voyager',
   };
 
   const gated = await gate('comment', plan, ctx, deps);
   if ('ok' in gated) return gated;
 
-  const result = await sduiComment(
-    gated.confirmed as never,
-    createLiveClient(ctx.transport.session),
-  );
+  const client = createLiveClient(ctx.transport.session);
+  const result =
+    editing === null
+      ? await sduiComment(gated.confirmed as never, client)
+      : await runCommentAction(editing, UPDATE_OP, harvested.tokens.trackingId, client, text);
+
   return result.ok
-    ? ok('comment', { id: result.id, on: postUrn })
+    ? ok('comment', { on: postUrn, edited: editing !== null })
     : err('comment', result.code, result.message, result.hint);
 }
 
