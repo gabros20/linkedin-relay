@@ -1,3 +1,10 @@
+## [1.2.2](https://github.com/gabros20/linkedin-relay/compare/v1.2.1...v1.2.2) (2026-08-13)
+
+
+### Bug Fixes
+
+* **read:** my-posts returned nothing, and its posts had no urn ([318a3ad](https://github.com/gabros20/linkedin-relay/commit/318a3ad008a29736367ed8cd766d8e5242d0ed56))
+
 ## [1.2.1](https://github.com/gabros20/linkedin-relay/compare/v1.2.0...v1.2.1) (2026-08-13)
 
 
