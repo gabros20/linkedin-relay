@@ -1,3 +1,10 @@
+## [1.3.3](https://github.com/gabros20/linkedin-relay/compare/v1.3.2...v1.3.3) (2026-08-13)
+
+
+### Bug Fixes
+
+* **delete:** evict the deleted post from the local cache ([b4e85c6](https://github.com/gabros20/linkedin-relay/commit/b4e85c6454a2e695184e05abaa87c50569ef8191))
+
 ## [1.3.2](https://github.com/gabros20/linkedin-relay/compare/v1.3.1...v1.3.2) (2026-08-13)
 
 
