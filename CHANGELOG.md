@@ -1,3 +1,10 @@
+# [1.7.0](https://github.com/gabros20/linkedin-relay/compare/v1.6.0...v1.7.0) (2026-08-13)
+
+
+### Features
+
+* **comments:** wire edit and delete into the CLI, routed by urn ([7a3c259](https://github.com/gabros20/linkedin-relay/commit/7a3c259a09d732d8c1f30ae17f3f3ba2865bcc55))
+
 # [1.6.0](https://github.com/gabros20/linkedin-relay/compare/v1.5.1...v1.6.0) (2026-08-13)
 
 
