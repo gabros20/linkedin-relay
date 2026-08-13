@@ -207,3 +207,29 @@ describe('no TTY means no network, not just no write', () => {
     }
   });
 });
+
+// The comment harvest is a ~2.8 MB HTML GET — the heaviest single request this
+// tool makes — and it went through raw `fetch`, bypassing the ledger, the
+// cooldown and the pacing entirely. Unaccounted traffic is exactly what the
+// Permit type exists to make impossible, and this walked around it.
+describe('the comment harvest is accounted for', () => {
+  test('a harvest spends page budget rather than being invisible', async () => {
+    withSession();
+    const before = loadJson<{ spends: Record<string, number[]> }>(cachePath('budget.json'));
+    const beforeN = before.state === 'ok' ? (before.value.spends.page?.length ?? 0) : 0;
+
+    const realFetch = globalThis.fetch;
+    globalThis.fetch = (async () =>
+      new Response('<html>no key here</html>', { status: 200 })) as typeof fetch;
+    const yes: ConfirmDeps = { isTty: true, prompt: async () => 'no', write: () => {} };
+    try {
+      await runComment('urn:li:activity:7493711068700033024', 'hi', T0, yes);
+    } finally {
+      globalThis.fetch = realFetch;
+    }
+
+    const after = loadJson<{ spends: Record<string, number[]> }>(cachePath('budget.json'));
+    const afterN = after.state === 'ok' ? (after.value.spends.page?.length ?? 0) : 0;
+    expect(afterN).toBeGreaterThan(beforeN);
+  });
+});

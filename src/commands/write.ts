@@ -17,7 +17,7 @@ import { share as voyagerShare } from '../engine/voyager-write.ts';
 import { err, ok } from '../output.ts';
 import type { Envelope } from '../types.ts';
 import type { ConfirmDeps, WritePlan } from './confirm.ts';
-import { gateWrite, reserve, terminalDeps } from './gate.ts';
+import { gateWrite, recordHarvestSpend, reserve, terminalDeps } from './gate.ts';
 import { loadToken, OAUTH_SETUP } from './token.ts';
 import { chooseTransport, type Transport } from './transport.ts';
 
@@ -124,7 +124,15 @@ function activityIdOf(urn: string): string | null {
 async function harvest(
   activityId: string,
   session: Parameters<typeof createLiveClient>[0],
+  now: number,
 ): Promise<{ ok: true; tokens: CommentTokens } | Envelope> {
+  // Account for it. This is the heaviest single request the tool makes, and
+  // going through raw fetch bypassed the ledger, the cooldown and the pacing —
+  // the exact unaccounted traffic the Permit type exists to prevent.
+  const spent = reserve('comment', now);
+  if (spent !== null) return spent;
+  recordHarvestSpend(now);
+
   const headers = buildHeaders(session);
   let html: string;
   try {
@@ -190,7 +198,7 @@ export async function runComment(
   // Harvest after that, but before asking: a human should not approve a comment
   // we then turn out to be unable to send, and the tokens are part of what is
   // being approved.
-  const harvested = await harvest(activityId, ctx.transport.session);
+  const harvested = await harvest(activityId, ctx.transport.session, now);
   if ('ok' in harvested && harvested.ok !== true) return harvested as Envelope;
   if (!('tokens' in harvested)) return harvested as Envelope;
 

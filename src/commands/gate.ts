@@ -42,6 +42,18 @@ export function terminalDeps(): ConfirmDeps {
   };
 }
 
+/**
+ * Account for the comment harvest, which does not go through the client.
+ *
+ * Charged to `page` rather than `write`: it is a read, just an unusually heavy
+ * one at ~2.8 MB. It gets a ledger entry so the traffic is visible in
+ * `lnrelay budget` instead of being free and invisible.
+ */
+export function recordHarvestSpend(now: number): void {
+  const attempt = spend(ledger(), 'page', now);
+  if ('permit' in attempt) saveJson(cachePath('budget.json'), attempt.ledger);
+}
+
 /** Reserve the write against today's budget before a human is ever asked. */
 export function reserve(command: string, now: number): Envelope | null {
   const attempt = spend(ledger(), 'write', now);
