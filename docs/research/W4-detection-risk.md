@@ -286,3 +286,41 @@ trusted most, it's that fast, un-automated manual browsing alone has triggered r
 independent corroborating accounts) — that's the closest thing to solid ground in the entire evidence
 base, and it argues for spending the design's actual risk budget on cadence discipline, not on the A-vs-B
 transport question this lane was asked to resolve.**
+
+---
+
+## Addendum — first-hand observation on this machine, 2026-08-13
+
+Everything above about LinkedIn's client-side anti-automation JS was `report`-tier: a bot-detection
+vendor's reading of LinkedIn's obfuscated code. While capturing write traffic we observed part of it
+directly, which upgrades one claim and adds a new one.
+
+A 200-second capture of one logged-in LinkedIn tab, attached at the browser level with auto-attach
+recursing into workers, recorded **1,249 requests, 18 of them mutating**:
+
+| destination | what it looks like |
+|---|---|
+| `www.linkedin.com/to11yTEwpfdvt3IyJ` | telemetry. `to11y` is the numeronym for *observability*. Opaque path, binary body. |
+| `www.linkedin.com/tapiekNUyhEIdnrD` | telemetry. Opaque path, binary body. |
+| `www.linkedin.com/realtime/…?action=sendHeartbeat` | plaintext JSON, carries the actor's `fsd_profile` urn |
+| `collector-pxdojv695v.protechts.net` | **a third-party collector** — one POST |
+
+Two things follow.
+
+**The opaque paths and binary bodies are consistent with the vendor account.** Randomised path
+segments and non-JSON payloads are the documented pattern for telemetry that does not want to be
+blocked or read. We did not decode the bodies and are not claiming to know what is in them.
+
+**We could not identify `protechts.net`.** The `collector-<random>` subdomain pattern matches how
+anti-bot vendors rotate hostnames to defeat blocklists, but a web search returned nothing on this
+specific domain, so **the vendor is unknown** — recorded as an observation, not an identification.
+Do not cite this as "LinkedIn uses vendor X".
+
+**Why it matters for the A-vs-B decision (§ verdict above).** This is the mechanism that makes raw
+HTTP structurally different from browser automation, seen first-hand rather than inferred: a page
+session ships telemetry to LinkedIn's own opaque endpoints *and* to a third-party collector,
+continuously, unprompted. Transport A executes none of it — no JS runtime, no collector POST, no
+heartbeat carrying the actor urn. Transport B generates all of it by construction.
+
+That is not proof B is detected or that A is safe. It is a concrete account of what each transport
+does and does not emit, which is what the earlier verdict was reasoning about without having seen it.
