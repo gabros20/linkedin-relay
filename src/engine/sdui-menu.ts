@@ -52,10 +52,14 @@ export function sduiEnvelope(operation: string, payload: unknown, states: unknow
   };
 }
 
-export function menuBody(activityId: string, commentId: string, trackingId: string) {
+export function menuBody(ref: CommentRef, trackingId: string) {
+  const { activityId, commentId, threadType } = ref;
   const activityUrn = { activityUrn: { activityId } };
   return sduiEnvelope(MENU_OP, {
-    commentUrn: { commentId, thread: `urn:li:activity:${activityId}` },
+    // Rebuilt in the namespace it came from. A comment threaded to a ugcPost
+    // given an `urn:li:activity:` thread names a different entity, and that
+    // does not error — it acts on the wrong thing or finds nothing.
+    commentUrn: { commentId, thread: `urn:li:${threadType}:${activityId}` },
     updateKey: {
       feedType: 3,
       items: [{ feedUpdateUrn: { updateUrnActivityUrn: activityUrn }, trackingId }],
@@ -118,15 +122,14 @@ export type MenuResult =
 
 /** Fetch the comment's action menu. A read, though it is issued as a POST. */
 export async function fetchCommentMenu(
-  activityId: string,
-  commentId: string,
+  ref: CommentRef,
   trackingId: string,
   client: Client,
 ): Promise<MenuResult> {
   const result = await client.request({
     url: actionUrl(MENU_OP),
     method: 'POST',
-    body: menuBody(activityId, commentId, trackingId),
+    body: menuBody(ref, trackingId),
     spendClass: 'page',
     operation: 'commentMenu',
   });
@@ -143,8 +146,18 @@ export async function fetchCommentMenu(
 }
 
 export interface CommentRef {
+  /** The numeric id of the thread this comment hangs off. */
   activityId: string;
   commentId: string;
+  /**
+   * Which namespace the thread was written in.
+   *
+   * NOT always `activity`. A comment in the feed came back threaded to a
+   * `ugcPost`, and ENGINE-RESEARCH §5b already records that the two are
+   * distinct and not derivable from one another — so the namespace is carried
+   * rather than assumed, and callers that must rebuild a urn use this.
+   */
+  threadType: 'activity' | 'ugcPost';
 }
 
 export type ActionResult =
@@ -196,7 +209,7 @@ export async function runCommentAction(
   client: Client,
   newText?: string,
 ): Promise<ActionResult> {
-  const menu = await fetchCommentMenu(ref.activityId, ref.commentId, trackingId, client);
+  const menu = await fetchCommentMenu(ref, trackingId, client);
   if (!menu.ok) return { ok: false, code: menu.code, message: menu.message };
 
   const payload = extractActionPayload(menu.stream, operation) as Record<string, unknown> | null;
@@ -259,11 +272,23 @@ export async function runCommentAction(
  * simply lands on the wrong thing. Hence matching by shape, never by position.
  */
 export function parseCommentUrn(urn: string): CommentRef | null {
-  const fsd = /^urn:li:fsd_comment:\((\d+),urn:li:activity:(\d+)\)$/.exec(urn);
-  if (fsd !== null) return { commentId: fsd[1] as string, activityId: fsd[2] as string };
+  const fsd = /^urn:li:fsd_comment:\((\d+),urn:li:(activity|ugcPost):(\d+)\)$/.exec(urn);
+  if (fsd !== null) {
+    return {
+      commentId: fsd[1] as string,
+      threadType: fsd[2] as 'activity' | 'ugcPost',
+      activityId: fsd[3] as string,
+    };
+  }
 
-  const plain = /^urn:li:comment:\((?:urn:li:)?activity:(\d+),(\d+)\)$/.exec(urn);
-  if (plain !== null) return { activityId: plain[1] as string, commentId: plain[2] as string };
+  const plain = /^urn:li:comment:\((?:urn:li:)?(activity|ugcPost):(\d+),(\d+)\)$/.exec(urn);
+  if (plain !== null) {
+    return {
+      threadType: plain[1] as 'activity' | 'ugcPost',
+      activityId: plain[2] as string,
+      commentId: plain[3] as string,
+    };
+  }
 
   return null;
 }

@@ -58,8 +58,10 @@ describe('the menu request', () => {
     expect(actionUrl(DELETE_OP)).toContain(`sduiid=${DELETE_OP}`);
   });
 
+  const REF = { activityId: '66', commentId: '749', threadType: 'activity' as const };
+
   test('carries the comment and its parent thread', () => {
-    const b = menuBody('66', '749', 'TRACK==') as never as {
+    const b = menuBody(REF, 'TRACK==') as never as {
       requestedArguments: { payload: { commentUrn: { commentId: string; thread: string } } };
     };
     expect(b.requestedArguments.payload.commentUrn).toEqual({
@@ -69,7 +71,6 @@ describe('the menu request', () => {
   });
 
   test('each request gets a fresh menu ref', () => {
-    const a = JSON.stringify(menuBody('66', '749', 'T'));
-    expect(a).not.toBe(JSON.stringify(menuBody('66', '749', 'T')));
+    expect(JSON.stringify(menuBody(REF, 'T'))).not.toBe(JSON.stringify(menuBody(REF, 'T')));
   });
 });
