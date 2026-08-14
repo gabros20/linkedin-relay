@@ -45,6 +45,13 @@ const MUTATING = new Set(['POST', 'PUT', 'PATCH', 'DELETE']);
 const TELEMETRY =
   /to11y|tapie|sensorCollect|realtimeFrontendClientConnectivityTracking|protechts\.net|\/li\/track/;
 
+/**
+ * Response bodies are capped. The comment harvest was 2.8 MB of RSC stream and
+ * the interesting part was in the first few KB; an uncapped capture is mostly
+ * page markup we will never read, and it makes the file too big to open.
+ */
+const MAX_BODY = 256 * 1024;
+
 interface Captured {
   method: string;
   url: string;
@@ -52,6 +59,24 @@ interface Captured {
   headers: Record<string, string>;
   postData?: unknown;
   postDataRaw?: string;
+  // ─── The response half ──────────────────────────────────────────────────────
+  //
+  // The first version of this script recorded requests ONLY. That is enough to
+  // learn the shape we must SEND, and it was enough for share/comment/react —
+  // so the gap went unnoticed until media upload, where the whole protocol is
+  // in the reply: registering an upload returns the URL to PUT to and the urn
+  // to reference afterwards. Neither is derivable from the request.
+  //
+  // Same failure family as the voyager-only URL filter this file already
+  // carries a warning about: an instrument blind to half the exchange reports
+  // confidently on the half it can see.
+  status?: number;
+  responseHeaders?: Record<string, string>;
+  responseBody?: unknown;
+  responseBodyRaw?: string;
+  responseTruncated?: boolean;
+  /** Set when the body could not be read at all, with Chrome's reason. */
+  responseError?: string;
 }
 
 function redact(headers: Record<string, string>): Record<string, string> {
@@ -81,7 +106,9 @@ async function main(): Promise<void> {
     webSocketDebuggerUrl?: string;
   };
   if (version.webSocketDebuggerUrl === undefined) {
-    throw new Error('no browser-level CDP endpoint — is Chrome running with --remote-debugging-port=9222?');
+    throw new Error(
+      'no browser-level CDP endpoint — is Chrome running with --remote-debugging-port=9222?',
+    );
   }
 
   const ws = new WebSocket(version.webSocketDebuggerUrl);
@@ -99,13 +126,26 @@ async function main(): Promise<void> {
   const captured: Captured[] = [];
   const sessions = new Set<string>();
 
+  // requestId is only unique per session, so both halves of the key matter.
+  const tracked = new Map<string, Captured>();
+  const trackedSession = new Map<string, string>();
+  /** Outstanding Network.getResponseBody calls, by the id we sent them under. */
+  const awaitingBody = new Map<number, string>();
+  const key = (sessionId: string | undefined, requestId: string): string =>
+    `${sessionId ?? '-'}:${requestId}`;
+
   ws.onmessage = (ev) => {
     const msg = JSON.parse(String(ev.data)) as {
+      id?: number;
       method?: string;
       sessionId?: string;
+      error?: { message?: string };
+      result?: { body?: string; base64Encoded?: boolean };
       params?: {
         sessionId?: string;
+        requestId?: string;
         targetInfo?: { type: string; url: string };
+        response?: { status: number; headers: Record<string, string> };
         request?: {
           url: string;
           method: string;
@@ -114,6 +154,32 @@ async function main(): Promise<void> {
         };
       };
     };
+
+    // ── A Network.getResponseBody reply coming back ──────────────────────────
+    if (msg.id !== undefined && awaitingBody.has(msg.id)) {
+      const k = awaitingBody.get(msg.id) as string;
+      awaitingBody.delete(msg.id);
+      const entry = tracked.get(k);
+      if (entry === undefined) return;
+
+      if (msg.error !== undefined || msg.result?.body === undefined) {
+        // Chrome evicts bodies it no longer holds. Recording WHY beats a silent
+        // absence that reads identically to "the server sent nothing".
+        entry.responseError = msg.error?.message ?? 'no body returned by Chrome';
+        return;
+      }
+      const body = msg.result.base64Encoded === true ? '<binary>' : msg.result.body;
+      entry.responseTruncated = body.length > MAX_BODY;
+      entry.responseBodyRaw = body.slice(0, MAX_BODY);
+      try {
+        entry.responseBody = JSON.parse(body) as unknown;
+      } catch {
+        // Not JSON — an RSC stream or a redirect page. Raw is the record.
+      }
+      const path = new URL(entry.url).pathname.replace('/voyager/api/', '');
+      console.log(`  <- ${entry.status} ${path}: ${(entry.responseBodyRaw ?? '').slice(0, 900)}`);
+      return;
+    }
 
     // Every new target gets Network enabled on its own session.
     if (msg.method === 'Target.attachedToTarget') {
@@ -131,6 +197,33 @@ async function main(): Promise<void> {
           sessionId,
         );
       }
+      return;
+    }
+
+    // ── The response half, for requests we decided to track ──────────────────
+    if (msg.method === 'Network.responseReceived') {
+      const entry = tracked.get(key(msg.sessionId, msg.params?.requestId ?? ''));
+      if (entry === undefined || msg.params?.response === undefined) return;
+      entry.status = msg.params.response.status;
+      entry.responseHeaders = redact(msg.params.response.headers);
+      return;
+    }
+
+    // The body is only readable once the transfer completes.
+    if (msg.method === 'Network.loadingFinished') {
+      const requestId = msg.params?.requestId ?? '';
+      const k = key(msg.sessionId, requestId);
+      if (!tracked.has(k)) return;
+      const callId = id++;
+      awaitingBody.set(callId, k);
+      const call: Record<string, unknown> = {
+        id: callId,
+        method: 'Network.getResponseBody',
+        params: { requestId },
+      };
+      const sessionId = trackedSession.get(k);
+      if (sessionId !== undefined) call.sessionId = sessionId;
+      ws.send(JSON.stringify(call));
       return;
     }
 
@@ -155,6 +248,9 @@ async function main(): Promise<void> {
       }
     }
     captured.push(entry);
+    const k = key(msg.sessionId, msg.params?.requestId ?? '');
+    tracked.set(k, entry);
+    if (msg.sessionId !== undefined) trackedSession.set(k, msg.sessionId);
 
     const path = new URL(req.url).pathname.replace('/voyager/api/', '');
     console.log(`\n  ${req.method} ${path}`);
@@ -171,12 +267,26 @@ async function main(): Promise<void> {
   console.log(`${sessions.size} target(s) attached.`);
   console.log('go to the browser and perform the action(s).\n');
   await new Promise((r) => setTimeout(r, seconds * 1000));
+
+  // Bodies requested in the last moments are still in flight. Closing here
+  // would drop exactly the response to the last action performed — which, in a
+  // session driven by hand, is usually the one that mattered most.
+  for (let i = 0; i < 20 && awaitingBody.size > 0; i++) {
+    await new Promise((r) => setTimeout(r, 250));
+  }
+  if (awaitingBody.size > 0) {
+    console.log(
+      `\n${awaitingBody.size} response body/bodies never arrived; recorded without them.`,
+    );
+  }
   ws.close();
 
   if (captured.length === 0) {
     console.log('\nno mutating Voyager request seen.');
     console.log('if you did act, the client may route writes through a host or worker this');
-    console.log('still does not see — worth recording in ENGINE-RESEARCH.md rather than retrying blind.');
+    console.log(
+      'still does not see — worth recording in ENGINE-RESEARCH.md rather than retrying blind.',
+    );
     return;
   }
 
