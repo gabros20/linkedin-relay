@@ -1,3 +1,10 @@
+## [3.0.1](https://github.com/gabros20/linkedin-relay/compare/v3.0.0...v3.0.1) (2026-08-14)
+
+
+### Bug Fixes
+
+* **reply:** replies live on Voyager, not SDUI — captured and working ([002e9ba](https://github.com/gabros20/linkedin-relay/commit/002e9bac1c3aee348cdde2bd1706912d29a72839))
+
 # [3.0.0](https://github.com/gabros20/linkedin-relay/compare/v2.2.0...v3.0.0) (2026-08-14)
 
 
