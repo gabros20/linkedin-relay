@@ -1,3 +1,16 @@
+# [3.0.0](https://github.com/gabros20/linkedin-relay/compare/v2.2.0...v3.0.0) (2026-08-14)
+
+
+* fix(reply)!: withdraw it — it posted a top-level comment, not a reply ([710cea8](https://github.com/gabros20/linkedin-relay/commit/710cea87c3983dea1304c427145af46071efd93c))
+
+
+### BREAKING CHANGES
+
+* `lnrelay reply` refuses with NOT_IMPLEMENTED. It never did what
+it claimed, so nothing that worked has been taken away.
+
+477 tests.
+
 # [2.2.0](https://github.com/gabros20/linkedin-relay/compare/v2.1.0...v2.2.0) (2026-08-14)
 
 
