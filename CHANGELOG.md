@@ -1,3 +1,10 @@
+# [2.2.0](https://github.com/gabros20/linkedin-relay/compare/v2.1.0...v2.2.0) (2026-08-14)
+
+
+### Features
+
+* **reply:** reply to a comment, with the payload the server declares ([0392014](https://github.com/gabros20/linkedin-relay/commit/0392014eead685a138aaed484da9803e2b43ab19))
+
 # [2.1.0](https://github.com/gabros20/linkedin-relay/compare/v2.0.1...v2.1.0) (2026-08-14)
 
 
