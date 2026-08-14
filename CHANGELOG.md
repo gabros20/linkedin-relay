@@ -1,3 +1,10 @@
+## [3.0.3](https://github.com/gabros20/linkedin-relay/compare/v3.0.2...v3.0.3) (2026-08-14)
+
+
+### Bug Fixes
+
+* **skill:** the agent-facing list of write commands had drifted ([e04fc59](https://github.com/gabros20/linkedin-relay/commit/e04fc59b592f7ed1175cc1d82ada3e640bfc4f7c))
+
 ## [3.0.2](https://github.com/gabros20/linkedin-relay/compare/v3.0.1...v3.0.2) (2026-08-14)
 
 
