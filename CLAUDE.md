@@ -67,6 +67,24 @@ Do NOT test what `tsc`/Biome already enforce. Keep live smoke tests out of unit 
 - **TDD is mandatory** for production code: failing test first, watch it fail, minimal code to pass.
 - **Conventional Commits** — `semantic-release` derives version + CHANGELOG. Never hand-bump.
 - **Small commits**, one logical unit each.
+- **Be frugal with the version.** The type field is a release decision, not a mood. This project
+  went 1.0.0 → 2.1.0 in a day, which tells a reader nothing except that a lot happened.
+
+  | type | bump | use for |
+  |---|---|---|
+  | `fix:` | patch | anything that makes existing behaviour correct — the default |
+  | `feat:` | minor | a NEW user-facing capability: a new command, or a new flag someone would look for |
+  | `feat!:` / `BREAKING CHANGE:` | **major** | almost never — see below |
+  | `docs:` `chore:` `refactor:` `test:` | none | everything else |
+
+  Internal work is `fix:` or `refactor:`, not `feat:` — plumbing, accounting, a parser gaining a
+  namespace, a payload builder. If a user could not have asked for it by name, it is not a feature.
+
+  **A major bump is a message to people who already depend on you.** Before writing
+  `BREAKING CHANGE:`, ask who is running the old behaviour and what breaks for them. If the answer
+  is "nobody, it shipped this morning", it is a `fix:` — correcting a mistake, not breaking a
+  contract. The comment-verb split was released as 2.0.0 on behaviour a few hours old; that was
+  ceremony, not communication.
 
 ## Key reference documentation
 
