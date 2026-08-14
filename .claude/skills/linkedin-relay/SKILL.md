@@ -183,14 +183,29 @@ call again.
 
 ## What this tool will not do
 
-Writes — posting, commenting, reacting, deleting — are **not on this surface at all**. They exist as
-CLI commands (`lnrelay share`, `comment`, `react`, `delete`). Each stops at an interactive terminal,
-shows exactly what it will send and over which surface, and requires the user to type a token
-derived from the content.
+Writes are **not on this surface at all**. They exist only as CLI commands the user runs themselves:
 
-`share` prefers LinkedIn's official OAuth scope and falls back to the private API when the user has
-no developer app — the prompt always names which, and a Voyager write states the ToS breach. If a
-user asks why writing needs an app at all, the answer is in `docs/DECISION-writes.md`.
+| command | does |
+|---|---|
+| `lnrelay share "<text>"` | post to their own feed |
+| `lnrelay comment <activity-urn> "<text>"` | comment on a post |
+| `lnrelay reply <comment-urn> "<text>"` | reply, nested under that comment |
+| `lnrelay edit <comment-urn> "<text>"` | change the text of their own comment |
+| `lnrelay react <urn> [--type X] [--remove]` | react to a post or comment |
+| `lnrelay delete <activity-urn \| comment-urn>` | delete their post or comment |
+
+The urn decides nothing on its own — `comment`, `reply` and `edit` are separate verbs because they
+are separate operations, and passing a comment urn to `comment` is refused rather than guessed at.
+
+Each stops at an interactive terminal, shows exactly what it will send and over which surface, and
+requires the user to type a token derived from the content.
+
+Two things worth telling a user who asks:
+
+- `share` prefers LinkedIn's official OAuth scope and falls back to the private API when they have no
+  developer app — the prompt names which, and a Voyager write states the ToS breach. Why an app is
+  needed at all: `docs/DECISION-writes.md`.
+- **Deleting a comment also deletes every reply under it**, including other people's. Verified live.
 
 **Without a terminal there is no write and no network call.** That is deliberate and there is no
 flag that changes it: a flag an agent could set would not be confirming anything. If the user asks

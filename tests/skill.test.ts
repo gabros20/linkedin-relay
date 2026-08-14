@@ -154,3 +154,30 @@ describe('printed instructions name real commands', () => {
     }
   });
 });
+
+// The skill tells an agent which write commands EXIST while refusing to expose
+// them. That list drifted: `reply` and `edit` shipped and the skill still named
+// four commands, so an agent would have told the user the wrong thing. The MCP
+// parity test could not catch it, because writes are deliberately not MCP.
+describe('the skill names every write command', () => {
+  test('each CLI write command appears in the skill', () => {
+    const writes = COMMANDS.filter((c) => c.risk === 'write' && c.implemented);
+    const missing = writes
+      .filter((c) => !SKILL_MD.includes(`lnrelay ${c.name}`))
+      .map((c) => c.name);
+    expect(missing).toEqual([]);
+  });
+
+  test('the audit is not vacuous — there are write commands to miss', () => {
+    expect(COMMANDS.filter((c) => c.risk === 'write' && c.implemented).length).toBeGreaterThan(3);
+  });
+
+  // An agent that believes a withdrawn command works will tell the user to run
+  // something that refuses.
+  test('it does not advertise a command that is not implemented', () => {
+    const unbuilt = COMMANDS.filter((c) => !c.implemented).map((c) => c.name);
+    for (const name of unbuilt) {
+      expect(SKILL_MD).not.toContain(`lnrelay ${name} `);
+    }
+  });
+});
