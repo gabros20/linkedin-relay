@@ -1,3 +1,10 @@
+# [2.1.0](https://github.com/gabros20/linkedin-relay/compare/v2.0.1...v2.1.0) (2026-08-14)
+
+
+### Features
+
+* **reply:** discover the reply contract without a capture ([7283cc6](https://github.com/gabros20/linkedin-relay/commit/7283cc6bc13f887a7e911c78dd2ad2195a408458))
+
 ## [2.0.1](https://github.com/gabros20/linkedin-relay/compare/v2.0.0...v2.0.1) (2026-08-14)
 
 
