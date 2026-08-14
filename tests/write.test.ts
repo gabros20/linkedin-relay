@@ -8,6 +8,7 @@ import { gateWrite } from '../src/commands/gate.ts';
 import { runOauthStatus } from '../src/commands/oauth.ts';
 import { saveToken } from '../src/commands/token.ts';
 import { runComment, runReact, runShare } from '../src/commands/write.ts';
+import { CAPS } from '../src/engine/budget.ts';
 
 const T0 = 1_800_000_000_000;
 
@@ -124,9 +125,13 @@ describe('argument validation happens before anything else', () => {
 describe('the write budget is enforced before the prompt', () => {
   test('an exhausted write budget refuses without asking', async () => {
     withToken();
-    // 10 writes already today — the cap.
+    // Exactly the cap, read from CAPS rather than hardcoded — this test broke
+    // when the cap moved, which meant it was asserting the number and not the
+    // behaviour.
     saveJson(cachePath('budget.json'), {
-      spends: { write: Array.from({ length: 10 }, (_, i) => T0 - 60_000 - i * 1000) },
+      spends: {
+        write: Array.from({ length: CAPS.write.perDay }, (_, i) => T0 - 60_000 - i * 1000),
+      },
     });
     const e = await runShare('hello', 'public', T0, noTty);
     if (e.ok) throw new Error('expected refusal');

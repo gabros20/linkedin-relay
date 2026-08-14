@@ -192,7 +192,33 @@ observing. Guessing a field name here is exactly the failure this project refuse
 that silently omits the parent posts a TOP-LEVEL comment on someone's post instead of a reply —
 public, under the owner's name, and wrong in a way no status code reports.
 
-### SOLVED 2026-08-14 — and no capture was needed after all
+### RETRACTED — the "solution" below is WRONG (verified live 2026-08-14)
+
+Everything in this section is left standing because the reasoning error is more instructive than the
+conclusion. **Sending `createComment` with a parent-keyed binding does NOT create a nested reply.**
+Tested live: it posted a second TOP-LEVEL comment on the post, sitting as a sibling of the comment it
+was supposed to answer.
+
+The error was circular, and worth naming precisely. The component render was treated as DISCOVERY —
+"ask the server what a reply box submits" — but it is an **ECHO**. We pass
+`commentBoxStateId = <parent comment urn>`, and the server reflects that value back inside the action
+it describes. The guard then verified "is the payload bound to the parent?" against a value we had
+supplied ourselves. **It could not have failed.** An instrument that can only confirm its own input
+is not evidence, and this is the second time in this project that shape of mistake produced a
+confident wrong answer — the first was an observer that filtered for the wrong path and reported its
+own blindness as a finding.
+
+So the binding key is NOT the parent reference, and whatever actually nests a comment has not been
+found. `lnrelay reply` is withdrawn and refuses.
+
+What would settle it, and this time there is no shortcut: **capture a real reply.** Run
+`bun run scripts/observe-write.ts`, click Reply on a comment in the debug Chrome, and diff the
+resulting `createComment` against the top-level one already captured. The difference will be real
+rather than reflected.
+
+---
+
+### The original, incorrect reasoning (kept as the record)
 
 The assumption above was that a reply must carry a parent reference, so the field naming it had to be
 observed. **There is no such field.**

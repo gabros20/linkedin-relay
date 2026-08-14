@@ -327,13 +327,20 @@ const CREATE_OP = 'com.linkedin.sdui.comments.createComment';
 const COMPONENT_URL = 'https://www.linkedin.com/flagship-web/rsc-action/actions/component';
 
 /**
- * Ask the server to render a reply box's submit button, and hand back the
- * `createComment` action it declares.
+ * WITHDRAWN — this does NOT produce a nested reply. Verified live 2026-08-14:
+ * it posted a second TOP-LEVEL comment on the post.
  *
- * This is the discovery step made into the implementation. Rather than
- * hardcoding a reply payload, we render the very component whose button would
- * send it and reuse what it says — so the parent binding, the collection and
- * every field come from LinkedIn, not from a shape captured on some past date.
+ * The reasoning that produced it was circular. The component render was treated
+ * as DISCOVERY, but it is an ECHO: we pass `commentBoxStateId = <parent comment
+ * urn>` and the server reflects it back inside the action it describes. The
+ * guard below then checked "is the payload bound to the parent?" — against a
+ * value we ourselves supplied. It could not have failed.
+ *
+ * So the binding key is NOT sufficient to make a reply, and W5's conclusion
+ * that "the binding key IS the parent reference" was wrong. Whatever nests a
+ * comment is something this has not found. Kept, unexported from the CLI, as
+ * the record of a dead end — do not re-wire it without a live test that shows
+ * an actual nested reply.
  */
 export async function fetchReplyAction(
   postActivityId: string,

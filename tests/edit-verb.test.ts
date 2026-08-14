@@ -67,39 +67,36 @@ describe('editing has its own verb', () => {
 // Replying and commenting are different operations that differ ONLY by which
 // binding the server hands back, so the urn cannot disambiguate them and each
 // gets its own verb.
-describe('replying has its own verb too', () => {
-  test('`reply` rejects a post urn — you reply to comments, not posts', async () => {
-    const e = await dispatch(['reply', POST, 'text'], T0);
-    if (e.ok) throw new Error('expected refusal');
-    expect(e.error.code).toBe('INVALID_INPUT');
-    expect(e.error.hint).toContain('lnrelay comment');
-  });
-
-  test('`reply` requires text', async () => {
-    const e = await dispatch(['reply', COMMENT], T0);
-    if (e.ok) throw new Error('expected refusal');
-    expect(e.error.code).toBe('INVALID_INPUT');
-  });
-
-  test('`reply` with a comment urn reaches the gate, sending nothing', async () => {
-    const e = await dispatch(['reply', COMMENT, 'text'], T0);
-    if (e.ok) throw new Error('expected a gate refusal');
-    expect(['CONFIRMATION_REQUIRED', 'AUTH_FAILED']).toContain(e.error.code);
-  });
-
-  test('`comment` on a comment urn now names BOTH verbs it could have meant', async () => {
+// `comment` on a comment urn names the verbs it could have meant. `reply` is
+// currently withdrawn (see below), but the disambiguation still matters.
+describe('comment on a comment urn disambiguates', () => {
+  test('names both verbs rather than picking one', async () => {
     const e = await dispatch(['comment', COMMENT, 'text'], T0);
     if (e.ok) throw new Error('expected refusal');
     expect(e.error.hint).toContain('lnrelay edit');
     expect(e.error.hint).toContain('lnrelay reply');
   });
+});
 
-  test('a ugcPost-threaded comment urn is accepted by reply', async () => {
-    const e = await dispatch(
-      ['reply', 'urn:li:fsd_comment:(7492591966757715969,urn:li:ugcPost:7492281375731998720)', 'x'],
-      T0,
-    );
-    if (e.ok) throw new Error('expected a gate refusal');
-    expect(e.error.code).not.toBe('INVALID_INPUT');
+describe('reply is withdrawn until it actually nests', () => {
+  test('refuses rather than posting a top-level comment', async () => {
+    const e = await dispatch(['reply', COMMENT, 'text'], T0);
+    if (e.ok) throw new Error('expected refusal');
+    expect(e.error.code).toBe('NOT_IMPLEMENTED');
+  });
+
+  test('the refusal does not send anything', async () => {
+    let fetched = false;
+    const realFetch = globalThis.fetch;
+    globalThis.fetch = (async () => {
+      fetched = true;
+      return new Response('', { status: 200 });
+    }) as typeof fetch;
+    try {
+      await dispatch(['reply', COMMENT, 'text'], T0);
+      expect(fetched).toBe(false);
+    } finally {
+      globalThis.fetch = realFetch;
+    }
   });
 });

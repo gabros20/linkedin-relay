@@ -43,9 +43,19 @@ export const CAPS: Record<SpendClass, Cap> = {
   search: { perDay: 25, provenance: 'guessed', note: 'no corroborated figure exists' },
   page: { perDay: 60, provenance: 'guessed', note: 'thread/feed pagination' },
   write: {
-    perDay: 10,
+    // Raised from 10 on 2026-08-14 by the owner's explicit decision, after 10
+    // blocked ordinary development on a tool whose writes are the point — a
+    // single test round of comment, reply and two deletes exceeded a whole day.
+    //
+    // Still a GUESS, and still below the weakly-reported ~20/day connection
+    // lore. Nothing here has ever been measured against LinkedIn, and the
+    // research's strongest finding stands: cadence triggers restrictions more
+    // reliably than volume, and this cap does not pace anything — the client's
+    // jittered 3-15s gap does. Treat a raised ceiling as more room to be
+    // careful in, not permission to burst.
+    perDay: 25,
     provenance: 'guessed',
-    note: 'deliberately below the weakly-reported ~20/day connection lore',
+    note: 'raised from 10 for development; still below the ~20/day connection lore per action type',
   },
   global: { perDay: 250, provenance: 'guessed', note: 'all classes combined' },
 };

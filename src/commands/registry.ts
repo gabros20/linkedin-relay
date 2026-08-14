@@ -266,12 +266,12 @@ export const COMMANDS: CommandDef[] = [
     name: 'reply',
     cost: '1 read + 1 write',
     summary:
-      'Reply to a comment. Its own verb — a reply and a top-level comment differ only by which ' +
-      'binding the server hands back, so guessing is not survivable.',
+      'Reply to a comment. WITHDRAWN — the implementation posted a top-level comment instead of ' +
+      'a nested reply. Refuses until that is actually solved.',
     usage: 'lnrelay reply <comment-urn> "<text>"',
     audience: ['cli'],
     risk: 'write',
-    implemented: true,
+    implemented: false,
   },
   {
     name: 'edit',

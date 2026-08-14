@@ -24,7 +24,7 @@ function deps(isTty: boolean, answer: string) {
   };
 }
 
-const BUDGET = '7 of 10 writes left today.';
+const BUDGET = '7 of 25 writes left today.';
 
 describe('the token', () => {
   test('is derived from the payload, so it is stable for identical content', () => {
@@ -95,7 +95,7 @@ describe('the prompt', () => {
   });
 
   test('shows the remaining write budget', () => {
-    expect(renderPlan(plan, BUDGET)).toContain('7 of 10 writes left');
+    expect(renderPlan(plan, BUDGET)).toContain('7 of 25 writes left');
   });
 
   test('names the transport, so an official write is distinguishable', () => {
