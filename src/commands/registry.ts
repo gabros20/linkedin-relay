@@ -266,12 +266,12 @@ export const COMMANDS: CommandDef[] = [
     name: 'reply',
     cost: '1 read + 1 write',
     summary:
-      'Reply to a comment. WITHDRAWN — the implementation posted a top-level comment instead of ' +
-      'a nested reply. Refuses until that is actually solved.',
+      'Reply to a comment, nested under it. Goes over Voyager — a different endpoint from ' +
+      'commenting, with the parent named in threadUrn.',
     usage: 'lnrelay reply <comment-urn> "<text>"',
     audience: ['cli'],
     risk: 'write',
-    implemented: false,
+    implemented: true,
   },
   {
     name: 'edit',

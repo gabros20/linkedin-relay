@@ -9,7 +9,6 @@ import { extractCommentTokens } from '../engine/sdui-harvest.ts';
 import {
   type CommentRef,
   parseCommentUrn,
-  replyToComment,
   runCommentAction,
   UPDATE_OP,
 } from '../engine/sdui-menu.ts';
@@ -20,6 +19,7 @@ import {
   react as sduiReact,
 } from '../engine/sdui-write.ts';
 import { loadSession } from '../engine/session.ts';
+import { replyToComment } from '../engine/voyager-reply.ts';
 import { share as voyagerShare } from '../engine/voyager-write.ts';
 import { err, ok } from '../output.ts';
 import type { Envelope } from '../types.ts';
@@ -419,12 +419,12 @@ export async function runReply(
     return err('reply', 'NOT_IMPLEMENTED', 'replying is only implemented over the private API');
   }
 
-  const harvested = await harvest(parent.activityId, ctx.transport.session, now);
-  if (!('tokens' in harvested)) return harvested as Envelope;
-
-  const plan: WritePlan<{ parent: string; text: string }> = {
+  // No harvest here: unlike a top-level comment, a reply needs no binding key
+  // and no trackingId. Its parent reference is the threadUrn, and that is
+  // derived from the urn the user passed.
+  const plan: WritePlan<{ ref: CommentRef; text: string }> = {
     action: 'reply to a comment',
-    payload: { parent: commentUrn, text },
+    payload: { ref: parent, text },
     summary: [authorLine(ctx.transport), `replying to ${commentUrn}`, `content     "${text}"`],
     reversibility:
       'deletable with `lnrelay delete <the reply urn>`; the comment author is notified immediately',
@@ -435,10 +435,7 @@ export async function runReply(
   if ('ok' in gated) return gated;
 
   const result = await replyToComment(
-    parent.activityId,
-    parent,
-    text,
-    harvested.tokens.trackingId,
+    gated.confirmed as never,
     createLiveClient(ctx.transport.session),
   );
   return result.ok

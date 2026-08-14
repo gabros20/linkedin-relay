@@ -254,3 +254,38 @@ else's thread — publicly, under the owner's name, with nothing erroring.
 Note this is the same key shape an EDIT uses, so the binding alone does not distinguish the two: the
 OPERATION does. `createComment` with a comment-keyed binding replies; `updateComment` with the same
 binding edits.
+
+
+---
+
+## Replies live on Voyager, not SDUI (captured 2026-08-14)
+
+The withdrawn implementation searched the SDUI surface because that is where top-level comments live.
+**Replies are not there.** A captured reply goes to a plain Voyager endpoint:
+
+```
+POST /voyager/api/voyagerSocialDashNormComments
+     ?decorationId=com.linkedin.voyager.dash.deco.social.NormComment-43
+{
+  "commentary": { "text": "…", "attributesV2": [],
+                  "$type": "com.linkedin.voyager.dash.common.text.TextViewModel" },
+  "threadUrn": "urn:li:comment:(activity:<post>,<parentComment>)"
+}
+```
+
+Four fields against the 9 KB of bindings a top-level comment needs. Same product surface, two
+entirely different transports — no reasoning from the SDUI side could have reached this, which is
+exactly why the echo-based "discovery" produced a confident wrong answer instead.
+
+Three details that cost something to learn:
+
+- **`threadUrn` is the parent comment** — the real parent reference. Note the SHORT urn form:
+  `(activity:<id>,…)` with no `urn:li:` prefix on the inner urn, unlike everywhere else here.
+- **The `decorationId` is required.** Omitting it returns **HTTP 500**, not a 400 — a decorated
+  resource asked for without its recipe. It is versioned (`-43`) and rotates like a queryId.
+- **The captured reply carried a `profileMention` attribute**, because LinkedIn's UI pre-fills
+  "@Author " into the reply box. We send `attributesV2: []`. An @mention notifies a real person, and
+  inventing one would put both words and a notification where the user did not ask for them.
+
+Verified live by control: a known-good manual reply does not appear in the top-level comment list, the
+withdrawn implementation DID appear there as a sibling, and this one does not.

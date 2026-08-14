@@ -78,14 +78,23 @@ describe('comment on a comment urn disambiguates', () => {
   });
 });
 
-describe('reply is withdrawn until it actually nests', () => {
-  test('refuses rather than posting a top-level comment', async () => {
-    const e = await dispatch(['reply', COMMENT, 'text'], T0);
+// Reply was withdrawn once for posting a top-level comment. It is back on a
+// captured Voyager endpoint, so these assert routing rather than the refusal.
+describe('reply routing', () => {
+  test('rejects a post urn — you reply to comments, not posts', async () => {
+    const e = await dispatch(['reply', POST, 'text'], T0);
     if (e.ok) throw new Error('expected refusal');
-    expect(e.error.code).toBe('NOT_IMPLEMENTED');
+    expect(e.error.code).toBe('INVALID_INPUT');
+    expect(e.error.hint).toContain('lnrelay comment');
   });
 
-  test('the refusal does not send anything', async () => {
+  test('a comment urn reaches the gate, sending nothing', async () => {
+    const e = await dispatch(['reply', COMMENT, 'text'], T0);
+    if (e.ok) throw new Error('expected a gate refusal');
+    expect(['CONFIRMATION_REQUIRED', 'AUTH_FAILED']).toContain(e.error.code);
+  });
+
+  test('no TTY means no network call, not just no write', async () => {
     let fetched = false;
     const realFetch = globalThis.fetch;
     globalThis.fetch = (async () => {
