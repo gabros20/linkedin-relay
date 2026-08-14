@@ -320,3 +320,124 @@ export function parseCommentUrn(urn: string): CommentRef | null {
 
   return null;
 }
+
+const SUBMIT_COMPONENT = 'com.linkedin.sdui.generated.comments.dsl.impl.submitCommentButton';
+const CREATE_OP = 'com.linkedin.sdui.comments.createComment';
+
+const COMPONENT_URL = 'https://www.linkedin.com/flagship-web/rsc-action/actions/component';
+
+/**
+ * Ask the server to render a reply box's submit button, and hand back the
+ * `createComment` action it declares.
+ *
+ * This is the discovery step made into the implementation. Rather than
+ * hardcoding a reply payload, we render the very component whose button would
+ * send it and reuse what it says — so the parent binding, the collection and
+ * every field come from LinkedIn, not from a shape captured on some past date.
+ */
+export async function fetchReplyAction(
+  postActivityId: string,
+  parent: CommentRef,
+  trackingId: string,
+  client: Client,
+): Promise<
+  | { ok: true; payload: Record<string, unknown> }
+  | { ok: false; code: string; message: string; hint?: string }
+> {
+  const activityUrn = { activityUrn: { activityId: postActivityId } };
+  const body = {
+    clientArguments: {
+      payload: {
+        collection: {
+          updateKey: {
+            feedType: 3,
+            items: [{ feedUpdateUrn: { updateUrnActivityUrn: activityUrn }, trackingId }],
+            aggregationType: 0,
+            isVideoCarousel: false,
+          },
+          threadUrn: { threadUrnActivityThreadUrn: activityUrn },
+        },
+        // Keying the box to the PARENT COMMENT is what makes this a reply.
+        commentBoxStateId: boxStateId(parent),
+      },
+      states: [],
+      requestMetadata: { $type: 'proto.sdui.common.RequestMetadata' },
+      screenId: SCREEN_ID,
+      knownTemplateIds: [],
+    },
+  };
+
+  const result = await client.request({
+    url: `${COMPONENT_URL}?componentId=${SUBMIT_COMPONENT}&sduiid=${SUBMIT_COMPONENT}`,
+    method: 'POST',
+    body,
+    spendClass: 'page',
+    operation: 'replyBox',
+  });
+  if (!result.ok) return { ok: false, code: result.code, message: result.message };
+
+  const stream = (result.classification as { raw?: string }).raw ?? '';
+  const payload = extractActionPayload(stream, CREATE_OP) as Record<string, unknown> | null;
+  if (payload === null) {
+    return {
+      ok: false,
+      code: 'NOT_IMPLEMENTED',
+      message: 'the reply box did not declare a createComment action',
+      hint: 'Replies may be closed on this post, or the component shape changed. Nothing was sent.',
+    };
+  }
+
+  // The binding must name the parent we asked about. If it names the post
+  // instead, sending this would publish a TOP-LEVEL comment on someone's
+  // thread rather than a reply — the exact failure this check exists for.
+  const bound = (payload.commentFieldBinding as { key?: unknown } | undefined)?.key;
+  if (typeof bound !== 'string' || !bound.includes(boxStateId(parent))) {
+    return {
+      ok: false,
+      code: 'SCHEMA_DRIFT',
+      message: 'the reply box came back bound to something other than the parent comment',
+      hint: 'Refusing to send — this is how a reply becomes a top-level comment.',
+    };
+  }
+
+  return { ok: true, payload };
+}
+
+/** Post a reply to a comment. The payload comes from the server, not from us. */
+export async function replyToComment(
+  postActivityId: string,
+  parent: CommentRef,
+  text: string,
+  trackingId: string,
+  client: Client,
+): Promise<ActionResult> {
+  const action = await fetchReplyAction(postActivityId, parent, trackingId, client);
+  if (!action.ok) {
+    const out: ActionResult = { ok: false, code: action.code, message: action.message };
+    if (action.hint !== undefined) out.hint = action.hint;
+    return out;
+  }
+
+  const states = textStates(action.payload, text);
+  if (states.length === 0) {
+    return {
+      ok: false,
+      code: 'SCHEMA_DRIFT',
+      message: 'the reply box did not name its text bindings, so a reply cannot be built',
+    };
+  }
+
+  const result = await client.request({
+    url: actionUrl(CREATE_OP),
+    method: 'POST',
+    body: sduiEnvelope(CREATE_OP, action.payload, states),
+    spendClass: 'write',
+    operation: 'reply',
+  });
+  if (!result.ok) {
+    const out: ActionResult = { ok: false, code: result.code, message: result.message };
+    if (result.hint !== undefined) out.hint = result.hint;
+    return out;
+  }
+  return { ok: true, operation: CREATE_OP };
+}

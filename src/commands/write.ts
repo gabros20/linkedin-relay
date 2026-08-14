@@ -9,6 +9,7 @@ import { extractCommentTokens } from '../engine/sdui-harvest.ts';
 import {
   type CommentRef,
   parseCommentUrn,
+  replyToComment,
   runCommentAction,
   UPDATE_OP,
 } from '../engine/sdui-menu.ts';
@@ -187,8 +188,8 @@ export async function runComment(
       'comment',
       'INVALID_INPUT',
       'that is a comment urn, not a post urn',
-      `To change its text: lnrelay edit ${postUrn} "<text>". Replying to a comment is not ` +
-        'implemented — pass the POST urn to add a top-level comment.',
+      `To change its text: lnrelay edit ${postUrn} "<text>". To answer it: ` +
+        `lnrelay reply ${postUrn} "<text>". Pass the POST urn to add a top-level comment.`,
     );
   }
   const activityId = activityIdOf(postUrn);
@@ -371,4 +372,76 @@ export async function runReact(
   return result.ok
     ? ok('react', { id: result.id, removed: remove })
     : err('react', result.code, result.message, result.hint);
+}
+
+/**
+ * Reply to a comment. Its own verb for the same reason `edit` is: replying and
+ * commenting are different operations, and the urn alone cannot say which was
+ * meant. Getting it wrong publishes a top-level comment on someone's thread.
+ */
+export async function runReply(
+  commentUrn: string | undefined,
+  text: string | undefined,
+  now = Date.now(),
+  deps: ConfirmDeps = terminalDeps(),
+): Promise<Envelope> {
+  if (commentUrn === undefined || text === undefined || text.trim() === '') {
+    return err(
+      'reply',
+      'INVALID_INPUT',
+      'a comment urn and the reply text are required',
+      'lnrelay reply <comment-urn> "<text>"',
+    );
+  }
+  const parent: CommentRef | null = parseCommentUrn(commentUrn);
+  if (parent === null) {
+    return err(
+      'reply',
+      'INVALID_INPUT',
+      `'${commentUrn}' is not a comment urn`,
+      'To comment on a POST, use `lnrelay comment <activity-urn>`. Comment urns come from ' +
+        '`lnrelay post <activity-urn>`.',
+    );
+  }
+
+  if (!deps.isTty) {
+    return err(
+      'reply',
+      'CONFIRMATION_REQUIRED',
+      'replying needs a human to confirm it at an interactive terminal',
+      'No terminal is attached, so nothing was sent and no network call was made.',
+    );
+  }
+
+  const ctx = prepare('reply', now, 'voyager');
+  if ('ok' in ctx) return ctx;
+  if (ctx.transport.kind !== 'voyager') {
+    return err('reply', 'NOT_IMPLEMENTED', 'replying is only implemented over the private API');
+  }
+
+  const harvested = await harvest(parent.activityId, ctx.transport.session, now);
+  if (!('tokens' in harvested)) return harvested as Envelope;
+
+  const plan: WritePlan<{ parent: string; text: string }> = {
+    action: 'reply to a comment',
+    payload: { parent: commentUrn, text },
+    summary: [authorLine(ctx.transport), `replying to ${commentUrn}`, `content     "${text}"`],
+    reversibility:
+      'deletable with `lnrelay delete <the reply urn>`; the comment author is notified immediately',
+    transport: 'voyager',
+  };
+
+  const gated = await gate('reply', plan, ctx, deps);
+  if ('ok' in gated) return gated;
+
+  const result = await replyToComment(
+    parent.activityId,
+    parent,
+    text,
+    harvested.tokens.trackingId,
+    createLiveClient(ctx.transport.session),
+  );
+  return result.ok
+    ? ok('reply', { repliedTo: commentUrn })
+    : err('reply', result.code, result.message, result.hint);
 }

@@ -15,7 +15,7 @@ import { runBudget, runDoctor, runRisk } from './commands/local.ts';
 import { runOauthLogin, runOauthLogout, runOauthStatus } from './commands/oauth.ts';
 import { findCommand, helpText } from './commands/registry.ts';
 import { runSync } from './commands/sync.ts';
-import { runComment, runEdit, runReact, runShare } from './commands/write.ts';
+import { runComment, runEdit, runReact, runReply, runShare } from './commands/write.ts';
 import { shouldRunAsEntry } from './entry.ts';
 import { err, exitCodeFor, toJson } from './output.ts';
 import type { Envelope } from './types.ts';
@@ -158,6 +158,8 @@ export async function dispatch(argv: string[], now: number): Promise<Envelope> {
       return runComment(args.positionals[0], args.positionals[1], now);
     case 'edit':
       return runEdit(args.positionals[0], args.positionals[1], now);
+    case 'reply':
+      return runReply(args.positionals[0], args.positionals[1], now);
     case 'react':
       return runReact(
         args.positionals[0],
