@@ -281,11 +281,18 @@ Three details that cost something to learn:
 
 - **`threadUrn` is the parent comment** — the real parent reference. Note the SHORT urn form:
   `(activity:<id>,…)` with no `urn:li:` prefix on the inner urn, unlike everywhere else here.
-- **The `decorationId` is required.** Omitting it returns **HTTP 500**, not a 400 — a decorated
-  resource asked for without its recipe. It is versioned (`-43`) and rotates like a queryId.
+- **The `decorationId` is required for the RESPONSE, not for the write.** Omitting it returns
+  **HTTP 500 — after the reply has already been created.** Verified: the failed attempt showed up on
+  the post next to the successful one. So a 5xx here does not mean nothing happened, and a retry
+  double-posts publicly. It is versioned (`-43`) and rotates like a queryId.
 - **The captured reply carried a `profileMention` attribute**, because LinkedIn's UI pre-fills
   "@Author " into the reply box. We send `attributesV2: []`. An @mention notifies a real person, and
   inventing one would put both words and a notification where the user did not ask for them.
 
 Verified live by control: a known-good manual reply does not appear in the top-level comment list, the
 withdrawn implementation DID appear there as a sibling, and this one does not.
+
+- **Deleting a parent comment CASCADES to its replies.** Verified: removing the one top-level comment
+  took its three nested replies with it, and the post went from "4 comments" to none. `delete` on a
+  comment is therefore more destructive than its urn suggests, and the confirmation prompt says only
+  that the comment goes — not the conversation under it.

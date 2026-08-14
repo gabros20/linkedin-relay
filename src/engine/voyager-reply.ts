@@ -19,11 +19,16 @@ import type { Client } from './client.ts';
 import type { CommentRef } from './sdui-menu.ts';
 
 /**
- * The decorationId is REQUIRED. Omitting it returned HTTP 500, not a helpful
- * 400 — a decorated resource asked for without its decoration recipe.
+ * The decorationId, captured 2026-08-14. VERSIONED (`-43`), so it rotates like
+ * the queryIds in contracts.ts — re-capture this first if replies start failing.
  *
- * It is VERSIONED (`-43`), so it rotates like the queryIds in contracts.ts.
- * Captured 2026-08-14; if replies start failing, re-capture this first.
+ * A WARNING worth more than the constant: omitting it returns HTTP 500 **after
+ * the reply has already been created**. Verified — the failed attempt appeared
+ * on the post alongside the successful one. The write happens; only the
+ * decorated response fails to build.
+ *
+ * So a 5xx from this endpoint does NOT mean nothing happened, and a retry
+ * double-posts publicly. See the hint on the failure path below.
  */
 const REPLY_DECORATION = 'com.linkedin.voyager.dash.deco.social.NormComment-43';
 
@@ -77,7 +82,13 @@ export async function replyToComment(
 
   if (!result.ok) {
     const out: ReplyResult = { ok: false, code: result.code, message: result.message };
-    if (result.hint !== undefined) out.hint = result.hint;
+    // Observed live: this endpoint can answer 500 with the reply ALREADY
+    // POSTED. Telling the user to retry would double-post under their name.
+    out.hint = /5\d\d|unexpected status/.test(result.message)
+      ? 'DO NOT RETRY BLINDLY. This endpoint has been observed returning 5xx after the reply ' +
+        'was already created. Check the thread on LinkedIn before sending again.'
+      : (result.hint ?? '');
+    if (out.hint === '') delete out.hint;
     return out;
   }
   return { ok: true, parent: parentThreadUrn(ref) };

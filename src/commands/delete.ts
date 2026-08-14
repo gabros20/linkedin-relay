@@ -175,7 +175,10 @@ async function deleteComment(
     action: 'delete your comment',
     payload: { urn },
     summary: [`comment  ${urn}`, `on post  urn:li:activity:${ref.activityId}`],
-    reversibility: 'NONE. A deleted comment is gone, with its replies and reactions.',
+    // Verified live: deleting a parent took its three nested replies with it.
+    reversibility:
+      'NONE. A deleted comment is gone — AND SO IS EVERY REPLY UNDER IT, including other ' +
+      "people's. Verified live.",
     transport: 'voyager',
   };
 

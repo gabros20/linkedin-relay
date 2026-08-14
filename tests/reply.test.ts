@@ -94,3 +94,31 @@ describe('sending', () => {
     expect(r.ok).toBe(false);
   });
 });
+
+// This endpoint has been observed answering 500 with the reply ALREADY posted —
+// the missing decorationId broke the response, not the write. A user told
+// "failed" who retries double-posts under their own name, publicly.
+describe('a 5xx must not read as "nothing happened"', () => {
+  test('the failure hint warns against a blind retry', async () => {
+    const c = {
+      request: async () => ({
+        ok: false as const,
+        code: 'FETCH_FAILED',
+        message: 'unexpected status 500',
+      }),
+    };
+    const r = await replyToComment(confirmed({ ref: REF, text: 'hi' }), c as never);
+    if (r.ok) throw new Error('expected failure');
+    expect(r.hint).toMatch(/do not retry/i);
+    expect(r.hint).toMatch(/already/i);
+  });
+
+  test('an ordinary refusal does not carry that warning', async () => {
+    const c = {
+      request: async () => ({ ok: false as const, code: 'BLOCKED', message: 'refused' }),
+    };
+    const r = await replyToComment(confirmed({ ref: REF, text: 'hi' }), c as never);
+    if (r.ok) throw new Error('expected failure');
+    expect(r.hint ?? '').not.toMatch(/do not retry/i);
+  });
+});
