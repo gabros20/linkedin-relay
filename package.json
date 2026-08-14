@@ -1,6 +1,6 @@
 {
   "name": "linkedin-relay-mcp",
-  "version": "3.0.1",
+  "version": "3.0.2",
   "description": "Deep research over LinkedIn from your own account — CLI (lnrelay) + read-only MCP server + Claude Code skill. No paid API. Reads LinkedIn's private Voyager surface with your own session cookies.",
   "type": "module",
   "license": "MIT",

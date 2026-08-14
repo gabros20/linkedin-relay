@@ -1,3 +1,10 @@
+## [3.0.2](https://github.com/gabros20/linkedin-relay/compare/v3.0.1...v3.0.2) (2026-08-14)
+
+
+### Bug Fixes
+
+* **reply:** a 5xx here does not mean the reply failed ([6130195](https://github.com/gabros20/linkedin-relay/commit/6130195e066927c8a7e3d45ce993013947b0382c))
+
 ## [3.0.1](https://github.com/gabros20/linkedin-relay/compare/v3.0.0...v3.0.1) (2026-08-14)
 
 
