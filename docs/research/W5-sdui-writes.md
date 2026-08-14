@@ -192,11 +192,39 @@ observing. Guessing a field name here is exactly the failure this project refuse
 that silently omits the parent posts a TOP-LEVEL comment on someone's post instead of a reply —
 public, under the owner's name, and wrong in a way no status code reports.
 
-### What would settle it
+### SOLVED 2026-08-14 — and no capture was needed after all
 
-One capture. With `bun run scripts/observe-write.ts` running, reply to any comment by hand once. The
-`createComment` payload that results differs from the captured top-level one by exactly the fields
-that mean "this is a reply", and a structural diff against the existing capture names them
-immediately.
+The assumption above was that a reply must carry a parent reference, so the field naming it had to be
+observed. **There is no such field.**
 
-That is a two-minute job at a desk with the debug Chrome, and it cannot be done from a phone.
+Rendering the reply box's own submit button revealed its declared action — the same server-describes-
+itself trick that gave edit and delete, one level down:
+
+```
+POST /flagship-web/rsc-action/actions/component
+     ?componentId=com.linkedin.sdui.generated.comments.dsl.impl.submitCommentButton
+     payload.commentBoxStateId = urn:li:comment:(urn:li:<threadType>:<post>,<comment>)
+-> 200, and the createComment action it declares comes back fully populated
+```
+
+The reply payload's field names are **identical** to a top-level comment's:
+
+```
+optimisticKey, collection, commentFieldBinding, richCommentFieldBinding,
+linkPreviewIngestedContentId, externalImageUrl, externalImageId
+```
+
+The only difference is what the bindings are keyed to:
+
+| | binding key body |
+|---|---|
+| top-level comment | `Cg…<opaque 31 bytes>…FeedType_FEED_DETAIL` |
+| **reply** | `urn:li:comment:(urn:li:<threadType>:<post>,<comment>)` |
+
+**The binding key IS the parent reference.** That is why no field names it, and why the instinct to
+guess a `parentCommentUrn` would have produced a request that posts a TOP-LEVEL comment on someone
+else's thread — publicly, under the owner's name, with nothing erroring.
+
+Note this is the same key shape an EDIT uses, so the binding alone does not distinguish the two: the
+OPERATION does. `createComment` with a comment-keyed binding replies; `updateComment` with the same
+binding edits.

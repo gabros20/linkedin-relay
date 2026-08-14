@@ -165,19 +165,36 @@ export type ActionResult =
   | { ok: false; code: string; message: string; hint?: string };
 
 /**
- * States for an edit: the new text under the keys the SERVER named.
+ * The state id of a REPLY box: the parent comment's urn.
  *
- * The keys come out of the menu payload rather than being rebuilt, because the
- * server already told us what they are — and for an edit they turn out to be
- * the plain comment urn, not the opaque binding a new comment needs.
+ * A reply is `createComment` with its bindings keyed to the parent comment
+ * instead of to the post's opaque key — discovered by rendering the reply box's
+ * submit button and reading the action it declared. The payload has NO parent
+ * field; the binding is the parent reference. Send the post's key by mistake
+ * and you publish a top-level comment on someone's thread instead of a reply,
+ * with nothing erroring.
  */
-function editStates(payload: Record<string, unknown>, text: string): unknown[] {
-  const named = (field: string): string | null => {
-    const slot = payload[field] as { key?: unknown } | undefined;
-    return typeof slot?.key === 'string' ? slot.key : null;
+export function boxStateId(parent: CommentRef): string {
+  return `urn:li:comment:(urn:li:${parent.threadType}:${parent.activityId},${parent.commentId})`;
+}
+
+/**
+ * Build the two text states from whichever names the server used for the
+ * bindings. A reply payload calls them commentFieldBinding /
+ * richCommentFieldBinding; an edit payload calls them commentary /
+ * richTextCommentary. Returns [] when neither is present, so callers refuse
+ * rather than sending a half-populated state that posts blank text.
+ */
+export function textStates(payload: Record<string, unknown>, text: string): unknown[] {
+  const keyOf = (...names: string[]): string | null => {
+    for (const n of names) {
+      const slot = payload[n] as { key?: unknown } | undefined;
+      if (typeof slot?.key === 'string') return slot.key;
+    }
+    return null;
   };
-  const plain = named('commentary');
-  const rich = named('richTextCommentary');
+  const plain = keyOf('commentary', 'commentFieldBinding');
+  const rich = keyOf('richTextCommentary', 'richCommentFieldBinding');
   if (plain === null || rich === null) return [];
 
   const entry = (key: string, value: unknown, protoCase: string) => ({
@@ -191,6 +208,17 @@ function editStates(payload: Record<string, unknown>, text: string): unknown[] {
     entry(plain, text, 'stringValue'),
     entry(rich, { text, attribute: [], $type: 'TextModel', source: 'local' }, 'textModelForWrite'),
   ];
+}
+
+/**
+ * States for an edit: the new text under the keys the SERVER named.
+ *
+ * The keys come out of the menu payload rather than being rebuilt, because the
+ * server already told us what they are — and for an edit they turn out to be
+ * the plain comment urn, not the opaque binding a new comment needs.
+ */
+function editStates(payload: Record<string, unknown>, text: string): unknown[] {
+  return textStates(payload, text);
 }
 
 /**
