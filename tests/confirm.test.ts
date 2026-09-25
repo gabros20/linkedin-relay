@@ -1,5 +1,13 @@
 import { describe, expect, test } from 'bun:test';
-import { confirmToken, confirmWrite, renderPlan, type WritePlan } from '../src/commands/confirm.ts';
+import {
+  type ApprovalMode,
+  canApprove,
+  confirmToken,
+  confirmWrite,
+  planToken,
+  renderPlan,
+  type WritePlan,
+} from '../src/commands/confirm.ts';
 
 const plan: WritePlan<{ text: string }> = {
   action: 'share',
@@ -175,5 +183,147 @@ describe('confirming at a terminal', () => {
     if (!r.ok) throw new Error('expected confirmation');
     expect(r.confirmed.payload).toEqual(plan.payload);
     expect(r.confirmed.action).toBe('share');
+  });
+});
+
+// ─── Approval modes ──────────────────────────────────────────────────────────
+//
+// Decided 2026-09-25: human-in-the-loop stays the default, but personal agents
+// may act on the owner's word ("post it") without a terminal — `agent` mode —
+// or on their own — `unattended` mode. Only a human at a terminal can switch
+// modes (commands/approval.ts); these tests pin what each mode lets through.
+function withApproval(
+  mode: ApprovalMode,
+  opts: { token?: string; planOnly?: boolean; isTty?: boolean } = {},
+) {
+  const prompted: string[] = [];
+  return {
+    prompted,
+    deps: {
+      isTty: opts.isTty ?? false,
+      prompt: async (q: string) => {
+        prompted.push(q);
+        return '';
+      },
+      write: () => {},
+      approval: { mode, token: opts.token, planOnly: opts.planOnly },
+    },
+  };
+}
+
+describe('--plan', () => {
+  test('returns the preview and its token, in any mode, and approves nothing', async () => {
+    for (const mode of ['interactive', 'agent', 'unattended'] as const) {
+      const out = await confirmWrite(plan, BUDGET, withApproval(mode, { planOnly: true }).deps);
+      if (out.ok || out.code !== 'PLANNED') throw new Error(`expected a plan in ${mode}`);
+      expect(out.token).toBe(planToken(plan));
+      expect(out.preview.join('\n')).toContain('shipping something new today');
+    }
+  });
+});
+
+describe('agent mode', () => {
+  test('the token from --plan approves that exact content, with no terminal', async () => {
+    const out = await confirmWrite(
+      plan,
+      BUDGET,
+      withApproval('agent', { token: planToken(plan) }).deps,
+    );
+    if (!out.ok) throw new Error(out.message);
+    expect(out.confirmed.payload).toEqual(plan.payload);
+  });
+
+  // The whole point of the token: what the owner saw in chat is what gets sent.
+  test('a token for different content is refused, saying the content changed', async () => {
+    const other = { ...plan, payload: { text: 'something else' } };
+    const out = await confirmWrite(
+      other,
+      BUDGET,
+      withApproval('agent', { token: planToken(plan) }).deps,
+    );
+    if (out.ok || out.code === 'PLANNED') throw new Error('expected refusal');
+    expect(out.message).toContain('changed');
+  });
+
+  test('without a token and without a terminal, it explains the plan-then-confirm flow', async () => {
+    const out = await confirmWrite(plan, BUDGET, withApproval('agent').deps);
+    if (out.ok || out.code === 'PLANNED') throw new Error('expected refusal');
+    expect(out.hint).toContain('--plan');
+    expect(out.hint).toContain('--confirm');
+  });
+
+  test('at a terminal without a token, it still asks the human', async () => {
+    const a = withApproval('agent', { isTty: true });
+    await confirmWrite(plan, BUDGET, a.deps);
+    expect(a.prompted).toHaveLength(1);
+  });
+});
+
+describe('interactive mode', () => {
+  // An agent must not be able to approve its own write by echoing the token
+  // --plan gave it. In this mode only a terminal can approve.
+  test('--confirm is refused, and names how the owner could allow it', async () => {
+    const out = await confirmWrite(
+      plan,
+      BUDGET,
+      withApproval('interactive', { token: planToken(plan) }).deps,
+    );
+    if (out.ok || out.code === 'PLANNED') throw new Error('expected refusal');
+    expect(out.hint).toContain('lnrelay approval set');
+  });
+});
+
+describe('unattended mode', () => {
+  test('approves without a token or a terminal', async () => {
+    const a = withApproval('unattended');
+    const out = await confirmWrite(plan, BUDGET, a.deps);
+    expect(out.ok).toBe(true);
+    expect(a.prompted).toHaveLength(0);
+  });
+
+  test('a token that does not match is still refused — it means the content changed', async () => {
+    const out = await confirmWrite(
+      plan,
+      BUDGET,
+      withApproval('unattended', { token: 'ffff' }).deps,
+    );
+    expect(out.ok).toBe(false);
+  });
+});
+
+describe('the token basis', () => {
+  // A comment's payload carries a trackingId that changes on every page render,
+  // so --plan and --confirm would never agree. Commands name a stable basis.
+  test('a plan with a tokenBasis is tokenised on that, not on the payload', () => {
+    const volatile = {
+      ...plan,
+      payload: { text: 'x', trackingId: 'r1' },
+      tokenBasis: { text: 'x' },
+    };
+    const rerendered = { ...volatile, payload: { text: 'x', trackingId: 'r2' } };
+    expect(planToken(volatile)).toBe(planToken(rerendered));
+  });
+});
+
+describe('canApprove', () => {
+  // Commands that must read before asking (comment harvests the page) check
+  // this first, so a request that cannot end in approval makes no network call.
+  test('interactive without a terminal cannot, unless it is only planning', () => {
+    expect(canApprove(withApproval('interactive').deps)).toBe(false);
+    expect(canApprove(withApproval('interactive', { planOnly: true }).deps)).toBe(true);
+    expect(canApprove(withApproval('interactive', { isTty: true }).deps)).toBe(true);
+  });
+
+  test('agent without a token or terminal cannot; with a token it can', () => {
+    expect(canApprove(withApproval('agent').deps)).toBe(false);
+    expect(canApprove(withApproval('agent', { token: 'abcd' }).deps)).toBe(true);
+  });
+
+  test('unattended always can', () => {
+    expect(canApprove(withApproval('unattended').deps)).toBe(true);
+  });
+
+  test('deps with no approval at all behave as interactive', () => {
+    expect(canApprove({ isTty: false, prompt: async () => '', write: () => {} })).toBe(false);
   });
 });

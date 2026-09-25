@@ -14,9 +14,10 @@
 import { createInterface } from 'node:readline/promises';
 import { cachePath, loadJson, saveJson } from '../cache/store.ts';
 import { emptyLedger, type Ledger, MIN_GAP_MS, spend, summarise } from '../engine/budget.ts';
-import { err } from '../output.ts';
+import { err, ok } from '../output.ts';
 import type { Envelope } from '../types.ts';
-import { type ConfirmDeps, confirmWrite, type WritePlan } from './confirm.ts';
+import { auditApproval } from './approval.ts';
+import { type ConfirmDeps, canApprove, confirmWrite, type WritePlan } from './confirm.ts';
 
 export function ledger(): Ledger {
   const result = loadJson<Ledger>(cachePath('budget.json'));
@@ -26,6 +27,33 @@ export function ledger(): Ledger {
 export function budgetLine(now: number): string {
   const s = summarise(ledger(), 'write', now);
   return `${s.remaining} of ${s.cap} writes left today.`;
+}
+
+/**
+ * For commands that must READ before they can ask (comment harvests the post
+ * page, delete reads the comment menu): refuse up front when this invocation
+ * cannot end in an approval, so it causes no LinkedIn traffic it cannot use.
+ */
+export function refuseUnapprovable(
+  command: string,
+  action: string,
+  deps: ConfirmDeps,
+): Envelope | null {
+  if (canApprove(deps)) return null;
+  return deps.approval?.mode === 'agent'
+    ? err(
+        command,
+        'CONFIRMATION_REQUIRED',
+        `${action} needs the owner's approval of this exact content`,
+        'Nothing was sent and no network call was made. Run the same command with --plan, show ' +
+          'the preview to the owner, and when they approve re-run it with --confirm <token>.',
+      )
+    : err(
+        command,
+        'CONFIRMATION_REQUIRED',
+        `${action} needs a human to confirm it at an interactive terminal`,
+        'No terminal is attached, so nothing was sent and no network call was made.',
+      );
 }
 
 /** Real terminal I/O. Injected in tests so the gate is exercised without one. */
@@ -96,7 +124,22 @@ export async function gateWrite<T>(
   opts: GateOpts = {},
 ): Promise<Gated<T>> {
   const outcome = await confirmWrite(plan, budgetLine(now), deps);
+  // A plan is a success: the preview IS the result. Nothing is spent or sent.
+  if (!outcome.ok && outcome.code === 'PLANNED') {
+    return ok(command, {
+      planned: true,
+      token: outcome.token,
+      preview: outcome.preview,
+      next: `show this to the owner; on their approval re-run the same command with --confirm ${outcome.token}`,
+    });
+  }
   if (!outcome.ok) return err(command, outcome.code, outcome.message, outcome.hint);
+  auditApproval(
+    command,
+    deps.approval?.mode ?? 'interactive',
+    plan.summary,
+    outcome.confirmed.token,
+  );
   // Only after approval is anything committed — an aborted write costs nothing.
   if (opts.commitSpend !== false) {
     const attempt = spend(ledger(), 'write', now);

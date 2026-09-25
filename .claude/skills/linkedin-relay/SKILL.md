@@ -1,6 +1,6 @@
 ---
 name: linkedin-relay
-description: Research LinkedIn from the user's own account — search people/companies/jobs, read profiles, read the chronological feed. Use when finding or evaluating people, companies or roles on LinkedIn, or reading what the user's network is posting. Not for posting, messaging, or connection requests — those are CLI-only and require the human.
+description: Research LinkedIn from the user's own account — search people/companies/jobs, read profiles, read the chronological feed — and, through the lnrelay CLI, post (text, image or video), comment, reply, react and delete under the approval mode the owner chose. Use when finding or evaluating people, companies or roles on LinkedIn, reading what the user's network is posting, or when the user asks to post or engage on LinkedIn. Not for messaging or connection requests, which do not exist.
 ---
 
 # linkedin-relay
@@ -183,7 +183,7 @@ call again.
 
 ## What this tool will not do
 
-Writes are **not on this surface at all**. They exist only as CLI commands the user runs themselves:
+Writes are **not on the MCP surface**. They exist only as CLI commands:
 
 | command | does |
 |---|---|
@@ -197,22 +197,35 @@ Writes are **not on this surface at all**. They exist only as CLI commands the u
 The urn decides nothing on its own — `comment`, `reply` and `edit` are separate verbs because they
 are separate operations, and passing a comment urn to `comment` is refused rather than guessed at.
 
-Each stops at an interactive terminal, shows exactly what it will send and over which surface, and
-requires the user to type a token derived from the content.
+### How a write gets approved
 
-Two things worth telling a user who asks:
+The owner chooses, and only the owner can change it (`lnrelay approval set <mode>` needs a real
+terminal and a typed token). Check with `lnrelay approval`:
+
+| mode | what you do |
+|---|---|
+| `interactive` (default) | you cannot complete the write. Give the user the exact command to run themselves. |
+| `agent` | run the command with `--plan`: it sends nothing and returns a `preview` and a `token`. Show the user the preview **verbatim** and ask. Only when they say yes, run the **identical** command with `--confirm <token>`. |
+| `unattended` | the command runs as given. Still show the user what you posted afterwards. |
+
+In `agent` mode the token is bound to the exact content: change one character of text, swap the
+image, or target a different urn and the token no longer matches — plan again, and show the new
+preview. Never reuse a token across different content, never `--confirm` something the user has not
+seen, and never treat "sounds good" about a draft as approval of a *different* draft.
+
+Every approval and outcome is appended to `~/.lnrelay/writes.jsonl`; the owner can read what you did.
+
+Do not look for a way around the mode — no pty tricks, no editing `config.json`. If the mode does
+not let you write, say so and give the command.
+
+Things worth telling a user who asks:
 
 - `share` prefers LinkedIn's official OAuth scope and falls back to the private API when they have no
-  developer app — the prompt names which, and a Voyager write states the ToS breach. Why an app is
+  developer app — the preview names which, and a Voyager write states the ToS breach. Why an app is
   needed at all: `docs/DECISION-writes.md`.
 - `--image` / `--video` upload over the private API only; `--via oauth` with media is refused. A
   video post comes back as a `urn:li:ugcPost:` rather than `urn:li:share:`.
 - **Deleting a comment also deletes every reply under it**, including other people's. Verified live.
-
-**Without a terminal there is no write and no network call.** That is deliberate and there is no
-flag that changes it: a flag an agent could set would not be confirming anything. If the user asks
-you to post or comment, tell them the exact command to run themselves. Do not look for a way around
-it, and do not offer one.
 
 Connecting and messaging do not exist at all, in any surface. They are the actions where the
 enforcement reports cluster, and an agent bug there is visible to a third party and unrecoverable.

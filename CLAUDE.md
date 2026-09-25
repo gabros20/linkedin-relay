@@ -6,7 +6,7 @@ A deep-research tool for LinkedIn — a TypeScript CLI (`lnrelay`) + a thin read
 
 **Current state: shipped and in use (v3.x).** Reads cover whoami, profile, search, feed, my-posts,
 connections, reactions and post threads. Writes are CLI-only: `share` (text, `--image`, `--video`),
-`comment`, `reply`, `edit`, `react`, `delete`. They go over Voyager or SDUI with the browser session, or
+`comment`, `reply`, `edit`, `react`, `delete`, approved per `lnrelay approval`. They go over Voyager or SDUI with the browser session, or
 over OAuth for text shares when a token exists. `docs/DECISION-writes.md` records how each write was
 discovered and verified. New writes are learned by capture first: `scripts/observe-write.ts` records
 what the browser sends (and receives) while you act by hand in the debug Chrome on port 9222.
@@ -50,8 +50,12 @@ These are load-bearing. Changing one means re-opening the design, not editing a 
 4. **No network call without a `Permit`** — including redirects, pagination and contract discovery.
 5. **Corrupt cache quarantines and fails loudly.** Never-throw is not never-fail: degrading to an
    empty success turns a disk error into a full resync against a hostile platform.
-6. **Writes are OAuth-only, CLI-only, and require a `ConfirmedWrite<T>`** that only the interactive
-   `confirm` command can mint. No `--yes`, no env-var, no config escape hatch.
+6. **Writes are CLI-only and require a `ConfirmedWrite<T>`**, which only `confirm.ts` mints, under the
+   approval mode the OWNER chose: `interactive` (token typed at a terminal, the default), `agent`
+   (`--plan` preview → owner approves in chat → `--confirm <token>` bound to that exact content), or
+   `unattended`. Only `lnrelay approval set`, at a terminal behind a typed token, changes the mode —
+   an agent must never be able to choose its own. No `--yes`, no env-var. Every approval and outcome
+   goes to `~/.lnrelay/writes.jsonl`. (Revised 2026-09-25: `docs/DECISION-writes.md` §9.)
 7. **Third-party data is not cached by default.**
 8. **Never commit raw captures, HARs, or cookies.** Redact by hand into `tests/fixtures/` first.
 9. **Never claim ToS compliance or safety** in code comments, docs, or error messages.

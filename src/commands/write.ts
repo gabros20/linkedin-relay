@@ -27,7 +27,13 @@ import { type ApprovedMedia, mediaDigest, share as voyagerShare } from '../engin
 import { err, ok } from '../output.ts';
 import type { Envelope } from '../types.ts';
 import type { ConfirmDeps, WritePlan } from './confirm.ts';
-import { gateWrite, recordHarvestSpend, reserve, terminalDeps } from './gate.ts';
+import {
+  gateWrite,
+  recordHarvestSpend,
+  refuseUnapprovable,
+  reserve,
+  terminalDeps,
+} from './gate.ts';
 import { loadToken, OAUTH_SETUP } from './token.ts';
 import { chooseTransport, type Transport } from './transport.ts';
 
@@ -287,14 +293,8 @@ export async function runComment(
   // is a network call, and this tool's guarantee is "no TTY, no write AND no
   // network call on that path" — an agent shelling out non-interactively must
   // not cause LinkedIn traffic it cannot then use.
-  if (!deps.isTty) {
-    return err(
-      'comment',
-      'CONFIRMATION_REQUIRED',
-      'commenting needs a human to confirm it at an interactive terminal',
-      'No terminal is attached, so nothing was sent and no network call was made.',
-    );
-  }
+  const unapprovable = refuseUnapprovable('comment', 'commenting', deps);
+  if (unapprovable !== null) return unapprovable;
 
   const ctx = prepare('comment', now, 'voyager');
   if ('ok' in ctx) return ctx;
@@ -312,6 +312,9 @@ export async function runComment(
   const plan: WritePlan<{ activityId: string; text: string; tokens: CommentTokens }> = {
     action: 'comment on a post',
     payload: { activityId, text, tokens: harvested.tokens },
+    // The harvested trackingId changes on every render, so --plan and --confirm
+    // would never agree on a token derived from it. The intent is what's approved.
+    tokenBasis: { activityId, text },
     summary: [authorLine(ctx.transport), `on       ${postUrn}`, `content  "${text}"`],
     reversibility:
       'deletable with `lnrelay delete <comment-urn>`; the author is notified immediately',
@@ -356,14 +359,8 @@ export async function runEdit(
     );
   }
 
-  if (!deps.isTty) {
-    return err(
-      'edit',
-      'CONFIRMATION_REQUIRED',
-      'editing needs a human to confirm it at an interactive terminal',
-      'No terminal is attached, so nothing was sent and no network call was made.',
-    );
-  }
+  const unapprovable = refuseUnapprovable('edit', 'editing', deps);
+  if (unapprovable !== null) return unapprovable;
 
   const ctx = prepare('edit', now, 'voyager');
   if ('ok' in ctx) return ctx;
@@ -485,14 +482,8 @@ export async function runReply(
     );
   }
 
-  if (!deps.isTty) {
-    return err(
-      'reply',
-      'CONFIRMATION_REQUIRED',
-      'replying needs a human to confirm it at an interactive terminal',
-      'No terminal is attached, so nothing was sent and no network call was made.',
-    );
-  }
+  const unapprovable = refuseUnapprovable('reply', 'replying', deps);
+  if (unapprovable !== null) return unapprovable;
 
   const ctx = prepare('reply', now, 'voyager');
   if ('ok' in ctx) return ctx;

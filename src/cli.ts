@@ -1,6 +1,15 @@
 import { bool, num, type ParsedArgs, parseArgs, str } from './args.ts';
+import {
+  auditOutcome,
+  loadApprovalMode,
+  runApprovalSet,
+  runApprovalShow,
+  wasApproved,
+} from './commands/approval.ts';
 import { runCacheStatus, runLocal, runPurge, runSourceRead } from './commands/cache.ts';
+import type { ConfirmDeps } from './commands/confirm.ts';
 import { runDelete } from './commands/delete.ts';
+import { terminalDeps } from './commands/gate.ts';
 import {
   type OutputOpts,
   runFeed,
@@ -94,7 +103,13 @@ export async function dispatch(argv: string[], now: number): Promise<Envelope> {
     );
   }
 
+  if (def.risk === 'write') return write(command, args, now);
+
   switch (command) {
+    case 'approval':
+      return args.positionals[0] === 'set'
+        ? runApprovalSet(args.positionals[1], terminalDeps())
+        : runApprovalShow();
     case 'doctor':
       return runDoctor(now, bool(args, 'offline'));
     case 'budget':
@@ -136,24 +151,6 @@ export async function dispatch(argv: string[], now: number): Promise<Envelope> {
       return runLogin();
     case 'oauth':
       return oauth(args);
-    case 'share':
-      return share(args, now);
-    case 'comment':
-      return runComment(args.positionals[0], args.positionals[1], now);
-    case 'edit':
-      return runEdit(args.positionals[0], args.positionals[1], now);
-    case 'reply':
-      return runReply(args.positionals[0], args.positionals[1], now);
-    case 'react':
-      return runReact(
-        args.positionals[0],
-        str(args, 'type') ?? 'LIKE',
-        now,
-        undefined,
-        bool(args, 'remove'),
-      );
-    case 'delete':
-      return runDelete(args.positionals[0], now, undefined, bool(args, 'quiet'));
     case 'whoami':
       return runWhoami(bool(args, 'raw'));
     case 'profile':
@@ -199,8 +196,59 @@ if (entry.run) {
   process.exit(exitCodeFor(envelope));
 }
 
+/**
+ * Every write goes through here: it resolves how the write is approved (the
+ * owner's mode, plus --plan / --confirm), runs it, and logs the outcome of
+ * anything that was approved.
+ */
+async function write(command: string, args: ParsedArgs, now: number): Promise<Envelope> {
+  if (args.flags.confirm === true) {
+    return err(
+      command,
+      'INVALID_INPUT',
+      '--confirm needs the token that --plan returned',
+      `lnrelay ${command} … --plan, then the same command with --confirm <token>`,
+    );
+  }
+  const mode = loadApprovalMode();
+  if (!mode.ok) return err(command, 'CACHE_CORRUPT', mode.message, mode.hint);
+
+  const deps: ConfirmDeps = {
+    ...terminalDeps(),
+    approval: { mode: mode.mode, token: str(args, 'confirm'), planOnly: bool(args, 'plan') },
+  };
+  const envelope = await runWrite(command, args, now, deps);
+  if (wasApproved()) auditOutcome(command, mode.mode, envelope);
+  return envelope;
+}
+
+function runWrite(
+  command: string,
+  args: ParsedArgs,
+  now: number,
+  deps: ConfirmDeps,
+): Promise<Envelope> | Envelope {
+  const [first, second] = args.positionals;
+  switch (command) {
+    case 'share':
+      return share(args, now, deps);
+    case 'comment':
+      return runComment(first, second, now, deps);
+    case 'edit':
+      return runEdit(first, second, now, deps);
+    case 'reply':
+      return runReply(first, second, now, deps);
+    case 'react':
+      return runReact(first, str(args, 'type') ?? 'LIKE', now, deps, bool(args, 'remove'));
+    case 'delete':
+      return runDelete(first, now, deps, bool(args, 'quiet'));
+    default:
+      return err(command, 'NOT_IMPLEMENTED', `'${command}' has no write runner`);
+  }
+}
+
 /** `share` parses more flags than any other command; kept out of dispatch. */
-function share(args: ParsedArgs, now: number): Promise<Envelope> | Envelope {
+function share(args: ParsedArgs, now: number, deps: ConfirmDeps): Promise<Envelope> | Envelope {
   const surface = via(args);
   if (surface === 'invalid') {
     return err(
@@ -234,7 +282,7 @@ function share(args: ParsedArgs, now: number): Promise<Envelope> | Envelope {
     args.positionals[0],
     str(args, 'visibility') ?? 'public',
     now,
-    undefined,
+    deps,
     surface,
     media,
   );

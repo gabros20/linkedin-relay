@@ -192,3 +192,60 @@ describe('unexpected failures still produce an envelope', () => {
     expect(e.error.code).toBe('CACHE_CORRUPT');
   });
 });
+
+describe('approval modes at the CLI', () => {
+  function withSession() {
+    writeFileSync(
+      join(dir, 'session.json'),
+      JSON.stringify({
+        liAt: 'a'.repeat(40),
+        jsessionId: '"ajax:1"',
+        userAgent: 'Mozilla/5.0',
+        capturedAt: '2026-08-01',
+      }),
+    );
+  }
+
+  test('approval shows the current mode', async () => {
+    const e = await dispatch(['approval'], T0);
+    if (!e.ok) throw new Error(e.error.message);
+    expect(e.data).toMatchObject({ mode: 'interactive' });
+  });
+
+  // Tests run without a TTY — exactly the position an agent is in.
+  test('approval set is refused without a terminal', async () => {
+    const e = await dispatch(['approval', 'set', 'unattended'], T0);
+    if (e.ok) throw new Error('expected refusal');
+    expect(e.error.code).toBe('CONFIRMATION_REQUIRED');
+  });
+
+  test('share --plan returns the preview and token and sends nothing', async () => {
+    withSession();
+    const e = await dispatch(['share', 'hello world', '--plan'], T0);
+    if (!e.ok) throw new Error(e.error.message);
+    expect(e.data).toMatchObject({ planned: true });
+    expect(JSON.stringify(e.data)).toContain('hello world');
+  });
+
+  test('a bare --confirm is refused rather than read as approval', async () => {
+    withSession();
+    const e = await dispatch(['share', 'hello', '--confirm'], T0);
+    if (e.ok) throw new Error('expected refusal');
+    expect(e.error.code).toBe('INVALID_INPUT');
+  });
+
+  test('--confirm in interactive mode is refused and names the owner switch', async () => {
+    withSession();
+    const e = await dispatch(['share', 'hello', '--confirm', 'abcd'], T0);
+    if (e.ok) throw new Error('expected refusal');
+    expect(e.error.hint).toContain('lnrelay approval set');
+  });
+
+  test('an unreadable approval setting refuses every write', async () => {
+    withSession();
+    writeFileSync(join(dir, 'config.json'), JSON.stringify({ approval: 'yolo' }));
+    const e = await dispatch(['share', 'hello', '--plan'], T0);
+    if (e.ok) throw new Error('expected refusal');
+    expect(e.error.message).toContain('yolo');
+  });
+});

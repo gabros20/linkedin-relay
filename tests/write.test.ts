@@ -4,6 +4,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { cachePath, loadJson, saveJson } from '../src/cache/store.ts';
 import type { ConfirmDeps } from '../src/commands/confirm.ts';
+import { runDelete } from '../src/commands/delete.ts';
 import { gateWrite } from '../src/commands/gate.ts';
 import { runOauthStatus } from '../src/commands/oauth.ts';
 import { saveToken } from '../src/commands/token.ts';
@@ -319,5 +320,19 @@ describe('share with media', () => {
     });
     if (e.ok) throw new Error('expected refusal');
     expect(e.error.code).toBe('CONFIRMATION_REQUIRED');
+  });
+});
+
+describe('delete refuses before reading when it cannot be approved', () => {
+  // Deleting a post reads it first to preview it — a network call. With no way
+  // to approve (no terminal, interactive mode), that read would be traffic for
+  // nothing, so the refusal must come first.
+  test('no terminal in interactive mode: refused with no lookup', async () => {
+    withSession();
+    const started = Date.now();
+    const e = await runDelete('urn:li:activity:1', T0, noTty);
+    if (e.ok) throw new Error('expected refusal');
+    expect(e.error.code).toBe('CONFIRMATION_REQUIRED');
+    expect(Date.now() - started).toBeLessThan(1000); // a lookup paces 3-15s first
   });
 });

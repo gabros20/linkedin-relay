@@ -213,3 +213,35 @@ data point against that concern, though one post is not a sample.
 - Single account, residential IP, jittered pacing.
 - The write budget is 10/day and is `guessed`, not measured — as §2 established, cadence is the real
   lever.
+
+## 9. Approval modes — revised 2026-09-25
+
+The owner's requirement changed: this tool is driven by their own personal agents, which must be able
+to act on "post it" said in chat without the owner opening a terminal, and — if the owner chooses —
+to manage the account on their own. The TTY gate made both impossible; the only way through was an
+`expect` script typing the token, which is the circumvention the gate existed to make deliberate.
+
+So approval is now a mode the owner selects:
+
+| mode | approval | mechanism |
+|---|---|---|
+| `interactive` (default) | a human at a terminal | unchanged |
+| `agent` | the owner, in chat | `--plan` returns the preview and a token derived from the content, sending nothing; `--confirm <token>` sends it. Any change to the content changes the token. |
+| `unattended` | none | the command runs as given |
+
+What did not change, and why:
+
+- **The mode is the owner's, not the agent's.** `lnrelay approval set` needs a terminal and a typed,
+  mode-specific token, so an agent cannot promote itself. A corrupt or unknown setting refuses every
+  write rather than defaulting to anything.
+- **Budget caps, cooldowns and zero-retry apply in every mode.** Unattended is not unlimited.
+- **Every approval and outcome is appended to `~/.lnrelay/writes.jsonl`** with its mode and content.
+  Unsupervised writes must at least be reviewable afterwards.
+- **Writes stay off MCP.** Agents with a shell use the CLI; putting writes on MCP is a separate call.
+- **The no-network-on-refusal guarantee holds per mode**: commands that must read before asking
+  (comment's harvest, delete's preview) refuse first when the invocation cannot end in an approval.
+
+Stated honestly: in `agent` mode the token binds approval to content; it does not authenticate the
+owner. The agent is trusted to relay the owner's word, and the audit log is what makes that trust
+checkable. Comment tokens are derived from `{activityId, text}` rather than the full payload, because
+the harvested trackingId changes on every render and would make `--plan` and `--confirm` disagree.

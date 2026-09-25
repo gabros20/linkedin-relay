@@ -33,7 +33,13 @@ import { type Shaped, shapeAll } from '../format.ts';
 import { err, ok } from '../output.ts';
 import type { Envelope } from '../types.ts';
 import type { ConfirmDeps, WritePlan } from './confirm.ts';
-import { gateWrite, recordHarvestSpend, reserve, terminalDeps } from './gate.ts';
+import {
+  gateWrite,
+  recordHarvestSpend,
+  refuseUnapprovable,
+  reserve,
+  terminalDeps,
+} from './gate.ts';
 
 /** How many of the owner's recent posts to search for the one being deleted. */
 const LOOKUP_LIMIT = 50;
@@ -132,14 +138,8 @@ async function deleteComment(
   now: number,
   deps: ConfirmDeps,
 ): Promise<Envelope> {
-  if (!deps.isTty) {
-    return err(
-      'delete',
-      'CONFIRMATION_REQUIRED',
-      'deleting needs a human to confirm it at an interactive terminal',
-      'No terminal is attached, so nothing was sent and no network call was made.',
-    );
-  }
+  const unapprovable = refuseUnapprovable('delete', 'deleting', deps);
+  if (unapprovable !== null) return unapprovable;
 
   const session = loadSession();
   if (session.state !== 'ok') {
@@ -247,6 +247,10 @@ export async function runDelete(
 
   const refused = reserve('delete', now);
   if (refused !== null) return refused;
+
+  // Before the read below, so a request that cannot be approved causes no traffic.
+  const unapprovable = refuseUnapprovable('delete', 'deleting', deps ?? terminalDeps());
+  if (unapprovable !== null) return unapprovable;
 
   // Read before destroying. This costs one read and is the entire point.
   const post = await lookup(urn, quiet);

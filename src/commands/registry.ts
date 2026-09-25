@@ -223,6 +223,21 @@ export const COMMANDS: CommandDef[] = [
     implemented: true,
   },
   {
+    name: 'approval',
+    cost: 'free — local',
+    summary:
+      'Show or set how writes are approved: interactive (a human at a terminal), agent (the ' +
+      'owner approves a --plan preview in chat), or unattended. Only a terminal can change it.',
+    usage:
+      'lnrelay approval [show]\n' +
+      '       lnrelay approval set <interactive|agent|unattended>\n' +
+      '       Setting needs an interactive terminal and a typed token. Every approval and outcome\n' +
+      '       is appended to ~/.lnrelay/writes.jsonl.',
+    audience: ['cli'],
+    risk: 'local',
+    implemented: true,
+  },
+  {
     name: 'share',
     cost: '1 call — write',
     summary:
@@ -231,8 +246,9 @@ export const COMMANDS: CommandDef[] = [
     usage:
       'lnrelay share "<text>" [--image <path> | --video <path>] [--visibility public|connections]\n' +
       '       [--via oauth|voyager]\n' +
-      '       Stops and asks at an interactive terminal. No TTY = no write, and no network call.\n' +
-      '       --image (png/jpg/gif/webp) or --video (mp4/mov) uploads the file first, over the\n' +
+      '       Approval follows `lnrelay approval`: --plan previews and returns a token without\n' +
+      '       sending; --confirm <token> sends it in agent mode. In interactive mode it asks at a\n' +
+      '       terminal. --image (png/jpg/gif/webp) or --video (mp4/mov) uploads the file first, over the\n' +
       '       private API only; the prompt shows its size and sha256.',
     audience: ['cli'],
     risk: 'write',
