@@ -119,9 +119,14 @@ function shapePost(node: Entity, index?: Map<string, Entity>): Shaped {
   const counts =
     social === undefined ? undefined : deref(social, '*totalSocialActivityCounts', index);
 
+  const meta = node.metadata as { shareUrn?: unknown } | undefined;
+
   return defined({
     type: typeOf(node),
     urn,
+    // The urn the post was CREATED as (share or ugcPost) — what `share` prints,
+    // and a different number from the activity urn above.
+    shareUrn: typeof meta?.shareUrn === 'string' ? meta.shareUrn : undefined,
     threadUrn: typeof social?.urn === 'string' ? social.urn : undefined,
     author: text(actor?.name),
     // `text()` already trims; LinkedIn pads these with trailing spaces.

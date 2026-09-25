@@ -95,6 +95,17 @@ describe('finding the post being deleted', () => {
     expect(findOwnPost(posts, 'urn:li:activity:2')?.text).toBe('second post');
   });
 
+  test('finds the post by the share or ugcPost urn `share` printed', () => {
+    const created = [
+      {
+        urn: 'urn:li:activity:7509291148813885440',
+        shareUrn: 'urn:li:ugcPost:7509291147890954241',
+        text: 'video',
+      },
+    ];
+    expect(findOwnPost(created, 'urn:li:ugcPost:7509291147890954241')?.text).toBe('video');
+  });
+
   test('returns undefined when the urn is not among your posts', () => {
     expect(findOwnPost(posts, 'urn:li:activity:99')).toBeUndefined();
   });

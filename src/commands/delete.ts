@@ -55,7 +55,11 @@ function postId(urn: string): string | undefined {
 export function findOwnPost(posts: Shaped[], urn: string): Shaped | undefined {
   const id = postId(urn);
   if (id === undefined) return undefined;
-  return posts.find((p) => typeof p.urn === 'string' && postId(p.urn) === id);
+  // `share` prints the share/ugcPost urn, whose number differs from the
+  // activity urn's; that one is matched exactly rather than by number.
+  return posts.find(
+    (p) => (typeof p.urn === 'string' && postId(p.urn) === id) || p.shareUrn === urn,
+  );
 }
 
 /** What the human is shown about the post before they approve destroying it. */
@@ -265,6 +269,9 @@ export async function runDelete(
   if (!result.ok) return err('delete', result.code, result.message, result.hint);
 
   // LinkedIn has it gone; drop our copy so `my-posts` stops listing it.
-  const evicted = evict(evictionTarget(result), now);
+  // The cache is keyed by activity urn; a share/ugcPost urn would miss it.
+  const target = evictionTarget(result);
+  const cached = typeof post?.urn === 'string' ? post.urn : target;
+  const evicted = evict(target === null ? null : cached, now);
   return ok('delete', { deleted: urn, verified: post !== undefined, evictedFromCache: evicted });
 }

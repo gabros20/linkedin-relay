@@ -140,6 +140,14 @@ describe('feed post (dash Update)', () => {
     expect(shapeEntity(legacy).urn).toBe('urn:li:activity:111');
   });
 
+  // `share` returns this urn, not the activity urn — different numbers for the
+  // same post (live: ugcPost …7890954241 is activity …8813885440). Without it,
+  // `delete` given the urn `share` printed could not show what it would destroy.
+  test('carries the share urn the post was created as', () => {
+    const video = { ...post, metadata: { shareUrn: 'urn:li:ugcPost:7509291147890954241' } };
+    expect(shapeEntity(video).shareUrn).toBe('urn:li:ugcPost:7509291147890954241');
+  });
+
   test('a composite carrying no post urn yields no urn rather than a tuple', () => {
     const odd = {
       $type: 'com.linkedin.voyager.dash.feed.Update',
