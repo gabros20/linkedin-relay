@@ -52,6 +52,14 @@ const TELEMETRY =
  */
 const MAX_BODY = 256 * 1024;
 
+/** Decode a base64 body; text if it is mostly printable, else a sized marker. */
+function textOrMarker(b64: string): string {
+  const bytes = Buffer.from(b64, 'base64');
+  const text = bytes.toString('utf8');
+  const printable = text.replace(/[^\x09\x0a\x0d\x20-\x7e -￿]/g, '').length;
+  return printable / Math.max(text.length, 1) > 0.95 ? text : `<binary ${bytes.length} bytes>`;
+}
+
 interface Captured {
   method: string;
   url: string;
@@ -168,7 +176,12 @@ async function main(): Promise<void> {
         entry.responseError = msg.error?.message ?? 'no body returned by Chrome';
         return;
       }
-      const body = msg.result.base64Encoded === true ? '<binary>' : msg.result.body;
+      // Chrome base64-encodes any body it does not classify as text, and that
+      // includes the SDUI RSC streams — the registerMediaUpload reply carrying
+      // the URL to PUT to arrived as '<binary>' until this decoded it. Keep the
+      // decoded form when it reads as text; genuine binary stays a marker.
+      const body =
+        msg.result.base64Encoded === true ? textOrMarker(msg.result.body) : msg.result.body;
       entry.responseTruncated = body.length > MAX_BODY;
       entry.responseBodyRaw = body.slice(0, MAX_BODY);
       try {
