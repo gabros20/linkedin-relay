@@ -1,3 +1,10 @@
+# [3.3.0](https://github.com/gabros20/linkedin-relay/compare/v3.2.0...v3.3.0) (2026-09-25)
+
+
+### Features
+
+* **share:** several images per post, with alt text ([b3decb5](https://github.com/gabros20/linkedin-relay/commit/b3decb50612f960673a9e08a51d769c13705a8e6))
+
 # [3.2.0](https://github.com/gabros20/linkedin-relay/compare/v3.1.0...v3.2.0) (2026-09-25)
 
 
