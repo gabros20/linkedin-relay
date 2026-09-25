@@ -165,6 +165,26 @@ rendered side by side, and the first image's `<img alt>` was exactly the approve
 unrecognised field would have been a 400 before anything was published (Rest.li validates create
 bodies strictly), which is why guessing the name was a safe way to find it.
 
+### Captured 2026-09-25 — documents and scheduling (not built yet)
+
+A hand-made **document post, scheduled for the next day**, captured end to end (no post was
+published; it was then deleted from the scheduled list):
+
+- **Document upload** runs the same pipeline as images. Voyager registration accepts
+  `mediaUploadType: DOCUMENT_SHARING` (verified: ticket with `media-type-family: PAGINATEDDOCUMENT`,
+  recipes `feedshare-document` + `-preview`). Unlike images, the web client uploads the moment the
+  file is picked, and requires a title before the post can be made.
+- **The web client's CreatePost** (SDUI) carried: `shareLifeCycleState = ShareLifeCycleState_SCHEDULED`,
+  `scheduledPublishTime = <epoch ms>`, `detourType = Document`, `mediaTitleBinding = <title>`, and the
+  document asset id.
+- **A scheduled post is a ugcPost** (`urn:li:ugcPost:…`) from the moment it is scheduled. Cancelling
+  it went over SDUI `deletePost` with that urn and the SCHEDULED state.
+
+Still unknown: the Voyager spellings. `normShares` already sends `postState: PUBLISHED`, so
+`SCHEDULED` plus a time field is the natural probe; for documents, the media `category` and where
+the title goes. Both probes are safe in the sense that matters: a state of SCHEDULED cannot publish
+immediately, and Rest.li answers an unknown field with a 400 before creating anything.
+
 Not built: `MULTIPART` tickets (large files get several part URLs and a completion call that has not
 been observed). `parseUploadTicket` refuses them before anything is uploaded.
 
