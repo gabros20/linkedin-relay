@@ -4,12 +4,21 @@ export interface ParsedArgs {
   command: string | undefined;
   positionals: string[];
   flags: Record<string, string | boolean>;
+  /** Every value a flag was given, in order — `flags` keeps only the last. */
+  repeated: Record<string, string[]>;
 }
 
 export function parseArgs(argv: string[]): ParsedArgs {
   const [command, ...rest] = argv;
   const positionals: string[] = [];
   const flags: Record<string, string | boolean> = {};
+  const repeated: Record<string, string[]> = {};
+  const keep = (key: string, value: string) => {
+    flags[key] = value;
+    const seen = repeated[key] ?? [];
+    seen.push(value);
+    repeated[key] = seen;
+  };
 
   for (let i = 0; i < rest.length; i++) {
     const token = rest[i];
@@ -20,7 +29,7 @@ export function parseArgs(argv: string[]): ParsedArgs {
       const next = rest[i + 1];
       // A flag takes a value only when the next token isn't itself a flag.
       if (next !== undefined && !next.startsWith('--')) {
-        flags[key] = next;
+        keep(key, next);
         i++;
       } else {
         flags[key] = true;
@@ -29,7 +38,7 @@ export function parseArgs(argv: string[]): ParsedArgs {
       const key = token.slice(1);
       const next = rest[i + 1];
       if (next !== undefined && !next.startsWith('-')) {
-        flags[key] = next;
+        keep(key, next);
         i++;
       } else {
         flags[key] = true;
@@ -39,7 +48,7 @@ export function parseArgs(argv: string[]): ParsedArgs {
     }
   }
 
-  return { command, positionals, flags };
+  return { command, positionals, flags, repeated };
 }
 
 export function bool(args: ParsedArgs, name: string): boolean {
@@ -56,4 +65,9 @@ export function num(args: ParsedArgs, name: string): number | undefined {
   if (v === undefined) return undefined;
   const n = Number(v);
   return Number.isFinite(n) ? n : undefined;
+}
+
+/** Every value given for a repeated flag, in order. Empty when absent or bare. */
+export function list(args: ParsedArgs, name: string): string[] {
+  return args.repeated[name] ?? [];
 }

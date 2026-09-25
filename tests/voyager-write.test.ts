@@ -170,9 +170,9 @@ describe('share with media', () => {
       { ok: true, json: { urn: 'urn:li:share:9' } },
     );
     const r = await share(
-      confirmed({ text: 'hi', visibility: 'PUBLIC' as const, media: MEDIA }),
+      confirmed({ text: 'hi', visibility: 'PUBLIC' as const, media: [MEDIA] }),
       c as never,
-      BYTES,
+      [BYTES],
     );
     expect(r).toEqual({ ok: true, id: 'urn:li:share:9' });
     expect(c.sent.map((s) => s.method)).toEqual(['POST', 'PUT', 'POST']);
@@ -186,9 +186,9 @@ describe('share with media', () => {
   test('a failed upload posts nothing', async () => {
     const c = scripted({ ok: false, code: 'BLOCKED' });
     const r = await share(
-      confirmed({ text: 'hi', visibility: 'PUBLIC' as const, media: MEDIA }),
+      confirmed({ text: 'hi', visibility: 'PUBLIC' as const, media: [MEDIA] }),
       c as never,
-      BYTES,
+      [BYTES],
     );
     expect(r.ok).toBe(false);
     expect(c.sent.some((s) => s.url === SHARE_URL)).toBe(false);
@@ -199,11 +199,96 @@ describe('share with media', () => {
   test('bytes that do not match the approved digest are refused before any request', async () => {
     const c = scripted();
     const r = await share(
-      confirmed({ text: 'hi', visibility: 'PUBLIC' as const, media: MEDIA }),
+      confirmed({ text: 'hi', visibility: 'PUBLIC' as const, media: [MEDIA] }),
       c as never,
-      new Uint8Array([9, 9, 9]),
+      [new Uint8Array([9, 9, 9])],
     );
     expect(r.ok).toBe(false);
     expect(c.sent).toHaveLength(0);
+  });
+});
+
+describe('share with several images', () => {
+  const ticket = (id: string) => ({
+    data: {
+      value: {
+        urn: `urn:li:digitalmediaAsset:${id}`,
+        singleUploadUrl: `https://www.linkedin.com/dms-uploads/${id}`,
+        singleUploadHeaders: { 'media-type-family': 'STILLIMAGE' },
+        type: 'SINGLE',
+      },
+    },
+  });
+  const A = new Uint8Array([1]);
+  const B = new Uint8Array([2]);
+  const approved = (bytes: Uint8Array, name: string, alt?: string) => ({
+    filename: name,
+    kind: 'IMAGE' as const,
+    contentType: 'image/png',
+    size: 1,
+    sha256: mediaDigest(bytes),
+    ...(alt === undefined ? {} : { alt }),
+  });
+
+  function scripted(...replies: unknown[]) {
+    const sent: { url: string; method?: string; body?: unknown }[] = [];
+    return {
+      sent,
+      request: async (spec: (typeof sent)[number]) => {
+        sent.push(spec);
+        return { ok: true as const, json: replies.shift(), classification: {} as never };
+      },
+    };
+  }
+
+  test('uploads each in order and posts them in that order', async () => {
+    const c = scripted(ticket('A'), null, ticket('B'), null, { urn: 'urn:li:share:5' });
+    const r = await share(
+      confirmed({
+        text: 'hi',
+        visibility: 'PUBLIC' as const,
+        media: [approved(A, 'a.png'), approved(B, 'b.png')],
+      }),
+      c as never,
+      [A, B],
+    );
+    expect(r.ok).toBe(true);
+    expect(c.sent.map((s) => s.method)).toEqual(['POST', 'PUT', 'POST', 'PUT', 'POST']);
+    const posted = c.sent[4]?.body as { media: { mediaUrn: string }[] } | undefined;
+    expect(posted?.media.map((m) => m.mediaUrn)).toEqual([
+      'urn:li:digitalmediaAsset:A',
+      'urn:li:digitalmediaAsset:B',
+    ]);
+  });
+
+  test('any file that changed since approval stops everything before a request', async () => {
+    const c = scripted();
+    const r = await share(
+      confirmed({
+        text: 'hi',
+        visibility: 'PUBLIC' as const,
+        media: [approved(A, 'a.png'), approved(B, 'b.png')],
+      }),
+      c as never,
+      [A, new Uint8Array([7])],
+    );
+    expect(r.ok).toBe(false);
+    expect(c.sent).toHaveLength(0);
+  });
+
+  test('alt text rides on its own media entry, and is omitted when not given', () => {
+    const p = sharePayload('x', 'PUBLIC', [
+      { category: 'IMAGE', urn: 'urn:li:digitalmediaAsset:A', alt: 'a radar icon' },
+      { category: 'IMAGE', urn: 'urn:li:digitalmediaAsset:B' },
+    ]);
+    expect(p.media).toEqual([
+      {
+        category: 'IMAGE',
+        mediaUrn: 'urn:li:digitalmediaAsset:A',
+        tapTargets: [],
+        altText: 'a radar icon',
+      },
+      { category: 'IMAGE', mediaUrn: 'urn:li:digitalmediaAsset:B', tapTargets: [] },
+    ]);
   });
 });

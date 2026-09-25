@@ -2,7 +2,7 @@ import { afterEach, beforeEach, describe, expect, test } from 'bun:test';
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { bool, num, parseArgs, str } from '../src/args.ts';
+import { bool, list, num, parseArgs, str } from '../src/args.ts';
 import { dispatch } from '../src/cli.ts';
 import { exitCodeFor } from '../src/output.ts';
 
@@ -40,6 +40,18 @@ describe('parseArgs', () => {
 
   test('supports short flags', async () => {
     expect(str(parseArgs(['local', '-q', 'rust']), 'q')).toBe('rust');
+  });
+
+  // `--image a.png --image b.png` must keep both, in order — silently keeping
+  // only the last would post one image of the two the user named.
+  test('a repeated flag keeps every value, in order', () => {
+    const a = parseArgs(['share', 'hi', '--image', 'a.png', '--image', 'b.png']);
+    expect(list(a, 'image')).toEqual(['a.png', 'b.png']);
+  });
+
+  test('list of an absent flag is empty, and of a bare flag is empty too', () => {
+    expect(list(parseArgs(['share', 'hi']), 'image')).toEqual([]);
+    expect(list(parseArgs(['share', 'hi', '--image']), 'image')).toEqual([]);
   });
 
   test('num rejects a non-numeric value rather than yielding NaN', async () => {

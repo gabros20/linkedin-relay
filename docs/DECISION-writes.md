@@ -159,6 +159,12 @@ going entirely over SDUI (`UploadImageMedia` → `registerMediaUpload` → the s
 `RegisterImageMedia` → `CreatePost`), with kilobytes of memory-namespace bindings per request. The
 Voyager endpoints still answer, so they are used; if they are ever retired, that capture is the map.
 
+Several images and alt text, VERIFIED LIVE the same evening: each image is registered and PUT in
+turn, then one post lists them in order; `media[i].altText` carries alt text. A two-image post
+rendered side by side, and the first image's `<img alt>` was exactly the approved text. An
+unrecognised field would have been a 400 before anything was published (Rest.li validates create
+bodies strictly), which is why guessing the name was a safe way to find it.
+
 Not built: `MULTIPART` tickets (large files get several part URLs and a completion call that has not
 been observed). `parseUploadTicket` refuses them before anything is uploaded.
 

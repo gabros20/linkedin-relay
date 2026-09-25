@@ -1,4 +1,4 @@
-import { bool, num, type ParsedArgs, parseArgs, str } from './args.ts';
+import { bool, list, num, type ParsedArgs, parseArgs, str } from './args.ts';
 import {
   auditOutcome,
   loadApprovalMode,
@@ -24,7 +24,14 @@ import { runBudget, runDoctor, runRisk } from './commands/local.ts';
 import { runOauthLogin, runOauthLogout, runOauthStatus } from './commands/oauth.ts';
 import { findCommand, helpText } from './commands/registry.ts';
 import { runSync } from './commands/sync.ts';
-import { runComment, runEdit, runReact, runReply, runShare } from './commands/write.ts';
+import {
+  type MediaRequest,
+  runComment,
+  runEdit,
+  runReact,
+  runReply,
+  runShare,
+} from './commands/write.ts';
 import { shouldRunAsEntry } from './entry.ts';
 import { err, exitCodeFor, toJson } from './output.ts';
 import type { Envelope } from './types.ts';
@@ -260,24 +267,28 @@ function share(args: ParsedArgs, now: number, deps: ConfirmDeps): Promise<Envelo
   }
   // A bare `--image` parses as `true`; ignoring it would publish the text
   // without the picture the user asked for.
-  for (const flag of ['image', 'video']) {
+  for (const flag of ['image', 'video', 'alt']) {
     if (args.flags[flag] === true) {
       return err('share', 'INVALID_INPUT', `--${flag} needs a file path`);
     }
   }
-  const image = str(args, 'image');
-  const video = str(args, 'video');
-  if (image !== undefined && video !== undefined) {
+  const images = list(args, 'image');
+  const videos = list(args, 'video');
+  if (images.length > 0 && videos.length > 0) {
     return err(
       'share',
       'INVALID_INPUT',
-      'a post carries an image or a video, not both',
-      'pass one of --image <path> or --video <path>',
+      'a post carries images or a video, not both',
+      'pass --image <path> (repeatable) or a single --video <path>',
     );
   }
-  let media: { flag: 'image' | 'video'; path: string } | undefined;
-  if (image !== undefined) media = { flag: 'image', path: image };
-  else if (video !== undefined) media = { flag: 'video', path: video };
+  const alts = list(args, 'alt');
+  let media: MediaRequest | undefined;
+  if (images.length > 0) media = { flag: 'image', paths: images, alts };
+  else if (videos.length > 0) media = { flag: 'video', paths: videos, alts };
+  else if (alts.length > 0) {
+    return err('share', 'INVALID_INPUT', '--alt describes an --image, and none was given');
+  }
   return runShare(
     args.positionals[0],
     str(args, 'visibility') ?? 'public',

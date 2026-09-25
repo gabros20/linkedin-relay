@@ -79,7 +79,7 @@ export interface SharePayload {
 export function sharePayload(
   text: string,
   visibility: 'PUBLIC' | 'CONNECTIONS',
-  media: { category: MediaKind; urn: string }[] = [],
+  media: { category: MediaKind; urn: string; alt?: string }[] = [],
 ): SharePayload {
   return {
     visibleToConnectionsOnly: visibility === 'CONNECTIONS',
@@ -88,7 +88,13 @@ export function sharePayload(
     origin: 'FEED',
     allowedCommentersScope: 'ALL',
     postState: 'PUBLISHED',
-    media: media.map((m) => ({ category: m.category, mediaUrn: m.urn, tapTargets: [] })),
+    // altText only when given, so a post without it keeps the body verified in 2026-08.
+    media: media.map((m) => ({
+      category: m.category,
+      mediaUrn: m.urn,
+      tapTargets: [],
+      ...(m.alt === undefined ? {} : { altText: m.alt }),
+    })),
   };
 }
 
@@ -99,6 +105,8 @@ export interface ApprovedMedia {
   contentType: string;
   size: number;
   sha256: string;
+  /** Alt text for screen readers; images only. */
+  alt?: string;
 }
 
 export function mediaDigest(bytes: Uint8Array): string {
@@ -187,35 +195,45 @@ export async function share(
   confirmed: ConfirmedWrite<{
     text: string;
     visibility: 'PUBLIC' | 'CONNECTIONS';
-    media?: ApprovedMedia;
+    media?: ApprovedMedia[];
   }>,
   client: Client,
-  bytes?: Uint8Array,
+  bytes?: Uint8Array[],
 ): Promise<WriteResult> {
-  const { media: approved } = confirmed.payload;
-  const media: { category: MediaKind; urn: string }[] = [];
+  const approved = confirmed.payload.media ?? [];
+  const files = bytes ?? [];
 
-  if (approved !== undefined) {
-    // The approval names a digest, and the bytes travel separately — so check
-    // they are the bytes that were approved before anything leaves the machine.
-    if (bytes === undefined || mediaDigest(bytes) !== approved.sha256) {
+  // The approval names each file by digest and the bytes travel separately —
+  // so ALL of them are checked before anything leaves the machine. Checking
+  // one at a time would upload the first before discovering the second changed.
+  for (const [i, a] of approved.entries()) {
+    const b = files[i];
+    if (b === undefined || mediaDigest(b) !== a.sha256) {
       return {
         ok: false,
         code: 'INVALID_INPUT',
-        message: `${approved.filename} changed after it was approved; nothing was sent`,
+        message: `${a.filename} changed after it was approved; nothing was sent`,
       };
     }
+  }
+
+  const media: { category: MediaKind; urn: string; alt?: string }[] = [];
+  for (const [i, a] of approved.entries()) {
     const uploaded = await uploadMedia(
       {
-        bytes,
-        filename: approved.filename,
-        kind: approved.kind,
-        contentType: approved.contentType,
+        bytes: files[i] as Uint8Array,
+        filename: a.filename,
+        kind: a.kind,
+        contentType: a.contentType,
       },
       client,
     );
     if (!uploaded.ok) return uploaded;
-    media.push({ category: approved.kind, urn: uploaded.urn });
+    media.push({
+      category: a.kind,
+      urn: uploaded.urn,
+      ...(a.alt === undefined ? {} : { alt: a.alt }),
+    });
   }
 
   const body = sharePayload(confirmed.payload.text, confirmed.payload.visibility, media);

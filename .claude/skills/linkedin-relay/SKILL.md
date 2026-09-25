@@ -187,7 +187,7 @@ Writes are **not on the MCP surface**. They exist only as CLI commands:
 
 | command | does |
 |---|---|
-| `lnrelay share "<text>" [--image <path> \| --video <path>]` | post to their own feed, optionally with one image or video |
+| `lnrelay share "<text>" [--image <path> ... [--alt "<text>" ...] \| --video <path>]` | post to their own feed, with up to 20 images (alt text paired by position) or one video |
 | `lnrelay comment <activity-urn> "<text>"` | comment on a post |
 | `lnrelay reply <comment-urn> "<text>"` | reply, nested under that comment |
 | `lnrelay edit <comment-urn> "<text>"` | change the text of their own comment |

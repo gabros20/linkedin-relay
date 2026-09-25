@@ -87,6 +87,60 @@ async function gate<T>(
 }
 
 /** Read and identify a media file, or say why it cannot be posted. */
+/** What the CLI asked to attach: `--image` (repeatable) or one `--video`, plus `--alt`s. */
+export interface MediaRequest {
+  flag: 'image' | 'video';
+  paths: string[];
+  /** Index-aligned with `paths`; "" means no alt text for that image. */
+  alts?: string[];
+}
+
+/** One line per file for the preview, each followed by its alt text if any. */
+function mediaLines(media: ApprovedMedia[]): string[] {
+  return media.flatMap(({ filename, kind, size, sha256, alt }) => [
+    `${kind === 'IMAGE' ? 'image' : 'video'}    ${filename} (${Math.ceil(size / 1024)} KB, sha256 ${sha256.slice(0, 12)})`,
+    ...(alt === undefined ? [] : [`  alt    "${alt}"`]),
+  ]);
+}
+
+/** LinkedIn's own composer limit for a multi-image post. */
+const MAX_IMAGES = 20;
+
+/** Validate the request as a whole, then load every file, or say why not. */
+function loadAllMedia(
+  media: MediaRequest,
+): { approved: ApprovedMedia[]; bytes: Uint8Array[] } | Envelope {
+  const alts = media.alts ?? [];
+  if (media.flag === 'video' && media.paths.length > 1) {
+    return err('share', 'INVALID_INPUT', 'a post carries one video', 'pass a single --video');
+  }
+  if (media.flag === 'video' && alts.length > 0) {
+    return err('share', 'INVALID_INPUT', '--alt applies to images, not video');
+  }
+  if (media.paths.length > MAX_IMAGES) {
+    return err('share', 'INVALID_INPUT', `a post carries at most ${MAX_IMAGES} images`);
+  }
+  if (alts.length > 0 && alts.length !== media.paths.length) {
+    return err(
+      'share',
+      'INVALID_INPUT',
+      `${alts.length} --alt for ${media.paths.length} images; they pair up by position`,
+      'give one --alt per --image, in the same order; pass --alt "" for an image without one',
+    );
+  }
+
+  const approved: ApprovedMedia[] = [];
+  const bytes: Uint8Array[] = [];
+  for (const [i, path] of media.paths.entries()) {
+    const one = loadMedia({ flag: media.flag, path });
+    if ('ok' in one) return one;
+    const alt = alts[i];
+    approved.push(alt === undefined || alt === '' ? one.approved : { ...one.approved, alt });
+    bytes.push(one.bytes);
+  }
+  return { approved, bytes };
+}
+
 function loadMedia(media: {
   flag: 'image' | 'video';
   path: string;
@@ -135,14 +189,14 @@ export async function runShare(
   now = Date.now(),
   deps: ConfirmDeps = terminalDeps(),
   via?: 'oauth' | 'voyager',
-  media?: { flag: 'image' | 'video'; path: string },
+  media?: MediaRequest,
 ): Promise<Envelope> {
   if (text === undefined || text.trim() === '') {
     return err('share', 'INVALID_INPUT', 'text is required', 'lnrelay share "<text>"');
   }
   const vis = visibility === 'connections' ? 'CONNECTIONS' : 'PUBLIC';
 
-  const loaded = media === undefined ? undefined : loadMedia(media);
+  const loaded = media === undefined || media.paths.length === 0 ? undefined : loadAllMedia(media);
   if (loaded !== undefined && 'ok' in loaded) return loaded;
   // Media upload exists only over Voyager. An explicit --via oauth is refused
   // rather than rerouted: switching transport silently is what the design bans.
@@ -155,22 +209,21 @@ export async function runShare(
     );
   }
 
-  // Register + upload + post: all three must fit, or the upload is an orphan.
+  // Register + upload per file, then the post: all must fit, or uploads are orphans.
   const ctx =
-    loaded === undefined ? prepare('share', now, via) : prepare('share', now, 'voyager', 3);
+    loaded === undefined
+      ? prepare('share', now, via)
+      : prepare('share', now, 'voyager', 2 * loaded.approved.length + 1);
   if ('ok' in ctx) return ctx;
 
-  const payload: { text: string; visibility: 'PUBLIC' | 'CONNECTIONS'; media?: ApprovedMedia } = {
+  const payload: { text: string; visibility: 'PUBLIC' | 'CONNECTIONS'; media?: ApprovedMedia[] } = {
     text,
     visibility: vis,
   };
   const summary = [authorLine(ctx.transport), `content  "${text}"`, `audience ${vis}`];
   if (loaded !== undefined) {
     payload.media = loaded.approved;
-    const { filename, kind, size, sha256 } = loaded.approved;
-    summary.push(
-      `${kind === 'IMAGE' ? 'image' : 'video'}    ${filename} (${Math.ceil(size / 1024)} KB, sha256 ${sha256.slice(0, 12)})`,
-    );
+    summary.push(...mediaLines(loaded.approved));
   }
 
   const plan: WritePlan<typeof payload> = {

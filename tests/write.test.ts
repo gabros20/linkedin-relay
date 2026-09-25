@@ -155,7 +155,10 @@ describe('the write budget is enforced before the prompt', () => {
     });
     const img = join(dir, 'a.png');
     writeFileSync(img, new Uint8Array([1]));
-    const e = await runShare('hello', 'public', T0, noTty, undefined, { flag: 'image', path: img });
+    const e = await runShare('hello', 'public', T0, noTty, undefined, {
+      flag: 'image',
+      paths: [img],
+    });
     if (e.ok) throw new Error('expected refusal');
     expect(e.error.code).toBe('BUDGET_EXHAUSTED');
   });
@@ -272,7 +275,7 @@ describe('share with media', () => {
     withSession();
     const e = await runShare('hi', 'public', T0, noTty, undefined, {
       flag: 'image',
-      path: join(dir, 'missing.png'),
+      paths: [join(dir, 'missing.png')],
     });
     if (e.ok) throw new Error('expected failure');
     expect(e.error.code).toBe('INVALID_INPUT');
@@ -282,7 +285,7 @@ describe('share with media', () => {
     withSession();
     const e = await runShare('hi', 'public', T0, noTty, undefined, {
       flag: 'image',
-      path: file('clip.mp4'),
+      paths: [file('clip.mp4')],
     });
     if (e.ok) throw new Error('expected failure');
     expect(e.error.code).toBe('INVALID_INPUT');
@@ -293,7 +296,7 @@ describe('share with media', () => {
     withSession();
     const e = await runShare('hi', 'public', T0, noTty, undefined, {
       flag: 'image',
-      path: file('notes.txt'),
+      paths: [file('notes.txt')],
     });
     if (e.ok) throw new Error('expected failure');
     expect(e.error.code).toBe('INVALID_INPUT');
@@ -306,7 +309,7 @@ describe('share with media', () => {
     withSession();
     const e = await runShare('hi', 'public', T0, noTty, 'oauth', {
       flag: 'image',
-      path: file('a.png'),
+      paths: [file('a.png')],
     });
     if (e.ok) throw new Error('expected failure');
     expect(e.error.code).toBe('NOT_IMPLEMENTED');
@@ -316,7 +319,7 @@ describe('share with media', () => {
     withSession();
     const e = await runShare('hi', 'public', T0, noTty, undefined, {
       flag: 'image',
-      path: file('a.png'),
+      paths: [file('a.png')],
     });
     if (e.ok) throw new Error('expected refusal');
     expect(e.error.code).toBe('CONFIRMATION_REQUIRED');
@@ -334,5 +337,99 @@ describe('delete refuses before reading when it cannot be approved', () => {
     if (e.ok) throw new Error('expected refusal');
     expect(e.error.code).toBe('CONFIRMATION_REQUIRED');
     expect(Date.now() - started).toBeLessThan(1000); // a lookup paces 3-15s first
+  });
+});
+
+describe('share with several images and alt text', () => {
+  function file(name: string) {
+    const p = join(dir, name);
+    writeFileSync(p, new Uint8Array([1, 2, 3]));
+    return p;
+  }
+
+  test('more alt texts than images is refused', async () => {
+    withSession();
+    const e = await runShare('hi', 'public', T0, noTty, undefined, {
+      flag: 'image',
+      paths: [file('a.png')],
+      alts: ['one', 'two'],
+    });
+    if (e.ok) throw new Error('expected refusal');
+    expect(e.error.code).toBe('INVALID_INPUT');
+  });
+
+  test('fewer alt texts than images is refused — which image gets which would be a guess', async () => {
+    withSession();
+    const e = await runShare('hi', 'public', T0, noTty, undefined, {
+      flag: 'image',
+      paths: [file('a.png'), file('b.png')],
+      alts: ['one'],
+    });
+    if (e.ok) throw new Error('expected refusal');
+    expect(e.error.hint).toContain('""');
+  });
+
+  test('alt text on a video is refused', async () => {
+    withSession();
+    const e = await runShare('hi', 'public', T0, noTty, undefined, {
+      flag: 'video',
+      paths: [file('a.mp4')],
+      alts: ['x'],
+    });
+    if (e.ok) throw new Error('expected refusal');
+    expect(e.error.code).toBe('INVALID_INPUT');
+  });
+
+  test('more than one video is refused', async () => {
+    withSession();
+    const e = await runShare('hi', 'public', T0, noTty, undefined, {
+      flag: 'video',
+      paths: [file('a.mp4'), file('b.mp4')],
+    });
+    if (e.ok) throw new Error('expected refusal');
+    expect(e.error.code).toBe('INVALID_INPUT');
+  });
+
+  test('more than 20 images is refused', async () => {
+    withSession();
+    const img = file('a.png');
+    const e = await runShare('hi', 'public', T0, noTty, undefined, {
+      flag: 'image',
+      paths: Array.from({ length: 21 }, () => img),
+    });
+    if (e.ok) throw new Error('expected refusal');
+    expect(e.error.message).toContain('20');
+  });
+
+  test('two images need room for five calls', async () => {
+    withSession();
+    saveJson(cachePath('budget.json'), {
+      spends: {
+        write: Array.from({ length: CAPS.write.perDay - 4 }, (_, i) => T0 - 60_000 - i * 1000),
+      },
+    });
+    const e = await runShare('hi', 'public', T0, noTty, undefined, {
+      flag: 'image',
+      paths: [file('a.png'), file('b.png')],
+    });
+    if (e.ok) throw new Error('expected refusal');
+    expect(e.error.code).toBe('BUDGET_EXHAUSTED');
+  });
+
+  test('the plan lists every file with its alt text', async () => {
+    withSession();
+    const e = await runShare(
+      'hi',
+      'public',
+      T0,
+      { ...noTty, approval: { mode: 'agent', planOnly: true } },
+      undefined,
+      { flag: 'image', paths: [file('a.png'), file('b.png')], alts: ['a radar icon', ''] },
+    );
+    if (!e.ok) throw new Error(e.error.message);
+    const preview = JSON.stringify(e.data);
+    expect(preview).toContain('a.png');
+    expect(preview).toContain('b.png');
+    expect(preview).toContain('a radar icon');
   });
 });

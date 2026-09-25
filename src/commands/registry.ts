@@ -244,12 +244,13 @@ export const COMMANDS: CommandDef[] = [
       "Post to your own feed. Prefers LinkedIn's official OAuth scope, falls back to the " +
       'private API when no token exists — the prompt always names which.',
     usage:
-      'lnrelay share "<text>" [--image <path> | --video <path>] [--visibility public|connections]\n' +
-      '       [--via oauth|voyager]\n' +
+      'lnrelay share "<text>" [--image <path> ... | --video <path>] [--alt "<text>" ...]\n' +
+      '       [--visibility public|connections] [--via oauth|voyager] [--plan | --confirm <token>]\n' +
       '       Approval follows `lnrelay approval`: --plan previews and returns a token without\n' +
       '       sending; --confirm <token> sends it in agent mode. In interactive mode it asks at a\n' +
-      '       terminal. --image (png/jpg/gif/webp) or --video (mp4/mov) uploads the file first, over the\n' +
-      '       private API only; the prompt shows its size and sha256.',
+      '       terminal. --image (png/jpg/gif/webp, repeat for up to 20) or one --video (mp4/mov)\n' +
+      '       uploads first, over the private API only; the preview shows each size and sha256.\n' +
+      '       --alt pairs with --image by position; --alt "" skips one.',
     audience: ['cli'],
     risk: 'write',
     implemented: true,
