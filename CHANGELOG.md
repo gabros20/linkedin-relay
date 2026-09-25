@@ -1,3 +1,15 @@
+# [3.1.0](https://github.com/gabros20/linkedin-relay/compare/v3.0.3...v3.1.0) (2026-09-25)
+
+
+### Bug Fixes
+
+* **delete:** recognise a post by the urn `share` printed ([5e0aeee](https://github.com/gabros20/linkedin-relay/commit/5e0aeeec8ffaf63cd8f4f73e7a2ab37d52f91f2d))
+
+
+### Features
+
+* **share:** post an image or a video with --image / --video ([a9022fe](https://github.com/gabros20/linkedin-relay/commit/a9022fe68137938b58fd5282f5b7a6ade31d4213))
+
 ## [3.0.3](https://github.com/gabros20/linkedin-relay/compare/v3.0.2...v3.0.3) (2026-08-14)
 
 
