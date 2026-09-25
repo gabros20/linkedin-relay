@@ -1,3 +1,10 @@
+# [3.2.0](https://github.com/gabros20/linkedin-relay/compare/v3.1.0...v3.2.0) (2026-09-25)
+
+
+### Features
+
+* **approval:** let the owner's agents write, under a mode only the owner sets ([0aaf4b6](https://github.com/gabros20/linkedin-relay/commit/0aaf4b677bd3efe72e794bb375d196fd93ce36c9)), closes [#6](https://github.com/gabros20/linkedin-relay/issues/6)
+
 # [3.1.0](https://github.com/gabros20/linkedin-relay/compare/v3.0.3...v3.1.0) (2026-09-25)
 
 
