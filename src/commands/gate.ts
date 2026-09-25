@@ -13,7 +13,7 @@
 
 import { createInterface } from 'node:readline/promises';
 import { cachePath, loadJson, saveJson } from '../cache/store.ts';
-import { emptyLedger, type Ledger, spend, summarise } from '../engine/budget.ts';
+import { emptyLedger, type Ledger, MIN_GAP_MS, spend, summarise } from '../engine/budget.ts';
 import { err } from '../output.ts';
 import type { Envelope } from '../types.ts';
 import { type ConfirmDeps, confirmWrite, type WritePlan } from './confirm.ts';
@@ -55,11 +55,18 @@ export function recordHarvestSpend(now: number): void {
 }
 
 /** Reserve the write against today's budget before a human is ever asked. */
-export function reserve(command: string, now: number): Envelope | null {
-  const attempt = spend(ledger(), 'write', now);
-  return 'error' in attempt
-    ? err(command, attempt.error.code, attempt.error.message, attempt.error.hint)
-    : null;
+export function reserve(command: string, now: number, calls = 1): Envelope | null {
+  // Simulated on a copy and never saved: this asks, the client accounts.
+  let current = ledger();
+  for (let i = 0; i < calls; i++) {
+    // The client paces calls at least MIN_GAP_MS apart; simulate that too.
+    const attempt = spend(current, 'write', now + i * MIN_GAP_MS);
+    if ('error' in attempt) {
+      return err(command, attempt.error.code, attempt.error.message, attempt.error.hint);
+    }
+    current = attempt.ledger;
+  }
+  return null;
 }
 
 export type Gated<T> = { confirmed: unknown; payload: T } | Envelope;

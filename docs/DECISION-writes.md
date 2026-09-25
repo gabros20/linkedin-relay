@@ -139,6 +139,29 @@ would publish a connections-only post to the open web.
 
 Right first time. See §4.
 
+### ✅ Done — `share --image` / `--video` verified live, 2026-09-25
+
+Three requests, all Voyager:
+
+1. `POST /voyager/api/voyagerVideoDashMediaUploadMetadata?action=upload`
+   `{ mediaUploadType: IMAGE_SHARING | VIDEO_SHARING, fileSize, filename }` → a ticket with the
+   `digitalmediaAsset` urn, `singleUploadUrl`, and `singleUploadHeaders` (`media-type-family:
+   STILLIMAGE | VIDEO`) that the PUT must carry.
+2. `PUT <singleUploadUrl>` with the raw bytes, the file's content type, and those headers.
+3. `POST contentcreation/normShares` with `media: [{ category: IMAGE | VIDEO, mediaUrn, tapTargets: [] }]`.
+
+An image post came back as `urn:li:share:…`, a video post as `urn:li:ugcPost:…`. Both rendered: the
+image in full, the 19.7 s video playing, transcoded by LinkedIn to 720 px. Nothing waited on the
+video's `pollingUrl`; LinkedIn accepted the post while processing continued.
+
+The web client no longer takes this path. A capture of a hand-made image post the same day showed it
+going entirely over SDUI (`UploadImageMedia` → `registerMediaUpload` → the same `/dms-uploads/` PUT →
+`RegisterImageMedia` → `CreatePost`), with kilobytes of memory-namespace bindings per request. The
+Voyager endpoints still answer, so they are used; if they are ever retired, that capture is the map.
+
+Not built: `MULTIPART` tickets (large files get several part URLs and a completion call that has not
+been observed). `parseUploadTicket` refuses them before anything is uploaded.
+
 ### Next — exercise `delete` against the verification post
 
 The 204 path has never run. Deleting the test post is both the cleanup and the proof.

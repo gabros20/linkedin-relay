@@ -229,8 +229,11 @@ export const COMMANDS: CommandDef[] = [
       "Post to your own feed. Prefers LinkedIn's official OAuth scope, falls back to the " +
       'private API when no token exists — the prompt always names which.',
     usage:
-      'lnrelay share "<text>" [--visibility public|connections] [--via oauth|voyager]\n' +
-      '       Stops and asks at an interactive terminal. No TTY = no write, and no network call.',
+      'lnrelay share "<text>" [--image <path> | --video <path>] [--visibility public|connections]\n' +
+      '       [--via oauth|voyager]\n' +
+      '       Stops and asks at an interactive terminal. No TTY = no write, and no network call.\n' +
+      '       --image (png/jpg/gif/webp) or --video (mp4/mov) uploads the file first, over the\n' +
+      '       private API only; the prompt shows its size and sha256.',
     audience: ['cli'],
     risk: 'write',
     implemented: true,

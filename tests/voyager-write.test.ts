@@ -1,6 +1,12 @@
 import { describe, expect, test } from 'bun:test';
 import type { ConfirmedWrite } from '../src/commands/confirm.ts';
-import { extractShareUrn, SHARE_URL, share, sharePayload } from '../src/engine/voyager-write.ts';
+import {
+  extractShareUrn,
+  mediaDigest,
+  SHARE_URL,
+  share,
+  sharePayload,
+} from '../src/engine/voyager-write.ts';
 
 /** The gate is what produces these; tests forge one to reach the transport. */
 function confirmed<T>(payload: T): ConfirmedWrite<T> {
@@ -113,5 +119,91 @@ describe('share', () => {
     const c = client({});
     await share(confirmed({ text: 'exact', visibility: 'CONNECTIONS' as const }), c as never);
     expect(c.sent[0]?.body).toEqual(sharePayload('exact', 'CONNECTIONS'));
+  });
+});
+
+describe('share with media', () => {
+  const TICKET = {
+    data: {
+      value: {
+        urn: 'urn:li:digitalmediaAsset:ABC',
+        singleUploadUrl: 'https://www.linkedin.com/dms-uploads/sp/v2/ABC/0',
+        singleUploadHeaders: { 'media-type-family': 'STILLIMAGE' },
+        type: 'SINGLE',
+      },
+    },
+  };
+  const BYTES = new Uint8Array([1, 2, 3]);
+  const MEDIA = {
+    filename: 'a.png',
+    kind: 'IMAGE' as const,
+    contentType: 'image/png',
+    size: 3,
+    sha256: mediaDigest(BYTES),
+  };
+
+  function scripted(...replies: ({ ok: true; json: unknown } | { ok: false; code: string })[]) {
+    const sent: { url: string; method?: string; body?: unknown; bytes?: Uint8Array }[] = [];
+    return {
+      sent,
+      request: async (spec: (typeof sent)[number]) => {
+        sent.push(spec);
+        const r = replies.shift();
+        if (r === undefined) throw new Error('unexpected request');
+        return r.ok
+          ? { ok: true as const, json: r.json, classification: {} as never }
+          : { ok: false as const, code: r.code, message: 'refused' };
+      },
+    };
+  }
+
+  test('the payload references the asset by urn, with its category', () => {
+    expect(
+      sharePayload('x', 'PUBLIC', [{ category: 'IMAGE', urn: 'urn:li:digitalmediaAsset:A' }]).media,
+    ).toEqual([{ category: 'IMAGE', mediaUrn: 'urn:li:digitalmediaAsset:A', tapTargets: [] }]);
+  });
+
+  test('uploads first, then posts with the uploaded urn', async () => {
+    const c = scripted(
+      { ok: true, json: TICKET },
+      { ok: true, json: null },
+      { ok: true, json: { urn: 'urn:li:share:9' } },
+    );
+    const r = await share(
+      confirmed({ text: 'hi', visibility: 'PUBLIC' as const, media: MEDIA }),
+      c as never,
+      BYTES,
+    );
+    expect(r).toEqual({ ok: true, id: 'urn:li:share:9' });
+    expect(c.sent.map((s) => s.method)).toEqual(['POST', 'PUT', 'POST']);
+    expect(c.sent[2]?.url).toBe(SHARE_URL);
+    const posted = c.sent[2]?.body as { media: unknown } | undefined;
+    expect(posted?.media).toEqual([
+      { category: 'IMAGE', mediaUrn: 'urn:li:digitalmediaAsset:ABC', tapTargets: [] },
+    ]);
+  });
+
+  test('a failed upload posts nothing', async () => {
+    const c = scripted({ ok: false, code: 'BLOCKED' });
+    const r = await share(
+      confirmed({ text: 'hi', visibility: 'PUBLIC' as const, media: MEDIA }),
+      c as never,
+      BYTES,
+    );
+    expect(r.ok).toBe(false);
+    expect(c.sent.some((s) => s.url === SHARE_URL)).toBe(false);
+  });
+
+  // The human approved a file by its digest. If the bytes changed between the
+  // prompt and the send, what would be published is not what was approved.
+  test('bytes that do not match the approved digest are refused before any request', async () => {
+    const c = scripted();
+    const r = await share(
+      confirmed({ text: 'hi', visibility: 'PUBLIC' as const, media: MEDIA }),
+      c as never,
+      new Uint8Array([9, 9, 9]),
+    );
+    expect(r.ok).toBe(false);
+    expect(c.sent).toHaveLength(0);
   });
 });

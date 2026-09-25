@@ -187,7 +187,7 @@ Writes are **not on this surface at all**. They exist only as CLI commands the u
 
 | command | does |
 |---|---|
-| `lnrelay share "<text>"` | post to their own feed |
+| `lnrelay share "<text>" [--image <path> \| --video <path>]` | post to their own feed, optionally with one image or video |
 | `lnrelay comment <activity-urn> "<text>"` | comment on a post |
 | `lnrelay reply <comment-urn> "<text>"` | reply, nested under that comment |
 | `lnrelay edit <comment-urn> "<text>"` | change the text of their own comment |
@@ -205,6 +205,8 @@ Two things worth telling a user who asks:
 - `share` prefers LinkedIn's official OAuth scope and falls back to the private API when they have no
   developer app — the prompt names which, and a Voyager write states the ToS breach. Why an app is
   needed at all: `docs/DECISION-writes.md`.
+- `--image` / `--video` upload over the private API only; `--via oauth` with media is refused. A
+  video post comes back as a `urn:li:ugcPost:` rather than `urn:li:share:`.
 - **Deleting a comment also deletes every reply under it**, including other people's. Verified live.
 
 **Without a terminal there is no write and no network call.** That is deliberate and there is no

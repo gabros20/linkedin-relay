@@ -136,24 +136,8 @@ export async function dispatch(argv: string[], now: number): Promise<Envelope> {
       return runLogin();
     case 'oauth':
       return oauth(args);
-    case 'share': {
-      const surface = via(args);
-      if (surface === 'invalid') {
-        return err(
-          'share',
-          'INVALID_INPUT',
-          `unknown --via '${str(args, 'via') ?? ''}'`,
-          'one of: oauth, voyager. Omit it to prefer OAuth and fall back to Voyager.',
-        );
-      }
-      return runShare(
-        args.positionals[0],
-        str(args, 'visibility') ?? 'public',
-        now,
-        undefined,
-        surface,
-      );
-    }
+    case 'share':
+      return share(args, now);
     case 'comment':
       return runComment(args.positionals[0], args.positionals[1], now);
     case 'edit':
@@ -213,4 +197,45 @@ if (entry.run) {
   // stdout carries ONLY the JSON envelope. Help text and progress go to stderr.
   if (envelope.command !== 'help') process.stdout.write(`${toJson(envelope)}\n`);
   process.exit(exitCodeFor(envelope));
+}
+
+/** `share` parses more flags than any other command; kept out of dispatch. */
+function share(args: ParsedArgs, now: number): Promise<Envelope> | Envelope {
+  const surface = via(args);
+  if (surface === 'invalid') {
+    return err(
+      'share',
+      'INVALID_INPUT',
+      `unknown --via '${str(args, 'via') ?? ''}'`,
+      'one of: oauth, voyager. Omit it to prefer OAuth and fall back to Voyager.',
+    );
+  }
+  // A bare `--image` parses as `true`; ignoring it would publish the text
+  // without the picture the user asked for.
+  for (const flag of ['image', 'video']) {
+    if (args.flags[flag] === true) {
+      return err('share', 'INVALID_INPUT', `--${flag} needs a file path`);
+    }
+  }
+  const image = str(args, 'image');
+  const video = str(args, 'video');
+  if (image !== undefined && video !== undefined) {
+    return err(
+      'share',
+      'INVALID_INPUT',
+      'a post carries an image or a video, not both',
+      'pass one of --image <path> or --video <path>',
+    );
+  }
+  let media: { flag: 'image' | 'video'; path: string } | undefined;
+  if (image !== undefined) media = { flag: 'image', path: image };
+  else if (video !== undefined) media = { flag: 'video', path: video };
+  return runShare(
+    args.positionals[0],
+    str(args, 'visibility') ?? 'public',
+    now,
+    undefined,
+    surface,
+    media,
+  );
 }

@@ -1,6 +1,8 @@
 // Write command runners. Every one of these stops and asks a human before it
 // sends anything, and makes zero network calls on the path where it doesn't.
 
+import { readFileSync, statSync } from 'node:fs';
+import { basename } from 'node:path';
 import { buildHeaders } from '../engine/auth.ts';
 import { createLiveClient } from '../engine/index.ts';
 import { share as sendShare } from '../engine/oauth-write.ts';
@@ -19,8 +21,9 @@ import {
   react as sduiReact,
 } from '../engine/sdui-write.ts';
 import { loadSession } from '../engine/session.ts';
+import { mediaKindOf } from '../engine/voyager-media.ts';
 import { replyToComment } from '../engine/voyager-reply.ts';
-import { share as voyagerShare } from '../engine/voyager-write.ts';
+import { type ApprovedMedia, mediaDigest, share as voyagerShare } from '../engine/voyager-write.ts';
 import { err, ok } from '../output.ts';
 import type { Envelope } from '../types.ts';
 import type { ConfirmDeps, WritePlan } from './confirm.ts';
@@ -41,7 +44,12 @@ function authorLine(transport: Transport): string {
     : `as       ${transport.session.ownerUrn ?? 'you (browser session)'}`;
 }
 
-function prepare(command: string, now: number, via?: 'oauth' | 'voyager'): WriteContext | Envelope {
+function prepare(
+  command: string,
+  now: number,
+  via?: 'oauth' | 'voyager',
+  calls = 1,
+): WriteContext | Envelope {
   const session = loadSession();
   const choice = chooseTransport(
     { token: loadToken(), session: session.state === 'ok' ? session.session : null, now },
@@ -50,7 +58,7 @@ function prepare(command: string, now: number, via?: 'oauth' | 'voyager'): Write
   if (!choice.ok) {
     return err(command, 'AUTH_FAILED', choice.message, `${choice.hint}\n\n${OAUTH_SETUP}`);
   }
-  const refused = reserve(command, now);
+  const refused = reserve(command, now, calls);
   if (refused !== null) return refused;
   const ctx: WriteContext = { transport: choice.transport, now };
   if (choice.note !== undefined) ctx.note = choice.note;
@@ -72,24 +80,97 @@ async function gate<T>(
   return { confirmed: gated.confirmed as never };
 }
 
+/** Read and identify a media file, or say why it cannot be posted. */
+function loadMedia(media: {
+  flag: 'image' | 'video';
+  path: string;
+}): { approved: ApprovedMedia; bytes: Uint8Array } | Envelope {
+  const kind = mediaKindOf(media.path);
+  if (kind === null) {
+    return err(
+      'share',
+      'INVALID_INPUT',
+      `unsupported file type: ${basename(media.path)}`,
+      'images: png, jpg, jpeg, gif, webp. videos: mp4, mov.',
+    );
+  }
+  const expected = media.flag === 'image' ? 'IMAGE' : 'VIDEO';
+  if (kind.kind !== expected) {
+    const right = kind.kind === 'IMAGE' ? '--image' : '--video';
+    return err(
+      'share',
+      'INVALID_INPUT',
+      `${basename(media.path)} is not a${media.flag === 'image' ? 'n image' : ' video'}`,
+      `pass it with ${right}`,
+    );
+  }
+  let bytes: Uint8Array;
+  try {
+    if (!statSync(media.path).isFile()) throw new Error('not a file');
+    bytes = new Uint8Array(readFileSync(media.path));
+  } catch {
+    return err('share', 'INVALID_INPUT', `cannot read ${media.path}`);
+  }
+  return {
+    bytes,
+    approved: {
+      filename: basename(media.path),
+      kind: kind.kind,
+      contentType: kind.contentType,
+      size: bytes.byteLength,
+      sha256: mediaDigest(bytes),
+    },
+  };
+}
+
 export async function runShare(
   text: string | undefined,
   visibility: string,
   now = Date.now(),
   deps: ConfirmDeps = terminalDeps(),
   via?: 'oauth' | 'voyager',
+  media?: { flag: 'image' | 'video'; path: string },
 ): Promise<Envelope> {
   if (text === undefined || text.trim() === '') {
     return err('share', 'INVALID_INPUT', 'text is required', 'lnrelay share "<text>"');
   }
   const vis = visibility === 'connections' ? 'CONNECTIONS' : 'PUBLIC';
-  const ctx = prepare('share', now, via);
+
+  const loaded = media === undefined ? undefined : loadMedia(media);
+  if (loaded !== undefined && 'ok' in loaded) return loaded;
+  // Media upload exists only over Voyager. An explicit --via oauth is refused
+  // rather than rerouted: switching transport silently is what the design bans.
+  if (loaded !== undefined && via === 'oauth') {
+    return err(
+      'share',
+      'NOT_IMPLEMENTED',
+      'posting media is only implemented over the private API',
+      'drop --via oauth, or pass --via voyager',
+    );
+  }
+
+  // Register + upload + post: all three must fit, or the upload is an orphan.
+  const ctx =
+    loaded === undefined ? prepare('share', now, via) : prepare('share', now, 'voyager', 3);
   if ('ok' in ctx) return ctx;
 
-  const plan: WritePlan<{ text: string; visibility: 'PUBLIC' | 'CONNECTIONS' }> = {
+  const payload: { text: string; visibility: 'PUBLIC' | 'CONNECTIONS'; media?: ApprovedMedia } = {
+    text,
+    visibility: vis,
+  };
+  const summary = [authorLine(ctx.transport), `content  "${text}"`, `audience ${vis}`];
+  if (loaded !== undefined) {
+    payload.media = loaded.approved;
+    const { filename, kind, size, sha256 } = loaded.approved;
+    summary.push(
+      `${kind === 'IMAGE' ? 'image' : 'video'}    ${filename} (${Math.ceil(size / 1024)} KB, sha256 ${sha256.slice(0, 12)})`,
+    );
+  }
+
+  const plan: WritePlan<typeof payload> = {
     action: 'post to your feed',
-    payload: { text, visibility: vis },
-    summary: [authorLine(ctx.transport), `content  "${text}"`, `audience ${vis}`],
+    payload,
+    summary,
     reversibility:
       'deletable with `lnrelay delete <urn>`, but it is public under your name the moment it ' +
       'lands and anyone who saw it cannot un-see it',
@@ -105,7 +186,7 @@ export async function runShare(
           fetch: globalThis.fetch,
           now: () => now,
         })
-      : await voyagerShare(gated.confirmed, createLiveClient(ctx.transport.session));
+      : await voyagerShare(gated.confirmed, createLiveClient(ctx.transport.session), loaded?.bytes);
 
   if (!result.ok) return err('share', result.code, result.message, result.hint);
   return ok('share', {

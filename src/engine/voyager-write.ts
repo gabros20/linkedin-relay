@@ -45,8 +45,10 @@
 // Reporting a success as a failure is the worst direction to be wrong here: it
 // invites a re-run, and the re-run posts twice. See classify.ts.
 
+import { createHash } from 'node:crypto';
 import type { ConfirmedWrite } from '../commands/confirm.ts';
 import type { Client } from './client.ts';
+import { type MediaKind, uploadMedia } from './voyager-media.ts';
 
 const VOYAGER = 'https://www.linkedin.com/voyager/api';
 
@@ -74,7 +76,11 @@ export interface SharePayload {
  * Inverting it by accident publishes a connections-only note to the open web,
  * which is why the mapping is pinned by test rather than inlined at the call.
  */
-export function sharePayload(text: string, visibility: 'PUBLIC' | 'CONNECTIONS'): SharePayload {
+export function sharePayload(
+  text: string,
+  visibility: 'PUBLIC' | 'CONNECTIONS',
+  media: { category: MediaKind; urn: string }[] = [],
+): SharePayload {
   return {
     visibleToConnectionsOnly: visibility === 'CONNECTIONS',
     externalAudienceProviders: [],
@@ -82,8 +88,21 @@ export function sharePayload(text: string, visibility: 'PUBLIC' | 'CONNECTIONS')
     origin: 'FEED',
     allowedCommentersScope: 'ALL',
     postState: 'PUBLISHED',
-    media: [],
+    media: media.map((m) => ({ category: m.category, mediaUrn: m.urn, tapTargets: [] })),
   };
+}
+
+/** What the human approves about a file: its identity, not its bytes. */
+export interface ApprovedMedia {
+  filename: string;
+  kind: MediaKind;
+  contentType: string;
+  size: number;
+  sha256: string;
+}
+
+export function mediaDigest(bytes: Uint8Array): string {
+  return createHash('sha256').update(bytes).digest('hex');
 }
 
 /** Urn prefixes that identify a CREATED POST, as opposed to its author. */
@@ -165,10 +184,41 @@ export function extractShareUrn(json: unknown): string | null {
  * gives, enforced by the type rather than by a check anyone could forget.
  */
 export async function share(
-  confirmed: ConfirmedWrite<{ text: string; visibility: 'PUBLIC' | 'CONNECTIONS' }>,
+  confirmed: ConfirmedWrite<{
+    text: string;
+    visibility: 'PUBLIC' | 'CONNECTIONS';
+    media?: ApprovedMedia;
+  }>,
   client: Client,
+  bytes?: Uint8Array,
 ): Promise<WriteResult> {
-  const body = sharePayload(confirmed.payload.text, confirmed.payload.visibility);
+  const { media: approved } = confirmed.payload;
+  const media: { category: MediaKind; urn: string }[] = [];
+
+  if (approved !== undefined) {
+    // The approval names a digest, and the bytes travel separately — so check
+    // they are the bytes that were approved before anything leaves the machine.
+    if (bytes === undefined || mediaDigest(bytes) !== approved.sha256) {
+      return {
+        ok: false,
+        code: 'INVALID_INPUT',
+        message: `${approved.filename} changed after it was approved; nothing was sent`,
+      };
+    }
+    const uploaded = await uploadMedia(
+      {
+        bytes,
+        filename: approved.filename,
+        kind: approved.kind,
+        contentType: approved.contentType,
+      },
+      client,
+    );
+    if (!uploaded.ok) return uploaded;
+    media.push({ category: approved.kind, urn: uploaded.urn });
+  }
+
+  const body = sharePayload(confirmed.payload.text, confirmed.payload.visibility, media);
 
   const result = await client.request({
     url: SHARE_URL,

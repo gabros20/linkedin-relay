@@ -369,4 +369,50 @@ describe('request bodies', () => {
     expect(headers.cookie).toContain('li_at=');
     expect(headers['csrf-token']).toBe('ajax:1234567890');
   });
+
+  // A media upload PUTs the file itself. JSON-serialising a Uint8Array would
+  // send `{"0":137,"1":80,...}` — a well-formed request carrying a corrupt file.
+  test('sends raw bytes untouched, not JSON', async () => {
+    const { client, seen } = recording(201);
+    const bytes = new Uint8Array([137, 80, 78, 71]);
+    await client.request({
+      url: 'https://x/',
+      method: 'PUT',
+      bytes,
+      headers: { 'content-type': 'image/png', 'media-type-family': 'STILLIMAGE' },
+      spendClass: 'write',
+      operation: 'upload',
+    });
+    expect(seen[0]?.body).toBe(bytes);
+    const headers = seen[0]?.headers as Record<string, string>;
+    expect(headers['content-type']).toBe('image/png');
+    expect(headers['media-type-family']).toBe('STILLIMAGE');
+    expect(headers['csrf-token']).toBe('ajax:1234567890');
+  });
+
+  test('an upload that answers 201 with an empty body is a success', async () => {
+    const seen: RequestInit[] = [];
+    const client = createClient(SESSION, {
+      fetch: (async (_url: string, init: RequestInit) => {
+        seen.push(init);
+        return res(201, '');
+      }) as unknown as typeof fetch,
+      now: () => T0,
+      sleep: async () => {},
+      random: () => 0,
+      loadLedger: () => emptyLedger(),
+      saveLedger: () => {},
+      loadCooldown: () => null,
+      saveCooldown: () => {},
+    });
+    const r = await client.request({
+      url: 'https://x/',
+      method: 'PUT',
+      bytes: new Uint8Array([1]),
+      headers: { 'content-type': 'video/mp4' },
+      spendClass: 'write',
+      operation: 'upload',
+    });
+    expect(r.ok).toBe(true);
+  });
 });

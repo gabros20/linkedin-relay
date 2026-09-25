@@ -41,6 +41,10 @@ export interface RequestSpec {
   method?: string;
   /** Serialised as JSON when present. Reads carry none and must stay that way. */
   body?: unknown;
+  /** Sent verbatim — a media upload PUTs the file itself. Exclusive with `body`. */
+  bytes?: Uint8Array;
+  /** Extra headers, layered over the session's. An upload names its own content type. */
+  headers?: Record<string, string>;
 }
 
 export type ClientResult =
@@ -131,6 +135,12 @@ export function createClient(session: Session, deps: ClientDeps) {
   return { request };
 }
 
+/** Bytes go verbatim, a JSON body is serialised, and a read carries nothing. */
+function encodeBody(spec: RequestSpec): Uint8Array | string | undefined {
+  if (spec.bytes !== undefined) return spec.bytes;
+  return spec.body === undefined ? undefined : JSON.stringify(spec.body);
+}
+
 async function fetchRaw(
   spec: RequestSpec,
   session: Session,
@@ -140,12 +150,14 @@ async function fetchRaw(
   // exactly the six headers that were verified against live traffic.
   const requestHeaders = buildHeaders(session);
   if (spec.body !== undefined) requestHeaders['content-type'] = 'application/json; charset=UTF-8';
+  Object.assign(requestHeaders, spec.headers);
+  const body = encodeBody(spec);
 
   try {
     const res = await deps.fetch(spec.url, {
       method: spec.method ?? 'GET',
       headers: requestHeaders,
-      ...(spec.body === undefined ? {} : { body: JSON.stringify(spec.body) }),
+      ...(body === undefined ? {} : { body }),
       // Manual, so a login or checkpoint redirect is classified rather than
       // silently followed into an HTML page that parses as "no data".
       redirect: 'manual',

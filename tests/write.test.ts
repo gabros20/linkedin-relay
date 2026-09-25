@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, test } from 'bun:test';
-import { mkdtempSync, rmSync } from 'node:fs';
+import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { cachePath, loadJson, saveJson } from '../src/cache/store.ts';
@@ -137,6 +137,27 @@ describe('the write budget is enforced before the prompt', () => {
     if (e.ok) throw new Error('expected refusal');
     expect(e.error.code).toBe('BUDGET_EXHAUSTED');
   });
+
+  // A media post is three writes: register, upload, post. Room for one would
+  // let the upload land and the post be refused — an orphan and no post.
+  test('a media post needs room for all three of its calls', async () => {
+    saveJson(cachePath('session.json'), {
+      liAt: 'a'.repeat(40),
+      jsessionId: '"ajax:1"',
+      userAgent: 'Mozilla/5.0',
+      capturedAt: '2026-08-01',
+    });
+    saveJson(cachePath('budget.json'), {
+      spends: {
+        write: Array.from({ length: CAPS.write.perDay - 2 }, (_, i) => T0 - 60_000 - i * 1000),
+      },
+    });
+    const img = join(dir, 'a.png');
+    writeFileSync(img, new Uint8Array([1]));
+    const e = await runShare('hello', 'public', T0, noTty, undefined, { flag: 'image', path: img });
+    if (e.ok) throw new Error('expected refusal');
+    expect(e.error.code).toBe('BUDGET_EXHAUSTED');
+  });
 });
 
 // The gate commits a write spend, and the client commits another for the same
@@ -236,5 +257,67 @@ describe('the comment harvest is accounted for', () => {
     const after = loadJson<{ spends: Record<string, number[]> }>(cachePath('budget.json'));
     const afterN = after.state === 'ok' ? (after.value.spends.page?.length ?? 0) : 0;
     expect(afterN).toBeGreaterThan(beforeN);
+  });
+});
+
+describe('share with media', () => {
+  function file(name: string, bytes = new Uint8Array([1, 2, 3])) {
+    const p = join(dir, name);
+    writeFileSync(p, bytes);
+    return p;
+  }
+
+  test('a file that does not exist is refused before anything else', async () => {
+    withSession();
+    const e = await runShare('hi', 'public', T0, noTty, undefined, {
+      flag: 'image',
+      path: join(dir, 'missing.png'),
+    });
+    if (e.ok) throw new Error('expected failure');
+    expect(e.error.code).toBe('INVALID_INPUT');
+  });
+
+  test('a video passed as --image is refused, naming the right flag', async () => {
+    withSession();
+    const e = await runShare('hi', 'public', T0, noTty, undefined, {
+      flag: 'image',
+      path: file('clip.mp4'),
+    });
+    if (e.ok) throw new Error('expected failure');
+    expect(e.error.code).toBe('INVALID_INPUT');
+    expect(e.error.hint).toContain('--video');
+  });
+
+  test('an unsupported file type is refused', async () => {
+    withSession();
+    const e = await runShare('hi', 'public', T0, noTty, undefined, {
+      flag: 'image',
+      path: file('notes.txt'),
+    });
+    if (e.ok) throw new Error('expected failure');
+    expect(e.error.code).toBe('INVALID_INPUT');
+  });
+
+  // Media upload is implemented over Voyager only. Silently switching an
+  // explicit --via oauth to another transport is exactly what the design bans.
+  test('media over an explicit --via oauth is refused, not rerouted', async () => {
+    withToken();
+    withSession();
+    const e = await runShare('hi', 'public', T0, noTty, 'oauth', {
+      flag: 'image',
+      path: file('a.png'),
+    });
+    if (e.ok) throw new Error('expected failure');
+    expect(e.error.code).toBe('NOT_IMPLEMENTED');
+  });
+
+  test('a valid image still stops at the confirmation gate without a TTY', async () => {
+    withSession();
+    const e = await runShare('hi', 'public', T0, noTty, undefined, {
+      flag: 'image',
+      path: file('a.png'),
+    });
+    if (e.ok) throw new Error('expected refusal');
+    expect(e.error.code).toBe('CONFIRMATION_REQUIRED');
   });
 });

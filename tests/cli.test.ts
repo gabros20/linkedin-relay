@@ -140,6 +140,25 @@ describe('dispatch', () => {
 // succeeds, nothing is cached, and the only symptom is an empty cache later.
 // It happened once during development, so it is asserted here.
 describe('flag wiring', () => {
+  // Dropping a valueless --image would publish the text without the picture.
+  test('share with a bare --image refuses instead of posting text alone', async () => {
+    const e = await dispatch(['share', 'hi', '--image'], T0);
+    if (e.ok) throw new Error('expected refusal');
+    expect(e.error.code).toBe('INVALID_INPUT');
+  });
+
+  test('share refuses an image and a video together', async () => {
+    const e = await dispatch(['share', 'hi', '--image', 'a.png', '--video', 'b.mp4'], T0);
+    if (e.ok) throw new Error('expected refusal');
+    expect(e.error.message).toContain('not both');
+  });
+
+  test('--image reaches the runner', async () => {
+    const e = await dispatch(['share', 'hi', '--image', join(dir, 'missing.png')], T0);
+    if (e.ok) throw new Error('expected refusal');
+    expect(e.error.message).toContain('missing.png');
+  });
+
   test('--retain reaches the runner and is reported in meta', async () => {
     const e = await dispatch(['search', 'people', 'x', '--retain'], T0);
     // No session in this test env, so it fails at auth — the point is that the
