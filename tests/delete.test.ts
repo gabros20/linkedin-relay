@@ -134,6 +134,12 @@ describe('the preview shown before deleting', () => {
     expect(lines.join('\n')).toMatch(/could not/i);
   });
 
+  // A scheduled post is not among published posts, so it always lands here —
+  // and cancelling one is a normal thing to do, not a red flag.
+  test('names a scheduled post as one reason it could not be read', () => {
+    expect(previewLines(undefined).join('\n')).toMatch(/scheduled/i);
+  });
+
   test('a long post is truncated rather than flooding the prompt', () => {
     const lines = previewLines({ urn: 'u', text: 'x'.repeat(1000) });
     expect(lines.join('\n').length).toBeLessThan(400);

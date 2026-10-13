@@ -73,7 +73,8 @@ export function previewLines(post: Shaped | undefined): string[] {
   if (post === undefined) {
     return [
       'content  COULD NOT READ THIS POST.',
-      '         It is not among your recent posts. That may only mean it is older',
+      '         It is not among your recent published posts. That is expected for a',
+      '         scheduled post (deleting one cancels it), and may also mean it is older',
       '         than the page fetched — but nothing here has verified what you are',
       '         about to delete, or that it is yours.',
     ];
