@@ -1,3 +1,15 @@
+# [3.4.0](https://github.com/gabros20/linkedin-relay/compare/v3.3.0...v3.4.0) (2026-10-13)
+
+
+### Bug Fixes
+
+* **delete:** a scheduled post is an expected reason the preview cannot read it ([b2bf6d0](https://github.com/gabros20/linkedin-relay/commit/b2bf6d07932123009460b6fa560992b1a8fd62f7))
+
+
+### Features
+
+* **share:** schedule posts with --at, and post a PDF with --document ([396517d](https://github.com/gabros20/linkedin-relay/commit/396517d51daf32ae3d9baf85ef486abe61fdc429))
+
 # [3.3.0](https://github.com/gabros20/linkedin-relay/compare/v3.2.0...v3.3.0) (2026-09-25)
 
 
