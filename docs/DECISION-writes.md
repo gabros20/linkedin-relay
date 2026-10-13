@@ -180,6 +180,18 @@ published; it was then deleted from the scheduled list):
 - **A scheduled post is a ugcPost** (`urn:li:ugcPost:…`) from the moment it is scheduled. Cancelling
   it went over SDUI `deletePost` with that urn and the SCHEDULED state.
 
+**Resolved 2026-10-13 — built as `share --document --title` and `share --at`.** Two probes, both
+scheduled a week ahead so neither could publish, read back from LinkedIn's own scheduled-posts list:
+
+- `normShares` with `postState: "SCHEDULED"` and `scheduledAt: <epoch ms>` → "Post scheduled.", listed
+  as "Posting Tue, Oct 20, 2026 at 2:00 PM" — exactly the time sent.
+- media `{ category: "NATIVE_DOCUMENT", mediaUrn, tapTargets: [], title: { text } }` after a
+  `DOCUMENT_SHARING` upload → listed with the title and "2 Pages".
+- The existing `DELETE normShares/<urn>` cancels a scheduled post (share or ugcPost urn); the list
+  went back to "Scheduled (0)". A document post comes back as a ugcPost, a text one as a share.
+
+What follows is the original note, kept for the record.
+
 Still unknown: the Voyager spellings. `normShares` already sends `postState: PUBLISHED`, so
 `SCHEDULED` plus a time field is the natural probe; for documents, the media `category` and where
 the title goes. Both probes are safe in the sense that matters: a state of SCHEDULED cannot publish

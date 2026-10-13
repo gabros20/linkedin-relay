@@ -292,3 +292,92 @@ describe('share with several images', () => {
     ]);
   });
 });
+
+// Both verified live 2026-10-13 with scheduled probes, read back from LinkedIn's
+// own scheduled-posts list: the time, the title and the page count all matched.
+describe('documents and scheduling in the payload', () => {
+  test('a document is NATIVE_DOCUMENT and carries its title', () => {
+    const p = sharePayload('x', 'PUBLIC', [
+      { category: 'DOCUMENT', urn: 'urn:li:digitalmediaAsset:D', title: 'Q3 review' },
+    ]);
+    expect(p.media).toEqual([
+      {
+        category: 'NATIVE_DOCUMENT',
+        mediaUrn: 'urn:li:digitalmediaAsset:D',
+        tapTargets: [],
+        title: { text: 'Q3 review' },
+      },
+    ]);
+  });
+
+  test('a scheduled post is SCHEDULED with the time in epoch ms', () => {
+    const p = sharePayload('x', 'PUBLIC', [], 1792497600000);
+    expect(p.postState).toBe('SCHEDULED');
+    expect(p.scheduledAt).toBe(1792497600000);
+  });
+
+  // The default must stay the body verified on 2026-08-13: no stray field.
+  test('without a time it is PUBLISHED and has no scheduledAt at all', () => {
+    const p = sharePayload('x', 'PUBLIC');
+    expect(p.postState).toBe('PUBLISHED');
+    expect('scheduledAt' in p).toBe(false);
+  });
+});
+
+describe('share carries what was approved into the body', () => {
+  test('the approved time schedules the post', async () => {
+    const c = client({ data: { status: { urn: 'urn:li:share:9' } } });
+    await share(
+      confirmed({ text: 'later', visibility: 'PUBLIC' as const, scheduledAt: 1792497600000 }),
+      c as never,
+    );
+    expect(c.sent[0]?.body).toEqual(sharePayload('later', 'PUBLIC', [], 1792497600000));
+  });
+
+  test("a document's approved title goes on its media entry", async () => {
+    const BYTES = new Uint8Array([5]);
+    const sent: { body?: unknown }[] = [];
+    const replies: unknown[] = [
+      {
+        data: {
+          value: {
+            urn: 'urn:li:digitalmediaAsset:D',
+            singleUploadUrl: 'https://x/u',
+            type: 'SINGLE',
+          },
+        },
+      },
+      null,
+      { data: { status: { urn: 'urn:li:ugcPost:3' } } },
+    ];
+    const c = {
+      request: async (spec: { body?: unknown }) => {
+        sent.push(spec);
+        return { ok: true as const, json: replies.shift(), classification: {} as never };
+      },
+    };
+    await share(
+      confirmed({
+        text: 'deck',
+        visibility: 'PUBLIC' as const,
+        media: [
+          {
+            filename: 'deck.pdf',
+            kind: 'DOCUMENT' as const,
+            contentType: 'application/pdf',
+            size: 1,
+            sha256: mediaDigest(BYTES),
+            title: 'Q3 review',
+          },
+        ],
+      }),
+      c as never,
+      [BYTES],
+    );
+    const posted = sent[2]?.body as { media: unknown[] } | undefined;
+    expect(posted?.media[0]).toMatchObject({
+      category: 'NATIVE_DOCUMENT',
+      title: { text: 'Q3 review' },
+    });
+  });
+});

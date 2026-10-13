@@ -187,7 +187,7 @@ Writes are **not on the MCP surface**. They exist only as CLI commands:
 
 | command | does |
 |---|---|
-| `lnrelay share "<text>" [--image <path> ... [--alt "<text>" ...] \| --video <path>]` | post to their own feed, with up to 20 images (alt text paired by position) or one video |
+| `lnrelay share "<text>" [--image <path> ... [--alt "…" ...] \| --video <path> \| --document <pdf> --title "…"] [--at "YYYY-MM-DD HH:MM"]` | post to their own feed — up to 20 images, one video, or one PDF; `--at` schedules it and LinkedIn publishes it then |
 | `lnrelay comment <activity-urn> "<text>"` | comment on a post |
 | `lnrelay reply <comment-urn> "<text>"` | reply, nested under that comment |
 | `lnrelay edit <comment-urn> "<text>"` | change the text of their own comment |
@@ -225,6 +225,9 @@ Things worth telling a user who asks:
   needed at all: `docs/DECISION-writes.md`.
 - `--image` / `--video` upload over the private API only; `--via oauth` with media is refused. A
   video post comes back as a `urn:li:ugcPost:` rather than `urn:li:share:`.
+- A scheduled post gets its urn immediately; `lnrelay delete <urn>` cancels it before it publishes.
+  `--at` without an offset is the machine's local time — say the time back to the user in the
+  preview's own words, which name the timezone.
 - **Deleting a comment also deletes every reply under it**, including other people's. Verified live.
 
 Connecting and messaging do not exist at all, in any surface. They are the actions where the

@@ -25,7 +25,7 @@ import type { Client } from './client.ts';
 export const MEDIA_UPLOAD_URL =
   'https://www.linkedin.com/voyager/api/voyagerVideoDashMediaUploadMetadata?action=upload';
 
-export type MediaKind = 'IMAGE' | 'VIDEO';
+export type MediaKind = 'IMAGE' | 'VIDEO' | 'DOCUMENT';
 
 const TYPES: Record<string, { kind: MediaKind; contentType: string }> = {
   png: { kind: 'IMAGE', contentType: 'image/png' },
@@ -35,6 +35,8 @@ const TYPES: Record<string, { kind: MediaKind; contentType: string }> = {
   webp: { kind: 'IMAGE', contentType: 'image/webp' },
   mp4: { kind: 'VIDEO', contentType: 'video/mp4' },
   mov: { kind: 'VIDEO', contentType: 'video/quicktime' },
+  // LinkedIn also takes ppt/pptx/doc/docx; only pdf has been verified here.
+  pdf: { kind: 'DOCUMENT', contentType: 'application/pdf' },
 };
 
 /** The kind and content type a file uploads as, by extension — or null. */
@@ -45,7 +47,7 @@ export function mediaKindOf(filename: string): { kind: MediaKind; contentType: s
 
 export function registerPayload(kind: MediaKind, fileSize: number, filename: string) {
   return {
-    mediaUploadType: kind === 'IMAGE' ? 'IMAGE_SHARING' : 'VIDEO_SHARING',
+    mediaUploadType: `${kind}_SHARING`,
     fileSize,
     filename,
   };

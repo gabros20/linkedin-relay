@@ -8,7 +8,7 @@ import { runDelete } from '../src/commands/delete.ts';
 import { gateWrite } from '../src/commands/gate.ts';
 import { runOauthStatus } from '../src/commands/oauth.ts';
 import { saveToken } from '../src/commands/token.ts';
-import { runComment, runReact, runShare } from '../src/commands/write.ts';
+import { parseScheduleTime, runComment, runReact, runShare } from '../src/commands/write.ts';
 import { CAPS } from '../src/engine/budget.ts';
 
 const T0 = 1_800_000_000_000;
@@ -431,5 +431,97 @@ describe('share with several images and alt text', () => {
     expect(preview).toContain('a.png');
     expect(preview).toContain('b.png');
     expect(preview).toContain('a radar icon');
+  });
+});
+
+describe('scheduling and documents', () => {
+  function file(name: string) {
+    const p = join(dir, name);
+    writeFileSync(p, new Uint8Array([37, 80, 68, 70]));
+    return p;
+  }
+  const planning = { ...noTty, approval: { mode: 'agent' as const, planOnly: true } };
+  const DAY = 86_400_000;
+
+  test('parses a local "YYYY-MM-DD HH:MM" as local time', () => {
+    expect(parseScheduleTime('2026-10-20 14:00')).toBe(new Date(2026, 9, 20, 14, 0).getTime());
+  });
+
+  test('parses ISO 8601 with an offset exactly', () => {
+    expect(parseScheduleTime('2026-10-20T12:00:00Z')).toBe(Date.UTC(2026, 9, 20, 12, 0));
+  });
+
+  test('anything else is null, not a guess', () => {
+    expect(parseScheduleTime('next tuesday')).toBeNull();
+    expect(parseScheduleTime('2026-13-40 99:99')).toBeNull();
+  });
+
+  test('a time in the past, or under ten minutes away, is refused', async () => {
+    withSession();
+    const soon = new Date(T0 + 5 * 60_000).toISOString();
+    const e = await runShare('hi', 'public', T0, planning, undefined, undefined, soon);
+    if (e.ok) throw new Error('expected refusal');
+    expect(e.error.code).toBe('INVALID_INPUT');
+  });
+
+  test('scheduling over an explicit --via oauth is refused, not rerouted', async () => {
+    withToken();
+    withSession();
+    const at = new Date(T0 + DAY).toISOString();
+    const e = await runShare('hi', 'public', T0, planning, 'oauth', undefined, at);
+    if (e.ok) throw new Error('expected refusal');
+    expect(e.error.code).toBe('NOT_IMPLEMENTED');
+  });
+
+  test('the plan says when, and that it is a scheduled post', async () => {
+    withSession();
+    const at = new Date(T0 + 7 * DAY).toISOString();
+    const e = await runShare('hi', 'public', T0, planning, undefined, undefined, at);
+    if (!e.ok) throw new Error(e.error.message);
+    const preview = (e.data as { preview: string[] }).preview.join('\n');
+    expect(preview).toContain('SCHEDULE A POST');
+    expect(preview).toContain('when');
+  });
+
+  test('a document needs a title', async () => {
+    withSession();
+    const e = await runShare('hi', 'public', T0, planning, undefined, {
+      flag: 'document',
+      paths: [file('deck.pdf')],
+    });
+    if (e.ok) throw new Error('expected refusal');
+    expect(e.error.message).toContain('title');
+  });
+
+  test('a document plan shows its title', async () => {
+    withSession();
+    const e = await runShare('hi', 'public', T0, planning, undefined, {
+      flag: 'document',
+      paths: [file('deck.pdf')],
+      title: 'Q3 review',
+    });
+    if (!e.ok) throw new Error(e.error.message);
+    expect(JSON.stringify(e.data)).toContain('Q3 review');
+  });
+
+  test('one document per post', async () => {
+    withSession();
+    const e = await runShare('hi', 'public', T0, planning, undefined, {
+      flag: 'document',
+      paths: [file('a.pdf'), file('b.pdf')],
+      title: 't',
+    });
+    if (e.ok) throw new Error('expected refusal');
+    expect(e.error.code).toBe('INVALID_INPUT');
+  });
+
+  test('a pdf passed as --image is refused, naming --document', async () => {
+    withSession();
+    const e = await runShare('hi', 'public', T0, planning, undefined, {
+      flag: 'image',
+      paths: [file('deck.pdf')],
+    });
+    if (e.ok) throw new Error('expected refusal');
+    expect(e.error.hint).toContain('--document');
   });
 });

@@ -21,7 +21,7 @@ import {
   react as sduiReact,
 } from '../engine/sdui-write.ts';
 import { loadSession } from '../engine/session.ts';
-import { mediaKindOf } from '../engine/voyager-media.ts';
+import { type MediaKind, mediaKindOf } from '../engine/voyager-media.ts';
 import { replyToComment } from '../engine/voyager-reply.ts';
 import { type ApprovedMedia, mediaDigest, share as voyagerShare } from '../engine/voyager-write.ts';
 import { err, ok } from '../output.ts';
@@ -89,33 +89,67 @@ async function gate<T>(
 /** Read and identify a media file, or say why it cannot be posted. */
 /** What the CLI asked to attach: `--image` (repeatable) or one `--video`, plus `--alt`s. */
 export interface MediaRequest {
-  flag: 'image' | 'video';
+  flag: 'image' | 'video' | 'document';
   paths: string[];
   /** Index-aligned with `paths`; "" means no alt text for that image. */
   alts?: string[];
+  /** A document's title — LinkedIn will not post a document without one. */
+  title?: string;
 }
 
-/** One line per file for the preview, each followed by its alt text if any. */
+const FLAG_KIND: Record<MediaRequest['flag'], MediaKind> = {
+  image: 'IMAGE',
+  video: 'VIDEO',
+  document: 'DOCUMENT',
+};
+const KIND_FLAG: Record<MediaKind, string> = {
+  IMAGE: '--image',
+  VIDEO: '--video',
+  DOCUMENT: '--document',
+};
+const KIND_WORD: Record<MediaKind, string> = {
+  IMAGE: 'image   ',
+  VIDEO: 'video   ',
+  DOCUMENT: 'document',
+};
+
+/** One line per file for the preview, each followed by its alt text or title. */
 function mediaLines(media: ApprovedMedia[]): string[] {
-  return media.flatMap(({ filename, kind, size, sha256, alt }) => [
-    `${kind === 'IMAGE' ? 'image' : 'video'}    ${filename} (${Math.ceil(size / 1024)} KB, sha256 ${sha256.slice(0, 12)})`,
+  return media.flatMap(({ filename, kind, size, sha256, alt, title }) => [
+    `${KIND_WORD[kind]} ${filename} (${Math.ceil(size / 1024)} KB, sha256 ${sha256.slice(0, 12)})`,
     ...(alt === undefined ? [] : [`  alt    "${alt}"`]),
+    ...(title === undefined ? [] : [`  title  "${title}"`]),
   ]);
 }
 
 /** LinkedIn's own composer limit for a multi-image post. */
 const MAX_IMAGES = 20;
 
-/** Validate the request as a whole, then load every file, or say why not. */
-function loadAllMedia(
-  media: MediaRequest,
-): { approved: ApprovedMedia[]; bytes: Uint8Array[] } | Envelope {
+/** The request as a whole, before any file is read. Null when it is coherent. */
+function mediaRequestError(media: MediaRequest): Envelope | null {
   const alts = media.alts ?? [];
-  if (media.flag === 'video' && media.paths.length > 1) {
-    return err('share', 'INVALID_INPUT', 'a post carries one video', 'pass a single --video');
+  const single = media.flag !== 'image';
+  if (single && media.paths.length > 1) {
+    return err(
+      'share',
+      'INVALID_INPUT',
+      `a post carries one ${media.flag}`,
+      `pass a single --${media.flag}`,
+    );
   }
-  if (media.flag === 'video' && alts.length > 0) {
-    return err('share', 'INVALID_INPUT', '--alt applies to images, not video');
+  if (media.flag !== 'image' && alts.length > 0) {
+    return err('share', 'INVALID_INPUT', `--alt applies to images, not a ${media.flag}`);
+  }
+  if (media.flag === 'document' && (media.title ?? '').trim() === '') {
+    return err(
+      'share',
+      'INVALID_INPUT',
+      'a document needs a title',
+      'pass --title "<what readers see above the document>"',
+    );
+  }
+  if (media.flag !== 'document' && media.title !== undefined) {
+    return err('share', 'INVALID_INPUT', '--title applies to a --document');
   }
   if (media.paths.length > MAX_IMAGES) {
     return err('share', 'INVALID_INPUT', `a post carries at most ${MAX_IMAGES} images`);
@@ -128,59 +162,171 @@ function loadAllMedia(
       'give one --alt per --image, in the same order; pass --alt "" for an image without one',
     );
   }
+  return null;
+}
 
+/** Validate the request as a whole, then load every file, or say why not. */
+function loadAllMedia(
+  media: MediaRequest,
+): { approved: ApprovedMedia[]; bytes: Uint8Array[] } | Envelope {
+  const refused = mediaRequestError(media);
+  if (refused !== null) return refused;
+
+  const alts = media.alts ?? [];
   const approved: ApprovedMedia[] = [];
   const bytes: Uint8Array[] = [];
   for (const [i, path] of media.paths.entries()) {
-    const one = loadMedia({ flag: media.flag, path });
+    const one = loadMedia(media.flag, path);
     if ('ok' in one) return one;
     const alt = alts[i];
-    approved.push(alt === undefined || alt === '' ? one.approved : { ...one.approved, alt });
+    let a = alt === undefined || alt === '' ? one.approved : { ...one.approved, alt };
+    if (media.flag === 'document') a = { ...a, title: (media.title ?? '').trim() };
+    approved.push(a);
     bytes.push(one.bytes);
   }
   return { approved, bytes };
 }
 
-function loadMedia(media: {
-  flag: 'image' | 'video';
-  path: string;
-}): { approved: ApprovedMedia; bytes: Uint8Array } | Envelope {
-  const kind = mediaKindOf(media.path);
+function loadMedia(
+  flag: MediaRequest['flag'],
+  path: string,
+): { approved: ApprovedMedia; bytes: Uint8Array } | Envelope {
+  const kind = mediaKindOf(path);
   if (kind === null) {
     return err(
       'share',
       'INVALID_INPUT',
-      `unsupported file type: ${basename(media.path)}`,
-      'images: png, jpg, jpeg, gif, webp. videos: mp4, mov.',
+      `unsupported file type: ${basename(path)}`,
+      'images: png, jpg, jpeg, gif, webp. videos: mp4, mov. documents: pdf.',
     );
   }
-  const expected = media.flag === 'image' ? 'IMAGE' : 'VIDEO';
-  if (kind.kind !== expected) {
-    const right = kind.kind === 'IMAGE' ? '--image' : '--video';
+  if (kind.kind !== FLAG_KIND[flag]) {
     return err(
       'share',
       'INVALID_INPUT',
-      `${basename(media.path)} is not a${media.flag === 'image' ? 'n image' : ' video'}`,
-      `pass it with ${right}`,
+      `${basename(path)} is not ${flag === 'image' ? 'an image' : `a ${flag}`}`,
+      `pass it with ${KIND_FLAG[kind.kind]}`,
     );
   }
   let bytes: Uint8Array;
   try {
-    if (!statSync(media.path).isFile()) throw new Error('not a file');
-    bytes = new Uint8Array(readFileSync(media.path));
+    if (!statSync(path).isFile()) throw new Error('not a file');
+    bytes = new Uint8Array(readFileSync(path));
   } catch {
-    return err('share', 'INVALID_INPUT', `cannot read ${media.path}`);
+    return err('share', 'INVALID_INPUT', `cannot read ${path}`);
   }
   return {
     bytes,
     approved: {
-      filename: basename(media.path),
+      filename: basename(path),
       kind: kind.kind,
       contentType: kind.contentType,
       size: bytes.byteLength,
       sha256: mediaDigest(bytes),
     },
   };
+}
+
+/**
+ * A schedule time, as epoch ms, or null. Accepts ISO 8601 with an offset or Z,
+ * taken exactly, or "YYYY-MM-DD HH:MM" in the machine's local time. Anything
+ * else is refused rather than guessed: a misread time publishes at the wrong
+ * moment, which cannot be taken back.
+ */
+export function parseScheduleTime(input: string): number | null {
+  const iso = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(:\d{2}(\.\d+)?)?(Z|[+-]\d{2}:\d{2})$/;
+  if (iso.test(input)) {
+    const t = Date.parse(input);
+    return Number.isNaN(t) ? null : t;
+  }
+  const local = /^(\d{4})-(\d{2})-(\d{2})[ T](\d{2}):(\d{2})$/.exec(input);
+  if (local === null) return null;
+  const [y, mo, d, h, mi] = local.slice(1).map(Number) as [number, number, number, number, number];
+  const date = new Date(y, mo - 1, d, h, mi);
+  // Date rolls 2026-13-40 over into a real date; refuse instead of moving it.
+  const same =
+    date.getFullYear() === y &&
+    date.getMonth() === mo - 1 &&
+    date.getDate() === d &&
+    date.getHours() === h &&
+    date.getMinutes() === mi;
+  return same ? date.getTime() : null;
+}
+
+/** Uploads plus pacing take minutes; a closer time could pass before the post lands. */
+const MIN_LEAD_MS = 10 * 60_000;
+
+/** The loaded files, undefined when none were asked for, or the refusal. */
+function mediaFrom(
+  media: MediaRequest | undefined,
+  via: 'oauth' | 'voyager' | undefined,
+): { approved: ApprovedMedia[]; bytes: Uint8Array[] } | undefined | Envelope {
+  if (media === undefined || media.paths.length === 0) return undefined;
+  const loaded = loadAllMedia(media);
+  if ('ok' in loaded) return loaded;
+  // Media upload exists only over Voyager. An explicit --via oauth is refused
+  // rather than rerouted: switching transport silently is what the design bans.
+  if (via === 'oauth') {
+    return err(
+      'share',
+      'NOT_IMPLEMENTED',
+      'posting media is only implemented over the private API',
+      'drop --via oauth, or pass --via voyager',
+    );
+  }
+  return loaded;
+}
+
+/** `--at` as epoch ms, undefined when absent, or the refusal. */
+function scheduleFrom(
+  at: string | undefined,
+  now: number,
+  via: 'oauth' | 'voyager' | undefined,
+): number | undefined | Envelope {
+  if (at === undefined) return undefined;
+  const t = parseScheduleTime(at);
+  if (t === null) {
+    return err(
+      'share',
+      'INVALID_INPUT',
+      `cannot read --at '${at}'`,
+      'use "YYYY-MM-DD HH:MM" (local time) or ISO 8601 with an offset, e.g. 2026-10-20T14:00+02:00',
+    );
+  }
+  if (t < now + MIN_LEAD_MS) {
+    return err(
+      'share',
+      'INVALID_INPUT',
+      '--at must be at least 10 minutes from now',
+      'to post right away, leave --at out',
+    );
+  }
+  if (via === 'oauth') {
+    return err(
+      'share',
+      'NOT_IMPLEMENTED',
+      'scheduling is only implemented over the private API',
+      'drop --via oauth, or pass --via voyager',
+    );
+  }
+  return t;
+}
+
+/** "Tue, Oct 20, 2026, 14:00 (Europe/Budapest) — in 7 days" */
+function whenLine(at: number, now: number): string {
+  const zone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  const local = new Date(at).toLocaleString('en-US', {
+    weekday: 'short',
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false,
+  });
+  const hours = Math.round((at - now) / 3_600_000);
+  const away = hours < 48 ? `in ${hours} h` : `in ${Math.round(hours / 24)} days`;
+  return `when     ${local} (${zone}) — ${away}`;
 }
 
 export async function runShare(
@@ -190,49 +336,55 @@ export async function runShare(
   deps: ConfirmDeps = terminalDeps(),
   via?: 'oauth' | 'voyager',
   media?: MediaRequest,
+  at?: string,
 ): Promise<Envelope> {
   if (text === undefined || text.trim() === '') {
     return err('share', 'INVALID_INPUT', 'text is required', 'lnrelay share "<text>"');
   }
   const vis = visibility === 'connections' ? 'CONNECTIONS' : 'PUBLIC';
 
-  const loaded = media === undefined || media.paths.length === 0 ? undefined : loadAllMedia(media);
+  const scheduled = scheduleFrom(at, now, via);
+  if (typeof scheduled === 'object') return scheduled;
+  const scheduledAt = scheduled;
+
+  const loaded = mediaFrom(media, via);
   if (loaded !== undefined && 'ok' in loaded) return loaded;
-  // Media upload exists only over Voyager. An explicit --via oauth is refused
-  // rather than rerouted: switching transport silently is what the design bans.
-  if (loaded !== undefined && via === 'oauth') {
-    return err(
-      'share',
-      'NOT_IMPLEMENTED',
-      'posting media is only implemented over the private API',
-      'drop --via oauth, or pass --via voyager',
-    );
-  }
 
   // Register + upload per file, then the post: all must fit, or uploads are orphans.
-  const ctx =
-    loaded === undefined
-      ? prepare('share', now, via)
-      : prepare('share', now, 'voyager', 2 * loaded.approved.length + 1);
+  // Media and scheduling exist only over Voyager, so either one pins it.
+  const voyagerOnly = loaded !== undefined || scheduledAt !== undefined;
+  const ctx = prepare(
+    'share',
+    now,
+    voyagerOnly ? 'voyager' : via,
+    2 * (loaded?.approved.length ?? 0) + 1,
+  );
   if ('ok' in ctx) return ctx;
 
-  const payload: { text: string; visibility: 'PUBLIC' | 'CONNECTIONS'; media?: ApprovedMedia[] } = {
-    text,
-    visibility: vis,
-  };
+  const payload: {
+    text: string;
+    visibility: 'PUBLIC' | 'CONNECTIONS';
+    media?: ApprovedMedia[];
+    scheduledAt?: number;
+  } = { text, visibility: vis };
+  if (scheduledAt !== undefined) payload.scheduledAt = scheduledAt;
   const summary = [authorLine(ctx.transport), `content  "${text}"`, `audience ${vis}`];
+  if (scheduledAt !== undefined) summary.push(whenLine(scheduledAt, now));
   if (loaded !== undefined) {
     payload.media = loaded.approved;
     summary.push(...mediaLines(loaded.approved));
   }
 
   const plan: WritePlan<typeof payload> = {
-    action: 'post to your feed',
+    action: scheduledAt === undefined ? 'post to your feed' : 'schedule a post',
     payload,
     summary,
     reversibility:
-      'deletable with `lnrelay delete <urn>`, but it is public under your name the moment it ' +
-      'lands and anyone who saw it cannot un-see it',
+      scheduledAt === undefined
+        ? 'deletable with `lnrelay delete <urn>`, but it is public under your name the moment it ' +
+          'lands and anyone who saw it cannot un-see it'
+        : 'cancel any time before it publishes with `lnrelay delete <urn>`; after that it is ' +
+          'public under your name like any post',
     transport: ctx.transport.kind,
   };
 
@@ -251,6 +403,7 @@ export async function runShare(
   return ok('share', {
     id: result.id ?? null,
     transport: ctx.transport.kind,
+    scheduledFor: scheduledAt === undefined ? undefined : new Date(scheduledAt).toISOString(),
     url: 'url' in result ? result.url : undefined,
     note: 'note' in result ? result.note : ctx.note,
   });

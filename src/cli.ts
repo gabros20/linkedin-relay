@@ -266,28 +266,36 @@ function share(args: ParsedArgs, now: number, deps: ConfirmDeps): Promise<Envelo
     );
   }
   // A bare `--image` parses as `true`; ignoring it would publish the text
-  // without the picture the user asked for.
-  for (const flag of ['image', 'video', 'alt']) {
+  // without the picture the user asked for. The same goes for every value flag.
+  for (const flag of ['image', 'video', 'document', 'alt', 'title', 'at']) {
     if (args.flags[flag] === true) {
-      return err('share', 'INVALID_INPUT', `--${flag} needs a file path`);
+      return err('share', 'INVALID_INPUT', `--${flag} needs a value`);
     }
   }
-  const images = list(args, 'image');
-  const videos = list(args, 'video');
-  if (images.length > 0 && videos.length > 0) {
+  const kinds = (['image', 'video', 'document'] as const)
+    .map((flag) => ({ flag, paths: list(args, flag) }))
+    .filter((k) => k.paths.length > 0);
+  if (kinds.length > 1) {
     return err(
       'share',
       'INVALID_INPUT',
-      'a post carries images or a video, not both',
-      'pass --image <path> (repeatable) or a single --video <path>',
+      `a post carries ${kinds.map((k) => `${k.flag}s`).join(' or ')}, not both`,
+      'pass --image <path> (repeatable), or a single --video <path>, or a single --document <path>',
     );
   }
   const alts = list(args, 'alt');
+  const title = str(args, 'title');
+  const chosen = kinds[0];
   let media: MediaRequest | undefined;
-  if (images.length > 0) media = { flag: 'image', paths: images, alts };
-  else if (videos.length > 0) media = { flag: 'video', paths: videos, alts };
-  else if (alts.length > 0) {
-    return err('share', 'INVALID_INPUT', '--alt describes an --image, and none was given');
+  if (chosen !== undefined) {
+    media = { flag: chosen.flag, paths: chosen.paths, alts };
+    if (title !== undefined) media.title = title;
+  } else if (alts.length > 0 || title !== undefined) {
+    return err(
+      'share',
+      'INVALID_INPUT',
+      '--alt and --title describe an attached file, and none was given',
+    );
   }
   return runShare(
     args.positionals[0],
@@ -296,5 +304,6 @@ function share(args: ParsedArgs, now: number, deps: ConfirmDeps): Promise<Envelo
     deps,
     surface,
     media,
+    str(args, 'at'),
   );
 }

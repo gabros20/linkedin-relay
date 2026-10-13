@@ -35,6 +35,10 @@ describe('media kind', () => {
     }
   });
 
+  test('a pdf is a DOCUMENT', () => {
+    expect(mediaKindOf('deck.PDF')).toEqual({ kind: 'DOCUMENT', contentType: 'application/pdf' });
+  });
+
   test('mp4 and mov are VIDEO', () => {
     expect(mediaKindOf('clip.mp4')?.kind).toBe('VIDEO');
     expect(mediaKindOf('clip.MOV')?.kind).toBe('VIDEO');
@@ -60,6 +64,11 @@ describe('register payload', () => {
       fileSize: 193662,
       filename: 'oversight.png',
     });
+  });
+
+  // Verified live 2026-09-25: the ticket comes back as PAGINATEDDOCUMENT.
+  test('a document registers for DOCUMENT_SHARING', () => {
+    expect(registerPayload('DOCUMENT', 10, 'x.pdf').mediaUploadType).toBe('DOCUMENT_SHARING');
   });
 
   test('a video registers for VIDEO_SHARING', () => {

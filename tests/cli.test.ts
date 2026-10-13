@@ -165,6 +165,35 @@ describe('flag wiring', () => {
     expect(e.error.message).toContain('not both');
   });
 
+  test('share refuses a document together with an image', async () => {
+    const e = await dispatch(['share', 'hi', '--document', 'a.pdf', '--image', 'b.png'], T0);
+    if (e.ok) throw new Error('expected refusal');
+    expect(e.error.code).toBe('INVALID_INPUT');
+  });
+
+  test('a bare --at or --title is refused', async () => {
+    for (const flag of ['--at', '--title']) {
+      const e = await dispatch(['share', 'hi', flag], T0);
+      if (e.ok) throw new Error(`expected refusal for ${flag}`);
+      expect(e.error.code).toBe('INVALID_INPUT');
+    }
+  });
+
+  test('--at reaches the runner', async () => {
+    const e = await dispatch(['share', 'hi', '--at', 'whenever'], T0);
+    if (e.ok) throw new Error('expected refusal');
+    expect(e.error.message).toContain('whenever');
+  });
+
+  test('--document reaches the runner', async () => {
+    const e = await dispatch(
+      ['share', 'hi', '--document', join(dir, 'gone.pdf'), '--title', 't'],
+      T0,
+    );
+    if (e.ok) throw new Error('expected refusal');
+    expect(e.error.message).toContain('gone.pdf');
+  });
+
   test('--image reaches the runner', async () => {
     const e = await dispatch(['share', 'hi', '--image', join(dir, 'missing.png')], T0);
     if (e.ok) throw new Error('expected refusal');

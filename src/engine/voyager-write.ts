@@ -66,7 +66,16 @@ export interface SharePayload {
   allowedCommentersScope: string;
   postState: string;
   media: unknown[];
+  /** Epoch ms. Present only on a scheduled post. */
+  scheduledAt?: number;
 }
+
+/** The share-media `category` for each upload kind. A document is not "DOCUMENT". */
+const CATEGORY: Record<MediaKind, string> = {
+  IMAGE: 'IMAGE',
+  VIDEO: 'VIDEO',
+  DOCUMENT: 'NATIVE_DOCUMENT',
+};
 
 /**
  * The create-post body.
@@ -79,21 +88,28 @@ export interface SharePayload {
 export function sharePayload(
   text: string,
   visibility: 'PUBLIC' | 'CONNECTIONS',
-  media: { category: MediaKind; urn: string; alt?: string }[] = [],
+  media: { category: MediaKind; urn: string; alt?: string; title?: string }[] = [],
+  scheduledAt?: number,
 ): SharePayload {
+  // LinkedIn publishes a SCHEDULED post itself at scheduledAt (verified 2026-10-13).
+  const schedule =
+    scheduledAt === undefined
+      ? { postState: 'PUBLISHED' }
+      : { postState: 'SCHEDULED', scheduledAt };
   return {
     visibleToConnectionsOnly: visibility === 'CONNECTIONS',
     externalAudienceProviders: [],
     commentaryV2: { text, attributes: [] },
     origin: 'FEED',
     allowedCommentersScope: 'ALL',
-    postState: 'PUBLISHED',
+    ...schedule,
     // altText only when given, so a post without it keeps the body verified in 2026-08.
     media: media.map((m) => ({
-      category: m.category,
+      category: CATEGORY[m.category],
       mediaUrn: m.urn,
       tapTargets: [],
       ...(m.alt === undefined ? {} : { altText: m.alt }),
+      ...(m.title === undefined ? {} : { title: { text: m.title } }),
     })),
   };
 }
@@ -107,6 +123,8 @@ export interface ApprovedMedia {
   sha256: string;
   /** Alt text for screen readers; images only. */
   alt?: string;
+  /** A document's title, which LinkedIn requires; documents only. */
+  title?: string;
 }
 
 export function mediaDigest(bytes: Uint8Array): string {
@@ -196,6 +214,8 @@ export async function share(
     text: string;
     visibility: 'PUBLIC' | 'CONNECTIONS';
     media?: ApprovedMedia[];
+    /** Epoch ms; makes this a scheduled post. */
+    scheduledAt?: number;
   }>,
   client: Client,
   bytes?: Uint8Array[],
@@ -217,7 +237,7 @@ export async function share(
     }
   }
 
-  const media: { category: MediaKind; urn: string; alt?: string }[] = [];
+  const media: { category: MediaKind; urn: string; alt?: string; title?: string }[] = [];
   for (const [i, a] of approved.entries()) {
     const uploaded = await uploadMedia(
       {
@@ -233,10 +253,16 @@ export async function share(
       category: a.kind,
       urn: uploaded.urn,
       ...(a.alt === undefined ? {} : { alt: a.alt }),
+      ...(a.title === undefined ? {} : { title: a.title }),
     });
   }
 
-  const body = sharePayload(confirmed.payload.text, confirmed.payload.visibility, media);
+  const body = sharePayload(
+    confirmed.payload.text,
+    confirmed.payload.visibility,
+    media,
+    confirmed.payload.scheduledAt,
+  );
 
   const result = await client.request({
     url: SHARE_URL,
