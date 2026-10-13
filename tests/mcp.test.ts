@@ -36,6 +36,13 @@ describe('the MCP surface is read-only by construction', () => {
     }
   });
 
+  // The other direction: a read the registry offers over MCP but the shim
+  // forgot to register is a tool the skill promises and the agent cannot call.
+  test('every MCP command in the registry is registered', () => {
+    const tools = registeredTools().map((t) => t.replace(/_/g, '-'));
+    expect(mcpCommands().filter((c) => c.implemented && !tools.includes(c.name))).toEqual([]);
+  });
+
   test('purge is not exposed — deletion is not an agent affordance', () => {
     expect(registeredTools()).not.toContain('purge');
   });

@@ -3,6 +3,7 @@
 
 import { readFileSync, statSync } from 'node:fs';
 import { basename } from 'node:path';
+import type { Session } from '../engine/auth.ts';
 import { buildHeaders } from '../engine/auth.ts';
 import { createLiveClient } from '../engine/index.ts';
 import { share as sendShare } from '../engine/oauth-write.ts';
@@ -26,6 +27,9 @@ import { replyToComment } from '../engine/voyager-reply.ts';
 import {
   type ApprovedMedia,
   editPost,
+  fetchLinkCard,
+  firstUrl,
+  type LinkCard,
   mediaDigest,
   type PollSpec,
   pollDuration,
@@ -291,6 +295,7 @@ export interface SharePayloadIn {
   media?: ApprovedMedia[];
   scheduledAt?: number;
   poll?: PollSpec;
+  card?: LinkCard;
 }
 
 /** The approved payload and what the owner is shown about it. */
@@ -302,12 +307,15 @@ function sharePlan(p: {
   media: ApprovedMedia[] | undefined;
   scheduledAt: number | undefined;
   poll: PollSpec | undefined;
+  /** Absent: no link, or no card asked for. `null`: asked, and LinkedIn has none. */
+  card?: LinkCard | null;
   now: number;
 }): WritePlan<SharePayloadIn> {
   const payload: SharePayloadIn = { text: p.text, visibility: p.visibility };
   if (p.media !== undefined) payload.media = p.media;
   if (p.scheduledAt !== undefined) payload.scheduledAt = p.scheduledAt;
   if (p.poll !== undefined) payload.poll = p.poll;
+  if (p.card !== undefined && p.card !== null) payload.card = p.card;
 
   const scheduled = p.scheduledAt !== undefined;
   return {
@@ -320,6 +328,7 @@ function sharePlan(p: {
       ...(p.scheduledAt === undefined ? [] : [whenLine(p.scheduledAt, p.now)]),
       ...(p.poll === undefined ? [] : pollLines(p.poll)),
       ...(p.media === undefined ? [] : mediaLines(p.media)),
+      ...cardLines(p.card),
     ],
     reversibility: scheduled
       ? 'cancel any time before it publishes with `lnrelay delete <urn>`; after that it is ' +
@@ -328,6 +337,60 @@ function sharePlan(p: {
         'lands and anyone who saw it cannot un-see it',
     transport: p.transport,
   };
+}
+
+function cardLines(card: LinkCard | null | undefined): string[] {
+  if (card === undefined) return [];
+  if (card === null) return ['card     none — LinkedIn has no preview for this link'];
+  return [`card     "${card.title}" (${card.source})`];
+}
+
+/** How a link in the text is handled. `lookup` is injectable for tests. */
+export interface LinkOptions {
+  /** false: post the link as text (`--no-card`). */
+  card?: boolean;
+  lookup?: (url: string, session: Session) => ReturnType<typeof fetchLinkCard>;
+}
+
+const liveCardLookup: NonNullable<LinkOptions['lookup']> = (url, session) =>
+  fetchLinkCard(url, createLiveClient(session));
+
+/**
+ * What a share costs and whether it must go over Voyager. Register + upload per
+ * file, then the post: all must fit, or uploads are orphans. Media, scheduling,
+ * polls and cards exist only over Voyager, so any one pins it.
+ */
+function shareNeeds(
+  files: number | undefined,
+  scheduledAt: number | undefined,
+  poll: PollSpec | undefined,
+  cardUrl: string | null,
+): { voyagerOnly: boolean; calls: number } {
+  const extra = (poll === undefined ? 0 : 1) + (cardUrl === null ? 0 : 1);
+  return {
+    voyagerOnly: files !== undefined || scheduledAt !== undefined || extra > 0,
+    calls: 2 * (files ?? 0) + extra + 1,
+  };
+}
+
+/**
+ * The card for a link: undefined when none was asked for, null when LinkedIn
+ * has none, or why it could not be asked.
+ */
+async function cardFor(
+  url: string | null,
+  transport: { kind: 'oauth' } | { kind: 'voyager'; session: Session },
+  link: LinkOptions,
+): Promise<LinkCard | null | undefined | Envelope> {
+  if (url === null || transport.kind !== 'voyager') return undefined;
+  const found = await (link.lookup ?? liveCardLookup)(url, transport.session);
+  if (found.ok) return found.card;
+  return err(
+    'share',
+    found.code,
+    `could not look up the card for ${url}: ${found.message}; nothing was posted`,
+    'Re-run later, or add --no-card to post the link as plain text.',
+  );
 }
 
 /** What the CLI asked for, before validation: `--poll`, `--option`s, `--duration`. */
@@ -443,6 +506,7 @@ export async function runShare(
   media?: MediaRequest,
   at?: string,
   poll?: PollRequest,
+  link: LinkOptions = {},
 ): Promise<Envelope> {
   if (text === undefined || text.trim() === '') {
     return err('share', 'INVALID_INPUT', 'text is required', 'lnrelay share "<text>"');
@@ -462,16 +526,19 @@ export async function runShare(
   });
   if (pollSpec !== undefined && 'ok' in pollSpec) return pollSpec;
 
-  // Register + upload per file, then the post: all must fit, or uploads are orphans.
-  // Media and scheduling exist only over Voyager, so either one pins it.
-  const voyagerOnly = loaded !== undefined || scheduledAt !== undefined || pollSpec !== undefined;
-  const ctx = prepare(
-    'share',
-    now,
-    voyagerOnly ? 'voyager' : via,
-    2 * (loaded?.approved.length ?? 0) + (pollSpec === undefined ? 0 : 1) + 1,
-  );
+  // A link gets the card the composer would show, unless the post already
+  // carries media or a poll (one kind per post), or the owner chose OAuth.
+  const cardUrl =
+    link.card !== false && loaded === undefined && pollSpec === undefined && via !== 'oauth'
+      ? firstUrl(text)
+      : null;
+
+  const needs = shareNeeds(loaded?.approved.length, scheduledAt, pollSpec, cardUrl);
+  const ctx = prepare('share', now, needs.voyagerOnly ? 'voyager' : via, needs.calls);
   if ('ok' in ctx) return ctx;
+
+  const card = await cardFor(cardUrl, ctx.transport, link);
+  if (card !== undefined && card !== null && 'ok' in card) return card;
 
   const plan = sharePlan({
     author: authorLine(ctx.transport),
@@ -481,6 +548,7 @@ export async function runShare(
     media: loaded?.approved,
     scheduledAt,
     poll: pollSpec,
+    ...(card === undefined ? {} : { card: card as LinkCard | null }),
     now,
   });
 

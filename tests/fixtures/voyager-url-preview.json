@@ -1,0 +1,58 @@
+{
+  "data": {
+    "data": {
+      "contentcreationDashUpdateUrlPreviewByUrl": {
+        "$recipeTypes": ["com.linkedin.d636fdc829b68c8fc3d44362ee851130"],
+        "elements": [
+          {
+            "originalUrl": null,
+            "$recipeTypes": ["com.linkedin.1ca1aac636ff0924e7957269b9f149aa"],
+            "*update": "urn:li:fsd_update:(urn:li:article:9125309686166588983,URL_PREVIEW,EMPTY,DEFAULT,false)",
+            "$type": "com.linkedin.voyager.dash.contentcreation.UpdateUrlPreview"
+          }
+        ],
+        "$type": "com.linkedin.restli.common.CollectionResponse"
+      },
+      "$recipeTypes": ["com.linkedin.051f5854a8924c55c5d53c5af0e5f274"],
+      "$type": "com.linkedin.051f5854a8924c55c5d53c5af0e5f274"
+    },
+    "extensions": {
+      "webMetadata": {}
+    }
+  },
+  "included": [
+    {
+      "$type": "com.linkedin.voyager.dash.feed.Update",
+      "entityUrn": "urn:li:fsd_update:(urn:li:article:9125309686166588983,URL_PREVIEW,EMPTY,DEFAULT,false)",
+      "metadata": {
+        "shareMediaUrn": "urn:li:article:9125309686166588983",
+        "backendUrn": "urn:li:article:9125309686166588983",
+        "$type": "com.linkedin.voyager.dash.feed.metadata.UpdateMetadata"
+      },
+      "content": {
+        "articleComponent": {
+          "type": "EXTERNAL_FULL",
+          "articleUrn": "urn:li:article:9125309686166588983",
+          "title": {
+            "text": "Introducing Claude 3.5 Sonnet",
+            "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+          },
+          "subtitle": {
+            "text": "anthropic.com",
+            "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+          },
+          "smallImage": "<redacted: signed image urls>",
+          "navigationContext": {
+            "actionTarget": "https://www.anthropic.com/news/claude-3-5-sonnet",
+            "$type": "com.linkedin.voyager.dash.feed.navigation.FeedNavigationContext"
+          },
+          "$type": "com.linkedin.voyager.dash.feed.component.article.ArticleComponent"
+        }
+      }
+    },
+    {
+      "$type": "com.linkedin.voyager.dash.feed.controlmenu.UpdateActions",
+      "entityUrn": "urn:li:fsd_updateActions:(urn:li:article:9125309686166588983,URL_PREVIEW,EMPTY,urn:li:reason:-,urn:li:adCreative:-)"
+    }
+  ]
+}

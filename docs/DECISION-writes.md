@@ -213,6 +213,27 @@ read "Edited", the new text, the poll intact with "1d left"), then deleted:
   poll read "1w left" a week before it would publish — its clock appears to start at creation — so
   scheduling a poll is refused until that is measured.
 
+### ✅ Link cards, and the scheduled queue — captured 2026-10-13
+
+Captured from the web composer (link pasted, post scheduled a week out, scheduled list opened), then
+re-verified over our own client on scheduled probes; all three were cancelled, nothing published:
+
+- **A URL in the text is only text.** A `normShares` post without media rendered the link bare in
+  the scheduled list — no card. The composer resolves the URL first (SDUI `feedUpdateByUrl`, then an
+  ingestion poll) into `urn:li:article:<id>` and sends it as `mediaUrnString`.
+- **The lookup** is the Voyager GraphQL read `voyagerContentcreationDashUpdateUrlPreview` (queryId
+  from mguttmann/linkedin-internal-api), `variables=(url:<encoded>)`. It returned the same article
+  urn the composer used, with the title and site in `included[].content.articleComponent`. An empty
+  `elements` means LinkedIn has no preview for the link.
+- **The card** rides `normShares` as `media: [{ category: ARTICLE, mediaUrn: <article urn> }]`;
+  the scheduled list then showed the card under the text.
+- **The queue.** Voyager cannot read a scheduled post (`GET normShares/<urn>` → 400) and `my-posts`
+  lists only published ones. The list is SDUI: POST `rsc-action/actions/pagination` with pager
+  `com.linkedin.sdui.pagers.sharing.scheduledPosts` and `{ start, count, shareLifeCycleState:
+  SCHEDULED }`. Each row carries `feedUpdateUrn` + `scheduledAtEpochMillis`, then the full text
+  (links as lnkd.in), in schedule order. `ShareBoxscheduledPostCount` is LinkedIn's own total — the
+  only way to tell an empty queue from a page we no longer understand, so its absence is drift.
+
 Not built: `MULTIPART` tickets (large files get several part URLs and a completion call that has not
 been observed). `parseUploadTicket` refuses them before anything is uploaded.
 

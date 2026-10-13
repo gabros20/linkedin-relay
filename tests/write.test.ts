@@ -615,3 +615,124 @@ describe('polls', () => {
     expect(e.error.code).toBe('INVALID_INPUT');
   });
 });
+
+describe('link cards', () => {
+  const planning = { ...noTty, approval: { mode: 'agent' as const, planOnly: true } };
+  const CARD = { urn: 'urn:li:article:1', title: 'Introducing X', source: 'x.example' };
+  const plan = async (
+    text: string,
+    link: Parameters<typeof runShare>[8],
+    extra?: {
+      via?: 'oauth' | 'voyager';
+      poll?: Parameters<typeof runShare>[7];
+    },
+  ) => {
+    const e = await runShare(
+      text,
+      'public',
+      T0,
+      planning,
+      extra?.via,
+      undefined,
+      undefined,
+      extra?.poll,
+      link,
+    );
+    if (!e.ok) throw new Error(e.error.message);
+    return e.data as { preview: string[]; token: string };
+  };
+
+  test('a link in the text gets the card LinkedIn would show, and the plan names it', async () => {
+    withSession();
+    const asked: string[] = [];
+    const d = await plan('read https://x.example/a.', {
+      lookup: async (url) => {
+        asked.push(url);
+        return { ok: true, card: CARD };
+      },
+    });
+    expect(asked).toEqual(['https://x.example/a']);
+    expect(d.preview.join('\n')).toContain('card     "Introducing X" (x.example)');
+  });
+
+  // The card is part of what is approved: a different article is a different post.
+  test('the card is bound into the approval token', async () => {
+    withSession();
+    const a = await plan('read https://x.example', {
+      lookup: async () => ({ ok: true, card: CARD }),
+    });
+    const b = await plan('read https://x.example', {
+      lookup: async () => ({ ok: true, card: { ...CARD, urn: 'urn:li:article:2' } }),
+    });
+    expect(a.token).not.toBe(b.token);
+  });
+
+  test('--no-card posts the link as text and asks LinkedIn nothing', async () => {
+    withSession();
+    let asked = false;
+    const d = await plan('read https://x.example', {
+      card: false,
+      lookup: async () => {
+        asked = true;
+        return { ok: true, card: CARD };
+      },
+    });
+    expect(asked).toBe(false);
+    expect(d.preview.join('\n')).not.toContain('card ');
+  });
+
+  test('text without a link asks nothing', async () => {
+    withSession();
+    let asked = false;
+    await plan('no link', {
+      lookup: async () => {
+        asked = true;
+        return { ok: true, card: null };
+      },
+    });
+    expect(asked).toBe(false);
+  });
+
+  test('a link LinkedIn cannot preview is said so, and posts without a card', async () => {
+    withSession();
+    const d = await plan('read https://x.example', {
+      lookup: async () => ({ ok: true, card: null }),
+    });
+    expect(d.preview.join('\n')).toContain('card     none');
+  });
+
+  // Posting without the card the owner expected is a different post; refuse instead.
+  test('a failed lookup refuses, and says how to post without the card', async () => {
+    withSession();
+    const e = await runShare(
+      'read https://x.example',
+      'public',
+      T0,
+      planning,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      { lookup: async () => ({ ok: false, code: 'FETCH_FAILED', message: 'down' }) },
+    );
+    if (e.ok) throw new Error('expected refusal');
+    expect(e.error.hint).toContain('--no-card');
+  });
+
+  // A post carries one kind of media; the poll wins, as it does in the composer.
+  test('a poll with a link in its text asks for no card', async () => {
+    withSession();
+    let asked = false;
+    await plan(
+      'vote, context: https://x.example',
+      {
+        lookup: async () => {
+          asked = true;
+          return { ok: true, card: CARD };
+        },
+      },
+      { poll: { question: 'Q?', options: ['a', 'b'] } },
+    );
+    expect(asked).toBe(false);
+  });
+});

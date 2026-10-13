@@ -125,6 +125,17 @@ The user's own graph and posts, read from the local cache. **Free — no network
 back empty, the cache has not been filled: tell the user to run `lnrelay sync connections` (or
 `sync my-posts`) rather than reporting that they have none.
 
+### `scheduled` — live, ~1 call per 10 posts. The queue.
+```
+scheduled
+```
+The user's own posts waiting to publish, soonest first: `urn`, `scheduledAt` (ISO), `text`. They are
+**not** in `my-posts` until they go out, so check here before saying nothing is planned. Links in
+`text` show as lnkd.in short links, the way LinkedIn lists them. `text` is null when it could not be
+matched to its post for certain. A scheduled post is cancelled with `lnrelay delete <urn>` and its
+text changed with `lnrelay edit <urn> "<text>"` (both CLI, approved like any write). If `meta.state`
+is not `complete`, the list may be short — say so.
+
 ### `sync` — CLI-only. Fills the cache.
 ```
 lnrelay sync my-posts | lnrelay sync connections [--limit N] [--force]
@@ -187,7 +198,7 @@ Writes are **not on the MCP surface**. They exist only as CLI commands:
 
 | command | does |
 |---|---|
-| `lnrelay share "<text>" [--image <path> ... [--alt "…" ...] \| --video <path> \| --document <pdf> --title "…"] [--at "YYYY-MM-DD HH:MM"] [--poll "…" --option "…" --option "…" [--duration 1w]]` | post to their own feed — up to 20 images, one video, or one PDF; `--at` schedules it and LinkedIn publishes it then |
+| `lnrelay share "<text>" [--image <path> ... [--alt "…" ...] \| --video <path> \| --document <pdf> --title "…"] [--at "YYYY-MM-DD HH:MM"] [--poll "…" --option "…" --option "…" [--duration 1w]] [--no-card]` | post to their own feed — up to 20 images, one video, or one PDF; `--at` schedules it and LinkedIn publishes it then; a link in the text gets its preview card unless `--no-card` |
 | `lnrelay comment <activity-urn> "<text>"` | comment on a post |
 | `lnrelay reply <comment-urn> "<text>"` | reply, nested under that comment |
 | `lnrelay edit <comment-urn \| share-urn \| ugcPost-urn> "<text>"` | change the text of their own comment or post |
@@ -225,6 +236,11 @@ Things worth telling a user who asks:
   needed at all: `docs/DECISION-writes.md`.
 - `--image` / `--video` upload over the private API only; `--via oauth` with media is refused. A
   video post comes back as a `urn:li:ugcPost:` rather than `urn:li:share:`.
+- A link in a post's text gets the preview card LinkedIn's composer would show (the first link only,
+  and not on a post that already carries images, a video, a PDF or a poll). The plan names the card
+  (`card "<title>" (<site>)`), or says LinkedIn has none. If the lookup fails nothing is posted; add
+  `--no-card` to post the link as plain text.
+- Scheduled posts are listed by `scheduled` (MCP and CLI), not by `my-posts`.
 - Editing a post replaces its whole text and LinkedIn marks it edited; pass the urn `share` printed
   (or `shareUrn` from `my-posts`), not the activity urn. An @mention in the old text is not kept.
 - A poll takes 2–4 options and runs 1d/3d/1w/2w; it cannot be scheduled yet.

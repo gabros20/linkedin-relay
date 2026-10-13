@@ -121,6 +121,19 @@ export const CONTRACTS: Record<string, OperationContract> = {
     capturedAt: '2026-10-13',
   },
 
+  // The composer's link lookup: a URL in, the article LinkedIn made of it out
+  // (`urn:li:article:<id>`), which a post then carries as ARTICLE media. queryId
+  // from mguttmann/linkedin-internal-api; same article urn the web composer
+  // attached when captured on the date below.
+  urlPreview: {
+    name: 'urlPreview',
+    transport: 'voyager-graphql',
+    path: `${VOYAGER}/graphql`,
+    queryId: 'voyagerContentcreationDashUpdateUrlPreview.b092c1aea4b6c087ec0d09614b3b3320',
+    provenance: 'verified',
+    capturedAt: '2026-10-13',
+  },
+
   // limit of this projection is UNRESOLVED — do not treat this endpoint as an
   // authoritative "all my posts" until it is settled.
   myPosts: {

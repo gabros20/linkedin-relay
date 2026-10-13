@@ -206,6 +206,37 @@ describe('flag wiring', () => {
     expect(e.error.message).toContain('2 to 4');
   });
 
+  // `--no-card "text"` would otherwise take the text as the flag's value.
+  test('--no-card given a value is refused, not read as the text', async () => {
+    const e = await dispatch(['share', '--no-card', 'see https://x.example'], T0);
+    if (e.ok) throw new Error('expected refusal');
+    expect(e.error.message).toContain('--no-card');
+  });
+
+  test('--no-card reaches the runner: a link plans without a lookup', async () => {
+    writeFileSync(
+      join(dir, 'session.json'),
+      JSON.stringify({
+        liAt: 'a'.repeat(40),
+        jsessionId: '"ajax:1"',
+        userAgent: 'M',
+        capturedAt: 'x',
+      }),
+    );
+    writeFileSync(join(dir, 'config.json'), JSON.stringify({ approval: 'agent' }));
+    const realFetch = globalThis.fetch;
+    globalThis.fetch = (async () => {
+      throw new Error('no network in this test');
+    }) as unknown as typeof fetch;
+    try {
+      const e = await dispatch(['share', 'see https://x.example', '--no-card', '--plan'], T0);
+      if (!e.ok) throw new Error(e.error.message);
+      expect((e.data as { preview: string[] }).preview.join('\n')).not.toContain('card ');
+    } finally {
+      globalThis.fetch = realFetch;
+    }
+  });
+
   test('--image reaches the runner', async () => {
     const e = await dispatch(['share', 'hi', '--image', join(dir, 'missing.png')], T0);
     if (e.ok) throw new Error('expected refusal');

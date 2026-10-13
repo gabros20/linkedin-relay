@@ -1,15 +1,21 @@
 import { describe, expect, test } from 'bun:test';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import type { ConfirmedWrite } from '../src/commands/confirm.ts';
 import {
   editPost,
   editPostBody,
   extractShareUrn,
+  fetchLinkCard,
+  firstUrl,
   mediaDigest,
+  parseUrlPreview,
   pollDuration,
   pollUrnOf,
   SHARE_URL,
   share,
   sharePayload,
+  urlPreviewUrl,
 } from '../src/engine/voyager-write.ts';
 
 /** The gate is what produces these; tests forge one to reach the transport. */
@@ -496,5 +502,83 @@ describe('polls', () => {
     if (r.ok) throw new Error('unreachable');
     expect(r.message).toContain('question too long');
     expect(c.sent).toHaveLength(1);
+  });
+});
+
+// Captured live 2026-10-13: the composer's own link lookup, for the URL below.
+// Signed image urls and tracking were stripped by hand.
+const PREVIEW = JSON.parse(
+  readFileSync(join(import.meta.dir, 'fixtures', 'voyager-url-preview.json'), 'utf-8'),
+);
+const ARTICLE = 'urn:li:article:9125309686166588983';
+
+describe('link cards', () => {
+  test('the first link in the text is the one that gets a card, as in the composer', () => {
+    expect(firstUrl('see https://a.example/x and https://b.example')).toBe('https://a.example/x');
+    expect(firstUrl('no link here')).toBeNull();
+  });
+
+  // Sentence punctuation is not part of the link; sending it changes the URL.
+  test('trailing punctuation is not part of the link', () => {
+    expect(firstUrl('Read this: https://a.example/x.')).toBe('https://a.example/x');
+    expect(firstUrl('(see https://a.example/x)')).toBe('https://a.example/x');
+  });
+
+  test('the lookup is the composer graphql read, with the url encoded', () => {
+    const url = urlPreviewUrl('https://www.anthropic.com/news/claude-3-5-sonnet');
+    expect(url).toContain('queryId=voyagerContentcreationDashUpdateUrlPreview.');
+    expect(url).toContain(
+      'variables=(url:https%3A%2F%2Fwww.anthropic.com%2Fnews%2Fclaude-3-5-sonnet)',
+    );
+  });
+
+  test('reads the article, its title and its source', () => {
+    expect(parseUrlPreview(PREVIEW)).toEqual({
+      ok: true,
+      card: { urn: ARTICLE, title: 'Introducing Claude 3.5 Sonnet', source: 'anthropic.com' },
+    });
+  });
+
+  test('a link LinkedIn has no preview for is no card, not an error', () => {
+    const none = structuredClone(PREVIEW);
+    none.data.data.contentcreationDashUpdateUrlPreviewByUrl.elements = [];
+    expect(parseUrlPreview(none)).toEqual({ ok: true, card: null });
+  });
+
+  test('a response without the preview collection is schema drift', () => {
+    const r = parseUrlPreview({ data: { data: {} } });
+    expect(r.ok).toBe(false);
+  });
+
+  test('graphql errors under a 200 are not read as "no preview"', () => {
+    const r = parseUrlPreview({ data: { errors: [{ message: 'bad' }] } });
+    expect(r.ok).toBe(false);
+  });
+
+  test('fetching is a read, not a write', async () => {
+    const c = client(PREVIEW);
+    const r = await fetchLinkCard('https://www.anthropic.com/news/claude-3-5-sonnet', c as never);
+    expect(r).toMatchObject({ ok: true, card: { urn: ARTICLE } });
+    expect(c.sent[0]?.method ?? 'GET').toBe('GET');
+  });
+
+  // Verified live 2026-10-13 on a scheduled probe: the list showed the card.
+  test('the card is attached as ARTICLE media', () => {
+    const body = sharePayload('t', 'PUBLIC', [{ category: 'ARTICLE', urn: ARTICLE }]);
+    expect(body.media).toEqual([{ category: 'ARTICLE', mediaUrn: ARTICLE, tapTargets: [] }]);
+  });
+
+  test('share sends the approved card with the post', async () => {
+    const c = client({ data: { status: { urn: 'urn:li:share:1' } } });
+    await share(
+      confirmed({
+        text: 'see https://x.example',
+        visibility: 'PUBLIC' as const,
+        card: { urn: ARTICLE, title: 'T', source: 'x.example' },
+      }),
+      c as never,
+    );
+    const body = c.sent[0]?.body as { media: unknown[] };
+    expect(body.media).toEqual([{ category: 'ARTICLE', mediaUrn: ARTICLE, tapTargets: [] }]);
   });
 });

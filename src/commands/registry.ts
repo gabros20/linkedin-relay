@@ -177,6 +177,18 @@ export const COMMANDS: CommandDef[] = [
     implemented: true,
   },
   {
+    name: 'scheduled',
+    cost: '1 call per 10 posts',
+    summary: 'Your posts waiting to publish, with when. Not in `my-posts` until they go out.',
+    usage:
+      'lnrelay scheduled\n' +
+      '       Each row: urn (cancel with `delete`, change with `edit`), scheduledAt, text. Links in\n' +
+      '       the text show as lnkd.in short links, as LinkedIn lists them.',
+    audience: ['cli', 'mcp'],
+    risk: 'read',
+    implemented: true,
+  },
+  {
     name: 'local',
     cost: 'free — local cache',
     summary: 'Offline search across everything synced. The default research path after a sync.',
@@ -247,14 +259,17 @@ export const COMMANDS: CommandDef[] = [
       'lnrelay share "<text>" [--image <path> ... [--alt "<text>" ...] | --video <path>\n' +
       '       | --document <pdf> --title "<title>"] [--at "YYYY-MM-DD HH:MM"]\n' +
       '       [--poll "<question>" --option "<a>" --option "<b>" ... [--duration 1d|3d|1w|2w]]\n' +
-      '       [--visibility public|connections] [--via oauth|voyager] [--plan | --confirm <token>]\n' +
+      '       [--visibility public|connections] [--via oauth|voyager] [--no-card]\n' +
+      '       [--plan | --confirm <token>]\n' +
       '       Approval follows `lnrelay approval`: --plan previews and returns a token without\n' +
       '       sending; --confirm <token> sends it in agent mode. In interactive mode it asks at a\n' +
       '       terminal. --image repeats for up to 20, --alt pairs with it by position (--alt ""\n' +
       '       skips one). --at schedules it (local time, or ISO 8601 with an offset; at least 10\n' +
       '       minutes out); LinkedIn publishes it then, and `lnrelay delete <urn>` cancels it.\n' +
-      '       --poll takes 2-4 --option and cannot be scheduled yet. Files, documents, polls and\n' +
-      '       scheduling go over the private API only.',
+      '       --poll takes 2-4 --option and cannot be scheduled yet. The first link in the text\n' +
+      '       gets the preview card LinkedIn would show (one extra read, named in the preview);\n' +
+      '       --no-card posts it as plain text. Files, documents, polls, cards and scheduling go\n' +
+      '       over the private API only.',
     audience: ['cli'],
     risk: 'write',
     implemented: true,

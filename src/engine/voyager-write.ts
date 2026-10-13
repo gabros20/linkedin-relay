@@ -71,9 +71,13 @@ export interface SharePayload {
   scheduledAt?: number;
 }
 
+/** What a post can carry: an upload, a poll, or a link card. */
+export type ShareMediaCategory = MediaKind | 'POLL' | 'ARTICLE';
+
 /** The share-media `category` for each upload kind. A document is not "DOCUMENT". */
-const CATEGORY: Record<MediaKind | 'POLL', string> = {
+const CATEGORY: Record<ShareMediaCategory, string> = {
   POLL: 'URN_REFERENCE',
+  ARTICLE: 'ARTICLE',
   IMAGE: 'IMAGE',
   VIDEO: 'VIDEO',
   DOCUMENT: 'NATIVE_DOCUMENT',
@@ -90,7 +94,7 @@ const CATEGORY: Record<MediaKind | 'POLL', string> = {
 export function sharePayload(
   text: string,
   visibility: 'PUBLIC' | 'CONNECTIONS',
-  media: { category: MediaKind | 'POLL'; urn: string; alt?: string; title?: string }[] = [],
+  media: { category: ShareMediaCategory; urn: string; alt?: string; title?: string }[] = [],
   scheduledAt?: number,
 ): SharePayload {
   // LinkedIn publishes a SCHEDULED post itself at scheduledAt (verified 2026-10-13).
@@ -219,6 +223,8 @@ export async function share(
     /** Epoch ms; makes this a scheduled post. */
     scheduledAt?: number;
     poll?: PollSpec;
+    /** The link card the owner was shown; the article urn is what is sent. */
+    card?: LinkCard;
   }>,
   client: Client,
   bytes?: Uint8Array[],
@@ -240,7 +246,9 @@ export async function share(
     }
   }
 
-  const media: { category: MediaKind | 'POLL'; urn: string; alt?: string; title?: string }[] = [];
+  const media: { category: ShareMediaCategory; urn: string; alt?: string; title?: string }[] = [];
+  const { card } = confirmed.payload;
+  if (card !== undefined) media.push({ category: 'ARTICLE', urn: card.urn });
 
   // A poll is created first, as its own object, then referenced like media.
   const { poll } = confirmed.payload;
@@ -424,4 +432,102 @@ async function createPoll(
     };
   }
   return { ok: true, urn };
+}
+
+// ─── Link cards ───────────────────────────────────────────────────────────────
+//
+// A URL in the text is only text: a post sent without media renders it as a
+// bare link (verified 2026-10-13 on a scheduled probe — no card). The composer
+// makes the card by asking LinkedIn to resolve the URL into an article
+// (`urn:li:article:<id>`), and the post carries that urn as ARTICLE media.
+
+export interface LinkCard {
+  urn: string;
+  title: string;
+  /** The site, as LinkedIn names it under the title. */
+  source: string;
+}
+
+/** The first link in the text — the one the web composer previews. */
+export function firstUrl(text: string): string | null {
+  const found = text.match(/https?:\/\/[^\s<>"]+/)?.[0];
+  if (found === undefined) return null;
+  // Closing punctuation belongs to the sentence, unless the link opened it.
+  let url = found.replace(/[.,;:!?'"]+$/, '');
+  if (url.endsWith(')') && !url.includes('(')) url = url.slice(0, -1);
+  return url;
+}
+
+export function urlPreviewUrl(url: string): string {
+  const contract = contractFor('urlPreview');
+  return (
+    `${contract?.path}?includeWebMetadata=true` +
+    `&variables=(url:${encodeURIComponent(url)})&queryId=${contract?.queryId}`
+  );
+}
+
+type CardResult =
+  | { ok: true; card: LinkCard | null }
+  | { ok: false; code: string; message: string; hint?: string };
+
+export function parseUrlPreview(json: unknown): CardResult {
+  const error = gqlError(json);
+  if (error !== null) {
+    return { ok: false, code: 'SCHEMA_DRIFT', message: `the link preview failed: ${error}` };
+  }
+  const j = json as {
+    data?: { data?: { contentcreationDashUpdateUrlPreviewByUrl?: { elements?: unknown[] } } };
+    included?: {
+      content?: {
+        articleComponent?: {
+          articleUrn?: string;
+          title?: { text?: string };
+          subtitle?: { text?: string };
+        };
+      };
+    }[];
+  };
+  const elements = j?.data?.data?.contentcreationDashUpdateUrlPreviewByUrl?.elements;
+  if (!Array.isArray(elements)) {
+    return {
+      ok: false,
+      code: 'SCHEMA_DRIFT',
+      message: 'the link preview response had no preview collection',
+      hint: 'Re-capture the urlPreview contract: paste a link into the web composer.',
+    };
+  }
+  if (elements.length === 0) return { ok: true, card: null };
+
+  const article = (j.included ?? []).find((e) => e.content?.articleComponent?.articleUrn)?.content
+    ?.articleComponent;
+  if (article?.articleUrn === undefined) {
+    return {
+      ok: false,
+      code: 'SCHEMA_DRIFT',
+      message: 'LinkedIn previewed the link but no article came with it',
+    };
+  }
+  return {
+    ok: true,
+    card: {
+      urn: article.articleUrn,
+      title: article.title?.text ?? '',
+      source: article.subtitle?.text ?? '',
+    },
+  };
+}
+
+/** Ask LinkedIn what card it would show for a link. A read. */
+export async function fetchLinkCard(url: string, client: Client): Promise<CardResult> {
+  const result = await client.request({
+    url: urlPreviewUrl(url),
+    spendClass: 'page',
+    operation: 'link-preview',
+  });
+  if (!result.ok) {
+    const out: CardResult = { ok: false, code: result.code, message: result.message };
+    if (result.hint !== undefined) out.hint = result.hint;
+    return out;
+  }
+  return parseUrlPreview(result.json);
 }

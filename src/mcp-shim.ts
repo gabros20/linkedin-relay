@@ -25,6 +25,7 @@ import {
   runPost,
   runProfile,
   runReactions,
+  runScheduled,
   runSearch,
   runWhoami,
 } from './commands/live.ts';
@@ -176,6 +177,17 @@ export function buildServer(): McpServer {
       limit: z.number().int().min(1).max(100).optional().describe('default 25'),
     },
     async ({ query, source, since, limit }) => reply(runLocal(query, source, since, limit ?? 25)),
+  );
+
+  server.tool(
+    'scheduled',
+    "The user's own posts waiting to publish, soonest first: urn, scheduledAt (ISO), text. LIVE " +
+      '— about 1 call per 10 posts. These are NOT in `my_posts` until they go out. Links in `text` ' +
+      'show as lnkd.in short links, as LinkedIn lists them. `text` is null when it could not be ' +
+      "matched to its post for certain. `meta.claimedCount` is LinkedIn's own count; if " +
+      `\`meta.state\` is not "complete", say the list may be short. ${NO_RETRY}`,
+    {},
+    async () => reply(await runScheduled()),
   );
 
   for (const source of ['connections', 'my-posts'] as const) {

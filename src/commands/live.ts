@@ -5,9 +5,11 @@
 import {
   type Collection,
   createEngine,
+  createLiveClient,
   type EngineResult,
   type SearchKind,
 } from '../engine/index.ts';
+import { fetchScheduled, type ScheduledPost } from '../engine/sdui-scheduled.ts';
 
 import {
   LAUNCH_HINT,
@@ -31,6 +33,14 @@ function withSession(
   command: string,
   quiet = false,
 ): { engine: ReturnType<typeof createEngine> } | Envelope {
+  const loaded = sessionFor(command);
+  if ('ok' in loaded) return loaded;
+  return { engine: createEngine(loaded.session, undefined, quiet) };
+}
+
+function sessionFor(
+  command: string,
+): { session: Extract<ReturnType<typeof loadSession>, { state: 'ok' }>['session'] } | Envelope {
   const loaded = loadSession();
   if (loaded.state === 'corrupt') {
     return err(
@@ -43,7 +53,7 @@ function withSession(
   if (loaded.state === 'missing') {
     return err(command, 'AUTH_FAILED', 'no session — run `lnrelay login` first', LAUNCH_HINT);
   }
-  return { engine: createEngine(loaded.session, undefined, quiet) };
+  return { session: loaded.session };
 }
 
 /** Turn an engine failure into an envelope without losing its hint. */
@@ -183,6 +193,34 @@ export async function runReactions(
   const result = await ctx.engine.reactions(postUrn, limit);
   if (!result.ok) return toEnvelope('reactions', result);
   return ok('reactions', { urn: postUrn, ...collection(result.value, opts) });
+}
+
+/** Your own posts waiting to publish. Not in `my-posts` until they do. */
+export async function runScheduled(quiet = false): Promise<Envelope> {
+  const ctx = sessionFor('scheduled');
+  if ('ok' in ctx) return ctx;
+  const result = await fetchScheduled(createLiveClient(ctx.session, undefined, quiet));
+  if (!result.ok) return err('scheduled', result.code, result.message, result.hint);
+  return ok('scheduled', scheduledData(result));
+}
+
+export function scheduledData(result: {
+  posts: ScheduledPost[];
+  claimedCount: number;
+  state: 'complete' | 'partial' | 'unknown';
+}) {
+  return {
+    items: result.posts.map((p) => ({
+      urn: p.urn,
+      scheduledAt: new Date(p.scheduledAt).toISOString(),
+      text: p.text,
+    })),
+    meta: {
+      state: result.state,
+      returnedCount: result.posts.length,
+      claimedCount: result.claimedCount,
+    },
+  };
 }
 
 // ─── shaping ──────────────────────────────────────────────────────────────────

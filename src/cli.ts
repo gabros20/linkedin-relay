@@ -17,6 +17,7 @@ import {
   runPost,
   runProfile,
   runReactions,
+  runScheduled,
   runSearch,
   runWhoami,
 } from './commands/live.ts';
@@ -153,6 +154,8 @@ export async function dispatch(argv: string[], now: number): Promise<Envelope> {
         num(args, 'limit') ?? 25,
         output(args),
       );
+    case 'scheduled':
+      return runScheduled(bool(args, 'quiet'));
     case 'sync':
       return runSync(args.positionals[0], num(args, 'limit') ?? 50, bool(args, 'force'), now);
     case 'login':
@@ -283,6 +286,14 @@ function share(args: ParsedArgs, now: number, deps: ConfirmDeps): Promise<Envelo
       return err('share', 'INVALID_INPUT', `--${flag} needs a value`);
     }
   }
+  if (typeof args.flags['no-card'] === 'string') {
+    return err(
+      'share',
+      'INVALID_INPUT',
+      '--no-card takes no value',
+      'put the text first: lnrelay share "<text>" --no-card',
+    );
+  }
   const kinds = (['image', 'video', 'document'] as const)
     .map((flag) => ({ flag, paths: list(args, flag) }))
     .filter((k) => k.paths.length > 0);
@@ -328,5 +339,6 @@ function share(args: ParsedArgs, now: number, deps: ConfirmDeps): Promise<Envelo
     media,
     str(args, 'at'),
     poll,
+    { card: !bool(args, 'no-card') },
   );
 }
