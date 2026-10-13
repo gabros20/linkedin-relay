@@ -1,3 +1,10 @@
+## [3.6.1](https://github.com/gabros20/linkedin-relay/compare/v3.6.0...v3.6.1) (2026-10-13)
+
+
+### Bug Fixes
+
+* **delete:** read a scheduled post from the queue before cancelling it ([53a5069](https://github.com/gabros20/linkedin-relay/commit/53a5069e7117b6b17177627ae5aa75cf676e7cb1))
+
 # [3.6.0](https://github.com/gabros20/linkedin-relay/compare/v3.5.0...v3.6.0) (2026-10-13)
 
 
