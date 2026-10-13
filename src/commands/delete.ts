@@ -27,6 +27,7 @@ import {
   parseCommentUrn,
   runCommentAction,
 } from '../engine/sdui-menu.ts';
+import { fetchScheduled, type ScheduledPost } from '../engine/sdui-scheduled.ts';
 import { LAUNCH_HINT, loadSession } from '../engine/session.ts';
 import { deletePost, isDeletableUrn } from '../engine/voyager-write.ts';
 import { type Shaped, shapeAll } from '../format.ts';
@@ -68,6 +69,20 @@ export function findOwnPost(posts: Shaped[], urn: string): Shaped | undefined {
   );
 }
 
+/**
+ * A post in the scheduled queue, shaped like a published one plus when it
+ * would go out. Matched exactly: the queue lists the urn `share` printed.
+ */
+export function findScheduled(queue: ScheduledPost[], urn: string): Shaped | undefined {
+  const found = queue.find((p) => p.urn === urn);
+  if (found === undefined) return undefined;
+  return {
+    urn: found.urn,
+    ...(found.text === null ? {} : { text: found.text }),
+    scheduledAt: new Date(found.scheduledAt).toISOString(),
+  };
+}
+
 /** What the human is shown about the post before they approve destroying it. */
 export function previewLines(post: Shaped | undefined): string[] {
   if (post === undefined) {
@@ -81,7 +96,25 @@ export function previewLines(post: Shaped | undefined): string[] {
   }
   const text = typeof post.text === 'string' ? post.text : '(no text — media-only post?)';
   const shown = text.length > PREVIEW_CHARS ? `${text.slice(0, PREVIEW_CHARS)}…` : text;
-  return [`content  "${shown.replace(/\n/g, ' ')}"`];
+  const lines = [`content  "${shown.replace(/\n/g, ' ')}"`];
+  if (typeof post.scheduledAt === 'string') {
+    lines.push(`status   scheduled, publishes ${post.scheduledAt} unless cancelled`);
+  }
+  return lines;
+}
+
+/** Deleting a scheduled post cancels it; say that, rather than "delete". */
+export function deletePlan(urn: string, post: Shaped | undefined): WritePlan<{ urn: string }> {
+  const scheduled = typeof post?.scheduledAt === 'string';
+  return {
+    action: scheduled ? 'cancel a scheduled post' : 'delete a post',
+    payload: { urn },
+    summary: [`post     ${urn}`, ...previewLines(post)],
+    reversibility: scheduled
+      ? 'NONE, but it never published: nobody has seen it, and it will not go out.'
+      : 'NONE. A deleted post is gone, with its comments and reactions.',
+    transport: 'voyager',
+  };
 }
 
 /** Look the post up so the prompt can show it. A failed read is not fatal. */
@@ -97,7 +130,14 @@ export async function lookup(urn: string, quiet: boolean): Promise<Shaped | unde
 
   const posts = await engine.myPosts(profileUrn, LOOKUP_LIMIT);
   if (!posts.ok) return undefined;
-  return findOwnPost(shapeAll(posts.value.parsed.items, posts.value.index), urn);
+  const published = findOwnPost(shapeAll(posts.value.parsed.items, posts.value.index), urn);
+  if (published !== undefined) return published;
+
+  // Not published (yet?): a scheduled post is listed only in the queue, under
+  // the share/ugcPost urn `share` printed. One more read, only when needed.
+  if (!/^urn:li:(share|ugcPost):\d+$/.test(urn)) return undefined;
+  const queue = await fetchScheduled(createLiveClient(session.session, undefined, quiet));
+  return queue.ok ? findScheduled(queue.posts, urn) : undefined;
 }
 
 /**
@@ -256,13 +296,7 @@ export async function runDelete(
   // Read before destroying. This costs one read and is the entire point.
   const post = await lookup(urn, quiet);
 
-  const plan: WritePlan<{ urn: string }> = {
-    action: 'delete a post',
-    payload: { urn },
-    summary: [`post     ${urn}`, ...previewLines(post)],
-    reversibility: 'NONE. A deleted post is gone, with its comments and reactions.',
-    transport: 'voyager',
-  };
+  const plan = deletePlan(urn, post);
 
   // The client accounts for the DELETE itself.
   const gated = await gateWrite('delete', plan, now, deps ?? terminalDeps(), {

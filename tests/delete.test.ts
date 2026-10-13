@@ -1,6 +1,12 @@
 import { describe, expect, test } from 'bun:test';
 import type { ConfirmedWrite } from '../src/commands/confirm.ts';
-import { evictionTarget, findOwnPost, previewLines } from '../src/commands/delete.ts';
+import {
+  deletePlan,
+  evictionTarget,
+  findOwnPost,
+  findScheduled,
+  previewLines,
+} from '../src/commands/delete.ts';
 import { deletePost, deleteUrl, isDeletableUrn } from '../src/engine/voyager-write.ts';
 
 function confirmed<T>(payload: T): ConfirmedWrite<T> {
@@ -143,6 +149,42 @@ describe('the preview shown before deleting', () => {
   test('a long post is truncated rather than flooding the prompt', () => {
     const lines = previewLines({ urn: 'u', text: 'x'.repeat(1000) });
     expect(lines.join('\n').length).toBeLessThan(400);
+  });
+});
+
+// A scheduled post is not among the published ones `my-posts` reads, so the
+// preview used to proceed blind on every cancel. The queue has its text.
+describe('a scheduled post', () => {
+  const queue = [
+    { urn: 'urn:li:share:111', scheduledAt: 1792521000000, text: 'queued words' },
+    { urn: 'urn:li:ugcPost:222', scheduledAt: 1792522000000, text: null },
+  ];
+
+  test('is found in the queue by the urn `share` printed', () => {
+    expect(findScheduled(queue, 'urn:li:share:111')).toEqual({
+      urn: 'urn:li:share:111',
+      text: 'queued words',
+      scheduledAt: '2026-10-20T18:30:00.000Z',
+    });
+    expect(findScheduled(queue, 'urn:li:share:999')).toBeUndefined();
+  });
+
+  test('the preview shows its text and when it would have published', () => {
+    const lines = previewLines(findScheduled(queue, 'urn:li:share:111')).join('\n');
+    expect(lines).toContain('queued words');
+    expect(lines).toContain('2026-10-20T18:30:00.000Z');
+    expect(lines).not.toMatch(/could not/i);
+  });
+
+  test('deleting it is planned as a cancel, which publishes nothing', () => {
+    const plan = deletePlan('urn:li:share:111', findScheduled(queue, 'urn:li:share:111'));
+    expect(plan.action).toBe('cancel a scheduled post');
+    expect(plan.reversibility).toMatch(/never published/i);
+  });
+
+  test('a published post is still planned as a delete', () => {
+    const plan = deletePlan('urn:li:activity:1', { urn: 'urn:li:activity:1', text: 't' });
+    expect(plan.action).toBe('delete a post');
   });
 });
 
