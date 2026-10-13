@@ -1,3 +1,10 @@
+# [3.6.0](https://github.com/gabros20/linkedin-relay/compare/v3.5.0...v3.6.0) (2026-10-13)
+
+
+### Features
+
+* list scheduled posts, and give links a preview card ([24312b8](https://github.com/gabros20/linkedin-relay/commit/24312b870eda0fe201b66f3eade0927c8b7b89e7))
+
 # [3.5.0](https://github.com/gabros20/linkedin-relay/compare/v3.4.0...v3.5.0) (2026-10-13)
 
 
