@@ -5,7 +5,7 @@ import { readFileSync, statSync } from 'node:fs';
 import { basename } from 'node:path';
 import type { Session } from '../engine/auth.ts';
 import { buildHeaders } from '../engine/auth.ts';
-import { createLiveClient } from '../engine/index.ts';
+import { createEngine, createLiveClient } from '../engine/index.ts';
 import { share as sendShare } from '../engine/oauth-write.ts';
 import { type CommentTokens, comment as sduiComment } from '../engine/sdui-comment.ts';
 import { extractCommentTokens } from '../engine/sdui-harvest.ts';
@@ -15,6 +15,15 @@ import {
   runCommentAction,
   UPDATE_OP,
 } from '../engine/sdui-menu.ts';
+import {
+  currentValue,
+  fetchProfileForm,
+  PROFILE_FIELDS,
+  type ProfileField,
+  type ProfileForm,
+  saveBody,
+  sendProfileSave,
+} from '../engine/sdui-profile.ts';
 import {
   type Reaction,
   reactionLabel,
@@ -622,6 +631,126 @@ async function runEditPost(
     : err('edit', result.code, result.message, result.hint);
 }
 
+type ProfileFailure = { ok: false; code: string; message: string; hint?: string };
+
+/** What a profile edit needs from LinkedIn. Injectable so tests send nothing. */
+export interface ProfileSurface {
+  vanity(): Promise<{ ok: true; vanity: string } | ProfileFailure>;
+  open(field: ProfileField, vanity: string): Promise<ProfileForm | ProfileFailure>;
+  send(form: ProfileForm, body: Record<string, unknown>): Promise<{ ok: true } | ProfileFailure>;
+}
+
+function liveProfile(session: Session): ProfileSurface {
+  const client = createLiveClient(session);
+  return {
+    vanity: async () => {
+      const me = await createEngine(session).whoami();
+      if (!me.ok) return me;
+      const id = (me.value?.publicIdentifier ?? null) as string | null;
+      return typeof id === 'string' && id !== ''
+        ? { ok: true, vanity: id }
+        : { ok: false, code: 'SCHEMA_DRIFT', message: 'whoami returned no public profile id' };
+    },
+    open: (field, vanity) => fetchProfileForm(field, vanity, client),
+    send: (form, body) => sendProfileSave(form, body, client),
+  };
+}
+
+const PROFILE_HINT = `profile fields: ${Object.keys(PROFILE_FIELDS).join(', ')}`;
+
+/**
+ * Replace one text field on the owner's profile. The form is read first, so
+ * the owner approves a change from what is there now to what will be, and the
+ * save sends every other field back exactly as LinkedIn holds it.
+ */
+export async function runEditProfile(
+  name: string,
+  text: string | undefined,
+  now = Date.now(),
+  deps: ConfirmDeps = terminalDeps(),
+  surface?: ProfileSurface,
+): Promise<Envelope> {
+  const field = (PROFILE_FIELDS as Record<string, ProfileField>)[name];
+  if (field === undefined) {
+    return err(
+      'edit',
+      'INVALID_INPUT',
+      `'${name}' is not a profile field this edits`,
+      PROFILE_HINT,
+    );
+  }
+  if (text === undefined || text.trim() === '') {
+    return err(
+      'edit',
+      'INVALID_INPUT',
+      `the new ${name} is required`,
+      `lnrelay edit ${name} "<text>"`,
+    );
+  }
+  if (text.length > field.maxLength) {
+    return err(
+      'edit',
+      'INVALID_INPUT',
+      `the ${name} is ${text.length} characters; LinkedIn allows ${field.maxLength}`,
+    );
+  }
+
+  const unapprovable = refuseUnapprovable('edit', 'editing', deps);
+  if (unapprovable !== null) return unapprovable;
+  const ctx = prepare('edit', now, 'voyager');
+  if ('ok' in ctx) return ctx;
+  if (ctx.transport.kind !== 'voyager') {
+    return err('edit', 'NOT_IMPLEMENTED', 'profile edits go over the browser session only');
+  }
+  const profile = surface ?? liveProfile(ctx.transport.session);
+
+  const me = await profile.vanity();
+  if (!me.ok) return err('edit', me.code, me.message, me.hint);
+  const form = await profile.open(field, me.vanity);
+  if (!form.ok) return err('edit', form.code, form.message, form.hint);
+  const was = currentValue(form, field) ?? '';
+  if (was === text) {
+    return err('edit', 'INVALID_INPUT', `your ${name} already reads exactly that; nothing to save`);
+  }
+  const built = saveBody(form, field, text);
+  if (!built.ok) return err('edit', built.code, built.message, built.hint);
+
+  // `was` is in the payload so the token binds it: a profile that changed
+  // after the owner looked is a different edit from the one they approved.
+  const plan: WritePlan<{ field: string; was: string; text: string }> = {
+    action: `change your ${name}`,
+    payload: { field: name, was, text },
+    summary: [
+      authorLine(ctx.transport),
+      `field    ${name}`,
+      `was      "${was}"`,
+      `new      "${text}"`,
+    ],
+    reversibility:
+      'editable again, but the old text is kept only in this preview and the audit log ' +
+      '(~/.lnrelay/writes.jsonl). Every other profile field is sent back as LinkedIn holds it.',
+    transport: 'voyager',
+  };
+  const gated = await gate('edit', plan, ctx, deps);
+  if ('ok' in gated) return gated;
+
+  const sent = await profile.send(form, built.body);
+  if (!sent.ok) return err('edit', sent.code, sent.message, sent.hint);
+
+  // Never an empty success: read it back.
+  const after = await profile.open(field, me.vanity);
+  const reads = after.ok ? currentValue(after, field) : undefined;
+  if (reads !== text) {
+    return err(
+      'edit',
+      'SCHEMA_DRIFT',
+      `LinkedIn accepted the save, but your ${name} does not read back as the new text`,
+      after.ok ? `It reads: "${reads ?? ''}"` : `The read-back failed: ${after.message}`,
+    );
+  }
+  return ok('edit', { field: name, verified: true });
+}
+
 /** The numeric id inside an activity urn, or null. */
 function activityIdOf(urn: string): string | null {
   return /^urn:li:(?:activity|ugcPost|share):(\d+)$/.exec(urn)?.[1] ?? null;
@@ -768,6 +897,9 @@ export async function runEdit(
     );
   }
   const ref: CommentRef | null = parseCommentUrn(commentUrn);
+  if (ref === null && !commentUrn.startsWith('urn:')) {
+    return runEditProfile(commentUrn, text, now, deps);
+  }
   if (ref === null) {
     // Like delete, edit routes by the KIND of urn: a comment and a post are
     // edited over different surfaces, and each is unambiguous.

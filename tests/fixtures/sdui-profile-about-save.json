@@ -1,0 +1,322 @@
+{
+  "requestId": "com.linkedin.sdui.requests.profile.saveProfileAboutForm",
+  "serverRequest": {
+    "requestId": "com.linkedin.sdui.requests.profile.saveProfileAboutForm",
+    "requestedArguments": {
+      "$type": "proto.sdui.actions.requests.RequestedArguments",
+      "requestedStateKeys": [
+        {
+          "key": {
+            "value": {
+              "$case": "id",
+              "id": "aboutauto-binding-d592bedf-6c92-4cdf-90bf-0fac5e9230b1AboutForm"
+            }
+          }
+        },
+        {
+          "key": {
+            "value": {
+              "$case": "id",
+              "id": "auto-binding-d592bedf-6c92-4cdf-90bf-0fac5e9230b1AboutFormReorderableSkillsFormBindingsskillIdsBinding"
+            }
+          }
+        },
+        {
+          "key": {
+            "value": {
+              "$case": "id",
+              "id": "initialAboutauto-binding-d592bedf-6c92-4cdf-90bf-0fac5e9230b1AboutForm"
+            }
+          }
+        },
+        {
+          "key": {
+            "value": {
+              "$case": "id",
+              "id": "initialSkillsauto-binding-d592bedf-6c92-4cdf-90bf-0fac5e9230b1AboutForm"
+            }
+          }
+        }
+      ],
+      "payload": {
+        "about": {
+          "key": "aboutauto-binding-d592bedf-6c92-4cdf-90bf-0fac5e9230b1AboutForm",
+          "namespace": "MemoryNamespace"
+        },
+        "skills": {
+          "key": "auto-binding-d592bedf-6c92-4cdf-90bf-0fac5e9230b1AboutFormReorderableSkillsFormBindingsskillIdsBinding",
+          "namespace": "MemoryNamespace"
+        },
+        "initialAbout": {
+          "key": "initialAboutauto-binding-d592bedf-6c92-4cdf-90bf-0fac5e9230b1AboutForm",
+          "namespace": "MemoryNamespace"
+        },
+        "initialSkills": {
+          "key": "initialSkillsauto-binding-d592bedf-6c92-4cdf-90bf-0fac5e9230b1AboutForm",
+          "namespace": "MemoryNamespace"
+        },
+        "progressIndicator": {
+          "key": "auto-binding-1a6569a5-3d18-4c4d-9926-be783583642eisActiveProfileFormLoading",
+          "namespace": "MemoryNamespace"
+        },
+        "profileId": "ACoAATESTPROFILEID",
+        "vanityName": "ada-l",
+        "premiumUpsellEligible": true,
+        "hasAtLeastOneTopSkillLackingAssociations": false,
+        "hasChanges": {
+          "key": "auto-binding-1751a2cd-fe71-4623-b95f-68f51d8062ebisActiveProfileFormHasChanges",
+          "namespace": "MemoryNamespace"
+        },
+        "userExitedForm": {
+          "key": "auto-binding-930dc470-b42b-480b-a665-30a53b3f2528profileFormUserExitedForm",
+          "namespace": "MemoryNamespace"
+        },
+        "saveOrDeleteRequestPending": {
+          "key": "auto-binding-54238d2f-b4df-4a46-abf4-5c6e87cbac16profileFormSaveOrDeleteRequestPending",
+          "namespace": "MemoryNamespace"
+        }
+      },
+      "requestMetadata": {
+        "$type": "proto.sdui.common.RequestMetadata"
+      }
+    },
+    "onClientRequestFailureAction": {
+      "actions": [
+        {
+          "$type": "proto.sdui.actions.core.SetState",
+          "value": {
+            "state": {
+              "key": {
+                "key": {
+                  "value": {
+                    "$case": "id",
+                    "id": "auto-binding-1a6569a5-3d18-4c4d-9926-be783583642eisActiveProfileFormLoading"
+                  }
+                }
+              },
+              "value": {
+                "$case": "booleanValue",
+                "booleanValue": false
+              }
+            }
+          }
+        },
+        {
+          "$type": "proto.sdui.actions.core.ShowToast",
+          "value": {
+            "duration": "ToastDuration_UNKNOWN",
+            "key": "2d760984-914c-4db3-a612-4fe003754950",
+            "presetToast": {
+              "category": "ToastPresetCategory_ERROR",
+              "text": {
+                "_payload": {
+                  "status": "resolved_model",
+                  "value": "[\"Save failed\"]",
+                  "reason": {
+                    "_moduleLoading": null,
+                    "_chunks": {},
+                    "_stringDecoder": {},
+                    "_closed": true,
+                    "_closedReason": {},
+                    "_allowPartialStream": false
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "isApfcEnabled": false,
+    "isStreaming": false,
+    "rumPageKey": ""
+  },
+  "states": [
+    {
+      "key": "aboutauto-binding-d592bedf-6c92-4cdf-90bf-0fac5e9230b1AboutForm",
+      "namespace": "MemoryNamespace",
+      "value": "I write about engines.\nSecond paragraph..",
+      "originalProtoCase": "stringValue",
+      "protoKey": {
+        "$type": "proto.sdui.Key",
+        "value": {
+          "$case": "id",
+          "id": "aboutauto-binding-d592bedf-6c92-4cdf-90bf-0fac5e9230b1AboutForm"
+        }
+      }
+    },
+    {
+      "key": "auto-binding-d592bedf-6c92-4cdf-90bf-0fac5e9230b1AboutFormReorderableSkillsFormBindingsskillIdsBinding",
+      "namespace": "MemoryNamespace",
+      "value": [],
+      "originalProtoCase": "expression",
+      "protoKey": {
+        "$type": "proto.sdui.Key",
+        "value": {
+          "$case": "id",
+          "id": "auto-binding-d592bedf-6c92-4cdf-90bf-0fac5e9230b1AboutFormReorderableSkillsFormBindingsskillIdsBinding"
+        }
+      }
+    },
+    {
+      "key": "initialAboutauto-binding-d592bedf-6c92-4cdf-90bf-0fac5e9230b1AboutForm",
+      "namespace": "MemoryNamespace",
+      "value": "I write about engines.\nSecond paragraph.",
+      "originalProtoCase": "stringValue",
+      "protoKey": {
+        "$type": "proto.sdui.Key",
+        "value": {
+          "$case": "id",
+          "id": "initialAboutauto-binding-d592bedf-6c92-4cdf-90bf-0fac5e9230b1AboutForm"
+        }
+      }
+    },
+    {
+      "key": "initialSkillsauto-binding-d592bedf-6c92-4cdf-90bf-0fac5e9230b1AboutForm",
+      "namespace": "MemoryNamespace",
+      "value": [],
+      "originalProtoCase": "stringListValue",
+      "protoKey": {
+        "$type": "proto.sdui.Key",
+        "value": {
+          "$case": "id",
+          "id": "initialSkillsauto-binding-d592bedf-6c92-4cdf-90bf-0fac5e9230b1AboutForm"
+        }
+      }
+    }
+  ],
+  "requestedArguments": {
+    "$type": "proto.sdui.actions.requests.RequestedArguments",
+    "requestedStateKeys": [
+      {
+        "key": {
+          "value": {
+            "$case": "id",
+            "id": "aboutauto-binding-d592bedf-6c92-4cdf-90bf-0fac5e9230b1AboutForm"
+          }
+        }
+      },
+      {
+        "key": {
+          "value": {
+            "$case": "id",
+            "id": "auto-binding-d592bedf-6c92-4cdf-90bf-0fac5e9230b1AboutFormReorderableSkillsFormBindingsskillIdsBinding"
+          }
+        }
+      },
+      {
+        "key": {
+          "value": {
+            "$case": "id",
+            "id": "initialAboutauto-binding-d592bedf-6c92-4cdf-90bf-0fac5e9230b1AboutForm"
+          }
+        }
+      },
+      {
+        "key": {
+          "value": {
+            "$case": "id",
+            "id": "initialSkillsauto-binding-d592bedf-6c92-4cdf-90bf-0fac5e9230b1AboutForm"
+          }
+        }
+      }
+    ],
+    "payload": {
+      "about": {
+        "key": "aboutauto-binding-d592bedf-6c92-4cdf-90bf-0fac5e9230b1AboutForm",
+        "namespace": "MemoryNamespace"
+      },
+      "skills": {
+        "key": "auto-binding-d592bedf-6c92-4cdf-90bf-0fac5e9230b1AboutFormReorderableSkillsFormBindingsskillIdsBinding",
+        "namespace": "MemoryNamespace"
+      },
+      "initialAbout": {
+        "key": "initialAboutauto-binding-d592bedf-6c92-4cdf-90bf-0fac5e9230b1AboutForm",
+        "namespace": "MemoryNamespace"
+      },
+      "initialSkills": {
+        "key": "initialSkillsauto-binding-d592bedf-6c92-4cdf-90bf-0fac5e9230b1AboutForm",
+        "namespace": "MemoryNamespace"
+      },
+      "progressIndicator": {
+        "key": "auto-binding-1a6569a5-3d18-4c4d-9926-be783583642eisActiveProfileFormLoading",
+        "namespace": "MemoryNamespace"
+      },
+      "profileId": "ACoAATESTPROFILEID",
+      "vanityName": "ada-l",
+      "premiumUpsellEligible": true,
+      "hasAtLeastOneTopSkillLackingAssociations": false,
+      "hasChanges": {
+        "key": "auto-binding-1751a2cd-fe71-4623-b95f-68f51d8062ebisActiveProfileFormHasChanges",
+        "namespace": "MemoryNamespace"
+      },
+      "userExitedForm": {
+        "key": "auto-binding-930dc470-b42b-480b-a665-30a53b3f2528profileFormUserExitedForm",
+        "namespace": "MemoryNamespace"
+      },
+      "saveOrDeleteRequestPending": {
+        "key": "auto-binding-54238d2f-b4df-4a46-abf4-5c6e87cbac16profileFormSaveOrDeleteRequestPending",
+        "namespace": "MemoryNamespace"
+      }
+    },
+    "requestMetadata": {
+      "$type": "proto.sdui.common.RequestMetadata"
+    },
+    "states": [
+      {
+        "key": "aboutauto-binding-d592bedf-6c92-4cdf-90bf-0fac5e9230b1AboutForm",
+        "namespace": "MemoryNamespace",
+        "value": "I write about engines.\nSecond paragraph..",
+        "originalProtoCase": "stringValue",
+        "protoKey": {
+          "$type": "proto.sdui.Key",
+          "value": {
+            "$case": "id",
+            "id": "aboutauto-binding-d592bedf-6c92-4cdf-90bf-0fac5e9230b1AboutForm"
+          }
+        }
+      },
+      {
+        "key": "auto-binding-d592bedf-6c92-4cdf-90bf-0fac5e9230b1AboutFormReorderableSkillsFormBindingsskillIdsBinding",
+        "namespace": "MemoryNamespace",
+        "value": [],
+        "originalProtoCase": "expression",
+        "protoKey": {
+          "$type": "proto.sdui.Key",
+          "value": {
+            "$case": "id",
+            "id": "auto-binding-d592bedf-6c92-4cdf-90bf-0fac5e9230b1AboutFormReorderableSkillsFormBindingsskillIdsBinding"
+          }
+        }
+      },
+      {
+        "key": "initialAboutauto-binding-d592bedf-6c92-4cdf-90bf-0fac5e9230b1AboutForm",
+        "namespace": "MemoryNamespace",
+        "value": "I write about engines.\nSecond paragraph.",
+        "originalProtoCase": "stringValue",
+        "protoKey": {
+          "$type": "proto.sdui.Key",
+          "value": {
+            "$case": "id",
+            "id": "initialAboutauto-binding-d592bedf-6c92-4cdf-90bf-0fac5e9230b1AboutForm"
+          }
+        }
+      },
+      {
+        "key": "initialSkillsauto-binding-d592bedf-6c92-4cdf-90bf-0fac5e9230b1AboutForm",
+        "namespace": "MemoryNamespace",
+        "value": [],
+        "originalProtoCase": "stringListValue",
+        "protoKey": {
+          "$type": "proto.sdui.Key",
+          "value": {
+            "$case": "id",
+            "id": "initialSkillsauto-binding-d592bedf-6c92-4cdf-90bf-0fac5e9230b1AboutForm"
+          }
+        }
+      }
+    ],
+    "screenId": "com.linkedin.sdui.flagshipnav.profile.ProfileAboutForm",
+    "knownTemplateIds": []
+  }
+}

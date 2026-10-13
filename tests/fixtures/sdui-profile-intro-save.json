@@ -1,0 +1,1434 @@
+{
+  "requestId": "com.linkedin.sdui.requests.profile.saveProfileIntroForm",
+  "serverRequest": {
+    "requestId": "com.linkedin.sdui.requests.profile.saveProfileIntroForm",
+    "requestedArguments": {
+      "$type": "proto.sdui.actions.requests.RequestedArguments",
+      "requestedStateKeys": [
+        {
+          "key": {
+            "value": {
+              "$case": "id",
+              "id": "firstNameIntroForm"
+            }
+          }
+        },
+        {
+          "key": {
+            "value": {
+              "$case": "id",
+              "id": "lastNameIntroForm"
+            }
+          }
+        },
+        {
+          "key": {
+            "value": {
+              "$case": "id",
+              "id": "headlineIntroForm"
+            }
+          }
+        },
+        {
+          "key": {
+            "value": {
+              "$case": "id",
+              "id": "initialHeadlineIntroForm"
+            }
+          }
+        },
+        {
+          "key": {
+            "value": {
+              "$case": "id",
+              "id": "additionalNameIntroForm"
+            }
+          }
+        },
+        {
+          "key": {
+            "value": {
+              "$case": "id",
+              "id": "additionalNameVisibilitySettingIntroForm"
+            }
+          }
+        },
+        {
+          "key": {
+            "value": {
+              "$case": "id",
+              "id": "pronouns"
+            }
+          }
+        },
+        {
+          "key": {
+            "value": {
+              "$case": "id",
+              "id": "customPronounsIntroForm"
+            }
+          }
+        },
+        {
+          "key": {
+            "value": {
+              "$case": "id",
+              "id": "pronounVisibilitySettingIntroForm"
+            }
+          }
+        },
+        {
+          "key": {
+            "value": {
+              "$case": "id",
+              "id": "namePronunciationVisibilitySettingIntroForm"
+            }
+          }
+        },
+        {
+          "key": {
+            "value": {
+              "$case": "id",
+              "id": "currentPositionIntroForm"
+            }
+          }
+        },
+        {
+          "key": {
+            "value": {
+              "$case": "id",
+              "id": "initialPositionIdIntroForm"
+            }
+          }
+        },
+        {
+          "key": {
+            "value": {
+              "$case": "id",
+              "id": "currentEducationIntroForm"
+            }
+          }
+        },
+        {
+          "key": {
+            "value": {
+              "$case": "id",
+              "id": "initialEducationIdIntroForm"
+            }
+          }
+        },
+        {
+          "key": {
+            "value": {
+              "$case": "id",
+              "id": "industryIdIntroForm"
+            }
+          }
+        },
+        {
+          "key": {
+            "value": {
+              "$case": "id",
+              "id": "locationGeoIdIntroForm"
+            }
+          }
+        },
+        {
+          "key": {
+            "value": {
+              "$case": "id",
+              "id": "subLocationGeoIdIntroForm"
+            }
+          }
+        },
+        {
+          "key": {
+            "value": {
+              "$case": "id",
+              "id": "locationPickerTypeIntroForm"
+            }
+          }
+        },
+        {
+          "key": {
+            "value": {
+              "$case": "id",
+              "id": "cityGeoIdIntroForm"
+            }
+          }
+        },
+        {
+          "key": {
+            "value": {
+              "$case": "id",
+              "id": "postalCodeIntroForm"
+            }
+          }
+        },
+        {
+          "key": {
+            "value": {
+              "$case": "id",
+              "id": "locationIntroForm"
+            }
+          }
+        },
+        {
+          "key": {
+            "value": {
+              "$case": "id",
+              "id": "profile-pronunciation-interop-assetId"
+            }
+          }
+        },
+        {
+          "key": {
+            "value": {
+              "$case": "id",
+              "id": "showCurrentPositionIntroForm"
+            }
+          }
+        },
+        {
+          "key": {
+            "value": {
+              "$case": "id",
+              "id": "showEducationIntroForm"
+            }
+          }
+        },
+        {
+          "key": {
+            "value": {
+              "$case": "id",
+              "id": "websiteIntroForm"
+            }
+          }
+        },
+        {
+          "key": {
+            "value": {
+              "$case": "id",
+              "id": "websiteLabelIntroForm"
+            }
+          }
+        },
+        {
+          "key": {
+            "value": {
+              "$case": "id",
+              "id": "isRefreshRequiredAfterSaveIntroForm"
+            }
+          }
+        }
+      ],
+      "payload": {
+        "firstName": {
+          "key": "firstNameIntroForm",
+          "namespace": "MemoryNamespace"
+        },
+        "lastName": {
+          "key": "lastNameIntroForm",
+          "namespace": "MemoryNamespace"
+        },
+        "headline": {
+          "key": "headlineIntroForm",
+          "namespace": "MemoryNamespace"
+        },
+        "initialHeadline": {
+          "key": "initialHeadlineIntroForm",
+          "namespace": "MemoryNamespace"
+        },
+        "additionalName": {
+          "key": "additionalNameIntroForm",
+          "namespace": "MemoryNamespace"
+        },
+        "additionalNameVisibilitySetting": {
+          "key": "additionalNameVisibilitySettingIntroForm",
+          "namespace": "MemoryNamespace"
+        },
+        "pronouns": {
+          "key": "pronouns",
+          "namespace": "MemoryNamespace"
+        },
+        "customPronouns": {
+          "key": "customPronounsIntroForm",
+          "namespace": "MemoryNamespace"
+        },
+        "pronounsVisibilitySetting": {
+          "key": "pronounVisibilitySettingIntroForm",
+          "namespace": "MemoryNamespace"
+        },
+        "namePronunciationVisibilitySetting": {
+          "key": "namePronunciationVisibilitySettingIntroForm",
+          "namespace": "MemoryNamespace"
+        },
+        "currentPositionId": {
+          "key": "currentPositionIntroForm",
+          "namespace": "MemoryNamespace"
+        },
+        "initialPositionId": {
+          "key": "initialPositionIdIntroForm",
+          "namespace": "MemoryNamespace"
+        },
+        "currentEducationId": {
+          "key": "currentEducationIntroForm",
+          "namespace": "MemoryNamespace"
+        },
+        "initialEducationId": {
+          "key": "initialEducationIdIntroForm",
+          "namespace": "MemoryNamespace"
+        },
+        "industry": {
+          "key": "industryIdIntroForm",
+          "namespace": "MemoryNamespace"
+        },
+        "locationGeoId": {
+          "key": "locationGeoIdIntroForm",
+          "namespace": "MemoryNamespace"
+        },
+        "subLocationGeoId": {
+          "key": "subLocationGeoIdIntroForm",
+          "namespace": "MemoryNamespace"
+        },
+        "locationPickerType": {
+          "key": "locationPickerTypeIntroForm",
+          "namespace": "MemoryNamespace"
+        },
+        "cityGeoId": {
+          "key": "cityGeoIdIntroForm",
+          "namespace": "MemoryNamespace"
+        },
+        "postalCode": {
+          "key": "postalCodeIntroForm",
+          "namespace": "MemoryNamespace"
+        },
+        "location": {
+          "key": "locationIntroForm",
+          "namespace": "MemoryNamespace"
+        },
+        "fullNamePronunciationAssetId": {
+          "key": "profile-pronunciation-interop-assetId",
+          "namespace": "MemoryNamespace"
+        },
+        "vanityName": "ada-l",
+        "premiumUpsellEligible": true,
+        "verificationNbaEligible": false,
+        "showCurrentPosition": {
+          "key": "showCurrentPositionIntroForm",
+          "namespace": "MemoryNamespace"
+        },
+        "showEducation": {
+          "key": "showEducationIntroForm",
+          "namespace": "MemoryNamespace"
+        },
+        "initialShowOpenProfile": "true",
+        "initialShowPremiumBadge": "false",
+        "forcePremiumSettingsUpdate": false,
+        "website": {
+          "key": "websiteIntroForm",
+          "namespace": "MemoryNamespace"
+        },
+        "websiteLabel": {
+          "key": "websiteLabelIntroForm",
+          "namespace": "MemoryNamespace"
+        },
+        "isRefreshRequiredAfterSave": {
+          "key": "isRefreshRequiredAfterSaveIntroForm",
+          "namespace": "MemoryNamespace"
+        },
+        "profileId": "ACoAATESTPROFILEID",
+        "hasChanges": {
+          "key": "auto-binding-229641f1-ffca-415d-8c25-903fa21a2c17isActiveProfileFormHasChanges",
+          "namespace": "MemoryNamespace"
+        },
+        "progressIndicator": {
+          "key": "auto-binding-f848e49d-82d8-4a67-8e13-75f2b43c86fcisActiveProfileFormLoading",
+          "namespace": "MemoryNamespace"
+        },
+        "userExitedForm": {
+          "key": "auto-binding-6e0e1462-807c-49b7-aad5-bf64d1135961profileFormUserExitedForm",
+          "namespace": "MemoryNamespace"
+        },
+        "saveOrDeleteRequestPending": {
+          "key": "auto-binding-c55668e6-0640-4ec3-a76f-eef0bfbf3043profileFormSaveOrDeleteRequestPending",
+          "namespace": "MemoryNamespace"
+        },
+        "bodyDisplayBinding": {
+          "key": "auto-binding-22a9a347-8d37-4e90-b890-1eb0663038aeprofileFormBodyDisplay",
+          "namespace": "MemoryNamespace"
+        }
+      },
+      "requestMetadata": {
+        "$type": "proto.sdui.common.RequestMetadata"
+      }
+    },
+    "onClientRequestFailureAction": {
+      "actions": [
+        {
+          "$type": "proto.sdui.actions.core.SetState",
+          "value": {
+            "state": {
+              "key": {
+                "key": {
+                  "value": {
+                    "$case": "id",
+                    "id": "auto-binding-f848e49d-82d8-4a67-8e13-75f2b43c86fcisActiveProfileFormLoading"
+                  }
+                }
+              },
+              "value": {
+                "$case": "booleanValue",
+                "booleanValue": false
+              }
+            }
+          }
+        },
+        {
+          "$type": "proto.sdui.actions.core.ShowToast",
+          "value": {
+            "duration": "ToastDuration_UNKNOWN",
+            "key": "8e85028d-615f-4b59-88a5-d5a8aec82cf7",
+            "presetToast": {
+              "category": "ToastPresetCategory_ERROR",
+              "text": {
+                "_payload": {
+                  "status": "resolved_model",
+                  "value": "[\"Something went wrong. Please try again.\"]",
+                  "reason": {
+                    "_moduleLoading": null,
+                    "_chunks": {},
+                    "_stringDecoder": {},
+                    "_closed": true,
+                    "_closedReason": {},
+                    "_allowPartialStream": false
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "isApfcEnabled": false,
+    "isStreaming": false,
+    "rumPageKey": ""
+  },
+  "states": [
+    {
+      "key": "firstNameIntroForm",
+      "namespace": "MemoryNamespace",
+      "value": "Ada",
+      "originalProtoCase": "stringValue",
+      "protoKey": {
+        "$type": "proto.sdui.Key",
+        "value": {
+          "$case": "id",
+          "id": "firstNameIntroForm"
+        }
+      }
+    },
+    {
+      "key": "lastNameIntroForm",
+      "namespace": "MemoryNamespace",
+      "value": "Lovelace",
+      "originalProtoCase": "stringValue",
+      "protoKey": {
+        "$type": "proto.sdui.Key",
+        "value": {
+          "$case": "id",
+          "id": "lastNameIntroForm"
+        }
+      }
+    },
+    {
+      "key": "headlineIntroForm",
+      "namespace": "MemoryNamespace",
+      "value": "Analyst | Engines | London.",
+      "originalProtoCase": "stringValue",
+      "protoKey": {
+        "$type": "proto.sdui.Key",
+        "value": {
+          "$case": "id",
+          "id": "headlineIntroForm"
+        }
+      }
+    },
+    {
+      "key": "initialHeadlineIntroForm",
+      "namespace": "MemoryNamespace",
+      "value": "Analyst | Engines | London",
+      "originalProtoCase": "stringValue",
+      "protoKey": {
+        "$type": "proto.sdui.Key",
+        "value": {
+          "$case": "id",
+          "id": "initialHeadlineIntroForm"
+        }
+      }
+    },
+    {
+      "key": "additionalNameIntroForm",
+      "namespace": "MemoryNamespace",
+      "value": "",
+      "originalProtoCase": "stringValue",
+      "protoKey": {
+        "$type": "proto.sdui.Key",
+        "value": {
+          "$case": "id",
+          "id": "additionalNameIntroForm"
+        }
+      }
+    },
+    {
+      "key": "additionalNameVisibilitySettingIntroForm",
+      "namespace": "MemoryNamespace",
+      "value": "AdditionalNamePronunciationVisibilityEnumValue_HIDDEN",
+      "originalProtoCase": "stringValue",
+      "protoKey": {
+        "$type": "proto.sdui.Key",
+        "value": {
+          "$case": "id",
+          "id": "additionalNameVisibilitySettingIntroForm"
+        }
+      }
+    },
+    {
+      "key": "customPronounsIntroForm",
+      "namespace": "MemoryNamespace",
+      "value": "",
+      "originalProtoCase": "stringValue",
+      "protoKey": {
+        "$type": "proto.sdui.Key",
+        "value": {
+          "$case": "id",
+          "id": "customPronounsIntroForm"
+        }
+      }
+    },
+    {
+      "key": "pronounVisibilitySettingIntroForm",
+      "namespace": "MemoryNamespace",
+      "value": "PronounVisibilityEnumValue_MEMBERS",
+      "originalProtoCase": "stringValue",
+      "protoKey": {
+        "$type": "proto.sdui.Key",
+        "value": {
+          "$case": "id",
+          "id": "pronounVisibilitySettingIntroForm"
+        }
+      }
+    },
+    {
+      "key": "currentPositionIntroForm",
+      "namespace": "MemoryNamespace",
+      "value": "1111111111",
+      "originalProtoCase": "stringValue",
+      "protoKey": {
+        "$type": "proto.sdui.Key",
+        "value": {
+          "$case": "id",
+          "id": "currentPositionIntroForm"
+        }
+      }
+    },
+    {
+      "key": "initialPositionIdIntroForm",
+      "namespace": "MemoryNamespace",
+      "value": "1111111111",
+      "originalProtoCase": "stringValue",
+      "protoKey": {
+        "$type": "proto.sdui.Key",
+        "value": {
+          "$case": "id",
+          "id": "initialPositionIdIntroForm"
+        }
+      }
+    },
+    {
+      "key": "currentEducationIntroForm",
+      "namespace": "MemoryNamespace",
+      "value": "2222222222",
+      "originalProtoCase": "stringValue",
+      "protoKey": {
+        "$type": "proto.sdui.Key",
+        "value": {
+          "$case": "id",
+          "id": "currentEducationIntroForm"
+        }
+      }
+    },
+    {
+      "key": "initialEducationIdIntroForm",
+      "namespace": "MemoryNamespace",
+      "value": "2222222222",
+      "originalProtoCase": "stringValue",
+      "protoKey": {
+        "$type": "proto.sdui.Key",
+        "value": {
+          "$case": "id",
+          "id": "initialEducationIdIntroForm"
+        }
+      }
+    },
+    {
+      "key": "industryIdIntroForm",
+      "namespace": "MemoryNamespace",
+      "value": "99",
+      "originalProtoCase": "stringValue",
+      "protoKey": {
+        "$type": "proto.sdui.Key",
+        "value": {
+          "$case": "id",
+          "id": "industryIdIntroForm"
+        }
+      }
+    },
+    {
+      "key": "locationGeoIdIntroForm",
+      "namespace": "MemoryNamespace",
+      "value": 100288700,
+      "originalProtoCase": "intValue",
+      "protoKey": {
+        "$type": "proto.sdui.Key",
+        "value": {
+          "$case": "id",
+          "id": "locationGeoIdIntroForm"
+        }
+      }
+    },
+    {
+      "key": "subLocationGeoIdIntroForm",
+      "namespace": "MemoryNamespace",
+      "value": 104291169,
+      "originalProtoCase": "intValue",
+      "protoKey": {
+        "$type": "proto.sdui.Key",
+        "value": {
+          "$case": "id",
+          "id": "subLocationGeoIdIntroForm"
+        }
+      }
+    },
+    {
+      "key": "locationPickerTypeIntroForm",
+      "namespace": "MemoryNamespace",
+      "value": "PostalCode",
+      "originalProtoCase": "stringValue",
+      "protoKey": {
+        "$type": "proto.sdui.Key",
+        "value": {
+          "$case": "id",
+          "id": "locationPickerTypeIntroForm"
+        }
+      }
+    },
+    {
+      "key": "cityGeoIdIntroForm",
+      "namespace": "MemoryNamespace",
+      "value": "104291169",
+      "originalProtoCase": "stringValue",
+      "protoKey": {
+        "$type": "proto.sdui.Key",
+        "value": {
+          "$case": "id",
+          "id": "cityGeoIdIntroForm"
+        }
+      }
+    },
+    {
+      "key": "postalCodeIntroForm",
+      "namespace": "MemoryNamespace",
+      "value": "1000",
+      "originalProtoCase": "stringValue",
+      "protoKey": {
+        "$type": "proto.sdui.Key",
+        "value": {
+          "$case": "id",
+          "id": "postalCodeIntroForm"
+        }
+      }
+    },
+    {
+      "key": "locationIntroForm",
+      "namespace": "MemoryNamespace",
+      "value": "Hungary",
+      "originalProtoCase": "stringValue",
+      "protoKey": {
+        "$type": "proto.sdui.Key",
+        "value": {
+          "$case": "id",
+          "id": "locationIntroForm"
+        }
+      }
+    },
+    {
+      "key": "profile-pronunciation-interop-assetId",
+      "namespace": "MemoryNamespace",
+      "value": "",
+      "originalProtoCase": "stringValue",
+      "protoKey": {
+        "$type": "proto.sdui.Key",
+        "value": {
+          "$case": "id",
+          "id": "profile-pronunciation-interop-assetId"
+        }
+      }
+    },
+    {
+      "key": "showCurrentPositionIntroForm",
+      "namespace": "MemoryNamespace",
+      "value": "Checked",
+      "originalProtoCase": "stringValue",
+      "protoKey": {
+        "$type": "proto.sdui.Key",
+        "value": {
+          "$case": "id",
+          "id": "showCurrentPositionIntroForm"
+        }
+      }
+    },
+    {
+      "key": "showEducationIntroForm",
+      "namespace": "MemoryNamespace",
+      "value": "Checked",
+      "originalProtoCase": "stringValue",
+      "protoKey": {
+        "$type": "proto.sdui.Key",
+        "value": {
+          "$case": "id",
+          "id": "showEducationIntroForm"
+        }
+      }
+    },
+    {
+      "key": "websiteIntroForm",
+      "namespace": "MemoryNamespace",
+      "value": "",
+      "originalProtoCase": "stringValue",
+      "protoKey": {
+        "$type": "proto.sdui.Key",
+        "value": {
+          "$case": "id",
+          "id": "websiteIntroForm"
+        }
+      }
+    },
+    {
+      "key": "websiteLabelIntroForm",
+      "namespace": "MemoryNamespace",
+      "value": "",
+      "originalProtoCase": "stringValue",
+      "protoKey": {
+        "$type": "proto.sdui.Key",
+        "value": {
+          "$case": "id",
+          "id": "websiteLabelIntroForm"
+        }
+      }
+    },
+    {
+      "key": "isRefreshRequiredAfterSaveIntroForm",
+      "namespace": "MemoryNamespace",
+      "value": false,
+      "originalProtoCase": "booleanValue",
+      "protoKey": {
+        "$type": "proto.sdui.Key",
+        "value": {
+          "$case": "id",
+          "id": "isRefreshRequiredAfterSaveIntroForm"
+        }
+      }
+    }
+  ],
+  "requestedArguments": {
+    "$type": "proto.sdui.actions.requests.RequestedArguments",
+    "requestedStateKeys": [
+      {
+        "key": {
+          "value": {
+            "$case": "id",
+            "id": "firstNameIntroForm"
+          }
+        }
+      },
+      {
+        "key": {
+          "value": {
+            "$case": "id",
+            "id": "lastNameIntroForm"
+          }
+        }
+      },
+      {
+        "key": {
+          "value": {
+            "$case": "id",
+            "id": "headlineIntroForm"
+          }
+        }
+      },
+      {
+        "key": {
+          "value": {
+            "$case": "id",
+            "id": "initialHeadlineIntroForm"
+          }
+        }
+      },
+      {
+        "key": {
+          "value": {
+            "$case": "id",
+            "id": "additionalNameIntroForm"
+          }
+        }
+      },
+      {
+        "key": {
+          "value": {
+            "$case": "id",
+            "id": "additionalNameVisibilitySettingIntroForm"
+          }
+        }
+      },
+      {
+        "key": {
+          "value": {
+            "$case": "id",
+            "id": "pronouns"
+          }
+        }
+      },
+      {
+        "key": {
+          "value": {
+            "$case": "id",
+            "id": "customPronounsIntroForm"
+          }
+        }
+      },
+      {
+        "key": {
+          "value": {
+            "$case": "id",
+            "id": "pronounVisibilitySettingIntroForm"
+          }
+        }
+      },
+      {
+        "key": {
+          "value": {
+            "$case": "id",
+            "id": "namePronunciationVisibilitySettingIntroForm"
+          }
+        }
+      },
+      {
+        "key": {
+          "value": {
+            "$case": "id",
+            "id": "currentPositionIntroForm"
+          }
+        }
+      },
+      {
+        "key": {
+          "value": {
+            "$case": "id",
+            "id": "initialPositionIdIntroForm"
+          }
+        }
+      },
+      {
+        "key": {
+          "value": {
+            "$case": "id",
+            "id": "currentEducationIntroForm"
+          }
+        }
+      },
+      {
+        "key": {
+          "value": {
+            "$case": "id",
+            "id": "initialEducationIdIntroForm"
+          }
+        }
+      },
+      {
+        "key": {
+          "value": {
+            "$case": "id",
+            "id": "industryIdIntroForm"
+          }
+        }
+      },
+      {
+        "key": {
+          "value": {
+            "$case": "id",
+            "id": "locationGeoIdIntroForm"
+          }
+        }
+      },
+      {
+        "key": {
+          "value": {
+            "$case": "id",
+            "id": "subLocationGeoIdIntroForm"
+          }
+        }
+      },
+      {
+        "key": {
+          "value": {
+            "$case": "id",
+            "id": "locationPickerTypeIntroForm"
+          }
+        }
+      },
+      {
+        "key": {
+          "value": {
+            "$case": "id",
+            "id": "cityGeoIdIntroForm"
+          }
+        }
+      },
+      {
+        "key": {
+          "value": {
+            "$case": "id",
+            "id": "postalCodeIntroForm"
+          }
+        }
+      },
+      {
+        "key": {
+          "value": {
+            "$case": "id",
+            "id": "locationIntroForm"
+          }
+        }
+      },
+      {
+        "key": {
+          "value": {
+            "$case": "id",
+            "id": "profile-pronunciation-interop-assetId"
+          }
+        }
+      },
+      {
+        "key": {
+          "value": {
+            "$case": "id",
+            "id": "showCurrentPositionIntroForm"
+          }
+        }
+      },
+      {
+        "key": {
+          "value": {
+            "$case": "id",
+            "id": "showEducationIntroForm"
+          }
+        }
+      },
+      {
+        "key": {
+          "value": {
+            "$case": "id",
+            "id": "websiteIntroForm"
+          }
+        }
+      },
+      {
+        "key": {
+          "value": {
+            "$case": "id",
+            "id": "websiteLabelIntroForm"
+          }
+        }
+      },
+      {
+        "key": {
+          "value": {
+            "$case": "id",
+            "id": "isRefreshRequiredAfterSaveIntroForm"
+          }
+        }
+      }
+    ],
+    "payload": {
+      "firstName": {
+        "key": "firstNameIntroForm",
+        "namespace": "MemoryNamespace"
+      },
+      "lastName": {
+        "key": "lastNameIntroForm",
+        "namespace": "MemoryNamespace"
+      },
+      "headline": {
+        "key": "headlineIntroForm",
+        "namespace": "MemoryNamespace"
+      },
+      "initialHeadline": {
+        "key": "initialHeadlineIntroForm",
+        "namespace": "MemoryNamespace"
+      },
+      "additionalName": {
+        "key": "additionalNameIntroForm",
+        "namespace": "MemoryNamespace"
+      },
+      "additionalNameVisibilitySetting": {
+        "key": "additionalNameVisibilitySettingIntroForm",
+        "namespace": "MemoryNamespace"
+      },
+      "pronouns": {
+        "key": "pronouns",
+        "namespace": "MemoryNamespace"
+      },
+      "customPronouns": {
+        "key": "customPronounsIntroForm",
+        "namespace": "MemoryNamespace"
+      },
+      "pronounsVisibilitySetting": {
+        "key": "pronounVisibilitySettingIntroForm",
+        "namespace": "MemoryNamespace"
+      },
+      "namePronunciationVisibilitySetting": {
+        "key": "namePronunciationVisibilitySettingIntroForm",
+        "namespace": "MemoryNamespace"
+      },
+      "currentPositionId": {
+        "key": "currentPositionIntroForm",
+        "namespace": "MemoryNamespace"
+      },
+      "initialPositionId": {
+        "key": "initialPositionIdIntroForm",
+        "namespace": "MemoryNamespace"
+      },
+      "currentEducationId": {
+        "key": "currentEducationIntroForm",
+        "namespace": "MemoryNamespace"
+      },
+      "initialEducationId": {
+        "key": "initialEducationIdIntroForm",
+        "namespace": "MemoryNamespace"
+      },
+      "industry": {
+        "key": "industryIdIntroForm",
+        "namespace": "MemoryNamespace"
+      },
+      "locationGeoId": {
+        "key": "locationGeoIdIntroForm",
+        "namespace": "MemoryNamespace"
+      },
+      "subLocationGeoId": {
+        "key": "subLocationGeoIdIntroForm",
+        "namespace": "MemoryNamespace"
+      },
+      "locationPickerType": {
+        "key": "locationPickerTypeIntroForm",
+        "namespace": "MemoryNamespace"
+      },
+      "cityGeoId": {
+        "key": "cityGeoIdIntroForm",
+        "namespace": "MemoryNamespace"
+      },
+      "postalCode": {
+        "key": "postalCodeIntroForm",
+        "namespace": "MemoryNamespace"
+      },
+      "location": {
+        "key": "locationIntroForm",
+        "namespace": "MemoryNamespace"
+      },
+      "fullNamePronunciationAssetId": {
+        "key": "profile-pronunciation-interop-assetId",
+        "namespace": "MemoryNamespace"
+      },
+      "vanityName": "ada-l",
+      "premiumUpsellEligible": true,
+      "verificationNbaEligible": false,
+      "showCurrentPosition": {
+        "key": "showCurrentPositionIntroForm",
+        "namespace": "MemoryNamespace"
+      },
+      "showEducation": {
+        "key": "showEducationIntroForm",
+        "namespace": "MemoryNamespace"
+      },
+      "initialShowOpenProfile": "true",
+      "initialShowPremiumBadge": "false",
+      "forcePremiumSettingsUpdate": false,
+      "website": {
+        "key": "websiteIntroForm",
+        "namespace": "MemoryNamespace"
+      },
+      "websiteLabel": {
+        "key": "websiteLabelIntroForm",
+        "namespace": "MemoryNamespace"
+      },
+      "isRefreshRequiredAfterSave": {
+        "key": "isRefreshRequiredAfterSaveIntroForm",
+        "namespace": "MemoryNamespace"
+      },
+      "profileId": "ACoAATESTPROFILEID",
+      "hasChanges": {
+        "key": "auto-binding-229641f1-ffca-415d-8c25-903fa21a2c17isActiveProfileFormHasChanges",
+        "namespace": "MemoryNamespace"
+      },
+      "progressIndicator": {
+        "key": "auto-binding-f848e49d-82d8-4a67-8e13-75f2b43c86fcisActiveProfileFormLoading",
+        "namespace": "MemoryNamespace"
+      },
+      "userExitedForm": {
+        "key": "auto-binding-6e0e1462-807c-49b7-aad5-bf64d1135961profileFormUserExitedForm",
+        "namespace": "MemoryNamespace"
+      },
+      "saveOrDeleteRequestPending": {
+        "key": "auto-binding-c55668e6-0640-4ec3-a76f-eef0bfbf3043profileFormSaveOrDeleteRequestPending",
+        "namespace": "MemoryNamespace"
+      },
+      "bodyDisplayBinding": {
+        "key": "auto-binding-22a9a347-8d37-4e90-b890-1eb0663038aeprofileFormBodyDisplay",
+        "namespace": "MemoryNamespace"
+      }
+    },
+    "requestMetadata": {
+      "$type": "proto.sdui.common.RequestMetadata"
+    },
+    "states": [
+      {
+        "key": "firstNameIntroForm",
+        "namespace": "MemoryNamespace",
+        "value": "Ada",
+        "originalProtoCase": "stringValue",
+        "protoKey": {
+          "$type": "proto.sdui.Key",
+          "value": {
+            "$case": "id",
+            "id": "firstNameIntroForm"
+          }
+        }
+      },
+      {
+        "key": "lastNameIntroForm",
+        "namespace": "MemoryNamespace",
+        "value": "Lovelace",
+        "originalProtoCase": "stringValue",
+        "protoKey": {
+          "$type": "proto.sdui.Key",
+          "value": {
+            "$case": "id",
+            "id": "lastNameIntroForm"
+          }
+        }
+      },
+      {
+        "key": "headlineIntroForm",
+        "namespace": "MemoryNamespace",
+        "value": "Analyst | Engines | London.",
+        "originalProtoCase": "stringValue",
+        "protoKey": {
+          "$type": "proto.sdui.Key",
+          "value": {
+            "$case": "id",
+            "id": "headlineIntroForm"
+          }
+        }
+      },
+      {
+        "key": "initialHeadlineIntroForm",
+        "namespace": "MemoryNamespace",
+        "value": "Analyst | Engines | London",
+        "originalProtoCase": "stringValue",
+        "protoKey": {
+          "$type": "proto.sdui.Key",
+          "value": {
+            "$case": "id",
+            "id": "initialHeadlineIntroForm"
+          }
+        }
+      },
+      {
+        "key": "additionalNameIntroForm",
+        "namespace": "MemoryNamespace",
+        "value": "",
+        "originalProtoCase": "stringValue",
+        "protoKey": {
+          "$type": "proto.sdui.Key",
+          "value": {
+            "$case": "id",
+            "id": "additionalNameIntroForm"
+          }
+        }
+      },
+      {
+        "key": "additionalNameVisibilitySettingIntroForm",
+        "namespace": "MemoryNamespace",
+        "value": "AdditionalNamePronunciationVisibilityEnumValue_HIDDEN",
+        "originalProtoCase": "stringValue",
+        "protoKey": {
+          "$type": "proto.sdui.Key",
+          "value": {
+            "$case": "id",
+            "id": "additionalNameVisibilitySettingIntroForm"
+          }
+        }
+      },
+      {
+        "key": "customPronounsIntroForm",
+        "namespace": "MemoryNamespace",
+        "value": "",
+        "originalProtoCase": "stringValue",
+        "protoKey": {
+          "$type": "proto.sdui.Key",
+          "value": {
+            "$case": "id",
+            "id": "customPronounsIntroForm"
+          }
+        }
+      },
+      {
+        "key": "pronounVisibilitySettingIntroForm",
+        "namespace": "MemoryNamespace",
+        "value": "PronounVisibilityEnumValue_MEMBERS",
+        "originalProtoCase": "stringValue",
+        "protoKey": {
+          "$type": "proto.sdui.Key",
+          "value": {
+            "$case": "id",
+            "id": "pronounVisibilitySettingIntroForm"
+          }
+        }
+      },
+      {
+        "key": "currentPositionIntroForm",
+        "namespace": "MemoryNamespace",
+        "value": "1111111111",
+        "originalProtoCase": "stringValue",
+        "protoKey": {
+          "$type": "proto.sdui.Key",
+          "value": {
+            "$case": "id",
+            "id": "currentPositionIntroForm"
+          }
+        }
+      },
+      {
+        "key": "initialPositionIdIntroForm",
+        "namespace": "MemoryNamespace",
+        "value": "1111111111",
+        "originalProtoCase": "stringValue",
+        "protoKey": {
+          "$type": "proto.sdui.Key",
+          "value": {
+            "$case": "id",
+            "id": "initialPositionIdIntroForm"
+          }
+        }
+      },
+      {
+        "key": "currentEducationIntroForm",
+        "namespace": "MemoryNamespace",
+        "value": "2222222222",
+        "originalProtoCase": "stringValue",
+        "protoKey": {
+          "$type": "proto.sdui.Key",
+          "value": {
+            "$case": "id",
+            "id": "currentEducationIntroForm"
+          }
+        }
+      },
+      {
+        "key": "initialEducationIdIntroForm",
+        "namespace": "MemoryNamespace",
+        "value": "2222222222",
+        "originalProtoCase": "stringValue",
+        "protoKey": {
+          "$type": "proto.sdui.Key",
+          "value": {
+            "$case": "id",
+            "id": "initialEducationIdIntroForm"
+          }
+        }
+      },
+      {
+        "key": "industryIdIntroForm",
+        "namespace": "MemoryNamespace",
+        "value": "99",
+        "originalProtoCase": "stringValue",
+        "protoKey": {
+          "$type": "proto.sdui.Key",
+          "value": {
+            "$case": "id",
+            "id": "industryIdIntroForm"
+          }
+        }
+      },
+      {
+        "key": "locationGeoIdIntroForm",
+        "namespace": "MemoryNamespace",
+        "value": 100288700,
+        "originalProtoCase": "intValue",
+        "protoKey": {
+          "$type": "proto.sdui.Key",
+          "value": {
+            "$case": "id",
+            "id": "locationGeoIdIntroForm"
+          }
+        }
+      },
+      {
+        "key": "subLocationGeoIdIntroForm",
+        "namespace": "MemoryNamespace",
+        "value": 104291169,
+        "originalProtoCase": "intValue",
+        "protoKey": {
+          "$type": "proto.sdui.Key",
+          "value": {
+            "$case": "id",
+            "id": "subLocationGeoIdIntroForm"
+          }
+        }
+      },
+      {
+        "key": "locationPickerTypeIntroForm",
+        "namespace": "MemoryNamespace",
+        "value": "PostalCode",
+        "originalProtoCase": "stringValue",
+        "protoKey": {
+          "$type": "proto.sdui.Key",
+          "value": {
+            "$case": "id",
+            "id": "locationPickerTypeIntroForm"
+          }
+        }
+      },
+      {
+        "key": "cityGeoIdIntroForm",
+        "namespace": "MemoryNamespace",
+        "value": "104291169",
+        "originalProtoCase": "stringValue",
+        "protoKey": {
+          "$type": "proto.sdui.Key",
+          "value": {
+            "$case": "id",
+            "id": "cityGeoIdIntroForm"
+          }
+        }
+      },
+      {
+        "key": "postalCodeIntroForm",
+        "namespace": "MemoryNamespace",
+        "value": "1000",
+        "originalProtoCase": "stringValue",
+        "protoKey": {
+          "$type": "proto.sdui.Key",
+          "value": {
+            "$case": "id",
+            "id": "postalCodeIntroForm"
+          }
+        }
+      },
+      {
+        "key": "locationIntroForm",
+        "namespace": "MemoryNamespace",
+        "value": "Hungary",
+        "originalProtoCase": "stringValue",
+        "protoKey": {
+          "$type": "proto.sdui.Key",
+          "value": {
+            "$case": "id",
+            "id": "locationIntroForm"
+          }
+        }
+      },
+      {
+        "key": "profile-pronunciation-interop-assetId",
+        "namespace": "MemoryNamespace",
+        "value": "",
+        "originalProtoCase": "stringValue",
+        "protoKey": {
+          "$type": "proto.sdui.Key",
+          "value": {
+            "$case": "id",
+            "id": "profile-pronunciation-interop-assetId"
+          }
+        }
+      },
+      {
+        "key": "showCurrentPositionIntroForm",
+        "namespace": "MemoryNamespace",
+        "value": "Checked",
+        "originalProtoCase": "stringValue",
+        "protoKey": {
+          "$type": "proto.sdui.Key",
+          "value": {
+            "$case": "id",
+            "id": "showCurrentPositionIntroForm"
+          }
+        }
+      },
+      {
+        "key": "showEducationIntroForm",
+        "namespace": "MemoryNamespace",
+        "value": "Checked",
+        "originalProtoCase": "stringValue",
+        "protoKey": {
+          "$type": "proto.sdui.Key",
+          "value": {
+            "$case": "id",
+            "id": "showEducationIntroForm"
+          }
+        }
+      },
+      {
+        "key": "websiteIntroForm",
+        "namespace": "MemoryNamespace",
+        "value": "",
+        "originalProtoCase": "stringValue",
+        "protoKey": {
+          "$type": "proto.sdui.Key",
+          "value": {
+            "$case": "id",
+            "id": "websiteIntroForm"
+          }
+        }
+      },
+      {
+        "key": "websiteLabelIntroForm",
+        "namespace": "MemoryNamespace",
+        "value": "",
+        "originalProtoCase": "stringValue",
+        "protoKey": {
+          "$type": "proto.sdui.Key",
+          "value": {
+            "$case": "id",
+            "id": "websiteLabelIntroForm"
+          }
+        }
+      },
+      {
+        "key": "isRefreshRequiredAfterSaveIntroForm",
+        "namespace": "MemoryNamespace",
+        "value": false,
+        "originalProtoCase": "booleanValue",
+        "protoKey": {
+          "$type": "proto.sdui.Key",
+          "value": {
+            "$case": "id",
+            "id": "isRefreshRequiredAfterSaveIntroForm"
+          }
+        }
+      }
+    ],
+    "screenId": "com.linkedin.sdui.flagshipnav.profile.ProfileEditIntroForm",
+    "knownTemplateIds": []
+  }
+}

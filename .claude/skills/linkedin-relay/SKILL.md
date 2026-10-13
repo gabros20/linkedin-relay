@@ -202,6 +202,7 @@ Writes are **not on the MCP surface**. They exist only as CLI commands:
 | `lnrelay comment <activity-urn> "<text>"` | comment on a post |
 | `lnrelay reply <comment-urn> "<text>"` | reply, nested under that comment |
 | `lnrelay edit <comment-urn \| share-urn \| ugcPost-urn> "<text>"` | change the text of their own comment or post |
+| `lnrelay edit headline\|about ("<text>" \| --file <path>)` | change their profile headline (max 220 characters) or About section |
 | `lnrelay react <urn> [--type X] [--remove]` | react to a post or comment |
 | `lnrelay delete <activity-urn \| comment-urn>` | delete their post or comment |
 
@@ -240,6 +241,10 @@ Things worth telling a user who asks:
   and not on a post that already carries images, a video, a PDF or a poll). The plan names the card
   (`card "<title>" (<site>)`), or says LinkedIn has none. If the lookup fails nothing is posted; add
   `--no-card` to post the link as plain text.
+- A profile edit's preview shows the current headline or About beside the new one. The approval is
+  bound to both, so if the profile changed after the preview, re-plan. Every other profile field
+  (name, location, current position) is sent back exactly as LinkedIn holds it, and the result is
+  read back from the profile. About edits are refused while the About section has top skills set.
 - Scheduled posts are listed by `scheduled` (MCP and CLI), not by `my-posts`.
 - Editing a post replaces its whole text and LinkedIn marks it edited; pass the urn `share` printed
   (or `shareUrn` from `my-posts`), not the activity urn. An @mention in the old text is not kept.

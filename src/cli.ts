@@ -1,3 +1,4 @@
+import { readFileSync } from 'node:fs';
 import { bool, list, num, type ParsedArgs, parseArgs, str } from './args.ts';
 import {
   auditOutcome,
@@ -233,6 +234,24 @@ async function write(command: string, args: ParsedArgs, now: number): Promise<En
   return envelope;
 }
 
+/** `--file` carries text that does not fit a shell argument, like a multi-paragraph About. */
+function edit(args: ParsedArgs, now: number, deps: ConfirmDeps): Promise<Envelope> | Envelope {
+  const [target, inline] = args.positionals;
+  if (args.flags.file === true) return err('edit', 'INVALID_INPUT', '--file needs a path');
+  const file = str(args, 'file');
+  if (file === undefined) return runEdit(target, inline, now, deps);
+  if (inline !== undefined) {
+    return err('edit', 'INVALID_INPUT', 'pass the new text inline or with --file, not both');
+  }
+  let text: string;
+  try {
+    text = readFileSync(file, 'utf-8').replace(/\n$/, '');
+  } catch {
+    return err('edit', 'INVALID_INPUT', `cannot read ${file}`);
+  }
+  return runEdit(target, text, now, deps);
+}
+
 function runWrite(
   command: string,
   args: ParsedArgs,
@@ -246,7 +265,7 @@ function runWrite(
     case 'comment':
       return runComment(first, second, now, deps);
     case 'edit':
-      return runEdit(first, second, now, deps);
+      return edit(args, now, deps);
     case 'reply':
       return runReply(first, second, now, deps);
     case 'react':

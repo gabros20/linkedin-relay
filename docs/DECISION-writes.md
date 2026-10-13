@@ -234,6 +234,27 @@ re-verified over our own client on scheduled probes; all three were cancelled, n
   (links as lnkd.in), in schedule order. `ShareBoxscheduledPostCount` is LinkedIn's own total — the
   only way to tell an empty queue from a page we no longer understand, so its absence is drift.
 
+### ✅ Profile headline and About — captured 2026-10-13
+
+Captured by editing each by one character in the browser and reverting at once (the profile was read
+back equal to the original both times):
+
+- **SDUI, not Voyager.** `identity/dash/profiles` PARTIAL_UPDATE answers 400 (mguttmann/linkedin-internal-api).
+  The forms save with `saveProfileIntroForm` and `saveProfileAboutForm`.
+- **The intro save sends the whole form**: name, headline, location (geo ids, postal code), current
+  position, education, industry, website. A hand-built body would have to know all of it.
+- **So nothing is hand-built.** Opening the form (`rsc-action/actions/navigation`, screens
+  `ProfileEditIntroForm` / `ProfileAboutForm`, payload `{ vanityName, isVanityNameResolved }`) returns
+  the save action with its `requestedStateKeys` and payload, and every field's initial value in
+  `modelStates`. The save is that action, those values, one replaced. Rebuilt this way, both captured
+  saves are reproduced exactly (tests/sdui-profile.test.ts). Keys absent from `modelStates` are
+  omitted, as the browser omits them.
+- **About carries top skills** as an expression over a client-side list that starts as
+  `initialSkills`. Only the empty list has been observed, so About edits are refused while top skills
+  are set.
+- **The About form's binding keys are per-load** (`auto-binding-<uuid>`); another reason to take them
+  from the form rather than from a capture.
+
 Not built: `MULTIPART` tickets (large files get several part URLs and a completion call that has not
 been observed). `parseUploadTicket` refuses them before anything is uploaded.
 
