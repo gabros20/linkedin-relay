@@ -1,3 +1,10 @@
+# [3.5.0](https://github.com/gabros20/linkedin-relay/compare/v3.4.0...v3.5.0) (2026-10-13)
+
+
+### Features
+
+* edit your own posts, and post polls ([7a365d5](https://github.com/gabros20/linkedin-relay/commit/7a365d518126a0f4c16821fd30ea6f22438e13af))
+
 # [3.4.0](https://github.com/gabros20/linkedin-relay/compare/v3.3.0...v3.4.0) (2026-10-13)
 
 
