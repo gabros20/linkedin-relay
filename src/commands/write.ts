@@ -23,10 +23,18 @@ import {
 import { loadSession } from '../engine/session.ts';
 import { type MediaKind, mediaKindOf } from '../engine/voyager-media.ts';
 import { replyToComment } from '../engine/voyager-reply.ts';
-import { type ApprovedMedia, mediaDigest, share as voyagerShare } from '../engine/voyager-write.ts';
+import {
+  type ApprovedMedia,
+  editPost,
+  mediaDigest,
+  type PollSpec,
+  pollDuration,
+  share as voyagerShare,
+} from '../engine/voyager-write.ts';
 import { err, ok } from '../output.ts';
 import type { Envelope } from '../types.ts';
 import type { ConfirmDeps, WritePlan } from './confirm.ts';
+import { lookup, previewLines } from './delete.ts';
 import {
   gateWrite,
   recordHarvestSpend,
@@ -277,6 +285,103 @@ function mediaFrom(
   return loaded;
 }
 
+export interface SharePayloadIn {
+  text: string;
+  visibility: 'PUBLIC' | 'CONNECTIONS';
+  media?: ApprovedMedia[];
+  scheduledAt?: number;
+  poll?: PollSpec;
+}
+
+/** The approved payload and what the owner is shown about it. */
+function sharePlan(p: {
+  author: string;
+  transport: 'oauth' | 'voyager';
+  text: string;
+  visibility: 'PUBLIC' | 'CONNECTIONS';
+  media: ApprovedMedia[] | undefined;
+  scheduledAt: number | undefined;
+  poll: PollSpec | undefined;
+  now: number;
+}): WritePlan<SharePayloadIn> {
+  const payload: SharePayloadIn = { text: p.text, visibility: p.visibility };
+  if (p.media !== undefined) payload.media = p.media;
+  if (p.scheduledAt !== undefined) payload.scheduledAt = p.scheduledAt;
+  if (p.poll !== undefined) payload.poll = p.poll;
+
+  const scheduled = p.scheduledAt !== undefined;
+  return {
+    action: scheduled ? 'schedule a post' : 'post to your feed',
+    payload,
+    summary: [
+      p.author,
+      `content  "${p.text}"`,
+      `audience ${p.visibility}`,
+      ...(p.scheduledAt === undefined ? [] : [whenLine(p.scheduledAt, p.now)]),
+      ...(p.poll === undefined ? [] : pollLines(p.poll)),
+      ...(p.media === undefined ? [] : mediaLines(p.media)),
+    ],
+    reversibility: scheduled
+      ? 'cancel any time before it publishes with `lnrelay delete <urn>`; after that it is ' +
+        'public under your name like any post'
+      : 'deletable with `lnrelay delete <urn>`, but it is public under your name the moment it ' +
+        'lands and anyone who saw it cannot un-see it',
+    transport: p.transport,
+  };
+}
+
+/** What the CLI asked for, before validation: `--poll`, `--option`s, `--duration`. */
+export interface PollRequest {
+  question: string;
+  options: string[];
+  duration?: string;
+}
+
+function pollLines(poll: PollSpec): string[] {
+  return [
+    `poll     "${poll.question}"`,
+    ...poll.options.map((o, i) => `  ${i + 1}.     ${o}`),
+    `  runs   ${poll.duration}`,
+  ];
+}
+
+/** A valid poll, undefined when none was asked for, or the refusal. */
+function pollFrom(
+  poll: PollRequest | undefined,
+  ctx: { hasMedia: boolean; scheduled: boolean; via: 'oauth' | 'voyager' | undefined },
+): PollSpec | undefined | Envelope {
+  if (poll === undefined) return undefined;
+  const refuse = (message: string, hint?: string) => err('share', 'INVALID_INPUT', message, hint);
+  if (poll.question.trim() === '') return refuse('a poll needs a question');
+  const options = poll.options.map((o) => o.trim());
+  if (options.length < 2 || options.length > 4 || options.some((o) => o === '')) {
+    return refuse('a poll needs 2 to 4 non-empty options', 'repeat --option "<text>" for each');
+  }
+  const duration = pollDuration(poll.duration ?? '1w');
+  if (duration === null) {
+    return refuse(`unknown --duration '${poll.duration}'`, 'one of: 1d, 3d, 1w, 2w');
+  }
+  if (ctx.hasMedia) return refuse('a post carries a poll or files, not both');
+  // A scheduled probe showed the poll as "1w left" a week before it would
+  // publish: its clock seems to start at creation. Until that is settled, a
+  // scheduled poll could open already closed.
+  if (ctx.scheduled) {
+    return refuse(
+      'a poll cannot be scheduled yet — its clock may start when it is created, not published',
+      'post the poll now, or schedule a text post that asks the question',
+    );
+  }
+  if (ctx.via === 'oauth') {
+    return err(
+      'share',
+      'NOT_IMPLEMENTED',
+      'polls are only implemented over the private API',
+      'drop --via oauth, or pass --via voyager',
+    );
+  }
+  return { question: poll.question.trim(), options, duration };
+}
+
 /** `--at` as epoch ms, undefined when absent, or the refusal. */
 function scheduleFrom(
   at: string | undefined,
@@ -337,6 +442,7 @@ export async function runShare(
   via?: 'oauth' | 'voyager',
   media?: MediaRequest,
   at?: string,
+  poll?: PollRequest,
 ): Promise<Envelope> {
   if (text === undefined || text.trim() === '') {
     return err('share', 'INVALID_INPUT', 'text is required', 'lnrelay share "<text>"');
@@ -349,44 +455,34 @@ export async function runShare(
 
   const loaded = mediaFrom(media, via);
   if (loaded !== undefined && 'ok' in loaded) return loaded;
+  const pollSpec = pollFrom(poll, {
+    hasMedia: loaded !== undefined,
+    scheduled: scheduledAt !== undefined,
+    via,
+  });
+  if (pollSpec !== undefined && 'ok' in pollSpec) return pollSpec;
 
   // Register + upload per file, then the post: all must fit, or uploads are orphans.
   // Media and scheduling exist only over Voyager, so either one pins it.
-  const voyagerOnly = loaded !== undefined || scheduledAt !== undefined;
+  const voyagerOnly = loaded !== undefined || scheduledAt !== undefined || pollSpec !== undefined;
   const ctx = prepare(
     'share',
     now,
     voyagerOnly ? 'voyager' : via,
-    2 * (loaded?.approved.length ?? 0) + 1,
+    2 * (loaded?.approved.length ?? 0) + (pollSpec === undefined ? 0 : 1) + 1,
   );
   if ('ok' in ctx) return ctx;
 
-  const payload: {
-    text: string;
-    visibility: 'PUBLIC' | 'CONNECTIONS';
-    media?: ApprovedMedia[];
-    scheduledAt?: number;
-  } = { text, visibility: vis };
-  if (scheduledAt !== undefined) payload.scheduledAt = scheduledAt;
-  const summary = [authorLine(ctx.transport), `content  "${text}"`, `audience ${vis}`];
-  if (scheduledAt !== undefined) summary.push(whenLine(scheduledAt, now));
-  if (loaded !== undefined) {
-    payload.media = loaded.approved;
-    summary.push(...mediaLines(loaded.approved));
-  }
-
-  const plan: WritePlan<typeof payload> = {
-    action: scheduledAt === undefined ? 'post to your feed' : 'schedule a post',
-    payload,
-    summary,
-    reversibility:
-      scheduledAt === undefined
-        ? 'deletable with `lnrelay delete <urn>`, but it is public under your name the moment it ' +
-          'lands and anyone who saw it cannot un-see it'
-        : 'cancel any time before it publishes with `lnrelay delete <urn>`; after that it is ' +
-          'public under your name like any post',
+  const plan = sharePlan({
+    author: authorLine(ctx.transport),
     transport: ctx.transport.kind,
-  };
+    text,
+    visibility: vis,
+    media: loaded?.approved,
+    scheduledAt,
+    poll: pollSpec,
+    now,
+  });
 
   const gated = await gate('share', plan, ctx, deps);
   if ('ok' in gated) return gated;
@@ -407,6 +503,55 @@ export async function runShare(
     url: 'url' in result ? result.url : undefined,
     note: 'note' in result ? result.note : ctx.note,
   });
+}
+
+/**
+ * Replace the text of one of the owner's own posts. The preview shows the text
+ * being replaced when the post is among recent ones, so the owner approves a
+ * change, not just a new string.
+ */
+async function runEditPost(
+  urn: string,
+  text: string,
+  now: number,
+  deps: ConfirmDeps,
+): Promise<Envelope> {
+  const unapprovable = refuseUnapprovable('edit', 'editing', deps);
+  if (unapprovable !== null) return unapprovable;
+
+  const ctx = prepare('edit', now, 'voyager');
+  if ('ok' in ctx) return ctx;
+  if (ctx.transport.kind !== 'voyager') {
+    return err(
+      'edit',
+      'NOT_IMPLEMENTED',
+      'editing a post is only implemented over the private API',
+    );
+  }
+
+  const before = await lookup(urn, true);
+  const plan: WritePlan<{ urn: string; text: string }> = {
+    action: 'edit your post',
+    payload: { urn, text },
+    summary: [
+      authorLine(ctx.transport),
+      `post     ${urn}`,
+      ...previewLines(before).map((l) => l.replace(/^content /, 'was     ')),
+      `new text "${text}"`,
+    ],
+    reversibility:
+      'editable again, but the previous text is NOT kept here, LinkedIn marks the post as ' +
+      'edited, and an @mention in the old text is not carried over',
+    transport: 'voyager',
+  };
+
+  const gated = await gate('edit', plan, ctx, deps);
+  if ('ok' in gated) return gated;
+
+  const result = await editPost(gated.confirmed as never, createLiveClient(ctx.transport.session));
+  return result.ok
+    ? ok('edit', { edited: urn })
+    : err('edit', result.code, result.message, result.hint);
 }
 
 /** The numeric id inside an activity urn, or null. */
@@ -556,12 +701,20 @@ export async function runEdit(
   }
   const ref: CommentRef | null = parseCommentUrn(commentUrn);
   if (ref === null) {
+    // Like delete, edit routes by the KIND of urn: a comment and a post are
+    // edited over different surfaces, and each is unambiguous.
+    if (/^urn:li:(share|ugcPost):\d+$/.test(commentUrn)) {
+      return runEditPost(commentUrn, text, now, deps);
+    }
     return err(
       'edit',
       'INVALID_INPUT',
-      `'${commentUrn}' is not a comment urn`,
-      'Only comments can be edited here — a published post cannot. Get the urn from ' +
-        '`lnrelay post <activity-urn>`.',
+      `'${commentUrn}' is neither a comment urn nor a post's share/ugcPost urn`,
+      /^urn:li:activity:/.test(commentUrn)
+        ? 'A post is edited by the urn it was created as, not its activity urn. `lnrelay share` ' +
+            'prints it, and `lnrelay my-posts` lists it as shareUrn.'
+        : 'Pass a comment urn (from `lnrelay post <activity-urn>`) or a post urn ' +
+            '(urn:li:share:… / urn:li:ugcPost:…).',
     );
   }
 

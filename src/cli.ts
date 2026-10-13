@@ -26,6 +26,7 @@ import { findCommand, helpText } from './commands/registry.ts';
 import { runSync } from './commands/sync.ts';
 import {
   type MediaRequest,
+  type PollRequest,
   runComment,
   runEdit,
   runReact,
@@ -267,7 +268,17 @@ function share(args: ParsedArgs, now: number, deps: ConfirmDeps): Promise<Envelo
   }
   // A bare `--image` parses as `true`; ignoring it would publish the text
   // without the picture the user asked for. The same goes for every value flag.
-  for (const flag of ['image', 'video', 'document', 'alt', 'title', 'at']) {
+  for (const flag of [
+    'image',
+    'video',
+    'document',
+    'alt',
+    'title',
+    'at',
+    'poll',
+    'option',
+    'duration',
+  ]) {
     if (args.flags[flag] === true) {
       return err('share', 'INVALID_INPUT', `--${flag} needs a value`);
     }
@@ -297,6 +308,17 @@ function share(args: ParsedArgs, now: number, deps: ConfirmDeps): Promise<Envelo
       '--alt and --title describe an attached file, and none was given',
     );
   }
+  const question = str(args, 'poll');
+  const options = list(args, 'option');
+  if (question === undefined && (options.length > 0 || str(args, 'duration') !== undefined)) {
+    return err('share', 'INVALID_INPUT', '--option and --duration belong to a --poll "<question>"');
+  }
+  let poll: PollRequest | undefined;
+  if (question !== undefined) {
+    poll = { question, options };
+    const duration = str(args, 'duration');
+    if (duration !== undefined) poll.duration = duration;
+  }
   return runShare(
     args.positionals[0],
     str(args, 'visibility') ?? 'public',
@@ -305,5 +327,6 @@ function share(args: ParsedArgs, now: number, deps: ConfirmDeps): Promise<Envelo
     surface,
     media,
     str(args, 'at'),
+    poll,
   );
 }

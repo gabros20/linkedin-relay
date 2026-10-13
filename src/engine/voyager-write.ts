@@ -48,6 +48,7 @@
 import { createHash } from 'node:crypto';
 import type { ConfirmedWrite } from '../commands/confirm.ts';
 import type { Client } from './client.ts';
+import { contractFor } from './contracts.ts';
 import { type MediaKind, uploadMedia } from './voyager-media.ts';
 
 const VOYAGER = 'https://www.linkedin.com/voyager/api';
@@ -71,7 +72,8 @@ export interface SharePayload {
 }
 
 /** The share-media `category` for each upload kind. A document is not "DOCUMENT". */
-const CATEGORY: Record<MediaKind, string> = {
+const CATEGORY: Record<MediaKind | 'POLL', string> = {
+  POLL: 'URN_REFERENCE',
   IMAGE: 'IMAGE',
   VIDEO: 'VIDEO',
   DOCUMENT: 'NATIVE_DOCUMENT',
@@ -88,7 +90,7 @@ const CATEGORY: Record<MediaKind, string> = {
 export function sharePayload(
   text: string,
   visibility: 'PUBLIC' | 'CONNECTIONS',
-  media: { category: MediaKind; urn: string; alt?: string; title?: string }[] = [],
+  media: { category: MediaKind | 'POLL'; urn: string; alt?: string; title?: string }[] = [],
   scheduledAt?: number,
 ): SharePayload {
   // LinkedIn publishes a SCHEDULED post itself at scheduledAt (verified 2026-10-13).
@@ -216,6 +218,7 @@ export async function share(
     media?: ApprovedMedia[];
     /** Epoch ms; makes this a scheduled post. */
     scheduledAt?: number;
+    poll?: PollSpec;
   }>,
   client: Client,
   bytes?: Uint8Array[],
@@ -237,7 +240,15 @@ export async function share(
     }
   }
 
-  const media: { category: MediaKind; urn: string; alt?: string; title?: string }[] = [];
+  const media: { category: MediaKind | 'POLL'; urn: string; alt?: string; title?: string }[] = [];
+
+  // A poll is created first, as its own object, then referenced like media.
+  const { poll } = confirmed.payload;
+  if (poll !== undefined) {
+    const created = await createPoll(poll, client);
+    if (!created.ok) return created;
+    media.push({ category: 'POLL', urn: created.urn });
+  }
   for (const [i, a] of approved.entries()) {
     const uploaded = await uploadMedia(
       {
@@ -289,4 +300,128 @@ export async function share(
           'do NOT re-run this command on the assumption it failed, or you will post twice.',
       }
     : { ok: true, id };
+}
+
+// ─── Editing a post ───────────────────────────────────────────────────────────
+//
+// VERIFIED LIVE 2026-10-13: a Rest.li partial update on normShares/<urn>
+// replaced a post's text, and the response returned the post as LinkedIn then
+// held it, media untouched. The same resource `delete` uses, so no rotating
+// queryId is involved. It replaces the WHOLE text: an @mention in the old text
+// is not carried over, because `attributes` is sent empty.
+
+export function editPostBody(text: string) {
+  return { patch: { $set: { commentaryV2: { text, attributes: [] } } } };
+}
+
+export async function editPost(
+  confirmed: ConfirmedWrite<{ urn: string; text: string }>,
+  client: Client,
+): Promise<WriteResult> {
+  const { urn, text } = confirmed.payload;
+  const result = await client.request({
+    url: deleteUrl(urn),
+    method: 'POST',
+    body: editPostBody(text),
+    spendClass: 'write',
+    operation: 'edit-post',
+  });
+  if (!result.ok) {
+    const out: WriteResult = { ok: false, code: result.code, message: result.message };
+    if (result.hint !== undefined) out.hint = result.hint;
+    return out;
+  }
+  const held = (result.json as { data?: { commentary?: { text?: unknown } } } | null)?.data
+    ?.commentary?.text;
+  if (held !== text) {
+    return {
+      ok: false,
+      code: 'SCHEMA_DRIFT',
+      message: 'LinkedIn answered, but the post does not hold the text that was sent',
+      hint: `Look at the post before trying again: \`lnrelay post\` or the browser. ${urn}`,
+    };
+  }
+  return { ok: true, id: urn };
+}
+
+// ─── Polls ────────────────────────────────────────────────────────────────────
+//
+// VERIFIED LIVE 2026-10-13: the PollsPollSummary mutation returned a
+// pollSummary urn, and normShares with media { category: URN_REFERENCE } posted
+// it — LinkedIn's own scheduled list showed it as a poll. Creating the poll
+// publishes nothing; it is an orphan until a post references it.
+
+export type PollDuration = 'ONE_DAY' | 'THREE_DAYS' | 'ONE_WEEK' | 'TWO_WEEKS';
+
+export interface PollSpec {
+  question: string;
+  options: string[];
+  duration: PollDuration;
+}
+
+const DURATIONS: Record<string, PollDuration> = {
+  '1d': 'ONE_DAY',
+  '3d': 'THREE_DAYS',
+  '1w': 'ONE_WEEK',
+  '2w': 'TWO_WEEKS',
+};
+
+/** The `--duration` shorthand as LinkedIn's enum, or null. */
+export function pollDuration(shorthand: string): PollDuration | null {
+  return DURATIONS[shorthand] ?? null;
+}
+
+/** The first GraphQL error message, wherever this envelope put it. */
+function gqlError(json: unknown): string | null {
+  const j = json as { errors?: { message?: string }[]; data?: { errors?: { message?: string }[] } };
+  const errors = j?.errors ?? j?.data?.errors;
+  return errors !== undefined && errors.length > 0 ? (errors[0]?.message ?? 'GraphQL error') : null;
+}
+
+/** The created poll's urn, or null — including when the 200 carries errors. */
+export function pollUrnOf(json: unknown): string | null {
+  if (gqlError(json) !== null) return null;
+  return JSON.stringify(json ?? null).match(/urn:li:fsd_pollSummary:\d+/)?.[0] ?? null;
+}
+
+async function createPoll(
+  poll: PollSpec,
+  client: Client,
+): Promise<
+  { ok: true; urn: string } | { ok: false; code: string; message: string; hint?: string }
+> {
+  const contract = contractFor('createPoll');
+  if (contract?.queryId === undefined) {
+    return { ok: false, code: 'NOT_IMPLEMENTED', message: 'no verified poll contract' };
+  }
+  const result = await client.request({
+    url: `${contract.path}?action=execute&queryId=${contract.queryId}`,
+    method: 'POST',
+    body: { variables: { poll }, queryId: contract.queryId, includeWebMetadata: true },
+    spendClass: 'write',
+    operation: 'create-poll',
+  });
+  if (!result.ok)
+    return { ok: false, code: result.code, message: `${result.message}; nothing was posted` };
+
+  // GraphQL answers a validation failure with HTTP 200 — read the body, or a
+  // refused poll would be reported as created.
+  const error = gqlError(result.json);
+  if (error !== null) {
+    return {
+      ok: false,
+      code: 'INVALID_INPUT',
+      message: `LinkedIn refused the poll: ${error}; nothing was posted`,
+    };
+  }
+  const urn = pollUrnOf(result.json);
+  if (urn === null) {
+    return {
+      ok: false,
+      code: 'SCHEMA_DRIFT',
+      message: 'the poll mutation answered without a poll urn; nothing was posted',
+      hint: 'The queryId may have rotated — recapture it (docs/ENGINE-RESEARCH.md).',
+    };
+  }
+  return { ok: true, urn };
 }

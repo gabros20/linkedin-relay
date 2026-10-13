@@ -194,6 +194,18 @@ describe('flag wiring', () => {
     expect(e.error.message).toContain('gone.pdf');
   });
 
+  test('--option without --poll is refused', async () => {
+    const e = await dispatch(['share', 'hi', '--option', 'a', '--option', 'b'], T0);
+    if (e.ok) throw new Error('expected refusal');
+    expect(e.error.message).toContain('--poll');
+  });
+
+  test('--poll reaches the runner with its options', async () => {
+    const e = await dispatch(['share', 'hi', '--poll', 'Q?', '--option', 'only one'], T0);
+    if (e.ok) throw new Error('expected refusal');
+    expect(e.error.message).toContain('2 to 4');
+  });
+
   test('--image reaches the runner', async () => {
     const e = await dispatch(['share', 'hi', '--image', join(dir, 'missing.png')], T0);
     if (e.ok) throw new Error('expected refusal');

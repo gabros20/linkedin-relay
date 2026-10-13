@@ -1,8 +1,12 @@
 import { describe, expect, test } from 'bun:test';
 import type { ConfirmedWrite } from '../src/commands/confirm.ts';
 import {
+  editPost,
+  editPostBody,
   extractShareUrn,
   mediaDigest,
+  pollDuration,
+  pollUrnOf,
   SHARE_URL,
   share,
   sharePayload,
@@ -379,5 +383,118 @@ describe('share carries what was approved into the body', () => {
       category: 'NATIVE_DOCUMENT',
       title: { text: 'Q3 review' },
     });
+  });
+});
+
+// Verified live 2026-10-13: a Rest.li partial update on normShares/<urn>
+// replaced the text and the response echoed it, media untouched.
+describe('editing a post', () => {
+  test('the body replaces only the text', () => {
+    expect(editPostBody('new words')).toEqual({
+      patch: { $set: { commentaryV2: { text: 'new words', attributes: [] } } },
+    });
+  });
+
+  test('posts the patch to that post, urn encoded', async () => {
+    const c = client({ data: { commentary: { text: 'new words' } } });
+    const r = await editPost(confirmed({ urn: 'urn:li:share:7', text: 'new words' }), c as never);
+    expect(r.ok).toBe(true);
+    expect(c.sent[0]?.method).toBe('POST');
+    expect(c.sent[0]?.url).toBe(`${SHARE_URL}/${encodeURIComponent('urn:li:share:7')}`);
+    expect(c.sent[0]?.body).toEqual(editPostBody('new words'));
+  });
+
+  // The response carries the post as LinkedIn now holds it. If that is not the
+  // text we sent, saying "edited" would be the reassuring lie.
+  test('a response holding different text is not reported as success', async () => {
+    const c = client({ data: { commentary: { text: 'something else' } } });
+    const r = await editPost(confirmed({ urn: 'urn:li:share:7', text: 'new words' }), c as never);
+    expect(r.ok).toBe(false);
+  });
+
+  test('a refused edit is an error', async () => {
+    const c = client(null, false);
+    const r = await editPost(confirmed({ urn: 'urn:li:share:7', text: 'x' }), c as never);
+    expect(r.ok).toBe(false);
+  });
+});
+
+// Verified live 2026-10-13: the mutation returned a pollSummary urn, and a
+// scheduled normShares referencing it showed as a poll in LinkedIn's own list.
+describe('polls', () => {
+  test('durations map to the enum LinkedIn takes, and only those', () => {
+    expect(pollDuration('1d')).toBe('ONE_DAY');
+    expect(pollDuration('3d')).toBe('THREE_DAYS');
+    expect(pollDuration('1w')).toBe('ONE_WEEK');
+    expect(pollDuration('2w')).toBe('TWO_WEEKS');
+    expect(pollDuration('5d')).toBeNull();
+  });
+
+  test('the poll urn is read from the mutation result', () => {
+    const json = {
+      data: {
+        data: { doCreatePollFeedDashPollsPollSummary: { '*result': 'urn:li:fsd_pollSummary:42' } },
+      },
+    };
+    expect(pollUrnOf(json)).toBe('urn:li:fsd_pollSummary:42');
+  });
+
+  // GraphQL reports a validation failure as HTTP 200 with an errors array.
+  test('a 200 carrying errors yields no poll urn', () => {
+    expect(pollUrnOf({ data: { errors: [{ message: 'bad' }] } })).toBeNull();
+    expect(pollUrnOf({ errors: [{ message: 'bad' }] })).toBeNull();
+  });
+
+  const POLL = {
+    question: 'Which layer?',
+    options: ['Discover', 'Guard'],
+    duration: 'ONE_WEEK' as const,
+  };
+
+  function scripted(...replies: { ok: boolean; json?: unknown }[]) {
+    const sent: { url: string; method?: string; body?: unknown }[] = [];
+    return {
+      sent,
+      request: async (spec: (typeof sent)[number]) => {
+        sent.push(spec);
+        const r = replies.shift();
+        return r?.ok
+          ? { ok: true as const, json: r.json, classification: {} as never }
+          : { ok: false as const, code: 'BLOCKED', message: 'refused' };
+      },
+    };
+  }
+
+  test('creates the poll, then posts it as an URN_REFERENCE', async () => {
+    const c = scripted(
+      { ok: true, json: { data: { data: { x: { '*result': 'urn:li:fsd_pollSummary:42' } } } } },
+      { ok: true, json: { data: { status: { urn: 'urn:li:ugcPost:5' } } } },
+    );
+    const r = await share(
+      confirmed({ text: 'vote', visibility: 'PUBLIC' as const, poll: POLL }),
+      c as never,
+    );
+    expect(r).toEqual({ ok: true, id: 'urn:li:ugcPost:5' });
+    expect(c.sent[0]?.url).toContain('queryId=voyagerFeedDashPollsPollSummary.');
+    expect(c.sent[0]?.body).toMatchObject({ variables: { poll: POLL } });
+    const posted = c.sent[1]?.body as { media: unknown[] } | undefined;
+    expect(posted?.media).toEqual([
+      { category: 'URN_REFERENCE', mediaUrn: 'urn:li:fsd_pollSummary:42', tapTargets: [] },
+    ]);
+  });
+
+  test('a poll LinkedIn would not create posts nothing', async () => {
+    const c = scripted({
+      ok: true,
+      json: { data: { errors: [{ message: 'question too long' }] } },
+    });
+    const r = await share(
+      confirmed({ text: 'vote', visibility: 'PUBLIC' as const, poll: POLL }),
+      c as never,
+    );
+    expect(r.ok).toBe(false);
+    if (r.ok) throw new Error('unreachable');
+    expect(r.message).toContain('question too long');
+    expect(c.sent).toHaveLength(1);
   });
 });

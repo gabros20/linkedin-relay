@@ -525,3 +525,93 @@ describe('scheduling and documents', () => {
     expect(e.error.hint).toContain('--document');
   });
 });
+
+describe('polls', () => {
+  const planning = { ...noTty, approval: { mode: 'agent' as const, planOnly: true } };
+  const poll = (over: Partial<{ question: string; options: string[]; duration: string }> = {}) => ({
+    question: 'Which layer matters most?',
+    options: ['Discover', 'Measure', 'Guard'],
+    ...over,
+  });
+
+  test('the plan shows the question, each option and the duration', async () => {
+    withSession();
+    const e = await runShare(
+      'vote',
+      'public',
+      T0,
+      planning,
+      undefined,
+      undefined,
+      undefined,
+      poll(),
+    );
+    if (!e.ok) throw new Error(e.error.message);
+    const preview = (e.data as { preview: string[] }).preview.join('\n');
+    expect(preview).toContain('Which layer matters most?');
+    expect(preview).toContain('Guard');
+    expect(preview).toContain('ONE_WEEK');
+  });
+
+  test('fewer than two or more than four options is refused', async () => {
+    withSession();
+    for (const options of [['only'], ['a', 'b', 'c', 'd', 'e']]) {
+      const e = await runShare(
+        'v',
+        'public',
+        T0,
+        planning,
+        undefined,
+        undefined,
+        undefined,
+        poll({ options }),
+      );
+      if (e.ok) throw new Error(`expected refusal for ${options.length}`);
+      expect(e.error.code).toBe('INVALID_INPUT');
+    }
+  });
+
+  test('an unknown duration is refused and lists the valid ones', async () => {
+    withSession();
+    const e = await runShare(
+      'v',
+      'public',
+      T0,
+      planning,
+      undefined,
+      undefined,
+      undefined,
+      poll({ duration: '5d' }),
+    );
+    if (e.ok) throw new Error('expected refusal');
+    expect(e.error.hint).toContain('2w');
+  });
+
+  // Seen on a scheduled probe: the poll read "1w left" a week before it would
+  // publish — its clock may run from creation. Refuse until that is settled.
+  test('a scheduled poll is refused, and says why', async () => {
+    withSession();
+    const at = new Date(T0 + 7 * 86_400_000).toISOString();
+    const e = await runShare('v', 'public', T0, planning, undefined, undefined, at, poll());
+    if (e.ok) throw new Error('expected refusal');
+    expect(e.error.message).toContain('poll');
+  });
+
+  test('a poll with an attached file is refused', async () => {
+    withSession();
+    const img = join(dir, 'a.png');
+    writeFileSync(img, new Uint8Array([1]));
+    const e = await runShare(
+      'v',
+      'public',
+      T0,
+      planning,
+      undefined,
+      { flag: 'image', paths: [img] },
+      undefined,
+      poll(),
+    );
+    if (e.ok) throw new Error('expected refusal');
+    expect(e.error.code).toBe('INVALID_INPUT');
+  });
+});

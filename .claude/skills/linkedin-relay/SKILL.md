@@ -187,10 +187,10 @@ Writes are **not on the MCP surface**. They exist only as CLI commands:
 
 | command | does |
 |---|---|
-| `lnrelay share "<text>" [--image <path> ... [--alt "…" ...] \| --video <path> \| --document <pdf> --title "…"] [--at "YYYY-MM-DD HH:MM"]` | post to their own feed — up to 20 images, one video, or one PDF; `--at` schedules it and LinkedIn publishes it then |
+| `lnrelay share "<text>" [--image <path> ... [--alt "…" ...] \| --video <path> \| --document <pdf> --title "…"] [--at "YYYY-MM-DD HH:MM"] [--poll "…" --option "…" --option "…" [--duration 1w]]` | post to their own feed — up to 20 images, one video, or one PDF; `--at` schedules it and LinkedIn publishes it then |
 | `lnrelay comment <activity-urn> "<text>"` | comment on a post |
 | `lnrelay reply <comment-urn> "<text>"` | reply, nested under that comment |
-| `lnrelay edit <comment-urn> "<text>"` | change the text of their own comment |
+| `lnrelay edit <comment-urn \| share-urn \| ugcPost-urn> "<text>"` | change the text of their own comment or post |
 | `lnrelay react <urn> [--type X] [--remove]` | react to a post or comment |
 | `lnrelay delete <activity-urn \| comment-urn>` | delete their post or comment |
 
@@ -225,6 +225,9 @@ Things worth telling a user who asks:
   needed at all: `docs/DECISION-writes.md`.
 - `--image` / `--video` upload over the private API only; `--via oauth` with media is refused. A
   video post comes back as a `urn:li:ugcPost:` rather than `urn:li:share:`.
+- Editing a post replaces its whole text and LinkedIn marks it edited; pass the urn `share` printed
+  (or `shareUrn` from `my-posts`), not the activity urn. An @mention in the old text is not kept.
+- A poll takes 2–4 options and runs 1d/3d/1w/2w; it cannot be scheduled yet.
 - A scheduled post gets its urn immediately; `lnrelay delete <urn>` cancels it before it publishes.
   `--at` without an offset is the machine's local time — say the time back to the user in the
   preview's own words, which name the timezone.

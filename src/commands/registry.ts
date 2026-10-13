@@ -246,13 +246,15 @@ export const COMMANDS: CommandDef[] = [
     usage:
       'lnrelay share "<text>" [--image <path> ... [--alt "<text>" ...] | --video <path>\n' +
       '       | --document <pdf> --title "<title>"] [--at "YYYY-MM-DD HH:MM"]\n' +
+      '       [--poll "<question>" --option "<a>" --option "<b>" ... [--duration 1d|3d|1w|2w]]\n' +
       '       [--visibility public|connections] [--via oauth|voyager] [--plan | --confirm <token>]\n' +
       '       Approval follows `lnrelay approval`: --plan previews and returns a token without\n' +
       '       sending; --confirm <token> sends it in agent mode. In interactive mode it asks at a\n' +
       '       terminal. --image repeats for up to 20, --alt pairs with it by position (--alt ""\n' +
       '       skips one). --at schedules it (local time, or ISO 8601 with an offset; at least 10\n' +
       '       minutes out); LinkedIn publishes it then, and `lnrelay delete <urn>` cancels it.\n' +
-      '       Files, documents and scheduling go over the private API only.',
+      '       --poll takes 2-4 --option and cannot be scheduled yet. Files, documents, polls and\n' +
+      '       scheduling go over the private API only.',
     audience: ['cli'],
     risk: 'write',
     implemented: true,
@@ -299,9 +301,12 @@ export const COMMANDS: CommandDef[] = [
     name: 'edit',
     cost: '1 read + 1 write',
     summary:
-      'Change the text of a comment you wrote. Its own verb, so a comment urn can never be ' +
-      'mistaken for something to comment ON.',
-    usage: 'lnrelay edit <comment-urn> "<text>"',
+      'Change the text of a comment or post you wrote. Its own verb, so a comment urn can never ' +
+      'be mistaken for something to comment ON.',
+    usage:
+      'lnrelay edit <comment-urn | share-urn | ugcPost-urn> "<text>"\n' +
+      '       A post is edited by the urn it was created as (`share` prints it; `my-posts` lists\n' +
+      '       it as shareUrn), not its activity urn. The whole text is replaced.',
     audience: ['cli'],
     risk: 'write',
     implemented: true,

@@ -85,7 +85,7 @@ export function previewLines(post: Shaped | undefined): string[] {
 }
 
 /** Look the post up so the prompt can show it. A failed read is not fatal. */
-async function lookup(urn: string, quiet: boolean): Promise<Shaped | undefined> {
+export async function lookup(urn: string, quiet: boolean): Promise<Shaped | undefined> {
   const session = loadSession();
   if (session.state !== 'ok') return undefined;
   const engine = createEngine(session.session, undefined, quiet);

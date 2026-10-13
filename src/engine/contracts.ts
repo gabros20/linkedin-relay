@@ -109,6 +109,18 @@ export const CONTRACTS: Record<string, OperationContract> = {
   // KNOWN INCOMPLETE (2026-08-13): with the namespace fixed this returns the
   // owner's posts, but a post created minutes earlier did not appear here, nor
   // in `feed`, over ~1.5 hours. Whether that is an indexing lag or a coverage
+  // A WRITE contract: creates a poll object that a post then references. The
+  // queryId is from mguttmann/linkedin-internal-api (docs/24) and returned a
+  // pollSummary urn on this machine on the date below.
+  createPoll: {
+    name: 'createPoll',
+    transport: 'voyager-graphql',
+    path: `${VOYAGER}/graphql`,
+    queryId: 'voyagerFeedDashPollsPollSummary.f8ad99cf791d833d37dddb373d06fb3a',
+    provenance: 'verified',
+    capturedAt: '2026-10-13',
+  },
+
   // limit of this projection is UNRESOLVED — do not treat this endpoint as an
   // authoritative "all my posts" until it is settled.
   myPosts: {

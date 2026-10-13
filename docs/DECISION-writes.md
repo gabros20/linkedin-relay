@@ -197,6 +197,22 @@ Still unknown: the Voyager spellings. `normShares` already sends `postState: PUB
 the title goes. Both probes are safe in the sense that matters: a state of SCHEDULED cannot publish
 immediately, and Rest.li answers an unknown field with a 400 before creating anything.
 
+### ✅ Edit a post, and polls — verified 2026-10-13
+
+Both from mguttmann/linkedin-internal-api (docs/24), each re-verified here on a SCHEDULED probe so
+nothing published, then end to end on a real connections-only poll post: posted, edited (the page
+read "Edited", the new text, the poll intact with "1d left"), then deleted:
+
+- **Edit:** `POST normShares/<share|ugcPost urn>` with `{ patch: { $set: { commentaryV2: { text,
+  attributes: [] } } } }` — Rest.li partial update on the resource `delete` already uses, so no
+  queryId. The response returns the post as LinkedIn now holds it; `edit` refuses to report success
+  unless that text is the text sent. The activity urn is refused: it names the feed entry, not the post.
+- **Poll:** GraphQL `voyagerFeedDashPollsPollSummary` creates it (`{ poll: { question, duration,
+  options } }`, returns `urn:li:fsd_pollSummary:<id>`; a 200 can carry `errors`, which are read), then
+  normShares posts it as `media: [{ category: URN_REFERENCE, mediaUrn }]`. On the scheduled probe the
+  poll read "1w left" a week before it would publish — its clock appears to start at creation — so
+  scheduling a poll is refused until that is measured.
+
 Not built: `MULTIPART` tickets (large files get several part URLs and a completion call that has not
 been observed). `parseUploadTicket` refuses them before anything is uploaded.
 

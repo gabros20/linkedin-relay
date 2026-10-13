@@ -38,10 +38,25 @@ describe('editing has its own verb', () => {
     expect(e.error.hint).toContain('lnrelay edit');
   });
 
-  test('`edit` rejects a POST urn — you cannot edit a post here', async () => {
+  // A post IS editable now (2026-10-13), but only by its share/ugcPost urn —
+  // the activity urn names the feed entry, not the post resource the edit hits.
+  test('`edit` refuses an ACTIVITY urn and says which urn it needs', async () => {
     const e = await dispatch(['edit', POST, 'text'], T0);
     if (e.ok) throw new Error('expected refusal');
     expect(e.error.code).toBe('INVALID_INPUT');
+    expect(e.error.hint).toContain('shareUrn');
+  });
+
+  test('`edit` with a share urn takes the post path, and stops at auth or the gate', async () => {
+    const e = await dispatch(['edit', 'urn:li:share:7515757346544091136', 'new text'], T0);
+    if (e.ok) throw new Error('expected a refusal without a session');
+    expect(['CONFIRMATION_REQUIRED', 'AUTH_FAILED']).toContain(e.error.code);
+  });
+
+  test('`edit` with a ugcPost urn takes the post path too', async () => {
+    const e = await dispatch(['edit', 'urn:li:ugcPost:7515764364323409920', 'new text'], T0);
+    if (e.ok) throw new Error('expected a refusal without a session');
+    expect(['CONFIRMATION_REQUIRED', 'AUTH_FAILED']).toContain(e.error.code);
   });
 
   test('`edit` requires the new text', async () => {
