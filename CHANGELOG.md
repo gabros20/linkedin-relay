@@ -1,3 +1,10 @@
+# [3.7.0](https://github.com/gabros20/linkedin-relay/compare/v3.6.1...v3.7.0) (2026-10-13)
+
+
+### Features
+
+* **edit:** change your profile headline and About ([3117f34](https://github.com/gabros20/linkedin-relay/commit/3117f348235d96493ef4d96c9b3b2b3cda179ca6))
+
 ## [3.6.1](https://github.com/gabros20/linkedin-relay/compare/v3.6.0...v3.6.1) (2026-10-13)
 
 
