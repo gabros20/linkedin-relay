@@ -76,3 +76,28 @@ describe('the tools an agent gets', () => {
     }
   });
 });
+
+// The generic search returns no job cards; jobs have their own tool. Offering
+// `kind: jobs` here would hand an agent an empty list that looks like success.
+describe('jobs are searched through `jobs`, not `search`', () => {
+  const tool = (name: string) =>
+    (
+      buildServer() as unknown as {
+        _registeredTools: Record<
+          string,
+          { inputSchema: { safeParse(v: unknown): { success: boolean } } }
+        >;
+      }
+    )._registeredTools[name];
+
+  test('search does not take kind jobs', () => {
+    expect(tool('search')?.inputSchema.safeParse({ kind: 'jobs', query: 'x' }).success).toBe(false);
+    expect(tool('search')?.inputSchema.safeParse({ kind: 'people', query: 'x' }).success).toBe(
+      true,
+    );
+  });
+
+  test('jobs takes several keyword sets', () => {
+    expect(tool('jobs')?.inputSchema.safeParse({ keywords: ['a', 'b'] }).success).toBe(true);
+  });
+});

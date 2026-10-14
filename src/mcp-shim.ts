@@ -104,7 +104,7 @@ export function buildServer(): McpServer {
 
   server.tool(
     'search',
-    'Search LinkedIn people, companies or jobs. CHEAP — this is the net. Rows already carry name, ' +
+    'Search LinkedIn people or companies (for jobs use `jobs`). CHEAP — this is the net. Rows already carry name, ' +
       'headline, location and url, so RANK ON THOSE and deep-read only 2-3 finalists with ' +
       '`profile`. Calling profile on every result burns a day of budget in one request. ' +
       "`meta.claimedCount` is LinkedIn's total for the query (often millions), NOT how many you " +
@@ -112,7 +112,7 @@ export function buildServer(): McpServer {
       'people return as name "LinkedIn Member" with a /headless url — that is real LinkedIn ' +
       `behaviour for this account, not a failure. ${READING_CONTRACT} ${NO_RETRY}`,
     {
-      kind: z.enum(['people', 'companies', 'jobs']),
+      kind: z.enum(['people', 'companies']),
       query: z.string().min(1).describe('search terms'),
       limit: z.number().int().min(1).max(25).optional().describe('default 10'),
     },

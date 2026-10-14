@@ -89,7 +89,7 @@ export const COMMANDS: CommandDef[] = [
   {
     name: 'search',
     cost: 'cheap — the net',
-    summary: 'Search people, companies or jobs. Cast wide, then deep-read the finalists.',
+    summary: 'Search people or companies. Cast wide, then deep-read the finalists. Jobs: `jobs`.',
     usage:
       'lnrelay search people|companies|jobs "<query>" [--limit N]   (jobs: see `jobs`)\n' +
       '       [--compact | --fields a,b,c] [--retain] [--raw]',
