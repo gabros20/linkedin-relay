@@ -327,6 +327,8 @@ data point against that concern, though one post is not a sample.
   what §5 exists to prevent.
 - **Connect / message / invitations.** Cut by design, permanently. This is where the enforcement
   reports cluster and where a bug is third-party-visible and unrecoverable.
+  *2026-10-14:* reading messages and drafting replies locally now exist (`inbox`, `messages`,
+  `draft`; DESIGN.md §cuts). Sending is still cut: a draft is never sent by this tool.
 
 ---
 

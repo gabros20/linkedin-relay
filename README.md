@@ -24,7 +24,7 @@ lnrelay local "rust"                       # then search it offline, free
 
 ## As an MCP server
 
-Twenty-two read-only tools, so an agent does the reading. Writes are not on that surface at any price.
+Twenty-six tools, none of which writes to LinkedIn, so an agent does the reading. Writes are not on that surface at any price.
 The bundled Claude Code skill (`.claude/skills/linkedin-relay/SKILL.md`) teaches an agent the
 funnels, the budget, and how to read `meta` — including step-by-step recipes for finding people and
 for job hunting.
@@ -43,6 +43,7 @@ claude mcp add linkedin-relay -s user -- bun "$(npm root -g)/linkedin-relay-mcp/
 | `jobs` · `job` · `job-filters` | job search with every filter, several keyword sets merged in one call, and apply links |
 | `post` · `reactions` | a post's comment thread, and who engaged |
 | `scheduled` · `experience` · `skills` | your queued posts, and your own roles and skills |
+| `inbox` · `messages` · `draft` · `drafts` | read your messages without marking them read; draft replies locally — nothing is ever sent |
 | `sync` · `local` · `connections` · `my-posts` | fill a local cache, then query it for free |
 | `whoami` · `doctor` · `risk` · `budget` · `cache-status` | session, standing and spend |
 | `share` · `comment` · `reply` · `edit` · `react` · `delete` | writes to your feed — OAuth when available, private API otherwise |
@@ -82,6 +83,22 @@ approved the way **you** chose with `lnrelay approval set` (only at a real termi
 
 There is no `--yes` and no environment variable. Every approval and outcome is logged to
 `~/.lnrelay/writes.jsonl`.
+
+## Messages: read, and draft — never send
+
+```bash
+lnrelay inbox --folder archive --unread --compact     # conversations, who with, unread, last message
+lnrelay messages <conversation-id|thread-url>         # a conversation, oldest first
+lnrelay draft <conversation-id> "Thanks — let's talk Tuesday."   # saved locally, with the thread link
+lnrelay drafts                                        # your drafts; open the link and send it yourself
+```
+
+- **Reading leaves no trace.** Opening a conversation in the browser marks it read, clears "unseen"
+  and acknowledges delivery — separate calls this tool never makes. Nothing read is stored.
+- **There is no send.** A draft is a local note (`~/.lnrelay/drafts.json`, owner-only) with the
+  conversation's link; you review and send it yourself. Agents get `inbox`, `messages` and `draft`
+  over MCP for exactly that: read, then draft.
+- Folders: `inbox`, `primary`, `other`, `archive`, `requests`, `spam`.
 
 ## Searching everything else
 

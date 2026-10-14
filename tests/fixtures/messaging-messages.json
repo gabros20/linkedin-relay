@@ -1,0 +1,217 @@
+{
+  "data": {
+    "data": {
+      "messengerMessagesBySyncToken": {
+        "metadata": {
+          "deletedUrns": [],
+          "shouldClearCache": true,
+          "newSyncToken": "iOjLq8VgmsPqqadoLnVybjpsaTpmYWJyaWM6cHJvZC1sdmExAA==",
+          "$recipeTypes": ["com.linkedin.511454cd272357b3e0558c5dac215b69"],
+          "$type": "com.linkedin.messenger.SyncMetadata"
+        },
+        "*elements": ["urn:li:msg_message:(urn:li:fsd_profile:ACoAATESTME,2-TESTCONV1==)"],
+        "$recipeTypes": ["com.linkedin.b3fb020d7a62182dcf15004c87ed6684"],
+        "$type": "com.linkedin.restli.common.CollectionResponse"
+      },
+      "$recipeTypes": ["com.linkedin.c38c518a13ae3dfabbd000dba2c1323a"],
+      "$type": "com.linkedin.c38c518a13ae3dfabbd000dba2c1323a"
+    }
+  },
+  "included": [
+    {
+      "entityUrn": "urn:li:msg_conversation:(urn:li:fsd_profile:ACoAATESTME,2-TESTCONV2==)",
+      "$recipeTypes": ["com.linkedin.45234f48bb281d0b04e9cd2ee2d88237"],
+      "$type": "com.linkedin.messenger.Conversation"
+    },
+    {
+      "reactionSummaries": [],
+      "footer": null,
+      "subject": null,
+      "inlineWarning": null,
+      "body": {
+        "attributes": [],
+        "text": "Text 120",
+        "$recipeTypes": ["com.linkedin.1ea7e24db829a1347b841f2dd496da36"],
+        "$type": "com.linkedin.pemberly.text.AttributedText"
+      },
+      "backendUrn": "urn:li:messagingMessage:2-TESTCONV1==",
+      "$recipeTypes": ["com.linkedin.9a4948e0045f59eb49ee971c440d4e31"],
+      "deliveredAt": 1658574174717,
+      "$type": "com.linkedin.messenger.Message",
+      "actor": null,
+      "renderContentFallbackText": null,
+      "*conversation": "urn:li:msg_conversation:(urn:li:fsd_profile:ACoAATESTME,2-TESTCONV2==)",
+      "entityUrn": "urn:li:msg_message:(urn:li:fsd_profile:ACoAATESTME,2-TESTCONV1==)",
+      "backendConversationUrn": "urn:li:messagingThread:2-TESTCONV2==",
+      "incompleteRetriableData": false,
+      "messageBodyRenderFormat": "DEFAULT",
+      "renderContent": [
+        {
+          "videoMeeting": null,
+          "conversationAdsMessageContent": {
+            "sponsoredMessageTrackingId": 116789,
+            "sponsoredMessageOptions": [
+              {
+                "tscpUrl": null,
+                "optionText": {
+                  "attributes": [],
+                  "text": "Text 121",
+                  "$recipeTypes": ["com.linkedin.1ea7e24db829a1347b841f2dd496da36"],
+                  "$type": "com.linkedin.pemberly.text.AttributedText"
+                },
+                "*sponsoredMessageOption": "urn:li:msg_sponsoredMessageOption:(urn:li:sponsoredMessageContent:(urn:li:sponsoredConversation:1306124,116789),0)",
+                "$recipeTypes": ["com.linkedin.0f36502a4b30f3736241f333a711d363"],
+                "clickAction": {
+                  "externalWebsiteClickAction": {
+                    "redirectUrl": "https://www.linkedin.com/services/page/view?src=li-in&veh=CxSMxConvoxGLOBALxENx202108xRatingsAndReviewsxOpenToProvidersx1409xVisitsxv1a&trk=SMP-C-SM-Convo-GLOBAL-EN-202108-RatingsAndReviews-OpenToProviders-1409-Visits-v1a&li_fat_id=c4814037-842e-495b-9389-a77150bad8ab",
+                    "$recipeTypes": ["com.linkedin.b30c79a1f13823f96ba29550dc25ad1b"],
+                    "$type": "com.linkedin.messenger.ExternalRedirectAction"
+                  },
+                  "humanHandoffClickAction": null,
+                  "notInterestedClickActionV2": null,
+                  "leadGenClickAction": null
+                },
+                "$type": "com.linkedin.messenger.ConversationAdsMessageOption"
+              },
+              {
+                "tscpUrl": null,
+                "optionText": {
+                  "attributes": [],
+                  "text": "Text 122",
+                  "$recipeTypes": ["com.linkedin.1ea7e24db829a1347b841f2dd496da36"],
+                  "$type": "com.linkedin.pemberly.text.AttributedText"
+                },
+                "*sponsoredMessageOption": "urn:li:msg_sponsoredMessageOption:(urn:li:sponsoredMessageContent:(urn:li:sponsoredConversation:1306124,116789),1)",
+                "$recipeTypes": ["com.linkedin.0f36502a4b30f3736241f333a711d363"],
+                "clickAction": {
+                  "externalWebsiteClickAction": null,
+                  "leadGenClickAction": null,
+                  "humanHandoffClickAction": null,
+                  "notInterestedClickActionV2": null
+                },
+                "$type": "com.linkedin.messenger.ConversationAdsMessageOption"
+              },
+              {
+                "tscpUrl": null,
+                "optionText": {
+                  "attributes": [],
+                  "text": "Text 123",
+                  "$recipeTypes": ["com.linkedin.1ea7e24db829a1347b841f2dd496da36"],
+                  "$type": "com.linkedin.pemberly.text.AttributedText"
+                },
+                "*sponsoredMessageOption": "urn:li:msg_sponsoredMessageOption:(urn:li:sponsoredMessageContent:(urn:li:sponsoredConversation:1306124,116789),2)",
+                "$recipeTypes": ["com.linkedin.0f36502a4b30f3736241f333a711d363"],
+                "clickAction": {
+                  "externalWebsiteClickAction": null,
+                  "leadGenClickAction": null,
+                  "humanHandoffClickAction": null,
+                  "notInterestedClickActionV2": null
+                },
+                "$type": "com.linkedin.messenger.ConversationAdsMessageOption"
+              },
+              {
+                "tscpUrl": null,
+                "optionText": {
+                  "attributes": [],
+                  "text": "Text 124",
+                  "$recipeTypes": ["com.linkedin.1ea7e24db829a1347b841f2dd496da36"],
+                  "$type": "com.linkedin.pemberly.text.AttributedText"
+                },
+                "*sponsoredMessageOption": "urn:li:msg_sponsoredMessageOption:(urn:li:sponsoredMessageContent:(urn:li:sponsoredConversation:1306124,116789),3)",
+                "$recipeTypes": ["com.linkedin.0f36502a4b30f3736241f333a711d363"],
+                "clickAction": {
+                  "notInterestedClickActionV2": {
+                    "$recipeTypes": ["com.linkedin.41ce4a04c7a181b4e2456b1cc7f98aca"],
+                    "__typename": "messenger_ConversationAdNotInterestedClickAction",
+                    "$type": "com.linkedin.messenger.ConversationAdNotInterestedClickAction"
+                  },
+                  "externalWebsiteClickAction": null,
+                  "humanHandoffClickAction": null,
+                  "leadGenClickAction": null
+                },
+                "$type": "com.linkedin.messenger.ConversationAdsMessageOption"
+              }
+            ],
+            "$recipeTypes": ["com.linkedin.6dd14eac60d40cd25525b7101e0e9724"],
+            "sponsoredMessageContentUrn": "urn:li:sponsoredMessageContent:(urn:li:sponsoredConversation:1306124,116789)",
+            "$type": "com.linkedin.messenger.ConversationAdsMessageContent"
+          },
+          "callMessageContent": null,
+          "repliedMessageContent": null,
+          "video": null,
+          "awayMessage": null,
+          "file": null,
+          "externalMedia": null,
+          "messageAdRenderContent": null,
+          "audio": null,
+          "forwardedMessageContent": null,
+          "hostUrnData": null,
+          "unavailableContent": null
+        }
+      ],
+      "*sender": "urn:li:msg_messagingParticipant:urn:li:fsd_profile:ACoAATESTPERSON1"
+    },
+    {
+      "hostIdentityUrn": "urn:li:fsd_profile:ACoAATESTPERSON1",
+      "preview": null,
+      "memberBadgeType": "PREMIUM_PROFILE",
+      "participantType": {
+        "member": {
+          "profileUrl": "https://www.linkedin.com/in/person-1",
+          "firstName": {
+            "attributes": [],
+            "text": "Text 125",
+            "$recipeTypes": ["com.linkedin.1ea7e24db829a1347b841f2dd496da36"],
+            "$type": "com.linkedin.pemberly.text.AttributedText"
+          },
+          "lastName": {
+            "attributes": [],
+            "text": "Text 126",
+            "$recipeTypes": ["com.linkedin.1ea7e24db829a1347b841f2dd496da36"],
+            "$type": "com.linkedin.pemberly.text.AttributedText"
+          },
+          "distance": "OUT_OF_NETWORK",
+          "profileFrameA11yContent": null,
+          "pronoun": null,
+          "headline": {
+            "attributes": [],
+            "text": "Text 127",
+            "$recipeTypes": ["com.linkedin.1ea7e24db829a1347b841f2dd496da36"],
+            "$type": "com.linkedin.pemberly.text.AttributedText"
+          },
+          "$recipeTypes": ["com.linkedin.a9535f2b6c53c4b69a1dd57697b6de6e"],
+          "$type": "com.linkedin.messenger.MemberParticipantInfo"
+        },
+        "agent": null,
+        "custom": null,
+        "organization": null
+      },
+      "backendUrn": "urn:li:member:1",
+      "$recipeTypes": ["com.linkedin.8e75e1b6100649895f69cf66c6e25b20"],
+      "$type": "com.linkedin.messenger.MessagingParticipant",
+      "entityUrn": "urn:li:msg_messagingParticipant:urn:li:fsd_profile:ACoAATESTPERSON1",
+      "showPremiumInBug": false,
+      "showVerificationBadge": false
+    },
+    {
+      "entityUrn": "urn:li:msg_sponsoredMessageOption:(urn:li:sponsoredMessageContent:(urn:li:sponsoredConversation:1306124,116789),1)",
+      "$recipeTypes": ["com.linkedin.c04631db04ec3f812f916286bcd78313"],
+      "$type": "com.linkedin.messenger.SponsoredMessageOption"
+    },
+    {
+      "entityUrn": "urn:li:msg_sponsoredMessageOption:(urn:li:sponsoredMessageContent:(urn:li:sponsoredConversation:1306124,116789),0)",
+      "$recipeTypes": ["com.linkedin.c04631db04ec3f812f916286bcd78313"],
+      "$type": "com.linkedin.messenger.SponsoredMessageOption"
+    },
+    {
+      "entityUrn": "urn:li:msg_sponsoredMessageOption:(urn:li:sponsoredMessageContent:(urn:li:sponsoredConversation:1306124,116789),3)",
+      "$recipeTypes": ["com.linkedin.c04631db04ec3f812f916286bcd78313"],
+      "$type": "com.linkedin.messenger.SponsoredMessageOption"
+    },
+    {
+      "entityUrn": "urn:li:msg_sponsoredMessageOption:(urn:li:sponsoredMessageContent:(urn:li:sponsoredConversation:1306124,116789),2)",
+      "$recipeTypes": ["com.linkedin.c04631db04ec3f812f916286bcd78313"],
+      "$type": "com.linkedin.messenger.SponsoredMessageOption"
+    }
+  ]
+}

@@ -94,6 +94,15 @@ can still change.
 promises get built. The only named door is `connect`/`follow`, reconsiderable after a full quarter of
 clean read-only operation. `message` and invitation-accept are never reconsidered.
 
+> **Revised 2026-10-14, by the owner's decision: reading messages, and local drafts.** The owner
+> asked for agents to read their messages and draft replies. Shipped as `inbox`, `messages` and
+> `draft`, scoped against the three reasons above: (1) there is still **no send** on any surface —
+> a draft is a local file with the thread link, sent by the owner by hand, so the double-fire and
+> wrong-thread failures cannot happen; (2) nothing read is stored, so no one else's messages sit on
+> disk; (3) reading makes only the GETs — the browser's mark-read, mark-seen and delivery
+> acknowledgement POSTs are not made, so a correspondent sees nothing. `connect`, invitations and
+> sending a message remain cut.
+
 ---
 
 ## 3. Engine

@@ -30,6 +30,13 @@ import {
   runWhoami,
 } from './commands/live.ts';
 import { runBudget, runDoctor, runRisk } from './commands/local.ts';
+import {
+  runDraft,
+  runDraftRemove,
+  runDrafts,
+  runInbox,
+  runMessages,
+} from './commands/messaging.ts';
 import { type PeopleRequest, runPeople, runPeopleFilters } from './commands/people.ts';
 import { runPostsSearch } from './commands/posts-search.ts';
 import { mcpCommands } from './commands/registry.ts';
@@ -501,6 +508,64 @@ export function buildServer(): McpServer {
       `skill is the CLI-only \`lnrelay skill\`, a write the user approves. ${NO_RETRY}`,
     {},
     async () => reply(await runSkills()),
+  );
+
+  server.tool(
+    'inbox',
+    "The user's LinkedIn conversations in a folder, newest first: id, url, with (each person or " +
+      'organisation: name, kind, headline, degree, url), unread, lastActivity, last message ' +
+      '(from, fromMe, at, text, sponsored), folders, inmail. 1 page call per 20. READS ONLY: ' +
+      'nothing is marked read or seen, and nothing is stored. These are private messages: quote ' +
+      'them to the user, never elsewhere. `meta.unread` counts conversations with unread messages. ' +
+      `Folders: inbox (default), primary, other, archive, requests, spam. ${NO_RETRY}`,
+    {
+      folder: z.enum(['inbox', 'primary', 'other', 'archive', 'requests', 'spam']).optional(),
+      unread: z.boolean().optional().describe('only conversations with unread messages'),
+      limit: z.number().int().min(1).max(500).optional().describe('default 20'),
+      compact: z.boolean().optional(),
+    },
+    async ({ folder, unread, limit, compact }) =>
+      reply(
+        await runInbox(
+          {
+            folder: folder ?? 'inbox',
+            limit: limit ?? 20,
+            ...(unread === true ? { unread: true } : {}),
+          },
+          compact === true ? { compact: true } : {},
+        ),
+      ),
+  );
+
+  server.tool(
+    'messages',
+    "One conversation's latest messages, oldest first: from, fromMe, at, text, subject. 1 page " +
+      'call. Reading does not mark it read. `meta.state` "partial" means a full page came back ' +
+      `and older messages may exist; only the latest page is read. ${NO_RETRY}`,
+    { conversation: z.string().min(1).describe('a conversation id from inbox, or its thread URL') },
+    async ({ conversation }) => reply(await runMessages(conversation)),
+  );
+
+  server.tool(
+    'draft',
+    'Save a reply draft for a conversation ON THIS MACHINE, with its link, for the user to review ' +
+      'and send themselves. NOTHING IS SENT — this tool cannot send messages, on any surface. Show ' +
+      'the user the draft and the link. 1 page call, to check the conversation and who it is ' +
+      'with. Pass `remove` with a draft id to delete a draft instead.',
+    {
+      conversation: z.string().optional().describe('a conversation id or thread URL'),
+      text: z.string().optional().describe('the reply'),
+      remove: z.string().optional().describe('a draft id to delete'),
+    },
+    async ({ conversation, text, remove }) =>
+      reply(remove !== undefined ? runDraftRemove(remove) : await runDraft(conversation, text)),
+  );
+
+  server.tool(
+    'drafts',
+    'The reply drafts saved on this machine: id, to, text, the conversation link. Free, local.',
+    {},
+    async () => reply(runDrafts()),
   );
 
   server.tool(

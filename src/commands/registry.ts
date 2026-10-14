@@ -265,6 +265,52 @@ export const COMMANDS: CommandDef[] = [
     implemented: true,
   },
   {
+    name: 'inbox',
+    cost: '1 page call per 20 conversations',
+    summary:
+      'Your conversations in a folder: who with, unread, last message. Reads only: nothing is ' +
+      'marked read or seen, and nothing read is stored.',
+    usage:
+      'lnrelay inbox [--folder inbox|primary|other|archive|requests|spam] [--unread] [--limit N]\n' +
+      '       [--compact | --fields a,b,c]',
+    audience: ['cli', 'mcp'],
+    risk: 'read',
+    implemented: true,
+  },
+  {
+    name: 'messages',
+    cost: '1 page call',
+    summary:
+      "A conversation's latest messages, oldest first, saying which are yours. Reading does not " +
+      'mark it read.',
+    usage: 'lnrelay messages <conversation-id|thread-url> [--compact | --fields a,b,c]',
+    audience: ['cli', 'mcp'],
+    risk: 'read',
+    implemented: true,
+  },
+  {
+    name: 'draft',
+    cost: '1 page call to check the conversation; the draft stays on this machine',
+    summary:
+      'Draft a reply, saved locally with the conversation link for you to review and send. ' +
+      'Nothing is sent: this tool cannot send a message.',
+    usage:
+      'lnrelay draft <conversation-id|thread-url> ("<text>" | --file <path>)\n' +
+      '       lnrelay draft remove <draft-id>',
+    audience: ['cli', 'mcp'],
+    risk: 'local',
+    implemented: true,
+  },
+  {
+    name: 'drafts',
+    cost: 'free — local',
+    summary: 'Your saved reply drafts, with the link to each conversation.',
+    usage: 'lnrelay drafts [--compact]',
+    audience: ['cli', 'mcp'],
+    risk: 'local',
+    implemented: true,
+  },
+  {
     name: 'scheduled',
     cost: '1 call per 10 posts',
     summary: 'Your posts waiting to publish, with when. Not in `my-posts` until they go out.',

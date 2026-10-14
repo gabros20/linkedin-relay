@@ -23,6 +23,14 @@ import {
   runWhoami,
 } from './commands/live.ts';
 import { runBudget, runDoctor, runRisk } from './commands/local.ts';
+import {
+  draftText,
+  runDraft,
+  runDraftRemove,
+  runDrafts,
+  runInbox,
+  runMessages,
+} from './commands/messaging.ts';
 import { runOauthLogin, runOauthLogout, runOauthStatus } from './commands/oauth.ts';
 import { type PeopleRequest, runPeople, runPeopleFilters } from './commands/people.ts';
 import { type PostsRequest, runPostsSearch } from './commands/posts-search.ts';
@@ -41,6 +49,7 @@ import {
   runShare,
 } from './commands/write.ts';
 import type { JobFilterOptions } from './engine/jobs.ts';
+import type { Folder } from './engine/messaging.ts';
 import type { PeopleFilterOptions } from './engine/people.ts';
 import { SEARCH_KINDS, type SearchKindName } from './engine/search.ts';
 import { shouldRunAsEntry } from './entry.ts';
@@ -274,6 +283,28 @@ function search(args: ParsedArgs, filtersOnly: boolean): Promise<Envelope> | Env
     : runFind(kind as SearchKindName, findRequest(args), opts);
 }
 
+/** `inbox`, `messages`, `draft`, `drafts`: reading messages and drafting replies, never sending. */
+function messaging(command: string, args: ParsedArgs): Promise<Envelope> | Envelope {
+  if (command === 'inbox')
+    return runInbox(
+      {
+        folder: (str(args, 'folder') ?? 'inbox') as Folder,
+        limit: num(args, 'limit') ?? 20,
+        ...(bool(args, 'unread') ? { unread: true } : {}),
+      },
+      output(args),
+    );
+  if (command === 'messages') return runMessages(args.positionals[0], output(args));
+  if (command === 'drafts') return runDrafts(output(args));
+  if (args.positionals[0] === 'remove') return runDraftRemove(args.positionals[1]);
+  return runDraft(
+    args.positionals[0],
+    draftText(args.positionals[1], str(args, 'file')),
+    undefined,
+    output(args),
+  );
+}
+
 /**
  * Which surface a write goes over.
  *
@@ -410,6 +441,11 @@ export async function dispatch(argv: string[], now: number): Promise<Envelope> {
       return runPeople(peopleRequest(args), output(args));
     case 'people-filters':
       return runPeopleFilters(peopleRequest(args), output(args));
+    case 'inbox':
+    case 'messages':
+    case 'draft':
+    case 'drafts':
+      return messaging(command, args);
     case 'search':
       return search(args, false);
     case 'search-filters':

@@ -1,6 +1,6 @@
 ---
 name: linkedin-relay
-description: Research LinkedIn from the user's own account — find people by company, past company, school, place, title, degree or whose connections they are, search posts, companies, groups, events, courses, products, services and schools, hunt jobs with every filter LinkedIn has and collect their apply links, read profiles, read the chronological feed — and, through the lnrelay CLI, post (text, image or video), comment, reply, react, delete and edit the user's own profile (headline, About, roles, skills) under the approval mode the owner chose. Use when finding or evaluating people (who works or worked somewhere, alumni, people in a role or a city, someone's connections), companies, groups, events, courses, posts on a topic, roles or job openings on LinkedIn, when the user wants job listings or application links, when reading what the user's network is posting, or when the user asks to post, engage or update their profile on LinkedIn. Not for messaging, connection requests or applying to jobs, which do not exist.
+description: Research LinkedIn from the user's own account — find people by company, past company, school, place, title, degree or whose connections they are, search posts, companies, groups, events, courses, products, services and schools, hunt jobs with every filter LinkedIn has and collect their apply links, read profiles, read the chronological feed — and, through the lnrelay CLI, post (text, image or video), comment, reply, react, delete and edit the user's own profile (headline, About, roles, skills) under the approval mode the owner chose. Use when finding or evaluating people (who works or worked somewhere, alumni, people in a role or a city, someone's connections), companies, groups, events, courses, posts on a topic, roles or job openings on LinkedIn, when the user wants job listings or application links, when reading what the user's network is posting, when the user wants to read their LinkedIn messages or draft replies to them, or when the user asks to post, engage or update their profile on LinkedIn. Cannot send messages, connect, or apply to jobs: those do not exist.
 ---
 
 # linkedin-relay
@@ -348,6 +348,38 @@ experience
 Each role on their profile with its `positionId` and title. The id is what `lnrelay role edit` and
 `lnrelay role remove` take.
 
+### `inbox` — 1 page call per 20 conversations. The user's messages.
+```
+inbox [folder:inbox|primary|other|archive|requests|spam] [unread] [limit:N] [compact]
+```
+CLI: `lnrelay inbox [--folder archive] [--unread] [--limit N] [--compact]`. Each conversation: `id`,
+`url` (the thread), `with` (each person or organisation: `name`, `kind`, `headline`, `degree`, `url`),
+`unread`, `lastActivity`, `last` (`from`, `fromMe`, `at`, `text`, `sponsored`), `folders`, `inmail`.
+`meta.unread` counts conversations with unread messages. `inbox` is LinkedIn's Inbox folder; much
+of a mailbox may sit in `archive` or `other`, so look there before saying there is nothing.
+
+### `messages` — 1 page call. One conversation.
+```
+messages conversation:"<id from inbox | /messaging/thread/ URL>"
+```
+The latest messages, oldest first: `from` ("you" for the user), `fromMe`, `at`, `text`, `subject`.
+`meta.state: "partial"` means a full page came back and older messages may exist.
+
+**Reading is invisible to the other side.** The browser, opening a conversation, also marks it read
+(the sender sees it), clears "unseen" and acknowledges delivery; those are separate calls, and this
+tool makes none of them. Nothing read is stored. These are private messages: summarise or quote them
+to the user, never into anything else (a post, a comment, a file someone else will read).
+
+### `draft` / `drafts` — local. A reply for the user to send.
+```
+draft conversation:"<id | thread URL>" text:"<reply>"      drafts      draft remove:"<draft id>"
+```
+CLI: `lnrelay draft <conversation> "<text>" | --file <path>`, `lnrelay drafts`, `lnrelay draft remove <id>`.
+Saves the reply ON THIS MACHINE with the conversation's link (one read, to check the conversation
+and who it is with). **Nothing is sent, and nothing can be: there is no send.** Show the user the
+draft and the link; they open it, paste, review, and send it themselves. Write drafts in the user's
+own voice and language, from what the conversation actually says.
+
 ### `skills` — live, ~3 calls. The user's skills.
 ```
 skills
@@ -482,10 +514,12 @@ Things worth telling a user who asks:
   preview's own words, which name the timezone.
 - **Deleting a comment also deletes every reply under it**, including other people's. Verified live.
 
-Connecting and messaging do not exist at all, in any surface. They are the actions where the
-enforcement reports cluster, and an agent bug there is visible to a third party and unrecoverable.
+**Sending a message and connecting do not exist at all, in any surface.** Messages can be read and
+replies drafted (below), but a draft stays on this machine for the user to send. These are the
+actions where the enforcement reports cluster, and an agent bug there is visible to a third party
+and unrecoverable.
 
-Also absent by design: inbox reading, notifications, nested comment replies, and bulk sweeps.
+Also absent by design: notifications, nested comment replies, and bulk sweeps.
 
 ## Honest risk
 

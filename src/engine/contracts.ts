@@ -164,6 +164,25 @@ export const CONTRACTS: Record<string, OperationContract> = {
   // "AI job search" that drops filters it does not support; these are the
   // classic Voyager resources still behind /jobs/search/, which take them all.
   // See engine/jobs.ts.
+  // The owner's messages, captured 2026-10-14; see engine/messaging.ts. Reads
+  // only: the page's own "seen", read and delivery calls are not made.
+  messengerConversations: {
+    name: 'messengerConversations',
+    transport: 'voyager-graphql',
+    path: `${VOYAGER}/voyagerMessagingGraphQL/graphql`,
+    queryId: 'messengerConversations.9501074288a12f3ae9e3c7ea243bccbf',
+    provenance: 'verified',
+    capturedAt: '2026-10-14',
+  },
+  messengerMessages: {
+    name: 'messengerMessages',
+    transport: 'voyager-graphql',
+    path: `${VOYAGER}/voyagerMessagingGraphQL/graphql`,
+    queryId: 'messengerMessages.5846eeb71c981f11e0134cb6626cc314',
+    provenance: 'verified',
+    capturedAt: '2026-10-14',
+  },
+
   jobCards: {
     name: 'jobCards',
     transport: 'voyager-restli',
