@@ -1,3 +1,10 @@
+# [3.16.0](https://github.com/gabros20/linkedin-relay/compare/v3.15.0...v3.16.0) (2026-10-14)
+
+
+### Features
+
+* **network:** read your My Network — connections, following, followers, pages, invitations ([1d5fcdd](https://github.com/gabros20/linkedin-relay/commit/1d5fcdd69975dba27ccbfbd5c7b4114d5bd03af0))
+
 # [3.15.0](https://github.com/gabros20/linkedin-relay/compare/v3.14.0...v3.15.0) (2026-10-14)
 
 
