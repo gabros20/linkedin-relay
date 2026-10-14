@@ -1,0 +1,1420 @@
+{
+  "requestId": "com.linkedin.sdui.requests.profile.saveProfilePositionForm",
+  "serverRequest": {
+    "requestId": "com.linkedin.sdui.requests.profile.saveProfilePositionForm",
+    "requestedArguments": {
+      "$type": "proto.sdui.actions.requests.RequestedArguments",
+      "requestedStateKeys": [
+        {
+          "key": {
+            "value": {
+              "$case": "id",
+              "id": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormallowProfileEditBroadcasts"
+            }
+          }
+        },
+        {
+          "key": {
+            "value": {
+              "$case": "id",
+              "id": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormtitle"
+            }
+          }
+        },
+        {
+          "key": {
+            "value": {
+              "$case": "id",
+              "id": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormemploymentType"
+            }
+          }
+        },
+        {
+          "key": {
+            "value": {
+              "$case": "id",
+              "id": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormcompanyRequired"
+            }
+          }
+        },
+        {
+          "key": {
+            "value": {
+              "$case": "id",
+              "id": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormorganizationEntityId"
+            }
+          }
+        },
+        {
+          "key": {
+            "value": {
+              "$case": "id",
+              "id": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormorganizationId"
+            }
+          }
+        },
+        {
+          "key": {
+            "value": {
+              "$case": "id",
+              "id": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormcompanyName"
+            }
+          }
+        },
+        {
+          "key": {
+            "value": {
+              "$case": "id",
+              "id": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormstartDate"
+            }
+          }
+        },
+        {
+          "key": {
+            "value": {
+              "$case": "id",
+              "id": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormendDate"
+            }
+          }
+        },
+        {
+          "key": {
+            "value": {
+              "$case": "id",
+              "id": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormdescription"
+            }
+          }
+        },
+        {
+          "key": {
+            "value": {
+              "$case": "id",
+              "id": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionForminitialDescription"
+            }
+          }
+        },
+        {
+          "key": {
+            "value": {
+              "$case": "id",
+              "id": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormisCurrentPosition"
+            }
+          }
+        },
+        {
+          "key": {
+            "value": {
+              "$case": "id",
+              "id": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormendCurrentPositionIds"
+            }
+          }
+        },
+        {
+          "key": {
+            "value": {
+              "$case": "id",
+              "id": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormlocation"
+            }
+          }
+        },
+        {
+          "key": {
+            "value": {
+              "$case": "id",
+              "id": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormgeoLocationId"
+            }
+          }
+        },
+        {
+          "key": {
+            "value": {
+              "$case": "id",
+              "id": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormlocationType"
+            }
+          }
+        },
+        {
+          "key": {
+            "value": {
+              "$case": "id",
+              "id": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormheadline"
+            }
+          }
+        },
+        {
+          "key": {
+            "value": {
+              "$case": "id",
+              "id": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormdynamicallyCreateHeadline"
+            }
+          }
+        },
+        {
+          "key": {
+            "value": {
+              "$case": "id",
+              "id": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormjobSource"
+            }
+          }
+        },
+        {
+          "key": {
+            "value": {
+              "$case": "id",
+              "id": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormdisplaySourceOfHire"
+            }
+          }
+        },
+        {
+          "key": {
+            "value": {
+              "$case": "id",
+              "id": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormReorderableSkillsFormBindingsskillIdsBinding"
+            }
+          }
+        },
+        {
+          "key": {
+            "value": {
+              "$case": "id",
+              "id": "position-mediaList"
+            }
+          }
+        },
+        {
+          "key": {
+            "value": {
+              "$case": "id",
+              "id": "position-mediaAssetUrns"
+            }
+          }
+        },
+        {
+          "key": {
+            "value": {
+              "$case": "id",
+              "id": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormisWevValidated"
+            }
+          }
+        },
+        {
+          "key": {
+            "value": {
+              "$case": "id",
+              "id": "auto-binding-a969da7f-080f-41b5-9326-1b4cd0f44feeProfilePositionFormaiSuggestionTrackingId"
+            }
+          }
+        },
+        {
+          "key": {
+            "value": {
+              "$case": "id",
+              "id": "auto-binding-0deaa874-4306-479d-a814-ac7ee73ed64fisActiveProfileFormLoading"
+            }
+          }
+        }
+      ],
+      "payload": {
+        "profileId": "ACoAATESTPROFILEID",
+        "allowProfileEditBroadcasts": {
+          "key": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormallowProfileEditBroadcasts",
+          "namespace": "MemoryNamespace"
+        },
+        "title": {
+          "key": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormtitle",
+          "namespace": "MemoryNamespace"
+        },
+        "employmentType": {
+          "key": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormemploymentType",
+          "namespace": "MemoryNamespace"
+        },
+        "isCompanyRequired": {
+          "key": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormcompanyRequired",
+          "namespace": "MemoryNamespace"
+        },
+        "organizationEntityId": {
+          "key": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormorganizationEntityId",
+          "namespace": "MemoryNamespace"
+        },
+        "organizationId": {
+          "key": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormorganizationId",
+          "namespace": "MemoryNamespace"
+        },
+        "companyName": {
+          "key": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormcompanyName",
+          "namespace": "MemoryNamespace"
+        },
+        "startDate": {
+          "key": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormstartDate",
+          "namespace": "MemoryNamespace"
+        },
+        "endDate": {
+          "key": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormendDate",
+          "namespace": "MemoryNamespace"
+        },
+        "description": {
+          "key": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormdescription",
+          "namespace": "MemoryNamespace"
+        },
+        "originalDescription": {
+          "key": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionForminitialDescription",
+          "namespace": "MemoryNamespace"
+        },
+        "isCurrentPosition": {
+          "key": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormisCurrentPosition",
+          "namespace": "MemoryNamespace"
+        },
+        "endCurrentPositionIds": {
+          "key": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormendCurrentPositionIds",
+          "namespace": "MemoryNamespace"
+        },
+        "location": {
+          "key": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormlocation",
+          "namespace": "MemoryNamespace"
+        },
+        "geoLocationId": {
+          "key": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormgeoLocationId",
+          "namespace": "MemoryNamespace"
+        },
+        "locationType": {
+          "key": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormlocationType",
+          "namespace": "MemoryNamespace"
+        },
+        "headline": {
+          "key": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormheadline",
+          "namespace": "MemoryNamespace"
+        },
+        "shouldDynamicallyCreateHeadline": {
+          "key": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormdynamicallyCreateHeadline",
+          "namespace": "MemoryNamespace"
+        },
+        "jobSource": {
+          "key": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormjobSource",
+          "namespace": "MemoryNamespace"
+        },
+        "showSourceOfHire": {
+          "key": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormdisplaySourceOfHire",
+          "namespace": "MemoryNamespace"
+        },
+        "skills": {
+          "key": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormReorderableSkillsFormBindingsskillIdsBinding",
+          "namespace": "MemoryNamespace"
+        },
+        "uploadedMedia": {
+          "key": "position-mediaList",
+          "namespace": "MemoryNamespace"
+        },
+        "uploadedMediaAssetUrns": {
+          "key": "position-mediaAssetUrns",
+          "namespace": "MemoryNamespace"
+        },
+        "isWevValidated": {
+          "key": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormisWevValidated",
+          "namespace": "MemoryNamespace"
+        },
+        "aiSuggestionTrackingId": {
+          "key": "auto-binding-a969da7f-080f-41b5-9326-1b4cd0f44feeProfilePositionFormaiSuggestionTrackingId",
+          "namespace": "MemoryNamespace"
+        },
+        "progressIndicator": {
+          "key": "auto-binding-0deaa874-4306-479d-a814-ac7ee73ed64fisActiveProfileFormLoading",
+          "namespace": "MemoryNamespace"
+        },
+        "hasChanges": {
+          "key": "auto-binding-afdbd35d-0038-4ddc-9222-e9ec67a18e60isActiveProfileFormHasChanges",
+          "namespace": "MemoryNamespace"
+        },
+        "userExitedForm": {
+          "key": "auto-binding-0e0f562b-4287-4909-a0c0-d19148f67594profileFormUserExitedForm",
+          "namespace": "MemoryNamespace"
+        },
+        "saveOrDeleteRequestPending": {
+          "key": "auto-binding-764f6d6a-c291-482d-a981-7ad093230872profileFormSaveOrDeleteRequestPending",
+          "namespace": "MemoryNamespace"
+        },
+        "hasExistingProfileSkills": true,
+        "vanityName": "ada-l",
+        "mediaItems": []
+      },
+      "requestMetadata": {
+        "$type": "proto.sdui.common.RequestMetadata"
+      }
+    },
+    "onClientRequestFailureAction": {
+      "actions": [
+        {
+          "$type": "proto.sdui.actions.core.SetState",
+          "value": {
+            "state": {
+              "key": {
+                "key": {
+                  "value": {
+                    "$case": "id",
+                    "id": "auto-binding-0deaa874-4306-479d-a814-ac7ee73ed64fisActiveProfileFormLoading"
+                  }
+                }
+              },
+              "value": {
+                "$case": "booleanValue",
+                "booleanValue": false
+              }
+            }
+          }
+        },
+        {
+          "$type": "proto.sdui.actions.core.ShowToast",
+          "value": {
+            "duration": "ToastDuration_UNKNOWN",
+            "key": "1d1bb4ab-ea91-4903-975d-0ccc8fee89c8",
+            "presetToast": {
+              "category": "ToastPresetCategory_ERROR",
+              "text": {
+                "_payload": {
+                  "status": "resolved_model",
+                  "value": "[\"Save failed\"]",
+                  "reason": {
+                    "_moduleLoading": null,
+                    "_chunks": {},
+                    "_stringDecoder": {},
+                    "_closed": true,
+                    "_closedReason": {},
+                    "_allowPartialStream": false
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "isApfcEnabled": false,
+    "isStreaming": false,
+    "rumPageKey": ""
+  },
+  "states": [
+    {
+      "key": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormallowProfileEditBroadcasts",
+      "namespace": "MemoryNamespace",
+      "value": false,
+      "originalProtoCase": "expression",
+      "protoKey": {
+        "$type": "proto.sdui.Key",
+        "value": {
+          "$case": "id",
+          "id": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormallowProfileEditBroadcasts"
+        }
+      }
+    },
+    {
+      "key": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormtitle",
+      "namespace": "MemoryNamespace",
+      "value": "lnrelay test role",
+      "originalProtoCase": "stringValue",
+      "protoKey": {
+        "$type": "proto.sdui.Key",
+        "value": {
+          "$case": "id",
+          "id": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormtitle"
+        }
+      }
+    },
+    {
+      "key": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormemploymentType",
+      "namespace": "MemoryNamespace",
+      "value": "",
+      "originalProtoCase": "stringValue",
+      "protoKey": {
+        "$type": "proto.sdui.Key",
+        "value": {
+          "$case": "id",
+          "id": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormemploymentType"
+        }
+      }
+    },
+    {
+      "key": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormcompanyRequired",
+      "namespace": "MemoryNamespace",
+      "value": true,
+      "originalProtoCase": "expression",
+      "protoKey": {
+        "$type": "proto.sdui.Key",
+        "value": {
+          "$case": "id",
+          "id": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormcompanyRequired"
+        }
+      }
+    },
+    {
+      "key": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormorganizationEntityId",
+      "namespace": "MemoryNamespace",
+      "value": {
+        "type": "bigint",
+        "value": "-1"
+      },
+      "originalProtoCase": "signedLongValue",
+      "protoKey": {
+        "$type": "proto.sdui.Key",
+        "value": {
+          "$case": "id",
+          "id": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormorganizationEntityId"
+        }
+      }
+    },
+    {
+      "key": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormorganizationId",
+      "namespace": "MemoryNamespace",
+      "value": -1,
+      "originalProtoCase": "intValue",
+      "protoKey": {
+        "$type": "proto.sdui.Key",
+        "value": {
+          "$case": "id",
+          "id": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormorganizationId"
+        }
+      }
+    },
+    {
+      "key": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormcompanyName",
+      "namespace": "MemoryNamespace",
+      "value": "lnrelay test org",
+      "originalProtoCase": "stringValue",
+      "protoKey": {
+        "$type": "proto.sdui.Key",
+        "value": {
+          "$case": "id",
+          "id": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormcompanyName"
+        }
+      }
+    },
+    {
+      "key": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormstartDate",
+      "namespace": "MemoryNamespace",
+      "value": {
+        "$type": "proto.sdui.common.Date",
+        "day": 0,
+        "month": 1,
+        "year": 2020
+      },
+      "originalProtoCase": "dateValue",
+      "protoKey": {
+        "$type": "proto.sdui.Key",
+        "value": {
+          "$case": "id",
+          "id": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormstartDate"
+        }
+      }
+    },
+    {
+      "key": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormendDate",
+      "namespace": "MemoryNamespace",
+      "value": {
+        "$type": "proto.sdui.common.Date",
+        "day": 0,
+        "month": 2,
+        "year": 2020
+      },
+      "originalProtoCase": "dateValue",
+      "protoKey": {
+        "$type": "proto.sdui.Key",
+        "value": {
+          "$case": "id",
+          "id": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormendDate"
+        }
+      }
+    },
+    {
+      "key": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormdescription",
+      "namespace": "MemoryNamespace",
+      "value": "Temporary test entry, removed right after.",
+      "originalProtoCase": "stringValue",
+      "protoKey": {
+        "$type": "proto.sdui.Key",
+        "value": {
+          "$case": "id",
+          "id": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormdescription"
+        }
+      }
+    },
+    {
+      "key": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionForminitialDescription",
+      "namespace": "MemoryNamespace",
+      "value": "",
+      "originalProtoCase": "stringValue",
+      "protoKey": {
+        "$type": "proto.sdui.Key",
+        "value": {
+          "$case": "id",
+          "id": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionForminitialDescription"
+        }
+      }
+    },
+    {
+      "key": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormisCurrentPosition",
+      "namespace": "MemoryNamespace",
+      "value": false,
+      "originalProtoCase": "booleanValue",
+      "protoKey": {
+        "$type": "proto.sdui.Key",
+        "value": {
+          "$case": "id",
+          "id": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormisCurrentPosition"
+        }
+      }
+    },
+    {
+      "key": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormendCurrentPositionIds",
+      "namespace": "MemoryNamespace",
+      "value": [],
+      "originalProtoCase": "stringListValue",
+      "protoKey": {
+        "$type": "proto.sdui.Key",
+        "value": {
+          "$case": "id",
+          "id": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormendCurrentPositionIds"
+        }
+      }
+    },
+    {
+      "key": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormlocation",
+      "namespace": "MemoryNamespace",
+      "value": "",
+      "originalProtoCase": "stringValue",
+      "protoKey": {
+        "$type": "proto.sdui.Key",
+        "value": {
+          "$case": "id",
+          "id": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormlocation"
+        }
+      }
+    },
+    {
+      "key": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormgeoLocationId",
+      "namespace": "MemoryNamespace",
+      "value": -1,
+      "originalProtoCase": "intValue",
+      "protoKey": {
+        "$type": "proto.sdui.Key",
+        "value": {
+          "$case": "id",
+          "id": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormgeoLocationId"
+        }
+      }
+    },
+    {
+      "key": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormlocationType",
+      "namespace": "MemoryNamespace",
+      "value": "",
+      "originalProtoCase": "stringValue",
+      "protoKey": {
+        "$type": "proto.sdui.Key",
+        "value": {
+          "$case": "id",
+          "id": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormlocationType"
+        }
+      }
+    },
+    {
+      "key": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormheadline",
+      "namespace": "MemoryNamespace",
+      "value": "Analyst | Engines | London",
+      "originalProtoCase": "stringValue",
+      "protoKey": {
+        "$type": "proto.sdui.Key",
+        "value": {
+          "$case": "id",
+          "id": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormheadline"
+        }
+      }
+    },
+    {
+      "key": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormdynamicallyCreateHeadline",
+      "namespace": "MemoryNamespace",
+      "value": true,
+      "originalProtoCase": "booleanValue",
+      "protoKey": {
+        "$type": "proto.sdui.Key",
+        "value": {
+          "$case": "id",
+          "id": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormdynamicallyCreateHeadline"
+        }
+      }
+    },
+    {
+      "key": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormjobSource",
+      "namespace": "MemoryNamespace",
+      "value": "",
+      "originalProtoCase": "stringValue",
+      "protoKey": {
+        "$type": "proto.sdui.Key",
+        "value": {
+          "$case": "id",
+          "id": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormjobSource"
+        }
+      }
+    },
+    {
+      "key": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormdisplaySourceOfHire",
+      "namespace": "MemoryNamespace",
+      "value": false,
+      "originalProtoCase": "booleanValue",
+      "protoKey": {
+        "$type": "proto.sdui.Key",
+        "value": {
+          "$case": "id",
+          "id": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormdisplaySourceOfHire"
+        }
+      }
+    },
+    {
+      "key": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormReorderableSkillsFormBindingsskillIdsBinding",
+      "namespace": "MemoryNamespace",
+      "value": [],
+      "originalProtoCase": "stringListValue",
+      "protoKey": {
+        "$type": "proto.sdui.Key",
+        "value": {
+          "$case": "id",
+          "id": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormReorderableSkillsFormBindingsskillIdsBinding"
+        }
+      }
+    },
+    {
+      "key": "position-mediaList",
+      "namespace": "MemoryNamespace",
+      "value": {
+        "$type": "proto.sdui.media.MediaList",
+        "mediaFiles": []
+      },
+      "originalProtoCase": "mediaListValue",
+      "protoKey": {
+        "$type": "proto.sdui.Key",
+        "value": {
+          "$case": "id",
+          "id": "position-mediaList"
+        }
+      }
+    },
+    {
+      "key": "position-mediaAssetUrns",
+      "namespace": "MemoryNamespace",
+      "value": [],
+      "originalProtoCase": "stringListValue",
+      "protoKey": {
+        "$type": "proto.sdui.Key",
+        "value": {
+          "$case": "id",
+          "id": "position-mediaAssetUrns"
+        }
+      }
+    },
+    {
+      "key": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormisWevValidated",
+      "namespace": "MemoryNamespace",
+      "value": true,
+      "originalProtoCase": "booleanValue",
+      "protoKey": {
+        "$type": "proto.sdui.Key",
+        "value": {
+          "$case": "id",
+          "id": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormisWevValidated"
+        }
+      }
+    },
+    {
+      "key": "auto-binding-0deaa874-4306-479d-a814-ac7ee73ed64fisActiveProfileFormLoading",
+      "namespace": "MemoryNamespace",
+      "value": true,
+      "originalProtoCase": "booleanValue",
+      "protoKey": {
+        "$type": "proto.sdui.Key",
+        "value": {
+          "$case": "id",
+          "id": "auto-binding-0deaa874-4306-479d-a814-ac7ee73ed64fisActiveProfileFormLoading"
+        }
+      }
+    }
+  ],
+  "requestedArguments": {
+    "$type": "proto.sdui.actions.requests.RequestedArguments",
+    "requestedStateKeys": [
+      {
+        "key": {
+          "value": {
+            "$case": "id",
+            "id": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormallowProfileEditBroadcasts"
+          }
+        }
+      },
+      {
+        "key": {
+          "value": {
+            "$case": "id",
+            "id": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormtitle"
+          }
+        }
+      },
+      {
+        "key": {
+          "value": {
+            "$case": "id",
+            "id": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormemploymentType"
+          }
+        }
+      },
+      {
+        "key": {
+          "value": {
+            "$case": "id",
+            "id": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormcompanyRequired"
+          }
+        }
+      },
+      {
+        "key": {
+          "value": {
+            "$case": "id",
+            "id": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormorganizationEntityId"
+          }
+        }
+      },
+      {
+        "key": {
+          "value": {
+            "$case": "id",
+            "id": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormorganizationId"
+          }
+        }
+      },
+      {
+        "key": {
+          "value": {
+            "$case": "id",
+            "id": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormcompanyName"
+          }
+        }
+      },
+      {
+        "key": {
+          "value": {
+            "$case": "id",
+            "id": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormstartDate"
+          }
+        }
+      },
+      {
+        "key": {
+          "value": {
+            "$case": "id",
+            "id": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormendDate"
+          }
+        }
+      },
+      {
+        "key": {
+          "value": {
+            "$case": "id",
+            "id": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormdescription"
+          }
+        }
+      },
+      {
+        "key": {
+          "value": {
+            "$case": "id",
+            "id": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionForminitialDescription"
+          }
+        }
+      },
+      {
+        "key": {
+          "value": {
+            "$case": "id",
+            "id": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormisCurrentPosition"
+          }
+        }
+      },
+      {
+        "key": {
+          "value": {
+            "$case": "id",
+            "id": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormendCurrentPositionIds"
+          }
+        }
+      },
+      {
+        "key": {
+          "value": {
+            "$case": "id",
+            "id": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormlocation"
+          }
+        }
+      },
+      {
+        "key": {
+          "value": {
+            "$case": "id",
+            "id": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormgeoLocationId"
+          }
+        }
+      },
+      {
+        "key": {
+          "value": {
+            "$case": "id",
+            "id": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormlocationType"
+          }
+        }
+      },
+      {
+        "key": {
+          "value": {
+            "$case": "id",
+            "id": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormheadline"
+          }
+        }
+      },
+      {
+        "key": {
+          "value": {
+            "$case": "id",
+            "id": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormdynamicallyCreateHeadline"
+          }
+        }
+      },
+      {
+        "key": {
+          "value": {
+            "$case": "id",
+            "id": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormjobSource"
+          }
+        }
+      },
+      {
+        "key": {
+          "value": {
+            "$case": "id",
+            "id": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormdisplaySourceOfHire"
+          }
+        }
+      },
+      {
+        "key": {
+          "value": {
+            "$case": "id",
+            "id": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormReorderableSkillsFormBindingsskillIdsBinding"
+          }
+        }
+      },
+      {
+        "key": {
+          "value": {
+            "$case": "id",
+            "id": "position-mediaList"
+          }
+        }
+      },
+      {
+        "key": {
+          "value": {
+            "$case": "id",
+            "id": "position-mediaAssetUrns"
+          }
+        }
+      },
+      {
+        "key": {
+          "value": {
+            "$case": "id",
+            "id": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormisWevValidated"
+          }
+        }
+      },
+      {
+        "key": {
+          "value": {
+            "$case": "id",
+            "id": "auto-binding-a969da7f-080f-41b5-9326-1b4cd0f44feeProfilePositionFormaiSuggestionTrackingId"
+          }
+        }
+      },
+      {
+        "key": {
+          "value": {
+            "$case": "id",
+            "id": "auto-binding-0deaa874-4306-479d-a814-ac7ee73ed64fisActiveProfileFormLoading"
+          }
+        }
+      }
+    ],
+    "payload": {
+      "profileId": "ACoAATESTPROFILEID",
+      "allowProfileEditBroadcasts": {
+        "key": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormallowProfileEditBroadcasts",
+        "namespace": "MemoryNamespace"
+      },
+      "title": {
+        "key": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormtitle",
+        "namespace": "MemoryNamespace"
+      },
+      "employmentType": {
+        "key": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormemploymentType",
+        "namespace": "MemoryNamespace"
+      },
+      "isCompanyRequired": {
+        "key": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormcompanyRequired",
+        "namespace": "MemoryNamespace"
+      },
+      "organizationEntityId": {
+        "key": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormorganizationEntityId",
+        "namespace": "MemoryNamespace"
+      },
+      "organizationId": {
+        "key": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormorganizationId",
+        "namespace": "MemoryNamespace"
+      },
+      "companyName": {
+        "key": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormcompanyName",
+        "namespace": "MemoryNamespace"
+      },
+      "startDate": {
+        "key": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormstartDate",
+        "namespace": "MemoryNamespace"
+      },
+      "endDate": {
+        "key": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormendDate",
+        "namespace": "MemoryNamespace"
+      },
+      "description": {
+        "key": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormdescription",
+        "namespace": "MemoryNamespace"
+      },
+      "originalDescription": {
+        "key": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionForminitialDescription",
+        "namespace": "MemoryNamespace"
+      },
+      "isCurrentPosition": {
+        "key": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormisCurrentPosition",
+        "namespace": "MemoryNamespace"
+      },
+      "endCurrentPositionIds": {
+        "key": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormendCurrentPositionIds",
+        "namespace": "MemoryNamespace"
+      },
+      "location": {
+        "key": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormlocation",
+        "namespace": "MemoryNamespace"
+      },
+      "geoLocationId": {
+        "key": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormgeoLocationId",
+        "namespace": "MemoryNamespace"
+      },
+      "locationType": {
+        "key": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormlocationType",
+        "namespace": "MemoryNamespace"
+      },
+      "headline": {
+        "key": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormheadline",
+        "namespace": "MemoryNamespace"
+      },
+      "shouldDynamicallyCreateHeadline": {
+        "key": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormdynamicallyCreateHeadline",
+        "namespace": "MemoryNamespace"
+      },
+      "jobSource": {
+        "key": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormjobSource",
+        "namespace": "MemoryNamespace"
+      },
+      "showSourceOfHire": {
+        "key": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormdisplaySourceOfHire",
+        "namespace": "MemoryNamespace"
+      },
+      "skills": {
+        "key": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormReorderableSkillsFormBindingsskillIdsBinding",
+        "namespace": "MemoryNamespace"
+      },
+      "uploadedMedia": {
+        "key": "position-mediaList",
+        "namespace": "MemoryNamespace"
+      },
+      "uploadedMediaAssetUrns": {
+        "key": "position-mediaAssetUrns",
+        "namespace": "MemoryNamespace"
+      },
+      "isWevValidated": {
+        "key": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormisWevValidated",
+        "namespace": "MemoryNamespace"
+      },
+      "aiSuggestionTrackingId": {
+        "key": "auto-binding-a969da7f-080f-41b5-9326-1b4cd0f44feeProfilePositionFormaiSuggestionTrackingId",
+        "namespace": "MemoryNamespace"
+      },
+      "progressIndicator": {
+        "key": "auto-binding-0deaa874-4306-479d-a814-ac7ee73ed64fisActiveProfileFormLoading",
+        "namespace": "MemoryNamespace"
+      },
+      "hasChanges": {
+        "key": "auto-binding-afdbd35d-0038-4ddc-9222-e9ec67a18e60isActiveProfileFormHasChanges",
+        "namespace": "MemoryNamespace"
+      },
+      "userExitedForm": {
+        "key": "auto-binding-0e0f562b-4287-4909-a0c0-d19148f67594profileFormUserExitedForm",
+        "namespace": "MemoryNamespace"
+      },
+      "saveOrDeleteRequestPending": {
+        "key": "auto-binding-764f6d6a-c291-482d-a981-7ad093230872profileFormSaveOrDeleteRequestPending",
+        "namespace": "MemoryNamespace"
+      },
+      "hasExistingProfileSkills": true,
+      "vanityName": "ada-l",
+      "mediaItems": []
+    },
+    "requestMetadata": {
+      "$type": "proto.sdui.common.RequestMetadata"
+    },
+    "states": [
+      {
+        "key": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormallowProfileEditBroadcasts",
+        "namespace": "MemoryNamespace",
+        "value": false,
+        "originalProtoCase": "expression",
+        "protoKey": {
+          "$type": "proto.sdui.Key",
+          "value": {
+            "$case": "id",
+            "id": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormallowProfileEditBroadcasts"
+          }
+        }
+      },
+      {
+        "key": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormtitle",
+        "namespace": "MemoryNamespace",
+        "value": "lnrelay test role",
+        "originalProtoCase": "stringValue",
+        "protoKey": {
+          "$type": "proto.sdui.Key",
+          "value": {
+            "$case": "id",
+            "id": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormtitle"
+          }
+        }
+      },
+      {
+        "key": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormemploymentType",
+        "namespace": "MemoryNamespace",
+        "value": "",
+        "originalProtoCase": "stringValue",
+        "protoKey": {
+          "$type": "proto.sdui.Key",
+          "value": {
+            "$case": "id",
+            "id": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormemploymentType"
+          }
+        }
+      },
+      {
+        "key": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormcompanyRequired",
+        "namespace": "MemoryNamespace",
+        "value": true,
+        "originalProtoCase": "expression",
+        "protoKey": {
+          "$type": "proto.sdui.Key",
+          "value": {
+            "$case": "id",
+            "id": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormcompanyRequired"
+          }
+        }
+      },
+      {
+        "key": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormorganizationEntityId",
+        "namespace": "MemoryNamespace",
+        "value": {
+          "type": "bigint",
+          "value": "-1"
+        },
+        "originalProtoCase": "signedLongValue",
+        "protoKey": {
+          "$type": "proto.sdui.Key",
+          "value": {
+            "$case": "id",
+            "id": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormorganizationEntityId"
+          }
+        }
+      },
+      {
+        "key": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormorganizationId",
+        "namespace": "MemoryNamespace",
+        "value": -1,
+        "originalProtoCase": "intValue",
+        "protoKey": {
+          "$type": "proto.sdui.Key",
+          "value": {
+            "$case": "id",
+            "id": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormorganizationId"
+          }
+        }
+      },
+      {
+        "key": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormcompanyName",
+        "namespace": "MemoryNamespace",
+        "value": "lnrelay test org",
+        "originalProtoCase": "stringValue",
+        "protoKey": {
+          "$type": "proto.sdui.Key",
+          "value": {
+            "$case": "id",
+            "id": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormcompanyName"
+          }
+        }
+      },
+      {
+        "key": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormstartDate",
+        "namespace": "MemoryNamespace",
+        "value": {
+          "$type": "proto.sdui.common.Date",
+          "day": 0,
+          "month": 1,
+          "year": 2020
+        },
+        "originalProtoCase": "dateValue",
+        "protoKey": {
+          "$type": "proto.sdui.Key",
+          "value": {
+            "$case": "id",
+            "id": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormstartDate"
+          }
+        }
+      },
+      {
+        "key": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormendDate",
+        "namespace": "MemoryNamespace",
+        "value": {
+          "$type": "proto.sdui.common.Date",
+          "day": 0,
+          "month": 2,
+          "year": 2020
+        },
+        "originalProtoCase": "dateValue",
+        "protoKey": {
+          "$type": "proto.sdui.Key",
+          "value": {
+            "$case": "id",
+            "id": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormendDate"
+          }
+        }
+      },
+      {
+        "key": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormdescription",
+        "namespace": "MemoryNamespace",
+        "value": "Temporary test entry, removed right after.",
+        "originalProtoCase": "stringValue",
+        "protoKey": {
+          "$type": "proto.sdui.Key",
+          "value": {
+            "$case": "id",
+            "id": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormdescription"
+          }
+        }
+      },
+      {
+        "key": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionForminitialDescription",
+        "namespace": "MemoryNamespace",
+        "value": "",
+        "originalProtoCase": "stringValue",
+        "protoKey": {
+          "$type": "proto.sdui.Key",
+          "value": {
+            "$case": "id",
+            "id": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionForminitialDescription"
+          }
+        }
+      },
+      {
+        "key": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormisCurrentPosition",
+        "namespace": "MemoryNamespace",
+        "value": false,
+        "originalProtoCase": "booleanValue",
+        "protoKey": {
+          "$type": "proto.sdui.Key",
+          "value": {
+            "$case": "id",
+            "id": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormisCurrentPosition"
+          }
+        }
+      },
+      {
+        "key": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormendCurrentPositionIds",
+        "namespace": "MemoryNamespace",
+        "value": [],
+        "originalProtoCase": "stringListValue",
+        "protoKey": {
+          "$type": "proto.sdui.Key",
+          "value": {
+            "$case": "id",
+            "id": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormendCurrentPositionIds"
+          }
+        }
+      },
+      {
+        "key": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormlocation",
+        "namespace": "MemoryNamespace",
+        "value": "",
+        "originalProtoCase": "stringValue",
+        "protoKey": {
+          "$type": "proto.sdui.Key",
+          "value": {
+            "$case": "id",
+            "id": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormlocation"
+          }
+        }
+      },
+      {
+        "key": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormgeoLocationId",
+        "namespace": "MemoryNamespace",
+        "value": -1,
+        "originalProtoCase": "intValue",
+        "protoKey": {
+          "$type": "proto.sdui.Key",
+          "value": {
+            "$case": "id",
+            "id": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormgeoLocationId"
+          }
+        }
+      },
+      {
+        "key": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormlocationType",
+        "namespace": "MemoryNamespace",
+        "value": "",
+        "originalProtoCase": "stringValue",
+        "protoKey": {
+          "$type": "proto.sdui.Key",
+          "value": {
+            "$case": "id",
+            "id": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormlocationType"
+          }
+        }
+      },
+      {
+        "key": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormheadline",
+        "namespace": "MemoryNamespace",
+        "value": "Analyst | Engines | London",
+        "originalProtoCase": "stringValue",
+        "protoKey": {
+          "$type": "proto.sdui.Key",
+          "value": {
+            "$case": "id",
+            "id": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormheadline"
+          }
+        }
+      },
+      {
+        "key": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormdynamicallyCreateHeadline",
+        "namespace": "MemoryNamespace",
+        "value": true,
+        "originalProtoCase": "booleanValue",
+        "protoKey": {
+          "$type": "proto.sdui.Key",
+          "value": {
+            "$case": "id",
+            "id": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormdynamicallyCreateHeadline"
+          }
+        }
+      },
+      {
+        "key": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormjobSource",
+        "namespace": "MemoryNamespace",
+        "value": "",
+        "originalProtoCase": "stringValue",
+        "protoKey": {
+          "$type": "proto.sdui.Key",
+          "value": {
+            "$case": "id",
+            "id": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormjobSource"
+          }
+        }
+      },
+      {
+        "key": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormdisplaySourceOfHire",
+        "namespace": "MemoryNamespace",
+        "value": false,
+        "originalProtoCase": "booleanValue",
+        "protoKey": {
+          "$type": "proto.sdui.Key",
+          "value": {
+            "$case": "id",
+            "id": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormdisplaySourceOfHire"
+          }
+        }
+      },
+      {
+        "key": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormReorderableSkillsFormBindingsskillIdsBinding",
+        "namespace": "MemoryNamespace",
+        "value": [],
+        "originalProtoCase": "stringListValue",
+        "protoKey": {
+          "$type": "proto.sdui.Key",
+          "value": {
+            "$case": "id",
+            "id": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormReorderableSkillsFormBindingsskillIdsBinding"
+          }
+        }
+      },
+      {
+        "key": "position-mediaList",
+        "namespace": "MemoryNamespace",
+        "value": {
+          "$type": "proto.sdui.media.MediaList",
+          "mediaFiles": []
+        },
+        "originalProtoCase": "mediaListValue",
+        "protoKey": {
+          "$type": "proto.sdui.Key",
+          "value": {
+            "$case": "id",
+            "id": "position-mediaList"
+          }
+        }
+      },
+      {
+        "key": "position-mediaAssetUrns",
+        "namespace": "MemoryNamespace",
+        "value": [],
+        "originalProtoCase": "stringListValue",
+        "protoKey": {
+          "$type": "proto.sdui.Key",
+          "value": {
+            "$case": "id",
+            "id": "position-mediaAssetUrns"
+          }
+        }
+      },
+      {
+        "key": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormisWevValidated",
+        "namespace": "MemoryNamespace",
+        "value": true,
+        "originalProtoCase": "booleanValue",
+        "protoKey": {
+          "$type": "proto.sdui.Key",
+          "value": {
+            "$case": "id",
+            "id": "auto-binding-138598f8-6564-4d98-abfd-fa8a9c752dddProfilePositionFormisWevValidated"
+          }
+        }
+      },
+      {
+        "key": "auto-binding-0deaa874-4306-479d-a814-ac7ee73ed64fisActiveProfileFormLoading",
+        "namespace": "MemoryNamespace",
+        "value": true,
+        "originalProtoCase": "booleanValue",
+        "protoKey": {
+          "$type": "proto.sdui.Key",
+          "value": {
+            "$case": "id",
+            "id": "auto-binding-0deaa874-4306-479d-a814-ac7ee73ed64fisActiveProfileFormLoading"
+          }
+        }
+      }
+    ],
+    "screenId": "com.linkedin.sdui.flagshipnav.profile.ProfilePositionAddForm",
+    "knownTemplateIds": []
+  }
+}

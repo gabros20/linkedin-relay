@@ -255,6 +255,24 @@ back equal to the original both times):
 - **The About form's binding keys are per-load** (`auto-binding-<uuid>`); another reason to take them
   from the form rather than from a capture.
 
+### ✅ Experience: add, edit, remove a role — captured 2026-10-14
+
+- **The save is not in the form.** Save fires `uploadPositionMedia` (carried by the form, screens
+  `ProfilePositionAddForm` / `ProfilePositionDetailsEditForm`); its REPLY carries
+  `saveProfilePositionForm`. Delete (`deleteProfilePositionForm`) is in the edit form itself. The
+  Experience list (`ProfileExperienceDetails`) holds each role's edit navigation, whose payload is
+  `{ vanityName, positionId, profileId, title, titleId }`.
+- **The add form rewrites the headline.** `dynamicallyCreateHeadline` defaults to true; the browser
+  capture replaced the owner's live headline with "<title> at <org>" (restored by hand). This tool
+  always sends false. `allowProfileEditBroadcasts` (notify network) is false unless `--notify`.
+- **Computed values** are evaluated from the expression the form ships (company required unless the
+  employment type is self-employed/freelance), and refused when unrecognised. RSC bigints
+  (`"$n-1"`) go back as `{ type: "bigint", value }`. Media ids are a computed list never observed
+  non-empty, so a role with media is refused.
+- **Verified** by rebuilding the browser's add save from a fresh form read (equal field for field,
+  except the headline rewrite), then live through `lnrelay role add/edit/remove` on a past test
+  role, with the headline, About, intro fields and role list compared to a baseline after each step.
+
 Not built: `MULTIPART` tickets (large files get several part URLs and a completion call that has not
 been observed). `parseUploadTicket` refuses them before anything is uploaded.
 

@@ -31,6 +31,7 @@ import {
 } from './commands/live.ts';
 import { runBudget, runDoctor, runRisk } from './commands/local.ts';
 import { mcpCommands } from './commands/registry.ts';
+import { runExperience } from './commands/role.ts';
 import { shouldRunAsEntry } from './entry.ts';
 import type { Envelope } from './types.ts';
 
@@ -177,6 +178,15 @@ export function buildServer(): McpServer {
       limit: z.number().int().min(1).max(100).optional().describe('default 25'),
     },
     async ({ query, source, since, limit }) => reply(runLocal(query, source, since, limit ?? 25)),
+  );
+
+  server.tool(
+    'experience',
+    "The roles on the user's own LinkedIn profile: positionId and title. LIVE — 2 calls. The " +
+      'positionId is what `lnrelay role edit|remove` takes (CLI-only; changing a role is a write ' +
+      `the user approves). ${NO_RETRY}`,
+    {},
+    async () => reply(await runExperience()),
   );
 
   server.tool(

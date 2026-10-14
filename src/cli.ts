@@ -25,6 +25,7 @@ import {
 import { runBudget, runDoctor, runRisk } from './commands/local.ts';
 import { runOauthLogin, runOauthLogout, runOauthStatus } from './commands/oauth.ts';
 import { findCommand, helpText } from './commands/registry.ts';
+import { type RoleRequest, runExperience, runRole } from './commands/role.ts';
 import { runSync } from './commands/sync.ts';
 import {
   type MediaRequest,
@@ -155,6 +156,8 @@ export async function dispatch(argv: string[], now: number): Promise<Envelope> {
         num(args, 'limit') ?? 25,
         output(args),
       );
+    case 'experience':
+      return runExperience(bool(args, 'quiet'));
     case 'scheduled':
       return runScheduled(bool(args, 'quiet'));
     case 'sync':
@@ -252,6 +255,41 @@ function edit(args: ParsedArgs, now: number, deps: ConfirmDeps): Promise<Envelop
   return runEdit(target, text, now, deps);
 }
 
+function role(args: ParsedArgs, now: number, deps: ConfirmDeps): Promise<Envelope> | Envelope {
+  const [sub, target] = args.positionals;
+  const valued = [
+    'title',
+    'company',
+    'start',
+    'end',
+    'location',
+    'description',
+    'description-file',
+  ];
+  for (const flag of valued) {
+    if (args.flags[flag] === true) return err('role', 'INVALID_INPUT', `--${flag} needs a value`);
+  }
+  const req: RoleRequest = {};
+  for (const flag of ['title', 'company', 'start', 'end', 'location', 'description'] as const) {
+    const v = str(args, flag);
+    if (v !== undefined) req[flag] = v;
+  }
+  const file = str(args, 'description-file');
+  if (file !== undefined) {
+    if (req.description !== undefined) {
+      return err('role', 'INVALID_INPUT', 'pass --description or --description-file, not both');
+    }
+    try {
+      req.description = readFileSync(file, 'utf-8').replace(/\n$/, '');
+    } catch {
+      return err('role', 'INVALID_INPUT', `cannot read ${file}`);
+    }
+  }
+  if (bool(args, 'current')) req.current = true;
+  if (bool(args, 'notify')) req.notify = true;
+  return runRole(sub, target, req, now, deps);
+}
+
 function runWrite(
   command: string,
   args: ParsedArgs,
@@ -272,6 +310,8 @@ function runWrite(
       return runReact(first, str(args, 'type') ?? 'LIKE', now, deps, bool(args, 'remove'));
     case 'delete':
       return runDelete(first, now, deps, bool(args, 'quiet'));
+    case 'role':
+      return role(args, now, deps);
     default:
       return err(command, 'NOT_IMPLEMENTED', `'${command}' has no write runner`);
   }

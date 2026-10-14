@@ -18,9 +18,22 @@
 // from the form reads.
 
 import type { Client } from './client.ts';
+import {
+  type Failure,
+  findRequest,
+  keysOf,
+  type Model,
+  type ModelValue,
+  navBody,
+  type RequestArgs,
+  readModel,
+  requestBody,
+  responseErrors,
+  wireStates,
+} from './sdui-form.ts';
 
-const NAV_URL = 'https://www.linkedin.com/flagship-web/rsc-action/actions/navigation';
-const ACTION_URL = 'https://www.linkedin.com/flagship-web/rsc-action/actions/server-request';
+export const NAV_URL = 'https://www.linkedin.com/flagship-web/rsc-action/actions/navigation';
+export const ACTION_URL = 'https://www.linkedin.com/flagship-web/rsc-action/actions/server-request';
 
 export interface ProfileField {
   name: 'headline' | 'about';
@@ -53,116 +66,31 @@ export const PROFILE_FIELDS = {
 
 /** Open a form as the browser does. A read, though it is issued as a POST. */
 export function formNavBody(screen: string, vanityName: string) {
-  return {
-    clientArguments: {
-      $type: 'proto.sdui.actions.requests.RequestedArguments',
-      requestedStateKeys: [],
-      payload: { vanityName, isVanityNameResolved: true },
-      requestMetadata: { $type: 'proto.sdui.common.RequestMetadata' },
-      states: [],
-      screenId: screen,
-      knownTemplateIds: [],
-    },
-    isModal: true,
-  };
-}
-
-/** One initial value, as the form declares it. */
-interface ModelValue {
-  protoCase: string;
-  value: unknown;
+  return navBody(screen, { vanityName, isVanityNameResolved: true });
 }
 
 export interface ProfileForm {
   ok: true;
   /** The save action's arguments, verbatim: which states it reads, and its payload. */
-  args: {
-    requestedStateKeys: { key: { value: { id: string } } }[];
-    payload: Record<string, unknown>;
-  };
-  states: Map<string, ModelValue>;
+  args: RequestArgs;
+  states: Model;
   screen: string;
   save: string;
 }
 
-type Failure = { ok: false; code: string; message: string; hint?: string };
-
-const drift = (message: string): Failure => ({
+export const drift = (message: string): Failure => ({
   ok: false,
   code: 'SCHEMA_DRIFT',
   message,
   hint: 'Re-capture the profile form with scripts/observe-write.ts (edit one character, then revert).',
 });
 
-/** The balanced JSON array or object starting at `start`. */
-function balanced(s: string, start: number): string | null {
-  const open = s[start];
-  const close = open === '[' ? ']' : '}';
-  let depth = 0;
-  let inString = false;
-  let escaped = false;
-  for (let i = start; i < s.length; i++) {
-    const ch = s[i];
-    if (escaped) escaped = false;
-    else if (ch === '\\') escaped = true;
-    else if (ch === '"') inString = !inString;
-    else if (!inString && ch === open) depth++;
-    else if (!inString && ch === close) {
-      depth--;
-      if (depth === 0) return s.slice(start, i + 1);
-    }
-  }
-  return null;
-}
-
-function parseAt<T>(s: string, start: number): T | null {
-  const text = start === -1 ? null : balanced(s, start);
-  if (text === null) return null;
-  try {
-    return JSON.parse(text) as T;
-  } catch {
-    return null;
-  }
-}
-
-/** A model state's value in the shape the save sends it. */
-function plain(v: Record<string, unknown>): ModelValue {
-  const protoCase = String(v.$case);
-  const raw = v[protoCase];
-  if (protoCase === 'stringListValue') {
-    return { protoCase, value: (raw as { stringValues?: string[] })?.stringValues ?? [] };
-  }
-  return { protoCase, value: raw };
-}
-
 export function readForm(stream: string, field: ProfileField): ProfileForm | Failure {
-  // Initial values live in the form's `modelStates`. The same keys reappear
-  // inside actions (SetState on a checkbox, a reset); those are not values.
-  const at = stream.indexOf('"modelStates":[');
-  const model = parseAt<
-    { key?: { key?: { value?: { id?: string } } }; value?: Record<string, unknown> }[]
-  >(stream, at === -1 ? -1 : stream.indexOf('[', at));
-  if (model === null) return drift('the profile form carried no initial values');
-
-  const states = new Map<string, ModelValue>();
-  for (const entry of model) {
-    const id = entry.key?.key?.value?.id;
-    if (id !== undefined && entry.value !== undefined && !states.has(id)) {
-      states.set(id, plain(entry.value));
-    }
-  }
-
-  const req = stream.indexOf(`"requestId":"${field.save}","requestedArguments":`);
-  const args =
-    req === -1
-      ? null
-      : parseAt<ProfileForm['args']>(
-          stream,
-          stream.indexOf('{', stream.indexOf('"requestedArguments":', req)),
-        );
-  if (args === null || !Array.isArray(args.requestedStateKeys) || args.payload === undefined) {
+  const states = readModel(stream);
+  if (states === null) return drift('the profile form carried no initial values');
+  const args = findRequest(stream, field.save);
+  if (args === null)
     return drift(`the profile form carried no ${field.save.split('.').pop()} action`);
-  }
   return { ok: true, args, states, screen: field.screen, save: field.save };
 }
 
@@ -179,25 +107,27 @@ export function currentValue(form: ProfileForm, field: ProfileField): string | u
 }
 
 /**
- * Values the browser computes rather than reads. The About save carries the
- * top-skills list as an expression over a client-side collection, which starts
- * as `initialSkills` and is sent unchanged when skills are not touched.
+ * The About save carries the top-skills list as an expression over a
+ * client-side collection, which starts as `initialSkills` and is sent unchanged
+ * when skills are not touched.
  */
-function computed(form: ProfileForm, key: string): ModelValue | Failure | undefined {
-  if (!key.endsWith('ReorderableSkillsFormBindingsskillIdsBinding')) return undefined;
-  const initial = [...form.states.entries()].find(([k]) => k.startsWith('initialSkills'))?.[1];
-  if (initial === undefined) return drift('the About form carried no initial top skills');
-  // Only the empty list has been seen on the wire. Sending a guessed list could
-  // clear the owner's top skills, so a non-empty one is refused until observed.
-  if (!Array.isArray(initial.value) || initial.value.length > 0) {
-    return {
-      ok: false,
-      code: 'NOT_IMPLEMENTED',
-      message: 'your About section has top skills, and saving it with them has not been verified',
-      hint: 'Edit About in the browser for now; nothing was changed.',
-    };
-  }
-  return { protoCase: 'expression', value: [] };
+function topSkills(form: ProfileForm) {
+  return (key: string): { ok: true; value: unknown } | Failure | undefined => {
+    if (!key.endsWith('ReorderableSkillsFormBindingsskillIdsBinding')) return undefined;
+    const initial = [...form.states.entries()].find(([k]) => k.startsWith('initialSkills'))?.[1];
+    if (initial === undefined) return drift('the About form carried no initial top skills');
+    // Only the empty list has been seen on the wire. Sending a guessed list could
+    // clear the owner's top skills, so a non-empty one is refused until observed.
+    if (!Array.isArray(initial.value) || initial.value.length > 0) {
+      return {
+        ok: false,
+        code: 'NOT_IMPLEMENTED',
+        message: 'your About section has top skills, and saving it with them has not been verified',
+        hint: 'Edit About in the browser for now; nothing was changed.',
+      };
+    }
+    return { ok: true, value: [] };
+  };
 }
 
 /** The save the browser would send after the owner changed this one field. */
@@ -214,50 +144,15 @@ export function saveBody(
     };
   }
   const target = boundKey(form, field.binding);
-  if (target === undefined || !form.states.has(target)) {
+  const current = target === undefined ? undefined : form.states.get(target);
+  if (target === undefined || current === undefined) {
     return drift(`the profile form has no ${field.name} field`);
   }
-
-  const states: unknown[] = [];
-  for (const { key } of form.args.requestedStateKeys) {
-    const id = key.value.id;
-    let state: ModelValue | Failure | undefined = form.states.get(id);
-    if (state?.protoCase === 'expression') state = computed(form, id);
-    if (state === undefined) continue; // absent from the form: the browser omits it too
-    if ('ok' in state) return state;
-    states.push({
-      key: id,
-      namespace: 'MemoryNamespace',
-      value: id === target ? value : state.value,
-      originalProtoCase: state.protoCase,
-      protoKey: { $type: 'proto.sdui.Key', value: { $case: 'id', id } },
-    });
-  }
-
-  const requestedArguments = {
-    $type: 'proto.sdui.actions.requests.RequestedArguments',
-    requestedStateKeys: form.args.requestedStateKeys,
-    payload: form.args.payload,
-    requestMetadata: { $type: 'proto.sdui.common.RequestMetadata' },
-  };
-  const body = {
-    requestId: form.save,
-    serverRequest: {
-      requestId: form.save,
-      requestedArguments,
-      isApfcEnabled: false,
-      isStreaming: false,
-      rumPageKey: '',
-    },
-    states,
-    requestedArguments: {
-      ...requestedArguments,
-      states,
-      screenId: form.screen,
-      knownTemplateIds: [],
-    },
-  };
-  return { ok: true, body };
+  const model: Model = new Map(form.states);
+  model.set(target, { ...(current as ModelValue), value });
+  const states = wireStates(keysOf(form.args), model, topSkills(form));
+  if (!Array.isArray(states)) return states;
+  return { ok: true, body: requestBody(form.save, form.args, states, form.screen) };
 }
 
 /** Open the form for a field. */
@@ -266,33 +161,51 @@ export async function fetchProfileForm(
   vanityName: string,
   client: Client,
 ): Promise<ProfileForm | Failure> {
+  const stream = await openForm(
+    field.screen,
+    { vanityName, isVanityNameResolved: true },
+    client,
+    `profile-${field.name}-form`,
+  );
+  return typeof stream === 'string' ? readForm(stream, field) : stream;
+}
+
+/** POST a navigation and hand back the raw stream. */
+export async function openForm(
+  screen: string,
+  payload: Record<string, unknown>,
+  client: Client,
+  operation: string,
+): Promise<string | Failure> {
   const result = await client.request({
-    url: `${NAV_URL}?screenId=${field.screen}&sduiid=${field.screen}`,
+    url: `${NAV_URL}?screenId=${screen}&sduiid=${screen}`,
     method: 'POST',
-    body: formNavBody(field.screen, vanityName),
+    body: navBody(screen, payload),
     spendClass: 'page',
-    operation: `profile-${field.name}-form`,
+    operation,
   });
   if (!result.ok) {
     const out: Failure = { ok: false, code: result.code, message: result.message };
     if (result.hint !== undefined) out.hint = result.hint;
     return out;
   }
-  return readForm((result.classification as { raw?: string }).raw ?? '', field);
+  return (result.classification as { raw?: string }).raw ?? '';
 }
 
-/** Send a save built by `saveBody`. A 200 can still carry errors; they are read. */
-export async function sendProfileSave(
-  form: ProfileForm,
-  body: Record<string, unknown>,
+/** POST a server action; the raw stream back, or why it failed. A 200 can carry errors. */
+export async function sendAction(
+  requestId: string,
+  body: unknown,
   client: Client,
-): Promise<{ ok: true } | Failure> {
+  operation: string,
+  spendClass: 'write' | 'page' = 'write',
+): Promise<string | Failure> {
   const result = await client.request({
-    url: `${ACTION_URL}?sduiid=${form.save}`,
+    url: `${ACTION_URL}?sduiid=${requestId}`,
     method: 'POST',
     body,
-    spendClass: 'write',
-    operation: 'profile-save',
+    spendClass,
+    operation,
   });
   if (!result.ok) {
     const out: Failure = { ok: false, code: result.code, message: result.message };
@@ -300,13 +213,19 @@ export async function sendProfileSave(
     return out;
   }
   const raw = (result.classification as { raw?: string }).raw ?? '';
-  const errors = raw.match(/"errors":\[([^\]]+)\]/)?.[1];
-  if (errors !== undefined) {
-    return {
-      ok: false,
-      code: 'INVALID_INPUT',
-      message: `LinkedIn refused the save: ${errors.slice(0, 300)}`,
-    };
+  const errors = responseErrors(raw);
+  if (errors !== null) {
+    return { ok: false, code: 'INVALID_INPUT', message: `LinkedIn refused it: ${errors}` };
   }
-  return { ok: true };
+  return raw;
+}
+
+/** Send a save built by `saveBody`. */
+export async function sendProfileSave(
+  form: ProfileForm,
+  body: Record<string, unknown>,
+  client: Client,
+): Promise<{ ok: true } | Failure> {
+  const r = await sendAction(form.save, body, client, 'profile-save');
+  return typeof r === 'string' ? { ok: true } : r;
 }

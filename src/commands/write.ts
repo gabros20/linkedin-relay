@@ -58,20 +58,20 @@ import {
 import { loadToken, OAUTH_SETUP } from './token.ts';
 import { chooseTransport, type Transport } from './transport.ts';
 
-interface WriteContext {
+export interface WriteContext {
   transport: Transport;
   now: number;
   note?: string;
 }
 
 /** The urn a write is authored as, for the confirmation summary. */
-function authorLine(transport: Transport): string {
+export function authorLine(transport: Transport): string {
   return transport.kind === 'oauth'
     ? `as       ${transport.token.memberUrn}`
     : `as       ${transport.session.ownerUrn ?? 'you (browser session)'}`;
 }
 
-function prepare(
+export function prepare(
   command: string,
   now: number,
   via?: 'oauth' | 'voyager',
@@ -92,7 +92,7 @@ function prepare(
   return ctx;
 }
 
-async function gate<T>(
+export async function gate<T>(
   command: string,
   plan: WritePlan<T>,
   ctx: WriteContext,
@@ -640,7 +640,7 @@ export interface ProfileSurface {
   send(form: ProfileForm, body: Record<string, unknown>): Promise<{ ok: true } | ProfileFailure>;
 }
 
-function liveProfile(session: Session): ProfileSurface {
+export function liveProfile(session: Session): ProfileSurface {
   const client = createLiveClient(session);
   return {
     vanity: async () => {

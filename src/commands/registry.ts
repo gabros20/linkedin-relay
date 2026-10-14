@@ -189,6 +189,15 @@ export const COMMANDS: CommandDef[] = [
     implemented: true,
   },
   {
+    name: 'experience',
+    cost: '2 calls',
+    summary: 'The roles on your own profile, with the position id `role edit|remove` takes.',
+    usage: 'lnrelay experience',
+    audience: ['cli', 'mcp'],
+    risk: 'read',
+    implemented: true,
+  },
+  {
     name: 'local',
     cost: 'free — local cache',
     summary: 'Offline search across everything synced. The default research path after a sync.',
@@ -325,6 +334,24 @@ export const COMMANDS: CommandDef[] = [
       '       it as shareUrn), not its activity urn. The whole text is replaced. A profile edit\n' +
       '       shows the current text beside the new one, sends every other profile field back as\n' +
       '       LinkedIn holds it, and reads the profile back to confirm. Headline max 220 characters.',
+    audience: ['cli'],
+    risk: 'write',
+    implemented: true,
+  },
+  {
+    name: 'role',
+    cost: '3-4 reads + 1 write',
+    summary:
+      'Add, edit or remove a role in your Experience. Never rewrites your headline; notify network ' +
+      'is off unless --notify.',
+    usage:
+      'lnrelay role add --title "<t>" --company "<c>" --start YYYY-MM [--end YYYY-MM | --current]\n' +
+      '       [--location "<l>"] [--description "<d>" | --description-file <path>] [--notify]\n' +
+      '       lnrelay role edit <position-id> [any of the flags above]\n' +
+      '       lnrelay role remove <position-id>\n' +
+      '       Position ids come from `lnrelay experience`. The preview shows the role as it is and\n' +
+      '       as it will be; the result is read back from the profile. A role with media attached\n' +
+      '       is refused. The company is free text (not linked to a company page).',
     audience: ['cli'],
     risk: 'write',
     implemented: true,

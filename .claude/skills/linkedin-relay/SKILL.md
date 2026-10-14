@@ -136,6 +136,13 @@ matched to its post for certain. A scheduled post is cancelled with `lnrelay del
 text changed with `lnrelay edit <urn> "<text>"` (both CLI, approved like any write). If `meta.state`
 is not `complete`, the list may be short — say so.
 
+### `experience` — live, 2 calls. The user's roles.
+```
+experience
+```
+Each role on their profile with its `positionId` and title. The id is what `lnrelay role edit` and
+`lnrelay role remove` take.
+
 ### `sync` — CLI-only. Fills the cache.
 ```
 lnrelay sync my-posts | lnrelay sync connections [--limit N] [--force]
@@ -203,6 +210,8 @@ Writes are **not on the MCP surface**. They exist only as CLI commands:
 | `lnrelay reply <comment-urn> "<text>"` | reply, nested under that comment |
 | `lnrelay edit <comment-urn \| share-urn \| ugcPost-urn> "<text>"` | change the text of their own comment or post |
 | `lnrelay edit headline\|about ("<text>" \| --file <path>)` | change their profile headline (max 220 characters) or About section |
+| `lnrelay role add --title "…" --company "…" --start YYYY-MM [--end YYYY-MM \| --current] [--location "…"] [--description "…" \| --description-file <path>] [--notify]` | add a role to their Experience |
+| `lnrelay role edit <position-id> [the same flags]` / `lnrelay role remove <position-id>` | change or remove one of their roles (ids from `experience`) |
 | `lnrelay react <urn> [--type X] [--remove]` | react to a post or comment |
 | `lnrelay delete <activity-urn \| comment-urn>` | delete their post or comment |
 
@@ -245,6 +254,9 @@ Things worth telling a user who asks:
   bound to both, so if the profile changed after the preview, re-plan. Every other profile field
   (name, location, current position) is sent back exactly as LinkedIn holds it, and the result is
   read back from the profile. About edits are refused while the About section has top skills set.
+- Adding or editing a role never touches the headline. LinkedIn's own form would rewrite it to
+  "<title> at <company>"; this tool always turns that off. "Notify network" is off unless `--notify`.
+  The company is free text, not linked to a company page. A role with media attached is refused.
 - Scheduled posts are listed by `scheduled` (MCP and CLI), not by `my-posts`.
 - Editing a post replaces its whole text and LinkedIn marks it edited; pass the urn `share` printed
   (or `shareUrn` from `my-posts`), not the activity urn. An @mention in the old text is not kept.
