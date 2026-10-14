@@ -1,3 +1,10 @@
+# [3.18.0](https://github.com/gabros20/linkedin-relay/compare/v3.17.0...v3.18.0) (2026-10-14)
+
+
+### Features
+
+* **my-items:** your saved posts, learning courses and job tracker ([01c0907](https://github.com/gabros20/linkedin-relay/commit/01c090708051dd392bc6492df10fccf767a88312))
+
 # [3.17.0](https://github.com/gabros20/linkedin-relay/compare/v3.16.0...v3.17.0) (2026-10-14)
 
 
