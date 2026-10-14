@@ -1,3 +1,10 @@
+## [3.12.1](https://github.com/gabros20/linkedin-relay/compare/v3.12.0...v3.12.1) (2026-10-14)
+
+
+### Bug Fixes
+
+* **mcp:** search no longer offers kind jobs, which returned an empty list ([4a42ec9](https://github.com/gabros20/linkedin-relay/commit/4a42ec932fdda14bcb94141e570acb5c294cecdb))
+
 # [3.12.0](https://github.com/gabros20/linkedin-relay/compare/v3.11.0...v3.12.0) (2026-10-14)
 
 
