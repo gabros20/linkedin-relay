@@ -100,8 +100,10 @@ clean read-only operation. `message` and invitation-accept are never reconsidere
 > a draft is a local file with the thread link, sent by the owner by hand, so the double-fire and
 > wrong-thread failures cannot happen; (2) nothing read is stored, so no one else's messages sit on
 > disk; (3) reading makes only the GETs — the browser's mark-read, mark-seen and delivery
-> acknowledgement POSTs are not made, so a correspondent sees nothing. `connect`, invitations and
-> sending a message remain cut.
+> acknowledgement POSTs are not made, so a correspondent sees nothing. Verified live the same day
+> on a conversation with one unread message, from a correspondent who knew it was a test: after
+> `messages` and `draft` read it, it was still unread. `connect`, invitations and sending a message
+> remain cut.
 
 ---
 
