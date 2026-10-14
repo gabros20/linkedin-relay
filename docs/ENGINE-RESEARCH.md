@@ -315,6 +315,36 @@ in `metadata.primaryFilterCluster`.
   way the job search resolves a typed location.
 - `connectionOf` takes the profile id from a result's `entityUrn`.
 
+## 5h. Every other search kind — ✅ verified 2026-10-14
+
+**Companies, groups, events, courses (`LEARNING`), products, services, schools** come from the same
+`voyagerSearchDashClusters` as people, one `resultType` each, in the same `EntityResultViewModel`
+rows (title, primary and secondary subtitle, summary), 50 a page, 1000 a query. Events ignore
+`count` (65 came back for 50). Filters differ per kind and come back with
+`includeFiltersInResponse`: companies have `companyHqGeo`, `industryCompanyVertical`,
+`companySize`, `hasJobs`, `network`; courses `difficultyLevel`, `timeToComplete`, `softwareNames`,
+`categoryIds`, `continuingEducationUnits`; products `productFreePlan`, `productCategory`,
+`productCompany`; services `serviceCategory`, `geoUrn`, `network`, `profileLanguage`; groups, events
+and schools none.
+
+**Posts are the exception.** Asked for `resultType:CONTENT`, the Voyager search claims hundreds of
+matches and returns none, at any page size. The results page loads posts from an SDUI pager,
+`com.linkedin.sdui.search.contentSearchResults`, whose payload is `startIndex`, `count`, `keywords`
+and each filter as a list (`sortBy`, `datePosted`, `contentType`, `postedBy`, `fromMember`,
+`fromOrganization`, `mentionsMember`, `mentionsOrganization`, `authorCompany`, `authorIndustry`,
+`authorJobTitle`). The browser asks for 3; 20 came back whole. The answer is an RSC stream of about
+half a megabyte a post, and a post is not one record in it:
+
+- Its top row (`viewName: feed-full-update`) is the card's skeleton; author, text and counts sit in
+  other rows reached through `$L<id>` references. Every part carries the same `contentTrackingId`,
+  which is per search, not per post, so it cannot group them.
+- The numbers are in the stream's model state, keyed by the post's content urn:
+  `ReactionType_<TYPE>_<urn>`, `commentCount-<urn>`, `repostCount-<urn>`.
+- A person author's name is a `profile_name_loading_state` SetState in the hover card, about 60
+  rows deep; a company page has none, and is named by the visible text its link label starts with
+  (the label may carry a badge: "Microsoft Prémium").
+- Labels such as the time come in the viewer's LinkedIn language.
+
 ## 6. The Rest.li codec is byte-correct — ✅ verified
 
 The web client sent `variables=(memberIdentity:ACoAA…)`. Our `encodeVariables()` produced the

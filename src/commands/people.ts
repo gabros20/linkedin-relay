@@ -40,7 +40,7 @@ type Fetched =
 /** One accounted GET. Injectable so tests send nothing. */
 export type PeopleFetch = (url: string, spendClass: 'search') => Promise<Fetched>;
 
-function liveFetch(command: string, quiet: boolean): PeopleFetch | Envelope {
+export function liveFetch(command: string, quiet: boolean): PeopleFetch | Envelope {
   const session = loadSession();
   if (session.state !== 'ok')
     return err(command, 'AUTH_FAILED', 'no LinkedIn session — run `lnrelay login`');
@@ -81,7 +81,7 @@ function compactPerson(p: Row): string {
   ]);
 }
 
-function shape<T extends object>(rows: T[], opts: OutputOpts, toLine: (r: T) => string) {
+export function shape<T extends object>(rows: T[], opts: OutputOpts, toLine: (r: T) => string) {
   if (opts.compact === true) return rows.map(toLine);
   if (opts.fields !== undefined && opts.fields !== '')
     return project(rows as unknown as Record<string, unknown>[], opts.fields);
@@ -90,7 +90,7 @@ function shape<T extends object>(rows: T[], opts: OutputOpts, toLine: (r: T) => 
 
 // ─── Names to ids ─────────────────────────────────────────────────────────────
 
-interface Lookup {
+export interface Lookup {
   given: string;
   id: string;
   name: string;
@@ -131,7 +131,7 @@ async function resolveOrgs(
 }
 
 /** A place name to a geo id, the way the job search resolves a typed location. */
-async function resolvePlace(get: PeopleFetch, place: string): Promise<Lookup | Failure> {
+export async function resolvePlace(get: PeopleFetch, place: string): Promise<Lookup | Failure> {
   const res = await get(
     jobSearchUrl({ location: place, filters: {}, start: 0, count: 1 }),
     'search',

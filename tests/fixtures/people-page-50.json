@@ -1441,7 +1441,6 @@
         "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
         "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
       },
-      "overflowActions": [],
       "searchActionType": null,
       "actorInsights": [],
       "insightsResolutionResults": [],
@@ -1509,7 +1508,6 @@
         "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
         "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
       },
-      "overflowActions": [],
       "*lazyLoadedActions": "urn:li:fsd_lazyLoadedActions:(urn:li:fsd_profileActions:(ACoAATESTPERSON7,SEARCH_STATEFUL_SUPPLEMENTARY,EMPTY_CONTEXT_ENTITY_URN),PEOPLE,SEARCH_SRP)",
       "searchActionType": null,
       "actorInsights": [],
@@ -1618,7 +1616,6 @@
         "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
         "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
       },
-      "overflowActions": [],
       "*lazyLoadedActions": "urn:li:fsd_lazyLoadedActions:(urn:li:fsd_profileActions:(ACoAATESTPERSON38,SEARCH_STATEFUL_SUPPLEMENTARY,EMPTY_CONTEXT_ENTITY_URN),PEOPLE,SEARCH_SRP)",
       "searchActionType": null,
       "actorInsights": [],
@@ -1694,7 +1691,6 @@
         "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
         "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
       },
-      "overflowActions": [],
       "*lazyLoadedActions": "urn:li:fsd_lazyLoadedActions:(urn:li:fsd_profileActions:(ACoAATESTPERSON45,SEARCH_STATEFUL_SUPPLEMENTARY,EMPTY_CONTEXT_ENTITY_URN),PEOPLE,SEARCH_SRP)",
       "searchActionType": null,
       "actorInsights": [],
@@ -1803,7 +1799,6 @@
         "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
         "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
       },
-      "overflowActions": [],
       "*lazyLoadedActions": "urn:li:fsd_lazyLoadedActions:(urn:li:fsd_profileActions:(ACoAATESTPERSON8,SEARCH_STATEFUL_SUPPLEMENTARY,EMPTY_CONTEXT_ENTITY_URN),PEOPLE,SEARCH_SRP)",
       "searchActionType": null,
       "actorInsights": [],
@@ -1938,7 +1933,6 @@
         "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
         "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
       },
-      "overflowActions": [],
       "*lazyLoadedActions": "urn:li:fsd_lazyLoadedActions:(urn:li:fsd_profileActions:(ACoAATESTPERSON48,SEARCH_STATEFUL_SUPPLEMENTARY,EMPTY_CONTEXT_ENTITY_URN),PEOPLE,SEARCH_SRP)",
       "searchActionType": null,
       "actorInsights": [],
@@ -2047,7 +2041,6 @@
         "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
         "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
       },
-      "overflowActions": [],
       "*lazyLoadedActions": "urn:li:fsd_lazyLoadedActions:(urn:li:fsd_profileActions:(ACoAATESTPERSON30,SEARCH_STATEFUL_SUPPLEMENTARY,EMPTY_CONTEXT_ENTITY_URN),PEOPLE,SEARCH_SRP)",
       "searchActionType": null,
       "actorInsights": [],
@@ -2156,7 +2149,6 @@
         "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
         "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
       },
-      "overflowActions": [],
       "searchActionType": null,
       "actorInsights": [],
       "insightsResolutionResults": [],
@@ -2224,7 +2216,6 @@
         "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
         "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
       },
-      "overflowActions": [],
       "searchActionType": null,
       "actorInsights": [],
       "insightsResolutionResults": [],
@@ -2292,7 +2283,6 @@
         "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
         "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
       },
-      "overflowActions": [],
       "*lazyLoadedActions": "urn:li:fsd_lazyLoadedActions:(urn:li:fsd_profileActions:(ACoAATESTPERSON41,SEARCH_STATEFUL_SUPPLEMENTARY,EMPTY_CONTEXT_ENTITY_URN),PEOPLE,SEARCH_SRP)",
       "searchActionType": null,
       "actorInsights": [],
@@ -2401,7 +2391,6 @@
         "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
         "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
       },
-      "overflowActions": [],
       "*lazyLoadedActions": "urn:li:fsd_lazyLoadedActions:(urn:li:fsd_profileActions:(ACoAATESTPERSON4,SEARCH_STATEFUL_SUPPLEMENTARY,EMPTY_CONTEXT_ENTITY_URN),PEOPLE,SEARCH_SRP)",
       "searchActionType": null,
       "actorInsights": [],
@@ -2536,7 +2525,6 @@
         "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
         "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
       },
-      "overflowActions": [],
       "*lazyLoadedActions": "urn:li:fsd_lazyLoadedActions:(urn:li:fsd_profileActions:(ACoAATESTPERSON29,SEARCH_STATEFUL_SUPPLEMENTARY,EMPTY_CONTEXT_ENTITY_URN),PEOPLE,SEARCH_SRP)",
       "searchActionType": null,
       "actorInsights": [],
@@ -2645,7 +2633,6 @@
         "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
         "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
       },
-      "overflowActions": [],
       "*lazyLoadedActions": "urn:li:fsd_lazyLoadedActions:(urn:li:fsd_profileActions:(ACoAATESTPERSON2,SEARCH_STATEFUL_SUPPLEMENTARY,EMPTY_CONTEXT_ENTITY_URN),PEOPLE,SEARCH_SRP)",
       "searchActionType": null,
       "actorInsights": [],
@@ -2754,7 +2741,6 @@
         "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
         "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
       },
-      "overflowActions": [],
       "*lazyLoadedActions": "urn:li:fsd_lazyLoadedActions:(urn:li:fsd_profileActions:(ACoAATESTPERSON27,SEARCH_STATEFUL_SUPPLEMENTARY,EMPTY_CONTEXT_ENTITY_URN),PEOPLE,SEARCH_SRP)",
       "searchActionType": null,
       "actorInsights": [],
@@ -2889,7 +2875,6 @@
         "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
         "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
       },
-      "overflowActions": [],
       "*lazyLoadedActions": "urn:li:fsd_lazyLoadedActions:(urn:li:fsd_profileActions:(ACoAATESTPERSON40,SEARCH_STATEFUL_SUPPLEMENTARY,EMPTY_CONTEXT_ENTITY_URN),PEOPLE,SEARCH_SRP)",
       "searchActionType": null,
       "actorInsights": [],
@@ -2998,7 +2983,6 @@
         "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
         "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
       },
-      "overflowActions": [],
       "searchActionType": null,
       "actorInsights": [],
       "insightsResolutionResults": [],
@@ -3066,7 +3050,6 @@
         "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
         "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
       },
-      "overflowActions": [],
       "*lazyLoadedActions": "urn:li:fsd_lazyLoadedActions:(urn:li:fsd_profileActions:(ACoAATESTPERSON43,SEARCH_STATEFUL_SUPPLEMENTARY,EMPTY_CONTEXT_ENTITY_URN),PEOPLE,SEARCH_SRP)",
       "searchActionType": null,
       "actorInsights": [],
@@ -3142,7 +3125,6 @@
         "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
         "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
       },
-      "overflowActions": [],
       "*lazyLoadedActions": "urn:li:fsd_lazyLoadedActions:(urn:li:fsd_profileActions:(ACoAATESTPERSON22,SEARCH_STATEFUL_SUPPLEMENTARY,EMPTY_CONTEXT_ENTITY_URN),PEOPLE,SEARCH_SRP)",
       "searchActionType": null,
       "actorInsights": [],
@@ -3251,7 +3233,6 @@
         "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
         "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
       },
-      "overflowActions": [],
       "searchActionType": null,
       "actorInsights": [],
       "insightsResolutionResults": [],
@@ -3319,7 +3300,6 @@
         "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
         "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
       },
-      "overflowActions": [],
       "*lazyLoadedActions": "urn:li:fsd_lazyLoadedActions:(urn:li:fsd_profileActions:(ACoAATESTPERSON34,SEARCH_STATEFUL_SUPPLEMENTARY,EMPTY_CONTEXT_ENTITY_URN),PEOPLE,SEARCH_SRP)",
       "searchActionType": null,
       "actorInsights": [],
@@ -3428,7 +3408,6 @@
         "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
         "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
       },
-      "overflowActions": [],
       "searchActionType": null,
       "actorInsights": [],
       "insightsResolutionResults": [],
@@ -3496,7 +3475,6 @@
         "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
         "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
       },
-      "overflowActions": [],
       "searchActionType": null,
       "actorInsights": [],
       "insightsResolutionResults": [],
@@ -3564,7 +3542,6 @@
         "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
         "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
       },
-      "overflowActions": [],
       "*lazyLoadedActions": "urn:li:fsd_lazyLoadedActions:(urn:li:fsd_profileActions:(ACoAATESTPERSON32,SEARCH_STATEFUL_SUPPLEMENTARY,EMPTY_CONTEXT_ENTITY_URN),PEOPLE,SEARCH_SRP)",
       "searchActionType": null,
       "actorInsights": [],
@@ -3673,7 +3650,6 @@
         "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
         "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
       },
-      "overflowActions": [],
       "*lazyLoadedActions": "urn:li:fsd_lazyLoadedActions:(urn:li:fsd_profileActions:(ACoAATESTPERSON14,SEARCH_STATEFUL_SUPPLEMENTARY,EMPTY_CONTEXT_ENTITY_URN),PEOPLE,SEARCH_SRP)",
       "searchActionType": null,
       "actorInsights": [],
@@ -3782,7 +3758,6 @@
         "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
         "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
       },
-      "overflowActions": [],
       "*lazyLoadedActions": "urn:li:fsd_lazyLoadedActions:(urn:li:fsd_profileActions:(ACoAATESTPERSON11,SEARCH_STATEFUL_SUPPLEMENTARY,EMPTY_CONTEXT_ENTITY_URN),PEOPLE,SEARCH_SRP)",
       "searchActionType": null,
       "actorInsights": [],
@@ -3891,7 +3866,6 @@
         "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
         "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
       },
-      "overflowActions": [],
       "*lazyLoadedActions": "urn:li:fsd_lazyLoadedActions:(urn:li:fsd_profileActions:(ACoAATESTPERSON23,SEARCH_STATEFUL_SUPPLEMENTARY,EMPTY_CONTEXT_ENTITY_URN),PEOPLE,SEARCH_SRP)",
       "searchActionType": null,
       "actorInsights": [],
@@ -4000,7 +3974,6 @@
         "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
         "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
       },
-      "overflowActions": [],
       "*lazyLoadedActions": "urn:li:fsd_lazyLoadedActions:(urn:li:fsd_profileActions:(ACoAATESTPERSON19,SEARCH_STATEFUL_SUPPLEMENTARY,EMPTY_CONTEXT_ENTITY_URN),PEOPLE,SEARCH_SRP)",
       "searchActionType": null,
       "actorInsights": [],
@@ -4109,7 +4082,6 @@
         "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
         "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
       },
-      "overflowActions": [],
       "searchActionType": null,
       "actorInsights": [],
       "insightsResolutionResults": [],
@@ -4177,7 +4149,6 @@
         "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
         "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
       },
-      "overflowActions": [],
       "*lazyLoadedActions": "urn:li:fsd_lazyLoadedActions:(urn:li:fsd_profileActions:(ACoAATESTPERSON39,SEARCH_STATEFUL_SUPPLEMENTARY,EMPTY_CONTEXT_ENTITY_URN),PEOPLE,SEARCH_SRP)",
       "searchActionType": null,
       "actorInsights": [],
@@ -4286,7 +4257,6 @@
         "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
         "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
       },
-      "overflowActions": [],
       "*lazyLoadedActions": "urn:li:fsd_lazyLoadedActions:(urn:li:fsd_profileActions:(ACoAATESTPERSON3,SEARCH_STATEFUL_SUPPLEMENTARY,EMPTY_CONTEXT_ENTITY_URN),PEOPLE,SEARCH_SRP)",
       "searchActionType": null,
       "actorInsights": [],
@@ -4395,7 +4365,6 @@
         "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
         "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
       },
-      "overflowActions": [],
       "searchActionType": null,
       "actorInsights": [],
       "insightsResolutionResults": [],
@@ -4463,7 +4432,6 @@
         "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
         "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
       },
-      "overflowActions": [],
       "searchActionType": null,
       "actorInsights": [],
       "insightsResolutionResults": [],
@@ -4531,7 +4499,6 @@
         "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
         "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
       },
-      "overflowActions": [],
       "searchActionType": null,
       "actorInsights": [],
       "insightsResolutionResults": [],
@@ -4599,7 +4566,6 @@
         "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
         "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
       },
-      "overflowActions": [],
       "*lazyLoadedActions": "urn:li:fsd_lazyLoadedActions:(urn:li:fsd_profileActions:(ACoAATESTPERSON17,SEARCH_STATEFUL_SUPPLEMENTARY,EMPTY_CONTEXT_ENTITY_URN),PEOPLE,SEARCH_SRP)",
       "searchActionType": null,
       "actorInsights": [],
@@ -4708,7 +4674,6 @@
         "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
         "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
       },
-      "overflowActions": [],
       "searchActionType": null,
       "actorInsights": [],
       "insightsResolutionResults": [],
@@ -4776,7 +4741,6 @@
         "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
         "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
       },
-      "overflowActions": [],
       "searchActionType": null,
       "actorInsights": [],
       "insightsResolutionResults": [],
@@ -4844,7 +4808,6 @@
         "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
         "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
       },
-      "overflowActions": [],
       "*lazyLoadedActions": "urn:li:fsd_lazyLoadedActions:(urn:li:fsd_profileActions:(ACoAATESTPERSON33,SEARCH_STATEFUL_SUPPLEMENTARY,EMPTY_CONTEXT_ENTITY_URN),PEOPLE,SEARCH_SRP)",
       "searchActionType": null,
       "actorInsights": [],
@@ -4920,7 +4883,6 @@
         "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
         "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
       },
-      "overflowActions": [],
       "*lazyLoadedActions": "urn:li:fsd_lazyLoadedActions:(urn:li:fsd_profileActions:(ACoAATESTPERSON44,SEARCH_STATEFUL_SUPPLEMENTARY,EMPTY_CONTEXT_ENTITY_URN),PEOPLE,SEARCH_SRP)",
       "searchActionType": null,
       "actorInsights": [],
@@ -5029,7 +4991,6 @@
         "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
         "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
       },
-      "overflowActions": [],
       "*lazyLoadedActions": "urn:li:fsd_lazyLoadedActions:(urn:li:fsd_profileActions:(ACoAATESTPERSON1,SEARCH_STATEFUL_SUPPLEMENTARY,EMPTY_CONTEXT_ENTITY_URN),PEOPLE,SEARCH_SRP)",
       "searchActionType": null,
       "actorInsights": [],
@@ -5138,7 +5099,6 @@
         "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
         "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
       },
-      "overflowActions": [],
       "*lazyLoadedActions": "urn:li:fsd_lazyLoadedActions:(urn:li:fsd_profileActions:(ACoAATESTPERSON31,SEARCH_STATEFUL_SUPPLEMENTARY,EMPTY_CONTEXT_ENTITY_URN),PEOPLE,SEARCH_SRP)",
       "searchActionType": null,
       "actorInsights": [],
@@ -5273,7 +5233,6 @@
         "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
         "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
       },
-      "overflowActions": [],
       "*lazyLoadedActions": "urn:li:fsd_lazyLoadedActions:(urn:li:fsd_profileActions:(ACoAATESTPERSON47,SEARCH_STATEFUL_SUPPLEMENTARY,EMPTY_CONTEXT_ENTITY_URN),PEOPLE,SEARCH_SRP)",
       "searchActionType": null,
       "actorInsights": [],
@@ -5382,7 +5341,6 @@
         "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
         "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
       },
-      "overflowActions": [],
       "*lazyLoadedActions": "urn:li:fsd_lazyLoadedActions:(urn:li:fsd_profileActions:(ACoAATESTPERSON26,SEARCH_STATEFUL_SUPPLEMENTARY,EMPTY_CONTEXT_ENTITY_URN),PEOPLE,SEARCH_SRP)",
       "searchActionType": null,
       "actorInsights": [],
@@ -5491,7 +5449,6 @@
         "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
         "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
       },
-      "overflowActions": [],
       "searchActionType": null,
       "actorInsights": [],
       "insightsResolutionResults": [],
@@ -5559,7 +5516,6 @@
         "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
         "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
       },
-      "overflowActions": [],
       "*lazyLoadedActions": "urn:li:fsd_lazyLoadedActions:(urn:li:fsd_profileActions:(ACoAATESTPERSON15,SEARCH_STATEFUL_SUPPLEMENTARY,EMPTY_CONTEXT_ENTITY_URN),PEOPLE,SEARCH_SRP)",
       "searchActionType": null,
       "actorInsights": [],
@@ -5668,7 +5624,6 @@
         "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
         "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
       },
-      "overflowActions": [],
       "*lazyLoadedActions": "urn:li:fsd_lazyLoadedActions:(urn:li:fsd_profileActions:(ACoAATESTPERSON9,SEARCH_STATEFUL_SUPPLEMENTARY,EMPTY_CONTEXT_ENTITY_URN),PEOPLE,SEARCH_SRP)",
       "searchActionType": null,
       "actorInsights": [],
@@ -5803,7 +5758,6 @@
         "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
         "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
       },
-      "overflowActions": [],
       "searchActionType": null,
       "actorInsights": [],
       "insightsResolutionResults": [],
@@ -5871,7 +5825,6 @@
         "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
         "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
       },
-      "overflowActions": [],
       "searchActionType": null,
       "actorInsights": [],
       "insightsResolutionResults": [],
@@ -5939,7 +5892,6 @@
         "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
         "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
       },
-      "overflowActions": [],
       "*lazyLoadedActions": "urn:li:fsd_lazyLoadedActions:(urn:li:fsd_profileActions:(ACoAATESTPERSON28,SEARCH_STATEFUL_SUPPLEMENTARY,EMPTY_CONTEXT_ENTITY_URN),PEOPLE,SEARCH_SRP)",
       "searchActionType": null,
       "actorInsights": [],
@@ -6048,7 +6000,6 @@
         "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
         "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
       },
-      "overflowActions": [],
       "*lazyLoadedActions": "urn:li:fsd_lazyLoadedActions:(urn:li:fsd_profileActions:(ACoAATESTPERSON36,SEARCH_STATEFUL_SUPPLEMENTARY,EMPTY_CONTEXT_ENTITY_URN),PEOPLE,SEARCH_SRP)",
       "searchActionType": null,
       "actorInsights": [],
@@ -6157,7 +6108,6 @@
         "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
         "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
       },
-      "overflowActions": [],
       "*lazyLoadedActions": "urn:li:fsd_lazyLoadedActions:(urn:li:fsd_profileActions:(ACoAATESTPERSON18,SEARCH_STATEFUL_SUPPLEMENTARY,EMPTY_CONTEXT_ENTITY_URN),PEOPLE,SEARCH_SRP)",
       "searchActionType": null,
       "actorInsights": [],

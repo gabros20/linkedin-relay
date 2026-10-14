@@ -79,7 +79,7 @@ describe('the tools an agent gets', () => {
 
 // The generic search returns no job cards; jobs have their own tool. Offering
 // `kind: jobs` here would hand an agent an empty list that looks like success.
-describe('jobs are searched through `jobs`, not `search`', () => {
+describe('people and jobs are searched through their own tools, not `search`', () => {
   const tool = (name: string) =>
     (
       buildServer() as unknown as {
@@ -90,11 +90,22 @@ describe('jobs are searched through `jobs`, not `search`', () => {
       }
     )._registeredTools[name];
 
-  test('search does not take kind jobs', () => {
-    expect(tool('search')?.inputSchema.safeParse({ kind: 'jobs', query: 'x' }).success).toBe(false);
-    expect(tool('search')?.inputSchema.safeParse({ kind: 'people', query: 'x' }).success).toBe(
-      true,
-    );
+  test('search does not take people or jobs, which have their own tools', () => {
+    const parses = (kind: string) =>
+      tool('search')?.inputSchema.safeParse({ kind, keywords: 'x' }).success;
+    expect(parses('jobs')).toBe(false);
+    expect(parses('people')).toBe(false);
+    for (const kind of [
+      'posts',
+      'companies',
+      'groups',
+      'events',
+      'courses',
+      'products',
+      'services',
+      'schools',
+    ])
+      expect(parses(kind)).toBe(true);
   });
 
   test('jobs takes several keyword sets', () => {

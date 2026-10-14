@@ -27,13 +27,14 @@ import {
   runProfile,
   runReactions,
   runScheduled,
-  runSearch,
   runWhoami,
 } from './commands/live.ts';
 import { runBudget, runDoctor, runRisk } from './commands/local.ts';
 import { type PeopleRequest, runPeople, runPeopleFilters } from './commands/people.ts';
+import { runPostsSearch } from './commands/posts-search.ts';
 import { mcpCommands } from './commands/registry.ts';
 import { runExperience } from './commands/role.ts';
+import { runFind, runFindFilters } from './commands/search-kinds.ts';
 import { runSkills } from './commands/skill.ts';
 import { shouldRunAsEntry } from './entry.ts';
 import type { Envelope } from './types.ts';
@@ -105,19 +106,128 @@ export function buildServer(): McpServer {
 
   server.tool(
     'search',
-    'Search LinkedIn people or companies, one page (people with filters: `people`; jobs: `jobs`). CHEAP — this is the net. Rows already carry name, ' +
-      'headline, location and url, so RANK ON THOSE and deep-read only 2-3 finalists with ' +
-      '`profile`. Calling profile on every result burns a day of budget in one request. ' +
-      "`meta.claimedCount` is LinkedIn's total for the query (often millions), NOT how many you " +
-      'got, and `meta.state` is always "unknown" because this is one page of many. Out-of-network ' +
-      'people return as name "LinkedIn Member" with a /headless url — that is real LinkedIn ' +
-      `behaviour for this account, not a failure. ${READING_CONTRACT} ${NO_RETRY}`,
+    'Search LinkedIn posts, companies, groups, events, courses, products, services or schools ' +
+      '(people and jobs have their own tools, `people` and `jobs`). 1 search call per 50 results ' +
+      '(posts: per 20; a posts call is heavy, ask for the depth you need). Rows: id, name, ' +
+      'subtitle, detail, summary, url — what subtitle and detail hold depends on the kind ' +
+      '(companies: industry • HQ, followers; groups: members; events: when, where • organiser; ' +
+      'courses: length, instructor • released; schools: place, alumni; services: the provider). ' +
+      'Posts rows: id (the post urn, which `post` takes), url, author, authorHeadline, authorUrl, ' +
+      "posted (as LinkedIn shows it, in the user's language), text, reactions, comments, reposts. " +
+      'Several keyword sets as a list are searched and merged by id, with `matched`. Filter ' +
+      'options and their ids for each kind come from `search_filters`. LinkedIn pages at most ' +
+      `1000 results per query; \`meta.servedLimit\` means it claimed more. ${READING_CONTRACT} ${NO_RETRY}`,
     {
-      kind: z.enum(['people', 'companies']),
-      query: z.string().min(1).describe('search terms'),
-      limit: z.number().int().min(1).max(25).optional().describe('default 10'),
+      kind: z.enum([
+        'posts',
+        'companies',
+        'groups',
+        'events',
+        'courses',
+        'products',
+        'services',
+        'schools',
+      ]),
+      keywords: z.union([z.string(), z.array(z.string()).min(1)]).optional(),
+      location: z.string().optional().describe('companies (HQ) and services: a place by name'),
+      industry: z.array(z.string()).optional().describe('companies: industry ids'),
+      network: z
+        .array(z.enum(['1st', '2nd', '3rd+']))
+        .optional()
+        .describe('companies, services'),
+      filter: z
+        .array(z.string())
+        .optional()
+        .describe('raw key=v1,v2 by the names search_filters lists'),
+      sort: z.enum(['recent', 'relevant']).optional().describe('posts'),
+      posted: z.enum(['24h', 'week', 'month']).optional().describe('posts'),
+      type: z
+        .array(z.enum(['videos', 'images', 'jobs', 'live', 'articles', 'documents']))
+        .optional()
+        .describe('posts'),
+      postedBy: z
+        .array(z.enum(['1st', 'me']))
+        .optional()
+        .describe('posts'),
+      from: z.array(z.string()).optional().describe('posts by these people (profile ids)'),
+      mentions: z
+        .array(z.string())
+        .optional()
+        .describe('posts mentioning these people (profile ids)'),
+      fromCompany: z
+        .array(z.string())
+        .optional()
+        .describe('posts by these companies (names or ids)'),
+      mentionsCompany: z.array(z.string()).optional().describe('posts mentioning these companies'),
+      authorCompany: z.array(z.string()).optional().describe('posts by people at these companies'),
+      authorIndustry: z
+        .array(z.string())
+        .optional()
+        .describe('posts by people in these industries'),
+      authorTitle: z.string().optional().describe('posts by people with this job title'),
+      limit: z
+        .number()
+        .int()
+        .min(1)
+        .max(1000)
+        .optional()
+        .describe('per keyword set; default 25 (posts 20)'),
+      start: z.number().int().min(0).optional(),
+      compact: z.boolean().optional().describe('one line per result'),
     },
-    async ({ kind, query, limit }) => reply(await runSearch(kind, query, limit ?? 10)),
+    async ({
+      kind,
+      keywords,
+      location,
+      industry,
+      network,
+      filter,
+      limit,
+      start,
+      compact,
+      ...posts
+    }) => {
+      const opts = compact === true ? { compact: true } : {};
+      const common = {
+        ...(keywords !== undefined ? { keywords } : {}),
+        ...(start !== undefined ? { start } : {}),
+        ...(filter !== undefined ? { raw: filter } : {}),
+      };
+      if (kind === 'posts')
+        return reply(await runPostsSearch({ ...common, ...posts, limit: limit ?? 20 }, opts));
+      return reply(
+        await runFind(
+          kind,
+          {
+            ...common,
+            limit: limit ?? 25,
+            ...(location !== undefined ? { location } : {}),
+            ...(industry !== undefined ? { industry } : {}),
+            ...(network !== undefined ? { network } : {}),
+          },
+          opts,
+        ),
+      );
+    },
+  );
+
+  server.tool(
+    'search_filters',
+    "Every filter a search kind has for a query, with each option's id and live count: the " +
+      'values `search` takes as raw `filter` (key=value by the listed key), or `industry`, … ' +
+      `1 search call. ${NO_RETRY}`,
+    {
+      kind: z.enum(['companies', 'groups', 'events', 'courses', 'products', 'services', 'schools']),
+      keywords: z.string().optional(),
+      location: z.string().optional(),
+    },
+    async ({ kind, keywords, location }) =>
+      reply(
+        await runFindFilters(kind, {
+          ...(keywords !== undefined ? { keywords } : {}),
+          ...(location !== undefined ? { location } : {}),
+        }),
+      ),
   );
 
   const peopleQuery = {

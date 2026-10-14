@@ -11,6 +11,8 @@ npm i -g linkedin-relay-mcp
 lnrelay login                              # mint a session from your own Chrome
 lnrelay people "engineering manager" --company Microsoft --location Hungary --compact
                                            # people search with every filter, names looked up
+lnrelay search posts "AI agents" --posted week --sort recent --compact
+                                           # posts, companies, groups, events, courses, products, …
 lnrelay jobs "frontend engineer" "AI agent developer" --workplace remote --posted week --compact
                                            # one merged job list across keyword sets
 lnrelay job 4479248573 4475225930          # full jobs, with their apply links
@@ -22,7 +24,7 @@ lnrelay local "rust"                       # then search it offline, free
 
 ## As an MCP server
 
-Twenty-one read-only tools, so an agent does the reading. Writes are not on that surface at any price.
+Twenty-two read-only tools, so an agent does the reading. Writes are not on that surface at any price.
 The bundled Claude Code skill (`.claude/skills/linkedin-relay/SKILL.md`) teaches an agent the
 funnels, the budget, and how to read `meta` — including step-by-step recipes for finding people and
 for job hunting.
@@ -36,7 +38,8 @@ claude mcp add linkedin-relay -s user -- bun "$(npm root -g)/linkedin-relay-mcp/
 | | |
 |---|---|
 | `people` · `people-filters` | people search with every filter: company, past company, school, place, degree, title, someone's connections |
-| `search` · `profile` · `feed` | one-page search of people or companies, a profile, your feed |
+| `search` · `search-filters` | posts, companies, groups, events, courses, products, services, schools — each with its filters |
+| `profile` · `feed` | a profile, your feed |
 | `jobs` · `job` · `job-filters` | job search with every filter, several keyword sets merged in one call, and apply links |
 | `post` · `reactions` | a post's comment thread, and who engaged |
 | `scheduled` · `experience` · `skills` | your queued posts, and your own roles and skills |
@@ -79,6 +82,26 @@ approved the way **you** chose with `lnrelay approval set` (only at a real termi
 
 There is no `--yes` and no environment variable. Every approval and outcome is logged to
 `~/.lnrelay/writes.jsonl`.
+
+## Searching everything else
+
+`lnrelay search <kind>` covers the rest of the search box — `posts`, `companies`, `groups`, `events`,
+`courses`, `products`, `services`, `schools` — and hands `people` and `jobs` to their own commands.
+
+```bash
+lnrelay search posts "AI agents" --posted week --author-company Microsoft --compact
+lnrelay search companies "fintech" --location Hungary --filter companySize=C,D --compact
+lnrelay search courses "python" --filter difficultyLevel=Beginner
+lnrelay search-filters companies "fintech"            # every filter for a kind, ids and counts
+```
+
+- **Posts** come with author, time, text and reaction, comment and repost counts, filterable by date,
+  type, author, author's company, industry and title, and mentions. LinkedIn serves them over a
+  heavier interface than the rest, 20 a call.
+- **Everything else** comes back 50 a call as LinkedIn's own lines (a company's industry and HQ and
+  followers, an event's time and place, a course's length and instructor), with each kind's filters
+  through `--filter key=value` and `search-filters`.
+- Several keyword sets merge by id, as for people and jobs.
 
 ## Finding people
 

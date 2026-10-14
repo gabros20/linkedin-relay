@@ -1,6 +1,6 @@
 ---
 name: linkedin-relay
-description: Research LinkedIn from the user's own account — find people by company, past company, school, place, title, degree or whose connections they are, search companies, hunt jobs with every filter LinkedIn has and collect their apply links, read profiles, read the chronological feed — and, through the lnrelay CLI, post (text, image or video), comment, reply, react, delete and edit the user's own profile (headline, About, roles, skills) under the approval mode the owner chose. Use when finding or evaluating people (who works or worked somewhere, alumni, people in a role or a city, someone's connections), companies, roles or job openings on LinkedIn, when the user wants job listings or application links, when reading what the user's network is posting, or when the user asks to post, engage or update their profile on LinkedIn. Not for messaging, connection requests or applying to jobs, which do not exist.
+description: Research LinkedIn from the user's own account — find people by company, past company, school, place, title, degree or whose connections they are, search posts, companies, groups, events, courses, products, services and schools, hunt jobs with every filter LinkedIn has and collect their apply links, read profiles, read the chronological feed — and, through the lnrelay CLI, post (text, image or video), comment, reply, react, delete and edit the user's own profile (headline, About, roles, skills) under the approval mode the owner chose. Use when finding or evaluating people (who works or worked somewhere, alumni, people in a role or a city, someone's connections), companies, groups, events, courses, posts on a topic, roles or job openings on LinkedIn, when the user wants job listings or application links, when reading what the user's network is posting, or when the user asks to post, engage or update their profile on LinkedIn. Not for messaging, connection requests or applying to jobs, which do not exist.
 ---
 
 # linkedin-relay
@@ -32,7 +32,7 @@ in the request path.
 ```
 people          1 call / 50 — find people with filters (company, school, place, degree, …)
 jobs            1 call / 100 — find jobs with filters; `job` reads finalists, 100 a call
-search          cheap  — one page of people or companies, no filters
+search          1 call / 50 — posts, companies, groups, events, courses, products, services, schools
   ↓ pick 2-3 finalists from the rows alone, not by reading each one
 profile         mid    — deep-read ONLY the finalists
 feed            mid    — what the user's network is posting right now
@@ -131,18 +131,51 @@ and `lnrelay job 4479248573 4475225930 4476083905`.
 
 ## Commands
 
-### `search` — cheap. The net.
+### `search` — everything else in the search box: posts, companies, groups, events, courses, products, services, schools
 ```
-search kind:people|companies query:"<terms>" [limit:1-25]   (people with filters: `people`; jobs: `jobs`)
+search kind:posts|companies|groups|events|courses|products|services|schools
+       keywords:"<terms>" | ["<terms>", …] [filter:["key=v1,v2"]] [limit:N per keyword set] [start:N] [compact]
+       companies, services: [location:"<place>"] [network:[1st|2nd|3rd+]]   companies: [industry:[ids]]
+       posts: [sort:recent|relevant] [posted:24h|week|month] [type:[videos|images|jobs|live|articles|documents]]
+              [postedBy:[1st|me]] [from:[profile ids]] [mentions:[profile ids]] [fromCompany:["<name|id>"]]
+              [mentionsCompany:["<name|id>"]] [authorCompany:["<name|id>"]] [authorIndustry:[ids]] [authorTitle:"<text>"]
 ```
-Returns `{items, meta}`. Each item: `name`, `headline`, `location`, `url`, `urn`.
+CLI: `lnrelay search <kind> "<terms>" ["<more>" …] [flags]`; `lnrelay search people|jobs …` hands over to
+`people` and `jobs` with all their flags. One call returns 50 results (posts: 20); several keyword
+sets merge by id, with `matched`, as for `people`.
 
-`meta.claimedCount` is LinkedIn's total for the query (often millions) — it is **not** how many you
-got. `meta.state` is always `unknown` here: this is one page of many and we never claim exhaustion.
+Rows other than posts are `id`, `name`, `subtitle`, `detail`, `summary`, `url`, in LinkedIn's own
+lines; what each line holds depends on the kind:
 
-Out-of-network people come back as `name: "LinkedIn Member"` with a `/headless` URL. That is real
-LinkedIn behaviour, not a bug — LinkedIn will not name them to this account. Say so rather than
-presenting it as a data problem.
+| kind | `subtitle` | `detail` | `id` |
+|---|---|---|---|
+| companies | industry • HQ | followers | company id (`people company:[id]` takes it) |
+| groups | members | — | group id |
+| events | when | where • organiser | event id |
+| courses | length | instructor • released | course id |
+| products | category by vendor | — | product page id |
+| services | the provider's headline | place | the provider's profile id |
+| schools | place | students and alumni | school id (`people school:[id]` takes it) |
+
+**Posts** rows: `id` (the post's urn — `post` reads its comments), `url`, `author`, `authorHeadline`
+(people only), `authorUrl` (a profile or a company page), `posted` (as LinkedIn shows it, in the user's
+LinkedIn language: "5h", or "5 órája" in Hungarian), `text`, `reactions`, `comments`, `reposts`.
+- Every `search` call, name lookup included, spends the general search budget (25 a day, shared
+  with `people`); ask for the depth you need.
+- A posts call is heavy (about half a megabyte a post on LinkedIn's side), so ask for the depth you
+  need. Posts come in LinkedIn's ranking unless `sort:"recent"`.
+- `fromCompany` is the company's own posts; `authorCompany` is posts by people who work there.
+- A group post may come back with no author or counts: LinkedIn keys those differently.
+- Most other filters for a kind (company size, course level, product category, …) go in raw
+  `filter`, with the keys and ids `search_filters` lists for that kind.
+
+### `search-filters` — 1 search call. A kind's knobs, with ids.
+```
+search_filters kind:companies|groups|events|courses|products|services|schools [keywords] [location]
+```
+Every filter that kind has for the query, with option ids and live counts. Companies, for example:
+`companyHqGeo`, `industryCompanyVertical`, `companySize` (B = 1-10 employees … ), `hasJobs`, `network`.
+Groups, events and schools have none.
 
 ### `people` — 1 search call per 50 people. People search with every filter.
 ```
@@ -353,10 +386,10 @@ Every collection carries:
 |---|---|
 | `state: complete` | every reference resolved; an empty `items` here genuinely means none |
 | `state: partial` | **some references failed to resolve** — the record is incomplete, not small |
-| `state: unknown` | we stopped at the limit and cannot prove exhaustion (people/company `search`, `post`, `reactions`) |
-| `next` | `jobs` / `people`: the `start` that continues this search; absent when the results ran out |
-| `servedLimit` | `people`: LinkedIn claimed more matches than it serves (1000 a query) — the list is NOT everyone; narrow the query |
-| `searches` / `duplicates` | `jobs` / `people` with several keyword sets: each set's own count and state, and how many repeats were merged |
+| `state: unknown` | we stopped at the limit and cannot prove exhaustion (`post`, `reactions`, `feed`) |
+| `next` | `jobs` / `people` / `search`: the `start` that continues this search; absent when the results ran out |
+| `servedLimit` | `people` / `search`: LinkedIn claimed more matches than it serves (1000 a query) — the list is NOT everyone; narrow the query |
+| `searches` / `duplicates` | `jobs` / `people` / `search` with several keyword sets: each set's own count and state, and how many repeats were merged |
 | `unread` | `jobs --details` / `job`: jobs LinkedIn did not return in full — they are not closed, just unread |
 | `returnedCount` vs `claimedCount` | `claimed > 0` with `returned === 0` is a **failed fetch**, never "no results" |
 | `excludedCount` | ads and UI chrome deliberately dropped |

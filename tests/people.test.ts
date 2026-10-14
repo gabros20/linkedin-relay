@@ -136,11 +136,11 @@ describe('a page of people', () => {
     const odd = structuredClone(PAGE);
     odd.data.data.searchDashClustersByAll.elements = [
       ...d.elements,
-      { items: [{ item: { '*promoCard': 'urn:li:x:1' } }] },
+      { items: [{ item: { '*mysteryCard': 'urn:li:x:1' } }] },
     ];
     const r = parsePeople(odd);
     if (!r.ok) throw new Error(r.message);
-    expect(r.unknownTypes).toEqual({ '*promoCard': 1 });
+    expect(r.unknownTypes).toEqual({ '*mysteryCard': 1 });
   });
 });
 

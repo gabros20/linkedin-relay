@@ -20,14 +20,15 @@ import {
   runProfile,
   runReactions,
   runScheduled,
-  runSearch,
   runWhoami,
 } from './commands/live.ts';
 import { runBudget, runDoctor, runRisk } from './commands/local.ts';
 import { runOauthLogin, runOauthLogout, runOauthStatus } from './commands/oauth.ts';
 import { type PeopleRequest, runPeople, runPeopleFilters } from './commands/people.ts';
+import { type PostsRequest, runPostsSearch } from './commands/posts-search.ts';
 import { findCommand, helpText } from './commands/registry.ts';
 import { type RoleRequest, runExperience, runRole } from './commands/role.ts';
+import { type FindRequest, runFind, runFindFilters } from './commands/search-kinds.ts';
 import { runSkill, runSkills } from './commands/skill.ts';
 import { runSync } from './commands/sync.ts';
 import {
@@ -41,6 +42,7 @@ import {
 } from './commands/write.ts';
 import type { JobFilterOptions } from './engine/jobs.ts';
 import type { PeopleFilterOptions } from './engine/people.ts';
+import { SEARCH_KINDS, type SearchKindName } from './engine/search.ts';
 import { shouldRunAsEntry } from './entry.ts';
 import { err, exitCodeFor, toJson } from './output.ts';
 import type { Envelope } from './types.ts';
@@ -169,6 +171,107 @@ export function peopleRequest(args: ParsedArgs): PeopleRequest {
   const start = num(args, 'start');
   if (start !== undefined) req.start = start;
   return req;
+}
+
+/** The kinds `search` and `search-filters` take. */
+const KINDS = ['people', 'jobs', 'posts', ...Object.keys(SEARCH_KINDS)];
+
+/** The arguments with the kind taken off, so keyword sets are what is left. */
+const afterKind = (args: ParsedArgs): ParsedArgs => ({
+  ...args,
+  positionals: args.positionals.slice(1),
+});
+
+/** `search <kind>` flags for companies, groups, events, courses, products, services, schools. */
+export function findRequest(args: ParsedArgs): FindRequest {
+  const req: FindRequest = { limit: num(args, 'limit') ?? 25 };
+  const keywords = args.positionals.slice(1);
+  if (keywords.length > 0) req.keywords = keywords;
+  const location = str(args, 'location');
+  if (location !== undefined) req.location = location;
+  const industry = many(args, 'industry');
+  if (industry.length > 0) req.industry = industry;
+  const network = many(args, 'network');
+  if (network.length > 0) req.network = network;
+  const raw = list(args, 'filter');
+  if (raw.length > 0) req.raw = raw;
+  const start = num(args, 'start');
+  if (start !== undefined) req.start = start;
+  return req;
+}
+
+/** `search posts` flags. */
+export function postsRequest(args: ParsedArgs): PostsRequest {
+  const req: PostsRequest = { limit: num(args, 'limit') ?? 20 };
+  const keywords = args.positionals.slice(1);
+  if (keywords.length > 0) req.keywords = keywords;
+  for (const [flag, key] of [
+    ['sort', 'sort'],
+    ['posted', 'posted'],
+    ['author-title', 'authorTitle'],
+  ] as const) {
+    const v = str(args, flag);
+    if (v !== undefined) req[key] = v;
+  }
+  for (const [flag, key] of [
+    ['type', 'type'],
+    ['posted-by', 'postedBy'],
+    ['from', 'from'],
+    ['mentions', 'mentions'],
+    ['author-industry', 'authorIndustry'],
+  ] as const) {
+    const v = many(args, flag);
+    if (v.length > 0) req[key] = v;
+  }
+  for (const [flag, key] of [
+    ['from-company', 'fromCompany'],
+    ['mentions-company', 'mentionsCompany'],
+    ['author-company', 'authorCompany'],
+  ] as const) {
+    const v = orgs(args, flag);
+    if (v.length > 0) req[key] = v;
+  }
+  const raw = list(args, 'filter');
+  if (raw.length > 0) req.raw = raw;
+  const start = num(args, 'start');
+  if (start !== undefined) req.start = start;
+  return req;
+}
+
+/** `search <kind>` and `search-filters <kind>`: each kind to its own implementation. */
+function search(args: ParsedArgs, filtersOnly: boolean): Promise<Envelope> | Envelope {
+  const command = filtersOnly ? 'search-filters' : 'search';
+  const kind = args.positionals[0];
+  if (kind === undefined || !KINDS.includes(kind)) {
+    return err(
+      command,
+      'INVALID_INPUT',
+      `unknown search kind '${kind ?? ''}'`,
+      `one of: ${KINDS.join(', ')} — e.g. lnrelay ${command} companies "<keywords>"`,
+    );
+  }
+  const opts = output(args);
+  if (kind === 'people')
+    return filtersOnly
+      ? runPeopleFilters(peopleRequest(afterKind(args)), opts)
+      : runPeople(peopleRequest(afterKind(args)), opts);
+  if (kind === 'jobs')
+    return filtersOnly
+      ? runJobFilters(jobsRequest(afterKind(args)), opts)
+      : runJobs(jobsRequest(afterKind(args)), opts);
+  if (kind === 'posts') {
+    if (filtersOnly)
+      return err(
+        command,
+        'INVALID_INPUT',
+        'posts filters are fixed: see `lnrelay help search`',
+        'sort, posted, type, posted-by, from, mentions, from-company, mentions-company, author-company, author-industry, author-title',
+      );
+    return runPostsSearch(postsRequest(args), opts);
+  }
+  return filtersOnly
+    ? runFindFilters(kind as SearchKindName, findRequest(args), opts)
+    : runFind(kind as SearchKindName, findRequest(args), opts);
 }
 
 /**
@@ -308,18 +411,9 @@ export async function dispatch(argv: string[], now: number): Promise<Envelope> {
     case 'people-filters':
       return runPeopleFilters(peopleRequest(args), output(args));
     case 'search':
-      // The generic search returns no job cards; jobs have their own search.
-      if (args.positionals[0] === 'jobs')
-        return runJobs(
-          { keywords: args.positionals[1] ?? '', limit: num(args, 'limit') ?? 10, filter: {} },
-          output(args),
-        );
-      return runSearch(
-        args.positionals[0],
-        args.positionals[1],
-        num(args, 'limit') ?? 10,
-        output(args),
-      );
+      return search(args, false);
+    case 'search-filters':
+      return search(args, true);
     default:
       return err(command, 'NOT_IMPLEMENTED', `'${command}' has no runner wired`);
   }

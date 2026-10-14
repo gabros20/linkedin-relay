@@ -299,7 +299,6 @@
         "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
         "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
       },
-      "overflowActions": [],
       "*lazyLoadedActions": "urn:li:fsd_lazyLoadedActions:(urn:li:fsd_company:15978,COMPANIES,SEARCH_SRP)",
       "searchActionType": null,
       "actorInsights": [],
@@ -395,7 +394,6 @@
         "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
         "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
       },
-      "overflowActions": [],
       "*lazyLoadedActions": "urn:li:fsd_lazyLoadedActions:(urn:li:fsd_company:15099126,COMPANIES,SEARCH_SRP)",
       "searchActionType": null,
       "actorInsights": [],
@@ -465,7 +463,6 @@
         "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
         "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
       },
-      "overflowActions": [],
       "*lazyLoadedActions": "urn:li:fsd_lazyLoadedActions:(urn:li:fsd_company:241123,COMPANIES,SEARCH_SRP)",
       "searchActionType": null,
       "actorInsights": [],
@@ -556,7 +553,6 @@
         "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
         "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
       },
-      "overflowActions": [],
       "*lazyLoadedActions": "urn:li:fsd_lazyLoadedActions:(urn:li:fsd_company:25333,COMPANIES,SEARCH_SRP)",
       "searchActionType": null,
       "actorInsights": [],
@@ -626,7 +622,6 @@
         "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
         "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
       },
-      "overflowActions": [],
       "*lazyLoadedActions": "urn:li:fsd_lazyLoadedActions:(urn:li:fsd_company:3575087,COMPANIES,SEARCH_SRP)",
       "searchActionType": null,
       "actorInsights": [],

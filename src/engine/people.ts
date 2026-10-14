@@ -59,8 +59,8 @@ export interface PeopleQuery {
   start: number;
   /** Ask for the filter list with this page. */
   withFilters?: boolean;
-  /** Another result type, for looking names up: COMPANIES or SCHOOLS. */
-  kind?: 'PEOPLE' | 'COMPANIES' | 'SCHOOLS';
+  /** Another result type: COMPANIES, SCHOOLS, GROUPS, … (see engine/search.ts). */
+  kind?: string;
 }
 
 export function peopleSearchUrl(q: PeopleQuery): string {
@@ -148,13 +148,13 @@ function rowToPerson(row: Node): Person | undefined {
   });
 }
 
-interface Clusters {
+export interface Clusters {
   elements?: { items?: { item?: Node }[] }[];
   paging?: { total?: unknown; start?: unknown };
   metadata?: Node;
 }
 
-function clustersOf(json: unknown): Clusters | undefined {
+export function clustersOf(json: unknown): Clusters | undefined {
   const d = (json as { data?: { data?: Node } } | null)?.data?.data;
   const c = d?.searchDashClustersByAll;
   return c !== null && typeof c === 'object' ? (c as Clusters) : undefined;
@@ -174,7 +174,15 @@ export interface PeoplePage {
 }
 
 /** Items that are page furniture, not results. */
-const FURNITURE = new Set(['*feedbackCard', '*bannerCard', '*searchSuggestionCard', '*simpleText']);
+const FURNITURE = new Set([
+  '*feedbackCard',
+  '*bannerCard',
+  '*searchSuggestionCard',
+  '*promoCard',
+  'simpleText',
+  'simpleTextV2',
+  '*simpleText',
+]);
 
 /** What one cluster item is: a result's urn, furniture, or kinds we do not read. */
 function classify(item: Node | undefined): { ref: string } | 'furniture' | string[] {
@@ -186,9 +194,17 @@ function classify(item: Node | undefined): { ref: string } | 'furniture' | strin
   return kinds.every((k) => FURNITURE.has(k)) ? 'furniture' : kinds;
 }
 
-function readItems(c: Clusters, included: Node[]) {
+/**
+ * The results in a page, in LinkedIn's order, each mapped by `toRow`; page
+ * furniture counted apart; item kinds we do not read counted by name.
+ */
+export function readItems<T extends { id: string }>(
+  c: Clusters,
+  included: Node[],
+  toRow: (row: Node) => T | undefined,
+) {
   const byUrn = new Map(included.map((n) => [n.entityUrn, n]));
-  const people: Person[] = [];
+  const people: T[] = [];
   const unknownTypes: Record<string, number> = {};
   let excluded = 0;
   let unresolved = 0;
@@ -201,7 +217,7 @@ function readItems(c: Clusters, included: Node[]) {
       for (const k of kind) unknownTypes[k] = (unknownTypes[k] ?? 0) + 1;
     } else {
       const row = byUrn.get(kind.ref);
-      const person = row === undefined ? undefined : rowToPerson(row);
+      const person = row === undefined ? undefined : toRow(row);
       if (person === undefined) unresolved++;
       else if (!people.some((p) => p.id === person.id)) people.push(person);
     }
@@ -214,7 +230,7 @@ export function parsePeople(json: unknown): PeoplePage | Failure {
   if (c === undefined || !Array.isArray(c.elements))
     return drift('the people search returned no result list');
   const included = (json as { included?: Node[] }).included ?? [];
-  const { people, unknownTypes, excluded, unresolved } = readItems(c, included);
+  const { people, unknownTypes, excluded, unresolved } = readItems(c, included, rowToPerson);
   const total = typeof c.paging?.total === 'number' ? c.paging.total : undefined;
   const start = typeof c.paging?.start === 'number' ? c.paging.start : 0;
   const claimedRaw = c.metadata?.totalResultCount;

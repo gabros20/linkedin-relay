@@ -7,7 +7,6 @@ import {
   createEngine,
   createLiveClient,
   type EngineResult,
-  type SearchKind,
 } from '../engine/index.ts';
 import { fetchScheduled, type ScheduledPost } from '../engine/sdui-scheduled.ts';
 
@@ -129,31 +128,6 @@ export async function runFeed(limit: number, opts: OutputOpts = {}): Promise<Env
   const result = await ctx.engine.feed(limit);
   if (!result.ok) return toEnvelope('feed', result);
   return ok('feed', collection(result.value, opts));
-}
-
-export async function runSearch(
-  kind: string | undefined,
-  query: string | undefined,
-  limit: number,
-  opts: OutputOpts = {},
-): Promise<Envelope> {
-  if (kind === undefined || !['people', 'companies', 'jobs'].includes(kind)) {
-    return err(
-      'search',
-      'INVALID_INPUT',
-      'kind must be people, companies or jobs',
-      'lnrelay search people "<query>"',
-    );
-  }
-  if (query === undefined || query === '') {
-    return err('search', 'INVALID_INPUT', 'a query is required', 'lnrelay search people "<query>"');
-  }
-  const ctx = withSession('search', opts.quiet === true);
-  if ('ok' in ctx) return ctx;
-
-  const result = await ctx.engine.search(kind as SearchKind, query, limit);
-  if (!result.ok) return toEnvelope('search', result);
-  return ok('search', { query, kind, ...collection(result.value, opts) });
 }
 
 export async function runPost(

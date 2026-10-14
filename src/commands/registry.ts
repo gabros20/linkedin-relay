@@ -88,12 +88,33 @@ export const COMMANDS: CommandDef[] = [
   },
   {
     name: 'search',
-    cost: 'cheap — the net',
+    cost: '1 search call per 50 results (posts: per 20); +1 per name looked up',
     summary:
-      'Search people or companies, one page. For people with filters use `people`; jobs: `jobs`.',
+      'Search any kind the search box has: people, jobs, posts, companies, groups, events, ' +
+      'courses, products, services, schools. Several keyword sets merge by id.',
     usage:
-      'lnrelay search people|companies|jobs "<query>" [--limit N]   (jobs: see `jobs`)\n' +
-      '       [--compact | --fields a,b,c] [--retain] [--raw]',
+      'lnrelay search <kind> "<keywords>" ["<more>" ...] [filters] [--limit N] [--start N]\n' +
+      '       [--compact | --fields a,b,c]\n' +
+      '       kinds: people, jobs (their own flags: see `people`, `jobs`), posts, companies,\n' +
+      '       groups, events, courses, products, services, schools\n' +
+      '       companies, services: [--location "<place>"] [--network 1st,2nd,3rd+]\n' +
+      '       companies: [--industry <ids>]   any kind: [--filter key=v1,v2 ...]\n' +
+      '       posts: [--sort recent|relevant] [--posted 24h|week|month]\n' +
+      '       [--type videos,images,jobs,live,articles,documents] [--posted-by 1st,me]\n' +
+      '       [--from <profile-id>] [--mentions <profile-id>] [--from-company "<name|id>"]\n' +
+      '       [--mentions-company "<name|id>"] [--author-company "<name|id>"]\n' +
+      '       [--author-industry <ids>] [--author-title "<text>"]',
+    audience: ['cli', 'mcp'],
+    risk: 'read',
+    implemented: true,
+  },
+  {
+    name: 'search-filters',
+    cost: '1 search call',
+    summary:
+      'Every filter a search kind has for a query, with option ids and live counts: what ' +
+      '`search <kind> --filter key=…` takes.',
+    usage: 'lnrelay search-filters <kind> ["<keywords>"] [filters]',
     audience: ['cli', 'mcp'],
     risk: 'read',
     implemented: true,
