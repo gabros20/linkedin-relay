@@ -31,6 +31,7 @@ import {
   runInbox,
   runMessages,
 } from './commands/messaging.ts';
+import { runNetwork } from './commands/network.ts';
 import { runOauthLogin, runOauthLogout, runOauthStatus } from './commands/oauth.ts';
 import { type PeopleRequest, runPeople, runPeopleFilters } from './commands/people.ts';
 import { type PostsRequest, runPostsSearch } from './commands/posts-search.ts';
@@ -441,6 +442,15 @@ export async function dispatch(argv: string[], now: number): Promise<Envelope> {
       return runPeople(peopleRequest(args), output(args));
     case 'people-filters':
       return runPeopleFilters(peopleRequest(args), output(args));
+    case 'network':
+      return runNetwork(
+        args.positionals[0],
+        {
+          limit: num(args, 'limit') ?? 50,
+          ...(num(args, 'start') !== undefined ? { start: num(args, 'start') as number } : {}),
+        },
+        output(args),
+      );
     case 'inbox':
     case 'messages':
     case 'draft':

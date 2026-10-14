@@ -1,0 +1,40 @@
+{
+  "data": {
+    "data": {
+      "searchDashClustersByAll": {
+        "metadata": {
+          "entityResultAttributes": null,
+          "totalResultCount": 0,
+          "secondaryFilterCluster": null,
+          "$recipeTypes": ["com.linkedin.dfce49e2c6bb412fb4161cbbc7190d0d"],
+          "lazyRightRail": null,
+          "queryType": null,
+          "$type": "com.linkedin.voyager.dash.search.SearchClusterCollectionMetadata",
+          "paginationToken": null,
+          "primaryResultType": null,
+          "primaryFilterCluster": null,
+          "blockedQuery": false,
+          "entityActionButtonStyle": null,
+          "searchId": "a823fda2-d644-4594-84f0-756f57c1f6b5",
+          "filterAppliedCount": 0,
+          "clusterTitleFontSize": null,
+          "simpleInsightAttributes": null,
+          "knowledgeCardRightRail": null
+        },
+        "paging": {
+          "count": 10,
+          "start": 0,
+          "total": 0,
+          "$recipeTypes": ["com.linkedin.81b214c2cdd4f02cdb7d827958d2f3a1"],
+          "$type": "com.linkedin.restli.common.CollectionMetadata"
+        },
+        "$recipeTypes": ["com.linkedin.5f1d22f924ecb6a031ee124b8b767900"],
+        "elements": [],
+        "$type": "com.linkedin.restli.common.CollectionResponse"
+      },
+      "$recipeTypes": ["com.linkedin.c293aa010e51bae32433eeb13b1682fa"],
+      "$type": "com.linkedin.c293aa010e51bae32433eeb13b1682fa"
+    }
+  },
+  "included": []
+}

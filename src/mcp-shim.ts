@@ -37,6 +37,7 @@ import {
   runInbox,
   runMessages,
 } from './commands/messaging.ts';
+import { runNetwork } from './commands/network.ts';
 import { type PeopleRequest, runPeople, runPeopleFilters } from './commands/people.ts';
 import { runPostsSearch } from './commands/posts-search.ts';
 import { mcpCommands } from './commands/registry.ts';
@@ -508,6 +509,32 @@ export function buildServer(): McpServer {
       `skill is the CLI-only \`lnrelay skill\`, a write the user approves. ${NO_RETRY}`,
     {},
     async () => reply(await runSkills()),
+  );
+
+  server.tool(
+    'network',
+    "The user's own My Network. With no `list`: the count of connections, people they follow, " +
+      'followers, pages, events, groups and invitations they sent (7 page calls). With a `list`: ' +
+      'its rows — people as id, name, headline, location, degree, url; pages, events and groups ' +
+      'as id, name, subtitle, detail, url; invitations as to, id, headline, sent, note, url. ' +
+      '1 page call per 50 rows. Read only: no badge is cleared and nothing is marked seen. ' +
+      `Received invitations and "people you may know" are not available. ${NO_RETRY}`,
+    {
+      list: z
+        .enum(['connections', 'following', 'followers', 'pages', 'events', 'groups', 'invitations'])
+        .optional(),
+      limit: z.number().int().min(1).max(1000).optional().describe('default 50'),
+      start: z.number().int().min(0).optional(),
+      compact: z.boolean().optional(),
+    },
+    async ({ list, limit, start, compact }) =>
+      reply(
+        await runNetwork(
+          list,
+          { limit: limit ?? 50, ...(start !== undefined ? { start } : {}) },
+          compact === true ? { compact: true } : {},
+        ),
+      ),
   );
 
   server.tool(

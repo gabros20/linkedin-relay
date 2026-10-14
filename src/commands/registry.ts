@@ -265,6 +265,19 @@ export const COMMANDS: CommandDef[] = [
     implemented: true,
   },
   {
+    name: 'network',
+    cost: '1 page call per 50 rows; the counts are 7 calls',
+    summary:
+      'Your My Network: connections, people you follow, followers, pages, events, groups, and ' +
+      'invitations you sent. With no list, the count of each. Read only.',
+    usage:
+      'lnrelay network [connections|following|followers|pages|events|groups|invitations]\n' +
+      '       [--limit N] [--start N] [--compact | --fields a,b,c]',
+    audience: ['cli', 'mcp'],
+    risk: 'read',
+    implemented: true,
+  },
+  {
     name: 'inbox',
     cost: '1 page call per 20 conversations',
     summary:

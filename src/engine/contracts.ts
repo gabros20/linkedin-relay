@@ -183,6 +183,16 @@ export const CONTRACTS: Record<string, OperationContract> = {
     capturedAt: '2026-10-14',
   },
 
+  // Connection invitations the owner has sent, captured 2026-10-14; see
+  // engine/network.ts.
+  sentInvitations: {
+    name: 'sentInvitations',
+    transport: 'voyager-restli',
+    path: `${VOYAGER}/relationships/sentInvitationViewsV2`,
+    provenance: 'verified',
+    capturedAt: '2026-10-14',
+  },
+
   jobCards: {
     name: 'jobCards',
     transport: 'voyager-restli',

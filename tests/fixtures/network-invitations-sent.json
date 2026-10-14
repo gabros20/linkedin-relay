@@ -1,0 +1,113 @@
+{
+  "data": {
+    "metadata": {
+      "invitationType": "CONNECTION",
+      "$type": "com.linkedin.voyager.relationships.invitation.SentInvitationsMetadata"
+    },
+    "entityUrn": "urn:li:collectionResponse:JDpqJ9ICEjHm+Qu20/pepZCMizonA4XAZkcByDLHr9Q=",
+    "paging": { "count": 10, "start": 0, "links": [] },
+    "*elements": [
+      "urn:li:fs_relSentInvitationView:urn:li:invitation:7493692314226180096",
+      "urn:li:fs_relSentInvitationView:urn:li:invitation:7493692319758688257"
+    ],
+    "$type": "com.linkedin.restli.common.CollectionResponse"
+  },
+  "included": [
+    {
+      "customPronoun": null,
+      "memorialized": false,
+      "lastName": "1",
+      "dashEntityUrn": "urn:li:fsd_profile:ACoAATESTPERSON1",
+      "standardizedPronoun": null,
+      "occupation": "Headline 1",
+      "objectUrn": "urn:li:member:1",
+      "$anti_abuse_metadata": { "$anti_abuse_uuid": "8ff5a572-f2bd-49db-b5b6-29d624134c40" },
+      "$type": "com.linkedin.voyager.identity.shared.MiniProfile",
+      "firstName": "Person",
+      "entityUrn": "urn:li:fs_miniProfile:ACoAATESTPERSON1",
+      "publicIdentifier": "person-1"
+    },
+    {
+      "customPronoun": null,
+      "memorialized": false,
+      "lastName": "2",
+      "dashEntityUrn": "urn:li:fsd_profile:ACoAATESTME",
+      "standardizedPronoun": null,
+      "occupation": "Headline 2",
+      "objectUrn": "urn:li:member:1",
+      "$anti_abuse_metadata": { "$anti_abuse_uuid": "fb63160e-7b86-4697-b08c-492ac9b58fe6" },
+      "$type": "com.linkedin.voyager.identity.shared.MiniProfile",
+      "firstName": "Person",
+      "entityUrn": "urn:li:fs_miniProfile:ACoAATESTME",
+      "publicIdentifier": "person-2"
+    },
+    {
+      "customPronoun": null,
+      "memorialized": false,
+      "lastName": "3",
+      "dashEntityUrn": "urn:li:fsd_profile:ACoAATESTPERSON2",
+      "standardizedPronoun": null,
+      "occupation": "Headline 3",
+      "objectUrn": "urn:li:member:1",
+      "$anti_abuse_metadata": { "$anti_abuse_uuid": "2598224a-af52-468e-8cf4-e0894431fa30" },
+      "$type": "com.linkedin.voyager.identity.shared.MiniProfile",
+      "firstName": "Person",
+      "entityUrn": "urn:li:fs_miniProfile:ACoAATESTPERSON2",
+      "publicIdentifier": "person-3"
+    },
+    {
+      "fromMemberId": "ACoAATESTME",
+      "*toMember": "urn:li:fs_miniProfile:ACoAATESTPERSON1",
+      "mailboxItemId": "urn:li:invitation:7493692314226180096",
+      "toMemberId": "ACoAATESTPERSON1",
+      "message": null,
+      "invitee": {
+        "*miniProfile": "urn:li:fs_miniProfile:ACoAATESTPERSON1",
+        "$type": "com.linkedin.voyager.relationships.invitation.ProfileInvitee"
+      },
+      "$type": "com.linkedin.voyager.relationships.invitation.Invitation",
+      "fromEvent": null,
+      "invitationType": "SENT",
+      "entityUrn": "urn:li:fs_relInvitation:7493692314226180096",
+      "inviterActors": null,
+      "sentTime": 1790691704677,
+      "customMessage": false,
+      "sharedSecret": "redacted",
+      "*fromMember": "urn:li:fs_miniProfile:ACoAATESTME",
+      "unseen": null
+    },
+    {
+      "fromMemberId": "ACoAATESTME",
+      "*toMember": "urn:li:fs_miniProfile:ACoAATESTPERSON2",
+      "mailboxItemId": "urn:li:invitation:7493692319758688257",
+      "toMemberId": "ACoAATESTPERSON2",
+      "message": null,
+      "invitee": {
+        "*miniProfile": "urn:li:fs_miniProfile:ACoAATESTPERSON2",
+        "$type": "com.linkedin.voyager.relationships.invitation.ProfileInvitee"
+      },
+      "$type": "com.linkedin.voyager.relationships.invitation.Invitation",
+      "fromEvent": null,
+      "invitationType": "SENT",
+      "entityUrn": "urn:li:fs_relInvitation:7493692319758688257",
+      "inviterActors": null,
+      "sentTime": 1790691696769,
+      "customMessage": false,
+      "sharedSecret": "redacted",
+      "*fromMember": "urn:li:fs_miniProfile:ACoAATESTME",
+      "unseen": null
+    },
+    {
+      "entityUrn": "urn:li:fs_relSentInvitationView:urn:li:invitation:7493692314226180096",
+      "$type": "com.linkedin.voyager.relationships.invitation.SentInvitationViewV2",
+      "*invitation": "urn:li:fs_relInvitation:7493692314226180096",
+      "genericSentInvitationView": null
+    },
+    {
+      "entityUrn": "urn:li:fs_relSentInvitationView:urn:li:invitation:7493692319758688257",
+      "$type": "com.linkedin.voyager.relationships.invitation.SentInvitationViewV2",
+      "*invitation": "urn:li:fs_relInvitation:7493692319758688257",
+      "genericSentInvitationView": null
+    }
+  ]
+}

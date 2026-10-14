@@ -61,6 +61,9 @@ export interface PeopleQuery {
   withFilters?: boolean;
   /** Another result type: COMPANIES, SCHOOLS, GROUPS, … (see engine/search.ts). */
   kind?: string;
+  /** The My Network hub's lists use their own origin and intent (engine/network.ts). */
+  origin?: string;
+  intent?: string;
 }
 
 export function peopleSearchUrl(q: PeopleQuery): string {
@@ -75,10 +78,11 @@ export function peopleSearchUrl(q: PeopleQuery): string {
   const variables = encodeVariables({
     start: q.start,
     count: PEOPLE_PAGE,
-    origin: 'FACETED_SEARCH',
+    origin: q.origin ?? 'FACETED_SEARCH',
     query: {
-      keywords: q.keywords,
-      flagshipSearchIntent: 'SEARCH_SRP',
+      // An empty `keywords` is answered with a 400: none is sent then.
+      keywords: q.keywords === '' ? undefined : q.keywords,
+      flagshipSearchIntent: q.intent ?? 'SEARCH_SRP',
       queryParameters,
       includeFiltersInResponse: q.withFilters === true,
     },
