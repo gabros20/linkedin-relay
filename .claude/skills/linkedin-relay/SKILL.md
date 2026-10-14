@@ -59,7 +59,7 @@ Out-of-network people come back as `name: "LinkedIn Member"` with a `/headless` 
 LinkedIn behaviour, not a bug — LinkedIn will not name them to this account. Say so rather than
 presenting it as a data problem.
 
-### `jobs` — 1 job-search call per 25 results. Job search with every filter.
+### `jobs` — 1 job-search call per 100 results. Job search with every filter.
 ```
 jobs keywords:"<terms>" [location:"<place>" | geoId:"<id>"] [distance:<miles>]
      [posted:"24h|week|month|<N>h|<N>d"] [experience:[internship|entry|associate|mid-senior|director|executive]]
@@ -71,8 +71,8 @@ jobs keywords:"<terms>" [location:"<place>" | geoId:"<id>"] [distance:<miles>]
 Each item: `id`, `title`, `company`, `location`, `workplace`, `listed` (YYYY-MM-DD), `easyApply`,
 `promoted`, `salary` (when the card shows one), `insights`, `url`. `compact` gives one line per job.
 
-- **Rank on the rows, then read the finalists with `job`.** `details` reads *every* row (1 profile
-  job read each, 60 a day) to add the apply link, applicants and employment type.
+- **Rank on the rows, then read the finalists with `job`.** `details` reads every row in full, 100
+  per job read, to add the apply link, applicants and employment type.
 - **Check `data.location`.** A typed location is resolved by LinkedIn, and the place it chose is
   reported there. "Vienna, Austria" resolved to one district of Vienna. Pass `geoId` for an exact
   place; ids are in `job_filters` under `populatedPlace`.
@@ -80,13 +80,16 @@ Each item: `id`, `title`, `company`, `location`, `workplace`, `listed` (YYYY-MM-
   batch, and `meta.state` is `complete` only when the results ran out. LinkedIn serves at most 1000
   per search; narrow the query rather than paging deep.
 - Job hunting has its own budget: 150 job-search calls and 60 job reads a day, apart from the
-  people and company `search`. That is about ten keyword searches read in full. The same job turns
+  people and company `search`. A search call returns 100 jobs, so ten keyword searches of a few
+  hundred results each take about 30 calls. The same job turns
   up under several keywords; merge the lists by `id` before reading any in full.
 
-### `job` — 1 job read. One job, in full.
+### `job` — 1 job read per 100 jobs. Jobs, in full.
 ```
-job job:"<id | /jobs/view/ URL | ?currentJobId= URL>"
+job job:"<id | /jobs/view/ URL | ?currentJobId= URL>"   or   job job:["<id>", "<id>", …]
 ```
+One id returns the job; a list returns `{items, meta}`, read 100 per call, so pass all your finalists
+at once rather than one call each. `meta.unread` lists ids LinkedIn did not return.
 `description`, `apply: {type: "external" | "easy-apply", url}`, `company`, `companyUrl`,
 `location`, `workplace`, `employmentType`, `experienceLevel`, `industries`, `functions`, `listed`,
 `expires`, `state` (`LISTED` or `CLOSED`), `applicants`, `ats` (the employer's applicant tracking

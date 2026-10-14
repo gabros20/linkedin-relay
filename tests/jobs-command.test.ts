@@ -8,23 +8,42 @@ const fixture = (name: string) =>
 const CARDS = fixture('jobs-cards.json');
 const OFFSITE = fixture('job-detail-offsite.json');
 const FILTERS = fixture('jobs-filters.json');
+const BATCH = fixture('job-detail-batch.json');
 
-/** Serves the captured page for every start, shifted so ids stay distinct. */
+/**
+ * A fake job search over `total` results. Each page is stitched from shifted
+ * copies of the captured 25-card page, so ids stay distinct, and holds
+ * `count` cards or whatever is left before `total`.
+ */
 function linkedin(opts: { total?: number; failAt?: number } = {}) {
+  const total = opts.total ?? 295;
   const asked: { url: string; spendClass: string }[] = [];
+  const copy = (offset: number) =>
+    JSON.parse(
+      JSON.stringify(CARDS).replace(
+        /(jobPosting(?:Card)?:\(?)(\d+)/g,
+        (_, p, id) => `${p}${Number(id) + offset}`,
+      ),
+    );
   const fetch: JobsFetch = async (url, spendClass) => {
     asked.push({ url, spendClass });
     const u = new URL(url);
+    if (u.searchParams.has('ids')) return { ok: true, json: BATCH };
     if (u.pathname.includes('jobPostings')) return { ok: true, json: OFFSITE };
     if (u.pathname.includes('FilterClusters')) return { ok: true, json: FILTERS };
     const start = Number(u.searchParams.get('start'));
+    const count = Number(u.searchParams.get('count'));
     if (opts.failAt !== undefined && start >= opts.failAt)
       return { ok: false, code: 'BUDGET_EXHAUSTED', message: 'search budget spent' };
-    const shift = (s: string) =>
-      s.replace(/(jobPosting(?:Card)?:\(?)(\d+)/g, (_, p, id) => `${p}${Number(id) + start}`);
-    const json = JSON.parse(shift(JSON.stringify(CARDS)));
-    json.data.paging = { ...json.data.paging, start, total: opts.total ?? 295 };
-    return { ok: true, json };
+    const size = Math.max(0, Math.min(count, total - start));
+    const page = { data: { ...CARDS.data, elements: [] as unknown[] }, included: [] as unknown[] };
+    for (let at = 0; at < size; at += 25) {
+      const c = copy(start + at);
+      page.data.elements.push(...c.data.elements.slice(0, size - at));
+      page.included.push(...c.included);
+    }
+    page.data.paging = { ...CARDS.data.paging, start, count, total };
+    return { ok: true, json: page };
   };
   return { fetch, asked };
 }
@@ -35,27 +54,43 @@ const items = (e: Awaited<ReturnType<typeof runJobs>>) => {
 };
 
 describe('lnrelay jobs', () => {
-  test('pages until the limit and says the list is partial', async () => {
+  test('asks for 100 a call, pages until the limit, and says the list is partial', async () => {
     const { fetch, asked } = linkedin();
-    const r = items(await runJobs({ keywords: 'frontend', limit: 30 }, {}, fetch));
-    expect(r.items).toHaveLength(30);
-    expect(asked.map((a) => new URL(a.url).searchParams.get('start'))).toEqual(['0', '25']);
+    const r = items(await runJobs({ keywords: 'frontend', limit: 150 }, {}, fetch));
+    expect(r.items).toHaveLength(150);
+    const pages = asked.map((a) => new URL(a.url).searchParams);
+    expect(pages.map((p) => [p.get('start'), p.get('count')])).toEqual([
+      ['0', '100'],
+      ['100', '100'],
+    ]);
     expect(asked.every((a) => a.spendClass === 'jobSearch')).toBe(true);
-    expect(r.meta).toMatchObject({ state: 'partial', claimedCount: 295, returnedCount: 30 });
+    expect(r.meta).toMatchObject({
+      state: 'partial',
+      claimedCount: 295,
+      returnedCount: 150,
+      next: 150,
+    });
+  });
+
+  test('a small limit is still one call', async () => {
+    const { fetch, asked } = linkedin();
+    const r = items(await runJobs({ keywords: 'frontend', limit: 10 }, {}, fetch));
+    expect(r.items).toHaveLength(10);
+    expect(asked).toHaveLength(1);
   });
 
   test('stops at the end of the results and says the list is complete', async () => {
-    const { fetch, asked } = linkedin({ total: 40 });
-    const r = items(await runJobs({ keywords: 'frontend', limit: 100 }, {}, fetch));
+    const { fetch, asked } = linkedin({ total: 140 });
+    const r = items(await runJobs({ keywords: 'frontend', limit: 500 }, {}, fetch));
     expect(asked).toHaveLength(2);
-    expect(r.items).toHaveLength(50);
+    expect(r.items).toHaveLength(140);
     expect(r.meta.state).toBe('complete');
   });
 
   test('a later page failing keeps what arrived, marked partial with the reason', async () => {
-    const { fetch } = linkedin({ failAt: 25 });
-    const r = items(await runJobs({ keywords: 'frontend', limit: 50 }, {}, fetch));
-    expect(r.items).toHaveLength(25);
+    const { fetch } = linkedin({ failAt: 100 });
+    const r = items(await runJobs({ keywords: 'frontend', limit: 200 }, {}, fetch));
+    expect(r.items).toHaveLength(100);
     expect(r.meta).toMatchObject({ state: 'partial', stoppedBy: 'BUDGET_EXHAUSTED' });
   });
 
@@ -89,15 +124,34 @@ describe('lnrelay jobs', () => {
     expect(r.ok).toBe(false);
   });
 
-  test('--details reads each job for its apply link, on the job-read budget', async () => {
+  test('--details reads the jobs in batches of 100, on the job-read budget', async () => {
     const { fetch, asked } = linkedin();
-    const r = items(await runJobs({ keywords: 'x', limit: 2, details: true }, {}, fetch));
-    expect(asked.filter((a) => a.spendClass === 'jobRead')).toHaveLength(2);
-    expect(r.items[0]).toMatchObject({
-      apply: { type: 'external' },
-      employmentType: 'Full-time',
+    items(await runJobs({ keywords: 'x', limit: 150, details: true }, {}, fetch));
+    const reads = asked.filter((a) => a.spendClass === 'jobRead').map((a) => a.url);
+    expect(reads).toHaveLength(2);
+    expect(
+      decodeURIComponent(reads[0] ?? '')
+        .match(/ids=List\(([^)]*)\)/)?.[1]
+        ?.split(','),
+    ).toHaveLength(100);
+    expect(
+      decodeURIComponent(reads[1] ?? '')
+        .match(/ids=List\(([^)]*)\)/)?.[1]
+        ?.split(','),
+    ).toHaveLength(50);
+  });
+
+  test('--details merges each job into its row, and counts the ones it could not read', async () => {
+    const { fetch } = linkedin();
+    // The batch fixture holds 5 of this page's jobs; the other 20 come back unread.
+    const r = items(await runJobs({ keywords: 'x', limit: 25, details: true }, {}, fetch));
+    const row = (id: string) => r.items.find((j) => j.id === id);
+    expect(row('4475432390')).toMatchObject({
+      apply: { type: 'easy-apply', url: 'https://www.linkedin.com/job-apply/4475432390' },
     });
-    expect(r.items[0]?.description).toBeUndefined();
+    expect(row('4475218240')?.apply).toMatchObject({ type: 'external' });
+    expect(row('4475432390')?.description).toBeUndefined();
+    expect(r.meta).toMatchObject({ state: 'partial', unread: 20 });
   });
 
   test('--compact is one line per job, id first', async () => {
@@ -145,6 +199,20 @@ describe('lnrelay job', () => {
     expect(asked[0]?.spendClass).toBe('jobRead');
     expect(r.data).toMatchObject({ id: '4477825502', apply: { type: 'external' } });
     expect((r.data as { description: string }).description.length).toBeGreaterThan(500);
+  });
+
+  test('several jobs are read in one batch call, only the ones asked for', async () => {
+    const { fetch, asked } = linkedin();
+    const r = await runJob(
+      ['4479054333', 'https://www.linkedin.com/jobs/view/4478760759/', '999'],
+      {},
+      fetch,
+    );
+    if (!r.ok) throw new Error(r.error.message);
+    expect(asked).toHaveLength(1);
+    const d = r.data as { items: { id: string }[]; meta: Record<string, unknown> };
+    expect(d.items.map((j) => j.id).sort()).toEqual(['4478760759', '4479054333']);
+    expect(d.meta).toMatchObject({ state: 'partial', returnedCount: 2, unread: ['999'] });
   });
 
   test('something that is not a job is refused', async () => {

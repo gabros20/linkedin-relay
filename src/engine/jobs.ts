@@ -27,7 +27,14 @@ function contract(name: 'jobCards' | 'jobFilters' | 'jobPosting') {
   return { path: c.path, decorationId: c.decorationId };
 }
 
-export const PAGE_SIZE = 25;
+/**
+ * Jobs per search call. The browser asks for 25; the server serves up to 100
+ * and answers 101 with a 400 (probed 2026-10-14). Four times fewer calls.
+ */
+export const PAGE_SIZE = 100;
+
+/** Jobs per batch read. 100 returned all 100 in one call (2026-10-14). */
+export const BATCH_SIZE = 100;
 
 export interface JobQuery {
   keywords?: string;
@@ -73,6 +80,12 @@ export function jobFiltersUrl(q: JobQuery): string {
 export function jobDetailUrl(id: string): string {
   const c = contract('jobPosting');
   return `${c.path}/${id}?decorationId=${c.decorationId}`;
+}
+
+/** Many jobs in one call, the same projection as one: a Rest.li batch get. */
+export function jobBatchUrl(ids: string[]): string {
+  const c = contract('jobPosting');
+  return `${c.path}?ids=List(${ids.join(',')})&decorationId=${c.decorationId}`;
 }
 
 /** A bare id, a /jobs/view/ URL, a ?currentJobId= URL or a job urn. */
@@ -272,7 +285,7 @@ export interface JobDetail {
 
 const WORKPLACE_URN: Record<string, Workplace> = { '1': 'on-site', '2': 'remote', '3': 'hybrid' };
 
-function applyOf(method: unknown): JobDetail['apply'] {
+function applyOf(method: unknown, id: string): JobDetail['apply'] {
   const m = method as Node | null | undefined;
   if (m === null || m === undefined) return undefined;
   const type = String(m.$type ?? '');
@@ -281,20 +294,18 @@ function applyOf(method: unknown): JobDetail['apply'] {
     return defined({ type: 'external' as const, url });
   }
   if (type.endsWith('OnsiteApply')) {
-    const url = typeof m.easyApplyUrl === 'string' ? m.easyApplyUrl : undefined;
-    return defined({ type: 'easy-apply' as const, url });
+    // Some Easy Apply jobs carry no apply URL; the button is on the job page.
+    const url = typeof m.easyApplyUrl === 'string' ? m.easyApplyUrl : viewUrl(id);
+    return { type: 'easy-apply' as const, url };
   }
   return undefined;
 }
 
-export function parseJobDetail(json: unknown): { ok: true; job: JobDetail } | Failure {
-  const root = json as { data?: Node; included?: Node[] } | null;
-  const d = root?.data;
-  const rawId = d?.jobPostingId ?? d?.entityUrn;
+/** One posting, its company and the user's own state looked up in `included`. */
+function postingToJob(d: Node, included: Node[]): JobDetail | undefined {
+  const rawId = d.jobPostingId ?? d.entityUrn;
   const id = rawId === undefined ? undefined : jobIdOf(String(rawId));
-  if (d === undefined || id === undefined || typeof d.title !== 'string')
-    return drift('the job response carried no posting');
-  const included = root?.included ?? [];
+  if (id === undefined || typeof d.title !== 'string') return undefined;
   const find = (urn: unknown) =>
     typeof urn === 'string' ? included.find((n) => n.entityUrn === urn) : undefined;
 
@@ -312,38 +323,63 @@ export function parseJobDetail(json: unknown): { ok: true; job: JobDetail } | Fa
   const saving = find(d['*savingInfo']);
   const list = (v: unknown) =>
     Array.isArray(v) && v.length > 0 ? v.filter((x) => typeof x === 'string') : undefined;
+  const nonEmpty = (v: unknown) => (typeof v === 'string' && v !== '' ? v : undefined);
 
-  return {
-    ok: true,
-    job: defined({
-      id,
-      title: d.title,
-      company: companyName,
-      companyUrl: typeof company?.url === 'string' ? company.url : undefined,
-      location: typeof d.formattedLocation === 'string' ? d.formattedLocation : undefined,
-      workplace: workplace ?? (d.workRemoteAllowed === true ? 'remote' : undefined),
-      employmentType:
-        typeof d.formattedEmploymentStatus === 'string' && d.formattedEmploymentStatus !== ''
-          ? d.formattedEmploymentStatus
-          : undefined,
-      experienceLevel:
-        typeof d.formattedExperienceLevel === 'string' && d.formattedExperienceLevel !== ''
-          ? d.formattedExperienceLevel
-          : undefined,
-      industries: list(d.formattedIndustries),
-      functions: list(d.formattedJobFunctions),
-      listed: day(d.listedAt),
-      expires: day(d.expireAt),
-      state: typeof d.jobState === 'string' ? d.jobState : undefined,
-      applicants: typeof d.applies === 'number' && d.applies > 0 ? d.applies : undefined,
-      apply: applyOf(d.applyMethod),
-      ats: typeof d.applicantTrackingSystem === 'string' ? d.applicantTrackingSystem : undefined,
-      applied: typeof applying?.applied === 'boolean' ? applying.applied : undefined,
-      saved: typeof saving?.saved === 'boolean' ? saving.saved : undefined,
-      description: text(d.description),
-      url: viewUrl(id),
-    }),
-  };
+  return defined({
+    id,
+    title: d.title,
+    company: companyName,
+    companyUrl: typeof company?.url === 'string' ? company.url : undefined,
+    location: nonEmpty(d.formattedLocation),
+    workplace: workplace ?? (d.workRemoteAllowed === true ? 'remote' : undefined),
+    employmentType: nonEmpty(d.formattedEmploymentStatus),
+    experienceLevel: nonEmpty(d.formattedExperienceLevel),
+    industries: list(d.formattedIndustries),
+    functions: list(d.formattedJobFunctions),
+    listed: day(d.listedAt),
+    expires: day(d.expireAt),
+    state: nonEmpty(d.jobState),
+    applicants: typeof d.applies === 'number' && d.applies > 0 ? d.applies : undefined,
+    apply: applyOf(d.applyMethod, id),
+    ats: nonEmpty(d.applicantTrackingSystem),
+    applied: typeof applying?.applied === 'boolean' ? applying.applied : undefined,
+    saved: typeof saving?.saved === 'boolean' ? saving.saved : undefined,
+    description: text(d.description),
+    url: viewUrl(id),
+  });
+}
+
+export function parseJobDetail(json: unknown): { ok: true; job: JobDetail } | Failure {
+  const root = json as { data?: Node; included?: Node[] } | null;
+  const job = root?.data === undefined ? undefined : postingToJob(root.data, root.included ?? []);
+  return job === undefined ? drift('the job response carried no posting') : { ok: true, job };
+}
+
+export interface JobBatch {
+  ok: true;
+  jobs: JobDetail[];
+  /** Ids the batch answered with an error. */
+  missing: string[];
+}
+
+export function parseJobBatch(json: unknown): JobBatch | Failure {
+  const root = json as { data?: Node; included?: Node[] } | null;
+  const results = root?.data?.results;
+  if (results === null || typeof results !== 'object')
+    return drift('the batch job response carried no results');
+  const included = root?.included ?? [];
+  const byUrn = new Map(included.map((n) => [n.entityUrn, n]));
+  const jobs: JobDetail[] = [];
+  for (const ref of Object.values(results as Record<string, unknown>)) {
+    const node = typeof ref === 'string' ? byUrn.get(ref) : (ref as Node);
+    const job = node === undefined ? undefined : postingToJob(node, included);
+    if (job !== undefined) jobs.push(job);
+  }
+  const claimed = Object.keys(results as object).length;
+  if (claimed > 0 && jobs.length === 0)
+    return drift(`the batch listed ${claimed} jobs but none could be read`);
+  const errors = (root?.data?.errors ?? {}) as Record<string, unknown>;
+  return { ok: true, jobs, missing: Object.keys(errors).map((k) => k.replace(/^\*/, '')) };
 }
 
 // ─── Filters ──────────────────────────────────────────────────────────────────

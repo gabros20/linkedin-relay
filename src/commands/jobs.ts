@@ -1,22 +1,25 @@
 // ─── `lnrelay jobs`, `lnrelay job`, `lnrelay job-filters` ─────────────────────
 //
-// See engine/jobs.ts. Search pages spend the job-search budget, one per 25
-// jobs; reading a job spends the job-read budget, one per job. `--details` therefore
-// costs a call per result and is opt-in: search wide with cards, then read the
-// finalists.
+// See engine/jobs.ts. A search call returns up to 100 jobs and spends the
+// job-search budget; a read returns up to 100 jobs in full (a batch get) and
+// spends the job-read budget. `--details` is opt-in because full descriptions
+// are large: search wide with cards, then read the finalists.
 
 import { createLiveClient } from '../engine/index.ts';
 import {
+  BATCH_SIZE,
   type JobCard,
   type JobDetail,
   type JobFilterOptions,
   type JobQuery,
+  jobBatchUrl,
   jobDetailUrl,
   jobFilterSelection,
   jobFiltersUrl,
   jobIdOf,
   jobSearchUrl,
   PAGE_SIZE,
+  parseJobBatch,
   parseJobCards,
   parseJobDetail,
   parseJobFilters,
@@ -135,20 +138,39 @@ async function collect(
   return out;
 }
 
-/** Reads each job into its row. Returns the failure code it stopped on, if any. */
+/** Reads `ids` in batches. Stops at the first failed batch, keeping the rest. */
+async function readJobs(
+  get: JobsFetch,
+  ids: string[],
+): Promise<{ jobs: Map<string, JobDetail>; stoppedBy?: string }> {
+  const jobs = new Map<string, JobDetail>();
+  for (let at = 0; at < ids.length; at += BATCH_SIZE) {
+    const res = await get(jobBatchUrl(ids.slice(at, at + BATCH_SIZE)), 'jobRead');
+    const batch = res.ok ? parseJobBatch(res.json) : res;
+    if (!batch.ok) return { jobs, stoppedBy: batch.code };
+    for (const job of batch.jobs) if (ids.includes(job.id)) jobs.set(job.id, job);
+  }
+  return { jobs };
+}
+
+/** Reads every row in full and merges it in. Returns how many stayed unread. */
 async function addDetails(
   get: JobsFetch,
-  jobs: Row[],
+  rows: Row[],
   withDescription: boolean,
-): Promise<string | undefined> {
-  for (const job of jobs) {
-    const res = await get(jobDetailUrl(job.id), 'jobRead');
-    const detail = res.ok ? parseJobDetail(res.json) : res;
-    if (!detail.ok) return detail.code;
-    const { description, id: _id, url: _url, ...rest } = detail.job;
-    Object.assign(job, rest, withDescription ? { description } : {});
+): Promise<{ unread: number; stoppedBy?: string }> {
+  const read = await readJobs(
+    get,
+    rows.map((r) => r.id),
+  );
+  for (const row of rows) {
+    const detail = read.jobs.get(row.id);
+    if (detail === undefined) continue;
+    const { description, id: _id, url: _url, ...rest } = detail;
+    Object.assign(row, rest, withDescription ? { description } : {});
   }
-  return undefined;
+  const unread = rows.filter((r) => !read.jobs.has(r.id)).length;
+  return read.stoppedBy === undefined ? { unread } : { unread, stoppedBy: read.stoppedBy };
 }
 
 export async function runJobs(
@@ -176,9 +198,11 @@ export async function runJobs(
   const query = queryOf(req, selection.filters);
   const found = await collect(get, query, first, want);
   if ('ok' in found) return err('jobs', found.code, found.message, found.hint);
+  let unread = 0;
   if (req.details === true) {
-    const stopped = await addDetails(get, found.jobs, req.description === true);
-    found.stoppedBy = found.stoppedBy ?? stopped;
+    const added = await addDetails(get, found.jobs, req.description === true);
+    found.stoppedBy = found.stoppedBy ?? added.stoppedBy;
+    unread = added.unread;
   }
 
   const { jobs, stoppedBy, exhausted, unknownTypes } = found;
@@ -187,34 +211,65 @@ export async function runJobs(
     ...(found.resolved !== undefined ? { location: found.resolved } : {}),
     items: shape(jobs, opts, compactJob),
     meta: {
-      state: stoppedBy === undefined && exhausted ? 'complete' : 'partial',
+      state: stoppedBy === undefined && exhausted && unread === 0 ? 'complete' : 'partial',
       operation: 'jobs',
       claimedCount: found.total,
       returnedCount: jobs.length,
       start: first,
       next: exhausted ? undefined : first + jobs.length,
       ...(stoppedBy !== undefined ? { stoppedBy } : {}),
+      ...(unread > 0 ? { unread } : {}),
       ...(Object.keys(unknownTypes).length > 0 ? { unknownTypes } : {}),
     },
   });
 }
 
+/** One job by its own endpoint; several in batches of 100, one call each. */
 export async function runJob(
-  input: string | undefined,
+  input: string | string[] | undefined,
   opts: OutputOpts = {},
   fetch?: JobsFetch,
 ): Promise<Envelope> {
-  const id = input === undefined ? undefined : jobIdOf(input);
-  if (id === undefined) {
-    return err('job', 'INVALID_INPUT', 'a job id or job URL is required', 'lnrelay job <id|url>');
+  const given = input === undefined ? [] : Array.isArray(input) ? input : [input];
+  const ids = [...new Set(given.map(jobIdOf))];
+  if (ids.length === 0 || ids.some((id) => id === undefined)) {
+    const bad = given.filter((g) => jobIdOf(g) === undefined);
+    return err(
+      'job',
+      'INVALID_INPUT',
+      bad.length > 0 ? `not a job id or URL: ${bad.join(', ')}` : 'a job id or job URL is required',
+      'lnrelay job <id|url> [<id|url> ...]',
+    );
   }
   const get = fetch ?? liveFetch('job', opts.quiet === true);
   if (typeof get !== 'function') return get;
-  const res = await get(jobDetailUrl(id), 'jobRead');
-  if (!res.ok) return err('job', res.code, res.message, res.hint);
-  const detail = parseJobDetail(res.json);
-  if (!detail.ok) return err('job', detail.code, detail.message, detail.hint);
-  return ok('job', detail.job);
+  const wanted = ids as string[];
+
+  if (wanted.length === 1) {
+    const res = await get(jobDetailUrl(wanted[0] as string), 'jobRead');
+    if (!res.ok) return err('job', res.code, res.message, res.hint);
+    const detail = parseJobDetail(res.json);
+    if (!detail.ok) return err('job', detail.code, detail.message, detail.hint);
+    return ok('job', detail.job);
+  }
+
+  const read = await readJobs(get, wanted);
+  if (read.jobs.size === 0 && read.stoppedBy !== undefined)
+    return err('job', read.stoppedBy, 'no job could be read');
+  const unread = wanted.filter((id) => !read.jobs.has(id));
+  const jobs = wanted.flatMap((id) => read.jobs.get(id) ?? []);
+  return ok('job', {
+    items: shape(jobs, opts, (j) =>
+      compactJob({ ...j, easyApply: j.apply?.type === 'easy-apply', promoted: false }),
+    ),
+    meta: {
+      state: unread.length === 0 ? 'complete' : 'partial',
+      operation: 'job',
+      returnedCount: jobs.length,
+      ...(unread.length > 0 ? { unread } : {}),
+      ...(read.stoppedBy !== undefined ? { stoppedBy: read.stoppedBy } : {}),
+    },
+  });
 }
 
 export async function runJobFilters(

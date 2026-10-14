@@ -175,10 +175,10 @@ export function buildServer(): McpServer {
 
   server.tool(
     'jobs',
-    'Search LinkedIn jobs with every filter the jobs page has. 1 job-search call per 25 results (150 a day). ' +
+    'Search LinkedIn jobs with every filter the jobs page has. 1 job-search call per 100 results (150 a day). ' +
       'Rows carry id, title, company, location, workplace, listed (date), easyApply, promoted, ' +
       'salary when shown, url. RANK ON THOSE, then call `job` on finalists for the description ' +
-      'and apply link; `details:true` reads every row (1 job read EACH, 60 a day). ' +
+      'and apply link; `details:true` reads every row in full, 100 per job read (60 a day). ' +
       'Ids for company/industry/title/place/filter come from `job_filters`. `data.location` is ' +
       "the place a typed location resolved to: check it. `meta.claimedCount` is LinkedIn's total; " +
       '`meta.next` is the start for the next page; LinkedIn serves at most 1000 per search. ' +
@@ -207,10 +207,16 @@ export function buildServer(): McpServer {
 
   server.tool(
     'job',
-    'One LinkedIn job by id or URL: description, apply {type: external | easy-apply, url}, ' +
+    'LinkedIn jobs by id or URL, in full: description, apply {type: external | easy-apply, url}, ' +
       'company, location, workplace, employmentType, applicants, listed/expires, state (LISTED or ' +
-      `CLOSED), and whether the user already applied or saved it. 1 job read (60 a day). ${NO_RETRY}`,
-    { job: z.string().min(1).describe('job id, /jobs/view/ URL, or ?currentJobId= URL') },
+      'CLOSED), and whether the user already applied or saved it. One id returns the job; ' +
+      'several return {items, meta}, read 100 per job read (60 a day), so pass all finalists in ' +
+      `one call. meta.unread lists ids LinkedIn did not return. ${NO_RETRY}`,
+    {
+      job: z
+        .union([z.string().min(1), z.array(z.string().min(1)).min(1)])
+        .describe('job id, /jobs/view/ URL or ?currentJobId= URL, or a list of them'),
+    },
     async ({ job }) => reply(await runJob(job)),
   );
 

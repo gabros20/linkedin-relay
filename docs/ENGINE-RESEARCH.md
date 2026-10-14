@@ -282,6 +282,19 @@ spellCorrectionEnabled:true)`. A typed location is resolved server-side and the 
 back in `included`. That match can be narrower than meant: "Vienna, Austria" became "Innere Stadt,
 Vienna, Austria". The old `typeahead/hitsV2?type=GEO` lookup is 404.
 
+**Bigger calls than the browser makes** (probed the same day):
+
+- `jobCards` takes `count` up to **100**; 101, 150 and 250 answer 400. The browser asks for 25, so a
+  search costs a quarter of the calls. Consecutive 100-pages overlapped by 29 of 100. 23 of the
+  repeats were promoted jobs, which LinkedIn re-inserts on every page (77 of the first 100 were
+  promoted). The total also moved from 431 to 471 between the two calls. Results are merged by id.
+- `jobs/jobPostings?ids=List(<id>,…)` is a Rest.li batch get with the same projection as one job:
+  100 ids returned 100 full postings in one call (about 3 MB), with no errors. Reading every result
+  costs one call per 100, not one per job.
+- Some Easy Apply postings carry no `easyApplyUrl`; for those the apply link is the job page.
+
+Neither shape is one the web client sends, which is the trade for the call count.
+
 ## 6. The Rest.li codec is byte-correct — ✅ verified
 
 The web client sent `variables=(memberIdentity:ACoAA…)`. Our `encodeVariables()` produced the

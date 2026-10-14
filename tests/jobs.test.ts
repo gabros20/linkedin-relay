@@ -2,11 +2,13 @@ import { describe, expect, test } from 'bun:test';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import {
+  jobBatchUrl,
   jobDetailUrl,
   jobFilterSelection,
   jobFiltersUrl,
   jobIdOf,
   jobSearchUrl,
+  parseJobBatch,
   parseJobCards,
   parseJobDetail,
   parseJobFilters,
@@ -23,6 +25,8 @@ const LOCATED = fixture('jobs-cards-located.json');
 const OFFSITE = fixture('job-detail-offsite.json');
 const EASY = fixture('job-detail-easy.json');
 const FILTERS = fixture('jobs-filters.json');
+// Ten jobs read in one batch call (ids=List(...)), captured the same day.
+const BATCH = fixture('job-detail-batch.json');
 
 const query = (url: string) => decodeURIComponent(new URL(url).searchParams.get('query') ?? '');
 
@@ -183,8 +187,58 @@ describe('a job', () => {
     expect(r.job.workplace).toBe('remote');
   });
 
+  test('Easy Apply without an apply URL points at the job page, where the button is', () => {
+    const bare = {
+      ...EASY,
+      data: { ...EASY.data, applyMethod: { $type: 'com.linkedin.voyager.jobs.SimpleOnsiteApply' } },
+    };
+    const r = parseJobDetail(bare);
+    if (!r.ok) throw new Error(r.message);
+    expect(r.job.apply).toEqual({
+      type: 'easy-apply',
+      url: 'https://www.linkedin.com/jobs/view/4440791718/',
+    });
+  });
+
   test('a response without a posting is drift', () => {
     expect(parseJobDetail({ data: {} }).ok).toBe(false);
+  });
+});
+
+describe('jobs read in a batch', () => {
+  test('one call asks for many ids', () => {
+    const url = jobBatchUrl(['1', '2', '3']);
+    expect(url).toContain('/voyager/api/jobs/jobPostings?ids=List(1,2,3)&decorationId=');
+  });
+
+  // This batch holds 10 postings; the parser emits 10.
+  test('every posting in the batch is read in full', () => {
+    const r = parseJobBatch(BATCH);
+    if (!r.ok) throw new Error(r.message);
+    expect(r.jobs).toHaveLength(10);
+    const easy = r.jobs.find((j) => j.id === '4479054333');
+    expect(easy).toMatchObject({
+      title: 'Frontend Developer Intern',
+      apply: { type: 'easy-apply', url: 'https://www.linkedin.com/job-apply/4479054333' },
+    });
+    const lever = r.jobs.find((j) => j.id === '4478760759');
+    expect(lever?.apply?.type).toBe('external');
+    expect(lever?.apply?.url).toStartWith('https://jobs.lever.co/qonto/');
+    expect(r.jobs.every((j) => (j.description?.length ?? 0) > 0)).toBe(true);
+    expect(r.jobs.every((j) => j.company !== undefined)).toBe(true);
+  });
+
+  test('ids the batch could not return are reported, not silently missing', () => {
+    const r = parseJobBatch({
+      ...BATCH,
+      data: { ...BATCH.data, errors: { '123': { status: 404 } } },
+    });
+    if (!r.ok) throw new Error(r.message);
+    expect(r.missing).toEqual(['123']);
+  });
+
+  test('a batch with results but no postings is drift', () => {
+    expect(parseJobBatch({ ...BATCH, included: [] }).ok).toBe(false);
   });
 });
 
