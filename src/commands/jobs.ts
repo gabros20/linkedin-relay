@@ -24,12 +24,20 @@ import {
   parseJobDetail,
   parseJobFilters,
 } from '../engine/jobs.ts';
-import type { Failure } from '../engine/sdui-form.ts';
 import { loadSession } from '../engine/session.ts';
 import { project } from '../format.ts';
 import { err, ok } from '../output.ts';
 import type { Envelope } from '../types.ts';
 import type { OutputOpts } from './live.ts';
+import {
+  keywordSets,
+  line,
+  type Matched,
+  metaOf,
+  type PageFetch,
+  type Paging,
+  searchAll,
+} from './paged.ts';
 
 type Fetched =
   | { ok: true; json: unknown }
@@ -63,27 +71,25 @@ export interface JobsRequest {
   filter?: JobFilterOptions;
 }
 
-/** LinkedIn serves no further than this into any one search. */
-const MAX_RESULTS = 1000;
+/** LinkedIn serves no further than 1000 into any one job search. */
+const PAGING: Paging = { pageSize: PAGE_SIZE, max: 1000 };
 
-type Row = JobCard &
-  Partial<Omit<JobDetail, keyof JobCard>> & {
-    /** With several keyword sets: the ones that found this job, in the order given. */
-    matched?: string[];
-  };
+type Row = Matched<JobCard & Partial<Omit<JobDetail, keyof JobCard>>>;
 
 function compactJob(j: Row): string {
-  const parts = [j.id, j.title, j.company, j.location, j.workplace, j.listed];
-  if (j.easyApply) parts.push('easy apply');
-  if (j.promoted) parts.push('promoted');
-  parts.push(j.salary);
-  if (j.apply?.url !== undefined) parts.push(`apply: ${j.apply.url}`);
-  if (j.matched !== undefined) parts.push(`matched: ${j.matched.join(' + ')}`);
-  // A bar inside a title would read as a column break.
-  return parts
-    .filter((p): p is string => p !== undefined && p !== '')
-    .map((p) => p.replaceAll(' | ', ' / '))
-    .join(' | ');
+  return line([
+    j.id,
+    j.title,
+    j.company,
+    j.location,
+    j.workplace,
+    j.listed,
+    j.easyApply ? 'easy apply' : undefined,
+    j.promoted ? 'promoted' : undefined,
+    j.salary,
+    j.apply?.url !== undefined ? `apply: ${j.apply.url}` : undefined,
+    j.matched !== undefined ? `matched: ${j.matched.join(' + ')}` : undefined,
+  ]);
 }
 
 function shape<T extends object>(rows: T[], opts: OutputOpts, line: (r: T) => string) {
@@ -94,16 +100,6 @@ function shape<T extends object>(rows: T[], opts: OutputOpts, line: (r: T) => st
 }
 
 type Query = Omit<JobQuery, 'start' | 'count'>;
-
-/** The keyword sets, trimmed, each once (case-insensitively), in the order given. */
-function keywordSets(keywords: JobsRequest['keywords']): string[] {
-  const given = keywords === undefined ? [] : Array.isArray(keywords) ? keywords : [keywords];
-  const out: string[] = [];
-  for (const k of given.map((g) => g.trim())) {
-    if (k !== '' && !out.some((o) => o.toLowerCase() === k.toLowerCase())) out.push(k);
-  }
-  return out;
-}
 
 function queryOf(
   req: Omit<JobsRequest, 'limit' | 'keywords'>,
@@ -116,49 +112,6 @@ function queryOf(
     ...(req.geoId ? { geoId: req.geoId } : {}),
     filters,
   };
-}
-
-interface Collected {
-  jobs: Row[];
-  total?: number;
-  resolved?: { geoId: string; name: string };
-  stoppedBy?: string;
-  exhausted: boolean;
-  unknownTypes: Record<string, number>;
-}
-
-/** Pages from `first` until `want` jobs, the end of the results, or a failure. */
-async function collect(
-  get: JobsFetch,
-  query: Query,
-  first: number,
-  want: number,
-): Promise<Collected | Failure> {
-  const out: Collected = { jobs: [], exhausted: false, unknownTypes: {} };
-  for (let start = first; out.jobs.length < want && start < MAX_RESULTS; start += PAGE_SIZE) {
-    const res = await get(jobSearchUrl({ ...query, start, count: PAGE_SIZE }), 'jobSearch');
-    const page = res.ok ? parseJobCards(res.json) : res;
-    if (!page.ok) {
-      // The first page failing is a failure; a later one leaves a partial list.
-      if (out.jobs.length === 0) return page;
-      out.stoppedBy = page.code;
-      break;
-    }
-    out.total = page.total ?? out.total;
-    out.resolved = page.location ?? out.resolved;
-    for (const [k, n] of Object.entries(page.unknownTypes))
-      out.unknownTypes[k] = (out.unknownTypes[k] ?? 0) + n;
-    const fresh = page.jobs.filter((j) => !out.jobs.some((x) => x.id === j.id));
-    const room = want - out.jobs.length;
-    out.jobs.push(...fresh.slice(0, room));
-    // The limit cut this page short: there is more, even on the last page.
-    if (fresh.length > room) break;
-    if (page.jobs.length === 0 || (out.total !== undefined && start + PAGE_SIZE >= out.total)) {
-      out.exhausted = true;
-      break;
-    }
-  }
-  return out;
 }
 
 /** Reads `ids` in batches. Stops at the first failed batch, keeping the rest. */
@@ -196,122 +149,6 @@ async function addDetails(
   return read.stoppedBy === undefined ? { unread } : { unread, stoppedBy: read.stoppedBy };
 }
 
-/** One keyword set's search, as `meta.searches` reports it. */
-interface SearchReport {
-  keywords?: string;
-  claimedCount?: number;
-  returnedCount: number;
-  state: 'complete' | 'partial' | 'failed';
-  next?: number;
-  stoppedBy?: string;
-}
-
-function reportOf(keywords: string | undefined, found: Collected, first: number): SearchReport {
-  const report: SearchReport = {
-    ...(keywords !== undefined ? { keywords } : {}),
-    claimedCount: found.total,
-    returnedCount: found.jobs.length,
-    state: found.stoppedBy === undefined && found.exhausted ? 'complete' : 'partial',
-  };
-  if (!found.exhausted) report.next = first + found.jobs.length;
-  if (found.stoppedBy !== undefined) report.stoppedBy = found.stoppedBy;
-  return report;
-}
-
-interface Merged {
-  rows: Row[];
-  searches: SearchReport[];
-  /** Rows dropped because an earlier keyword set had already found the job. */
-  duplicates: number;
-  resolved?: { geoId: string; name: string };
-  unknownTypes: Record<string, number>;
-  failure?: Failure;
-}
-
-/** Adds one search's jobs; a job already found gains this keyword set instead. */
-function mergeInto(out: Merged, byId: Map<string, Row>, jobs: Row[], keywords?: string) {
-  for (const job of jobs) {
-    const seen = byId.get(job.id);
-    if (seen !== undefined) {
-      out.duplicates++;
-      if (keywords !== undefined) seen.matched?.push(keywords);
-      continue;
-    }
-    const row: Row = keywords !== undefined ? { ...job, matched: [keywords] } : job;
-    byId.set(job.id, row);
-    out.rows.push(row);
-  }
-}
-
-/**
- * Runs each keyword set's search and merges the results by job id. With
- * several sets, each row says which found it and the most-found come first,
- * so an agent reading top-down meets the likeliest fits before the rest.
- */
-async function searchAll(
-  get: JobsFetch,
-  sets: (string | undefined)[],
-  base: Query,
-  first: number,
-  want: number,
-): Promise<Merged> {
-  const out: Merged = { rows: [], searches: [], duplicates: 0, unknownTypes: {} };
-  const byId = new Map<string, Row>();
-  for (const keywords of sets) {
-    const found = await collect(get, { ...base, ...(keywords ? { keywords } : {}) }, first, want);
-    if ('ok' in found) {
-      out.failure = out.failure ?? found;
-      out.searches.push({
-        ...(keywords !== undefined ? { keywords } : {}),
-        returnedCount: 0,
-        state: 'failed',
-        stoppedBy: found.code,
-      });
-      continue;
-    }
-    out.searches.push(reportOf(keywords, found, first));
-    out.resolved = out.resolved ?? found.resolved;
-    for (const [k, n] of Object.entries(found.unknownTypes))
-      out.unknownTypes[k] = (out.unknownTypes[k] ?? 0) + n;
-    mergeInto(out, byId, found.jobs, sets.length > 1 ? keywords : undefined);
-  }
-  // Stable: ties keep the order LinkedIn ranked them in.
-  if (sets.length > 1) out.rows.sort((x, y) => (y.matched?.length ?? 0) - (x.matched?.length ?? 0));
-  return out;
-}
-
-function metaOf(
-  merged: Merged,
-  single: boolean,
-  first: number,
-  unread: number,
-  readStop: string | undefined,
-): Record<string, unknown> {
-  const searched = merged.searches;
-  const allComplete = searched.every((r) => r.state === 'complete');
-  const meta: Record<string, unknown> = {
-    state: allComplete && unread === 0 && readStop === undefined ? 'complete' : 'partial',
-    operation: 'jobs',
-  };
-  if (single) {
-    // One search: the plain shape, with its own paging.
-    const { keywords: _k, state: _s, ...report } = searched[0] as SearchReport;
-    Object.assign(meta, report, { start: first });
-    if (readStop !== undefined) meta.stoppedBy = meta.stoppedBy ?? readStop;
-  } else {
-    Object.assign(meta, {
-      returnedCount: merged.rows.length,
-      duplicates: merged.duplicates,
-      start: first,
-      searches: searched,
-      ...(readStop !== undefined ? { stoppedBy: readStop } : {}),
-    });
-  }
-  if (unread > 0) meta.unread = unread;
-  if (Object.keys(merged.unknownTypes).length > 0) meta.unknownTypes = merged.unknownTypes;
-  return meta;
-}
-
 export async function runJobs(
   req: JobsRequest,
   opts: OutputOpts = {},
@@ -335,9 +172,33 @@ export async function runJobs(
   if (typeof get !== 'function') return get;
 
   const first = Math.max(0, req.start ?? 0);
-  const want = Math.max(1, Math.min(req.limit, MAX_RESULTS - first));
+  const want = Math.max(1, Math.min(req.limit, PAGING.max - first));
   const base = queryOf(req, selection.filters);
-  const merged = await searchAll(get, sets.length > 0 ? sets : [undefined], base, first, want);
+  const fetchPage: PageFetch<JobCard> = async (keywords, start) => {
+    const url = jobSearchUrl({
+      ...base,
+      ...(keywords ? { keywords } : {}),
+      start,
+      count: PAGE_SIZE,
+    });
+    const res = await get(url, 'jobSearch');
+    const page = res.ok ? parseJobCards(res.json) : res;
+    if (!page.ok) return page;
+    return {
+      ok: true,
+      items: page.jobs,
+      ...(page.total !== undefined ? { total: page.total } : {}),
+      ...(page.location !== undefined ? { resolved: page.location } : {}),
+      unknownTypes: page.unknownTypes,
+    };
+  };
+  const merged = await searchAll(
+    fetchPage,
+    sets.length > 0 ? sets : [undefined],
+    first,
+    want,
+    PAGING,
+  );
   if (merged.rows.length === 0 && merged.failure !== undefined) {
     const f = merged.failure;
     return err('jobs', f.code, f.message, f.hint);
@@ -352,12 +213,15 @@ export async function runJobs(
   }
 
   const single = sets.length <= 1;
-  const meta = metaOf(merged, single, first, unread, readStop);
+  const meta = metaOf('jobs', merged, single, first, {
+    unread,
+    ...(readStop !== undefined ? { readStop } : {}),
+  });
 
   return ok('jobs', {
     query: { ...base, ...(sets.length > 0 ? { keywords: single ? sets[0] : sets } : {}) },
     ...(merged.resolved !== undefined ? { location: merged.resolved } : {}),
-    items: shape(merged.rows, opts, compactJob),
+    items: shape(merged.rows as Row[], opts, compactJob),
     meta,
   });
 }
