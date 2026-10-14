@@ -40,7 +40,7 @@ describe('lnrelay jobs', () => {
     const r = items(await runJobs({ keywords: 'frontend', limit: 30 }, {}, fetch));
     expect(r.items).toHaveLength(30);
     expect(asked.map((a) => new URL(a.url).searchParams.get('start'))).toEqual(['0', '25']);
-    expect(asked.every((a) => a.spendClass === 'search')).toBe(true);
+    expect(asked.every((a) => a.spendClass === 'jobSearch')).toBe(true);
     expect(r.meta).toMatchObject({ state: 'partial', claimedCount: 295, returnedCount: 30 });
   });
 
@@ -89,10 +89,10 @@ describe('lnrelay jobs', () => {
     expect(r.ok).toBe(false);
   });
 
-  test('--details reads each job for its apply link, on the profile budget', async () => {
+  test('--details reads each job for its apply link, on the job-read budget', async () => {
     const { fetch, asked } = linkedin();
     const r = items(await runJobs({ keywords: 'x', limit: 2, details: true }, {}, fetch));
-    expect(asked.filter((a) => a.spendClass === 'profile')).toHaveLength(2);
+    expect(asked.filter((a) => a.spendClass === 'jobRead')).toHaveLength(2);
     expect(r.items[0]).toMatchObject({
       apply: { type: 'external' },
       employmentType: 'Full-time',
@@ -142,7 +142,7 @@ describe('lnrelay job', () => {
     const { fetch, asked } = linkedin();
     const r = await runJob('https://www.linkedin.com/jobs/view/4477825502/', {}, fetch);
     if (!r.ok) throw new Error(r.error.message);
-    expect(asked[0]?.spendClass).toBe('profile');
+    expect(asked[0]?.spendClass).toBe('jobRead');
     expect(r.data).toMatchObject({ id: '4477825502', apply: { type: 'external' } });
     expect((r.data as { description: string }).description.length).toBeGreaterThan(500);
   });
@@ -155,7 +155,9 @@ describe('lnrelay job', () => {
 
 describe('lnrelay job-filters', () => {
   test('lists every filter with the values --filter takes', async () => {
-    const r = await runJobFilters({ keywords: 'frontend' }, {}, linkedin().fetch);
+    const { fetch, asked } = linkedin();
+    const r = await runJobFilters({ keywords: 'frontend' }, {}, fetch);
+    expect(asked[0]?.spendClass).toBe('jobSearch');
     if (!r.ok) throw new Error(r.error.message);
     const d = r.data as { items: { key: string }[]; meta: { returnedCount: number } };
     expect(d.items.map((f) => f.key)).toContain('industry');

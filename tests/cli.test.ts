@@ -108,7 +108,9 @@ describe('dispatch', () => {
     const e = await dispatch(['budget'], T0);
     if (!e.ok) throw new Error('expected ok');
     const data = e.data as { classes: { class: string; capProvenance: string }[] };
-    expect(data.classes.map((c) => c.class)).toContain('global');
+    expect(data.classes.map((c) => c.class)).toEqual(
+      expect.arrayContaining(['global', 'jobSearch', 'jobRead']),
+    );
     for (const c of data.classes) {
       expect(['guessed', 'vendor-lore', 'measured']).toContain(c.capProvenance);
     }

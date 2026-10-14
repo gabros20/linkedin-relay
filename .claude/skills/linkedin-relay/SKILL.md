@@ -12,7 +12,8 @@ in the request path.
 ## Three things to know before you call anything
 
 1. **Every call spends a budget that cannot be topped up.** Caps are deliberately low (30 profile
-   reads a day, 25 searches, 250 requests total) because LinkedIn restricts accounts for *read*
+   reads a day, 25 searches, 350 requests total; job hunting has its own 150 job searches and 60
+   job reads) because LinkedIn restricts accounts for *read*
    velocity alone — several documented restrictions involved no automation and no writes, just fast
    browsing. Check `meta.budget.remaining`; when it's low, tell the user and stop rather than
    spending the rest.
@@ -58,7 +59,7 @@ Out-of-network people come back as `name: "LinkedIn Member"` with a `/headless` 
 LinkedIn behaviour, not a bug — LinkedIn will not name them to this account. Say so rather than
 presenting it as a data problem.
 
-### `jobs` — 1 search call per 25 results. Job search with every filter.
+### `jobs` — 1 job-search call per 25 results. Job search with every filter.
 ```
 jobs keywords:"<terms>" [location:"<place>" | geoId:"<id>"] [distance:<miles>]
      [posted:"24h|week|month|<N>h|<N>d"] [experience:[internship|entry|associate|mid-senior|director|executive]]
@@ -71,17 +72,18 @@ Each item: `id`, `title`, `company`, `location`, `workplace`, `listed` (YYYY-MM-
 `promoted`, `salary` (when the card shows one), `insights`, `url`. `compact` gives one line per job.
 
 - **Rank on the rows, then read the finalists with `job`.** `details` reads *every* row (1 profile
-  call each, 30 a day) to add the apply link, applicants and employment type.
+  job read each, 60 a day) to add the apply link, applicants and employment type.
 - **Check `data.location`.** A typed location is resolved by LinkedIn, and the place it chose is
   reported there. "Vienna, Austria" resolved to one district of Vienna. Pass `geoId` for an exact
   place; ids are in `job_filters` under `populatedPlace`.
 - **Paging:** `meta.claimedCount` is LinkedIn's total, `meta.next` is the `start` for the next
   batch, and `meta.state` is `complete` only when the results ran out. LinkedIn serves at most 1000
   per search; narrow the query rather than paging deep.
-- For several searches (keyword variants), keep each one narrow with filters. Every 25 rows costs a
-  search call, and the day has 25.
+- Job hunting has its own budget: 150 job-search calls and 60 job reads a day, apart from the
+  people and company `search`. That is about ten keyword searches read in full. The same job turns
+  up under several keywords; merge the lists by `id` before reading any in full.
 
-### `job` — 1 profile call. One job, in full.
+### `job` — 1 job read. One job, in full.
 ```
 job job:"<id | /jobs/view/ URL | ?currentJobId= URL>"
 ```
@@ -91,7 +93,7 @@ job job:"<id | /jobs/view/ URL | ?currentJobId= URL>"
 system), and `applied` / `saved` for this user. For an external application, `apply.url` goes to
 the employer's own site.
 
-### `job-filters` — 1 search call. The knobs, with ids.
+### `job-filters` — 1 job-search call. The knobs, with ids.
 ```
 job_filters keywords:"<terms>" [location | geoId] [any jobs filter]
 ```

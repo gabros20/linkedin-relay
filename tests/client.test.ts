@@ -1,7 +1,13 @@
 import { describe, expect, test } from 'bun:test';
 import type { Session } from '../src/engine/auth.ts';
 import { buildHeaders, checkSession, csrfToken } from '../src/engine/auth.ts';
-import { type Cooldown, emptyLedger, type Ledger, openCooldown } from '../src/engine/budget.ts';
+import {
+  CAPS,
+  type Cooldown,
+  emptyLedger,
+  type Ledger,
+  openCooldown,
+} from '../src/engine/budget.ts';
 import { createClient } from '../src/engine/client.ts';
 import { CONTRACTS, contractFor, RETIRED, shippableContracts } from '../src/engine/contracts.ts';
 
@@ -161,7 +167,7 @@ describe('client ordering', () => {
   });
 
   test('an exhausted budget refuses before any network call', async () => {
-    const spent = Array.from({ length: 250 }, (_, i) => T0 - 20_000 - i * 1000);
+    const spent = Array.from({ length: CAPS.global.perDay }, (_, i) => T0 - 20_000 - i * 1000);
     const { client, state } = harness(okResponse, { ledger: { spends: { search: spent } } });
     const r = await client.request({ url: 'https://x/', spendClass: 'profile', operation: 'p' });
     if (r.ok) throw new Error('unreachable');

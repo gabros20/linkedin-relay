@@ -1,7 +1,7 @@
 // ─── `lnrelay jobs`, `lnrelay job`, `lnrelay job-filters` ─────────────────────
 //
-// See engine/jobs.ts. Search pages spend the search budget, one per 25 jobs;
-// reading a job spends the profile budget, one per job. `--details` therefore
+// See engine/jobs.ts. Search pages spend the job-search budget, one per 25
+// jobs; reading a job spends the job-read budget, one per job. `--details` therefore
 // costs a call per result and is opt-in: search wide with cards, then read the
 // finalists.
 
@@ -33,7 +33,7 @@ type Fetched =
   | { ok: false; code: string; message: string; hint?: string };
 
 /** One accounted GET. Injectable so tests send nothing. */
-export type JobsFetch = (url: string, spendClass: 'search' | 'profile') => Promise<Fetched>;
+export type JobsFetch = (url: string, spendClass: 'jobSearch' | 'jobRead') => Promise<Fetched>;
 
 function liveFetch(command: string, quiet: boolean): JobsFetch | Envelope {
   const session = loadSession();
@@ -113,7 +113,7 @@ async function collect(
 ): Promise<Collected | Failure> {
   const out: Collected = { jobs: [], exhausted: false, unknownTypes: {} };
   for (let start = first; out.jobs.length < want && start < MAX_RESULTS; start += PAGE_SIZE) {
-    const res = await get(jobSearchUrl({ ...query, start, count: PAGE_SIZE }), 'search');
+    const res = await get(jobSearchUrl({ ...query, start, count: PAGE_SIZE }), 'jobSearch');
     const page = res.ok ? parseJobCards(res.json) : res;
     if (!page.ok) {
       // The first page failing is a failure; a later one leaves a partial list.
@@ -142,7 +142,7 @@ async function addDetails(
   withDescription: boolean,
 ): Promise<string | undefined> {
   for (const job of jobs) {
-    const res = await get(jobDetailUrl(job.id), 'profile');
+    const res = await get(jobDetailUrl(job.id), 'jobRead');
     const detail = res.ok ? parseJobDetail(res.json) : res;
     if (!detail.ok) return detail.code;
     const { description, id: _id, url: _url, ...rest } = detail.job;
@@ -210,7 +210,7 @@ export async function runJob(
   }
   const get = fetch ?? liveFetch('job', opts.quiet === true);
   if (typeof get !== 'function') return get;
-  const res = await get(jobDetailUrl(id), 'profile');
+  const res = await get(jobDetailUrl(id), 'jobRead');
   if (!res.ok) return err('job', res.code, res.message, res.hint);
   const detail = parseJobDetail(res.json);
   if (!detail.ok) return err('job', detail.code, detail.message, detail.hint);
@@ -227,7 +227,7 @@ export async function runJobFilters(
   const get = fetch ?? liveFetch('job-filters', opts.quiet === true);
   if (typeof get !== 'function') return get;
   const url = jobFiltersUrl({ ...queryOf(req, selection.filters), start: 0, count: PAGE_SIZE });
-  const res = await get(url, 'search');
+  const res = await get(url, 'jobSearch');
   const parsed = res.ok ? parseJobFilters(res.json) : res;
   if (!parsed.ok) return err('job-filters', parsed.code, parsed.message, parsed.hint);
   return ok('job-filters', {

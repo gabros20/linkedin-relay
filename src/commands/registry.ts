@@ -99,7 +99,7 @@ export const COMMANDS: CommandDef[] = [
   },
   {
     name: 'jobs',
-    cost: '1 search call per 25 jobs; --details adds 1 profile call per job',
+    cost: '1 job-search call per 25 jobs; --details adds 1 job read per job',
     summary:
       'Job search with every filter the jobs page has. Cards carry id, title, company, place, ' +
       'workplace, listed date, Easy Apply. Read finalists with `job`.',
@@ -120,7 +120,7 @@ export const COMMANDS: CommandDef[] = [
   },
   {
     name: 'job',
-    cost: '1 profile call',
+    cost: '1 job read',
     summary: 'One job: description, apply link (external or Easy Apply), applicants, state.',
     usage: 'lnrelay job <id|job-url>',
     audience: ['cli', 'mcp'],
@@ -129,7 +129,7 @@ export const COMMANDS: CommandDef[] = [
   },
   {
     name: 'job-filters',
-    cost: '1 search call',
+    cost: '1 job-search call',
     summary:
       'Every job filter for a query, with option ids and live counts: what `jobs --filter` and ' +
       '--company/--industry/--title/--place take.',

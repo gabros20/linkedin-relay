@@ -26,7 +26,14 @@ import type { CapProvenance } from '../types.ts';
 const HOUR = 3_600_000;
 const DAY = 86_400_000;
 
-export type SpendClass = 'profile' | 'search' | 'page' | 'write' | 'global';
+export type SpendClass =
+  | 'profile'
+  | 'search'
+  | 'page'
+  | 'jobSearch'
+  | 'jobRead'
+  | 'write'
+  | 'global';
 
 export interface Cap {
   perDay: number;
@@ -42,6 +49,21 @@ export const CAPS: Record<SpendClass, Cap> = {
   },
   search: { perDay: 25, provenance: 'guessed', note: 'no corroborated figure exists' },
   page: { perDay: 60, provenance: 'guessed', note: 'thread/feed pagination' },
+  // Set on 2026-10-14 by the owner's decision, for job hunting: about ten
+  // keyword searches read in full (25 jobs a page, often 100-300 a search),
+  // then the finalists read for their apply links. Kept apart from `search`
+  // so a hunt neither uses up nor is stopped by people and company research.
+  // Guesses like every other cap; the client's 3-15s gap still paces each call.
+  jobSearch: {
+    perDay: 150,
+    provenance: 'guessed',
+    note: 'job search pages and filter lists; set for ~10 keyword searches a day',
+  },
+  jobRead: {
+    perDay: 60,
+    provenance: 'guessed',
+    note: 'one job read in full, for its apply link',
+  },
   write: {
     // Raised from 10 on 2026-08-14 by the owner's explicit decision, after 10
     // blocked ordinary development on a tool whose writes are the point — a
@@ -57,7 +79,9 @@ export const CAPS: Record<SpendClass, Cap> = {
     provenance: 'guessed',
     note: 'raised from 10 for development; still below the ~20/day connection lore per action type',
   },
-  global: { perDay: 250, provenance: 'guessed', note: 'all classes combined' },
+  // Raised from 250 with the job classes, so a full hunt (~120 searches and
+  // 60 reads) still leaves room for everything else.
+  global: { perDay: 350, provenance: 'guessed', note: 'all classes combined' },
 };
 
 /** Minimum gap between any two calls, before jitter. */

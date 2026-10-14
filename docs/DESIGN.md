@@ -361,8 +361,10 @@ precision, so every cap carries its provenance and `lnrelay budget` prints it:
 | profile detail | 30 / day | vendor-lore (R1: `jjuanrivvera`'s cap, transplanted) |
 | search query | 25 / day | guessed |
 | thread / feed page | 60 / day | guessed |
+| job search page / filter list | 150 / day | guessed — set 2026-10-14 for job hunting, ~10 keyword searches |
+| job read | 60 / day | guessed — set 2026-10-14, the finalists of a hunt |
 | any write | 10 / day, 1 per 90s | guessed, deliberately below R2's weak ~20/day lore |
-| global | 250 req/day · 3–15s jittered gap · 1 in flight | R1 |
+| global | 350 req/day (250 until 2026-10-14) · 3–15s jittered gap · 1 in flight | R1 |
 
 Users may lower these; raising them requires editing and rebuilding the source. Manual browser
 activity is unknowable, so every command reports **tool** budget without implying total LinkedIn

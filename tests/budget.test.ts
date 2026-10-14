@@ -106,6 +106,23 @@ describe('cap provenance', () => {
   });
 });
 
+// Job hunting runs many searches a session, so it has its own allowance and
+// cannot use up the day's people and company searches, or be stopped by them.
+describe('job hunting has its own budget', () => {
+  test('job searches and job reads are their own classes, with room for a hunt', () => {
+    expect(CAPS.jobSearch.perDay).toBe(150);
+    expect(CAPS.jobRead.perDay).toBe(60);
+    expect(CAPS.global.perDay).toBe(350);
+  });
+
+  test('a spent search budget does not stop a job search', () => {
+    const at = Array.from({ length: CAPS.search.perDay }, (_, i) => T0 - MIN_GAP_MS - 1 - i * 1000);
+    const ledger = ledgerWith({ search: at });
+    expect('error' in spend(ledger, 'search', T0)).toBe(true);
+    expect('permit' in spend(ledger, 'jobSearch', T0)).toBe(true);
+  });
+});
+
 describe('summarise', () => {
   test('reports remaining against the cap for a class', () => {
     const s = summarise(ledgerWith({ profile: [T0 - 1000, T0 - 2000] }), 'profile', T0);

@@ -100,7 +100,15 @@ export function runBudget(now: number, resetCooldown: boolean, confirmed: boolea
     );
   }
 
-  const classes: SpendClass[] = ['profile', 'search', 'page', 'write', 'global'];
+  const classes: SpendClass[] = [
+    'profile',
+    'search',
+    'page',
+    'jobSearch',
+    'jobRead',
+    'write',
+    'global',
+  ];
   const { value: cooldown } = loadCooldown();
 
   return ok('budget', {
