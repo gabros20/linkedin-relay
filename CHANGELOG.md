@@ -1,3 +1,10 @@
+# [3.15.0](https://github.com/gabros20/linkedin-relay/compare/v3.14.0...v3.15.0) (2026-10-14)
+
+
+### Features
+
+* **messages:** read your messages and draft replies, never send ([359e2f6](https://github.com/gabros20/linkedin-relay/commit/359e2f62b94f1e06ee19e8408069cf03e6bab54a))
+
 # [3.14.0](https://github.com/gabros20/linkedin-relay/compare/v3.13.0...v3.14.0) (2026-10-14)
 
 
