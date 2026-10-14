@@ -9,7 +9,8 @@ Sibling to [`x-relay`](../x-relay), [`github-relay`](../github-relay) and
 ```bash
 npm i -g linkedin-relay-mcp
 lnrelay login                              # mint a session from your own Chrome
-lnrelay search people "rust developer"     # ranked rows: name, headline, location, url
+lnrelay people "engineering manager" --company Microsoft --location Hungary --compact
+                                           # people search with every filter, names looked up
 lnrelay jobs "frontend engineer" "AI agent developer" --workplace remote --posted week --compact
                                            # one merged job list across keyword sets
 lnrelay job 4479248573 4475225930          # full jobs, with their apply links
@@ -21,9 +22,10 @@ lnrelay local "rust"                       # then search it offline, free
 
 ## As an MCP server
 
-Nineteen read-only tools, so an agent does the reading. Writes are not on that surface at any price.
+Twenty-one read-only tools, so an agent does the reading. Writes are not on that surface at any price.
 The bundled Claude Code skill (`.claude/skills/linkedin-relay/SKILL.md`) teaches an agent the
-funnels, the budget, and how to read `meta` — including a step-by-step job-hunting recipe.
+funnels, the budget, and how to read `meta` — including step-by-step recipes for finding people and
+for job hunting.
 
 ```bash
 claude mcp add linkedin-relay -s user -- bun "$(npm root -g)/linkedin-relay-mcp/dist/mcp-shim.js"
@@ -33,7 +35,8 @@ claude mcp add linkedin-relay -s user -- bun "$(npm root -g)/linkedin-relay-mcp/
 
 | | |
 |---|---|
-| `search` · `profile` · `feed` | the research surface — people and companies |
+| `people` · `people-filters` | people search with every filter: company, past company, school, place, degree, title, someone's connections |
+| `search` · `profile` · `feed` | one-page search of people or companies, a profile, your feed |
 | `jobs` · `job` · `job-filters` | job search with every filter, several keyword sets merged in one call, and apply links |
 | `post` · `reactions` | a post's comment thread, and who engaged |
 | `scheduled` · `experience` · `skills` | your queued posts, and your own roles and skills |
@@ -76,6 +79,25 @@ approved the way **you** chose with `lnrelay approval set` (only at a real termi
 
 There is no `--yes` and no environment variable. Every approval and outcome is logged to
 `~/.lnrelay/writes.jsonl`.
+
+## Finding people
+
+```bash
+lnrelay people "engineering manager" "head of engineering" --company Microsoft --location Hungary --network 2nd --compact
+lnrelay people --school "Budapest University of Technology" --company OTP --limit 200   # alumni at a company
+lnrelay people --connection-of <profile-id> --network 2nd                                 # their connections you are not yet connected to
+lnrelay people-filters "frontend developer" --location Budapest                            # every filter, ids and counts
+```
+
+- **Every filter the people search has:** current and past company, school, place, connection
+  degree, industry, profile language, service category, the connections or followers of a person,
+  open to volunteering, and free-text first name, last name, title, company and school.
+- **Names, not ids.** `--company`, `--past-company`, `--school` and `--location` take names and look
+  them up; `data.resolved` says what each became, so a wrong match is visible.
+- **50 people a call** (the page asks for 10). Asking for 100 is answered with an *empty success*, so
+  the tool never does. Several keyword sets merge by person, as for jobs.
+- **LinkedIn serves at most 1000 people per query**, whatever it claims to have matched;
+  `meta.servedLimit` says when it held back, and the list is reported partial, not complete.
 
 ## Job hunting
 

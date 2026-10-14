@@ -295,6 +295,26 @@ Vienna, Austria". The old `typeahead/hitsV2?type=GEO` lookup is 404.
 
 Neither shape is one the web client sends, which is the trade for the call count.
 
+## 5g. People search — ✅ verified 2026-10-14
+
+The people results page now renders over SDUI, but `voyagerSearchDashClusters` (the `search`
+contract) still takes every filter the page offers as `queryParameters`, under the names in the
+page URL: `network`, `geoUrn`, `currentCompany`, `pastCompany`, `schoolFilter`, `industry`,
+`profileLanguage`, `serviceCategory`, `connectionOf`, `followerOf`, `openToVolunteer`,
+`activelyHiringForJobTitles`, and the free-text `firstName`, `lastName`, `title`, `company`,
+`schoolFreetext`. `includeFiltersInResponse:true` returns them all with option ids and live counts
+in `metadata.primaryFilterCluster`.
+
+- **`count` up to 50.** The page asks for 10. **`count:100` is answered with an empty success**:
+  `total: 0`, no error. The tool never sends more than 50.
+- **1000 per query.** A query LinkedIn claimed 43,013 matches for paged to `paging.total: 1000`;
+  results 950-999 came back, nothing past them.
+- **Names to ids.** The page looks names up over SDUI (`FiltersCompanyTypeaheadRequest`). The tool
+  instead runs the same search with `resultType` `COMPANIES` or `SCHOOLS` (a school is an
+  organisation id, matching `schoolFilter`) and takes the top hit, reporting it. Places resolve the
+  way the job search resolves a typed location.
+- `connectionOf` takes the profile id from a result's `entityUrn`.
+
 ## 6. The Rest.li codec is byte-correct — ✅ verified
 
 The web client sent `variables=(memberIdentity:ACoAA…)`. Our `encodeVariables()` produced the

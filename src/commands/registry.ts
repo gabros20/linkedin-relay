@@ -89,10 +89,42 @@ export const COMMANDS: CommandDef[] = [
   {
     name: 'search',
     cost: 'cheap — the net',
-    summary: 'Search people or companies. Cast wide, then deep-read the finalists. Jobs: `jobs`.',
+    summary:
+      'Search people or companies, one page. For people with filters use `people`; jobs: `jobs`.',
     usage:
       'lnrelay search people|companies|jobs "<query>" [--limit N]   (jobs: see `jobs`)\n' +
       '       [--compact | --fields a,b,c] [--retain] [--raw]',
+    audience: ['cli', 'mcp'],
+    risk: 'read',
+    implemented: true,
+  },
+  {
+    name: 'people',
+    cost: '1 search call per 50 people; +1 per company, school or place given by name',
+    summary:
+      'People search with every filter LinkedIn has: company, past company, school, place, ' +
+      'degree, industry, title, connections of someone, … Several keyword sets merge by person.',
+    usage:
+      'lnrelay people ["<keywords>" ...] [--company "<name|id>" ...] [--past-company "<name|id>" ...]\n' +
+      '       [--school "<name|id>" ...] [--location "<place>" | --geo <ids>] [--network 1st,2nd,3rd+]\n' +
+      '       [--industry <ids>] [--language en,de] [--service <ids>] [--title "<text>"]\n' +
+      '       [--first-name "<text>"] [--last-name "<text>"] [--company-text "<text>"]\n' +
+      '       [--school-text "<text>"] [--connection-of <profile-id>] [--follower-of <profile-id>]\n' +
+      '       [--open-to-volunteer] [--filter key=v1,v2 ...] [--limit N] [--start N]\n' +
+      '       [--compact | --fields a,b,c]\n' +
+      '       Names are looked up and data.resolved says what each became: check it.\n' +
+      '       LinkedIn pages at most 1000 people per query; meta.servedLimit says when it held back.',
+    audience: ['cli', 'mcp'],
+    risk: 'read',
+    implemented: true,
+  },
+  {
+    name: 'people-filters',
+    cost: '1 search call (+1 per name looked up)',
+    summary:
+      'Every people filter for a query, with option ids and live counts: what `people` and ' +
+      '--filter take.',
+    usage: 'lnrelay people-filters ["<keywords>"] [people filters]',
     audience: ['cli', 'mcp'],
     risk: 'read',
     implemented: true,

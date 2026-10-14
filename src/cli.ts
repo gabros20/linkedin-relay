@@ -25,6 +25,7 @@ import {
 } from './commands/live.ts';
 import { runBudget, runDoctor, runRisk } from './commands/local.ts';
 import { runOauthLogin, runOauthLogout, runOauthStatus } from './commands/oauth.ts';
+import { type PeopleRequest, runPeople, runPeopleFilters } from './commands/people.ts';
 import { findCommand, helpText } from './commands/registry.ts';
 import { type RoleRequest, runExperience, runRole } from './commands/role.ts';
 import { runSkill, runSkills } from './commands/skill.ts';
@@ -39,6 +40,7 @@ import {
   runShare,
 } from './commands/write.ts';
 import type { JobFilterOptions } from './engine/jobs.ts';
+import type { PeopleFilterOptions } from './engine/people.ts';
 import { shouldRunAsEntry } from './entry.ts';
 import { err, exitCodeFor, toJson } from './output.ts';
 import type { Envelope } from './types.ts';
@@ -108,6 +110,64 @@ export function jobsRequest(args: ParsedArgs): JobsRequest {
   if (start !== undefined) req.start = start;
   if (bool(args, 'details')) req.details = true;
   if (bool(args, 'description')) req.description = true;
+  return req;
+}
+
+/**
+ * A list of organisations: ids may be comma-separated, but a name keeps its
+ * commas ("Ernst & Young, LLP"); repeat the flag for several names.
+ */
+function orgs(args: ParsedArgs, name: string): string[] {
+  return list(args, name)
+    .flatMap((v) => (/^[\d,\s]+$/.test(v) ? v.split(',') : [v]))
+    .map((v) => v.trim())
+    .filter((v) => v !== '');
+}
+
+/** `people` and `people-filters` flags. Pure, so the whole surface is testable. */
+export function peopleRequest(args: ParsedArgs): PeopleRequest {
+  const filter: PeopleFilterOptions = {};
+  const network = many(args, 'network');
+  if (network.length > 0) filter.network = network;
+  for (const [flag, key] of [
+    ['company', 'company'],
+    ['past-company', 'pastCompany'],
+    ['school', 'school'],
+  ] as const) {
+    const values = orgs(args, flag);
+    if (values.length > 0) filter[key] = values;
+  }
+  for (const [flag, key] of [
+    ['geo', 'geo'],
+    ['industry', 'industry'],
+    ['language', 'language'],
+    ['service', 'service'],
+  ] as const) {
+    const values = many(args, flag);
+    if (values.length > 0) filter[key] = values;
+  }
+  for (const [flag, key] of [
+    ['connection-of', 'connectionOf'],
+    ['follower-of', 'followerOf'],
+    ['first-name', 'firstName'],
+    ['last-name', 'lastName'],
+    ['title', 'title'],
+    ['company-text', 'companyText'],
+    ['school-text', 'schoolText'],
+  ] as const) {
+    const value = str(args, flag);
+    if (value !== undefined) filter[key] = value;
+  }
+  if (bool(args, 'open-to-volunteer')) filter.openToVolunteer = true;
+  const raw = list(args, 'filter');
+  if (raw.length > 0) filter.raw = raw;
+
+  const req: PeopleRequest = { limit: num(args, 'limit') ?? 25, filter };
+  if (args.positionals.length > 0) req.keywords = [...args.positionals];
+  const location = str(args, 'location');
+  if (location !== undefined) req.location = location;
+  const start = num(args, 'start');
+  if (start !== undefined) req.start = start;
   return req;
 }
 
@@ -243,6 +303,10 @@ export async function dispatch(argv: string[], now: number): Promise<Envelope> {
       return runJob(args.positionals, output(args));
     case 'job-filters':
       return runJobFilters(jobsRequest(args), output(args));
+    case 'people':
+      return runPeople(peopleRequest(args), output(args));
+    case 'people-filters':
+      return runPeopleFilters(peopleRequest(args), output(args));
     case 'search':
       // The generic search returns no job cards; jobs have their own search.
       if (args.positionals[0] === 'jobs')

@@ -31,6 +31,7 @@ import {
   runWhoami,
 } from './commands/live.ts';
 import { runBudget, runDoctor, runRisk } from './commands/local.ts';
+import { type PeopleRequest, runPeople, runPeopleFilters } from './commands/people.ts';
 import { mcpCommands } from './commands/registry.ts';
 import { runExperience } from './commands/role.ts';
 import { runSkills } from './commands/skill.ts';
@@ -104,7 +105,7 @@ export function buildServer(): McpServer {
 
   server.tool(
     'search',
-    'Search LinkedIn people or companies (for jobs use `jobs`). CHEAP — this is the net. Rows already carry name, ' +
+    'Search LinkedIn people or companies, one page (people with filters: `people`; jobs: `jobs`). CHEAP — this is the net. Rows already carry name, ' +
       'headline, location and url, so RANK ON THOSE and deep-read only 2-3 finalists with ' +
       '`profile`. Calling profile on every result burns a day of budget in one request. ' +
       "`meta.claimedCount` is LinkedIn's total for the query (often millions), NOT how many you " +
@@ -117,6 +118,81 @@ export function buildServer(): McpServer {
       limit: z.number().int().min(1).max(25).optional().describe('default 10'),
     },
     async ({ kind, query, limit }) => reply(await runSearch(kind, query, limit ?? 10)),
+  );
+
+  const peopleQuery = {
+    keywords: z
+      .union([z.string(), z.array(z.string()).min(1)])
+      .optional()
+      .describe('search terms; a list runs one search per entry and merges them by person'),
+    company: z.array(z.string()).optional().describe('current company: names or ids'),
+    pastCompany: z.array(z.string()).optional().describe('past company: names or ids'),
+    school: z.array(z.string()).optional().describe('school: names or ids'),
+    location: z.string().optional().describe('a place by name, looked up to its geo id'),
+    geo: z.array(z.string()).optional().describe('geo ids, from people_filters'),
+    network: z.array(z.enum(['1st', '2nd', '3rd+'])).optional(),
+    industry: z.array(z.string()).optional().describe('industry ids, from people_filters'),
+    language: z.array(z.string()).optional().describe('profile language codes: en, de, …'),
+    service: z.array(z.string()).optional().describe('service category ids'),
+    connectionOf: z.string().optional().describe("a profile id: that person's connections"),
+    followerOf: z.string().optional().describe("a profile id: that person's followers"),
+    firstName: z.string().optional(),
+    lastName: z.string().optional(),
+    title: z.string().optional().describe('free text matched against current title'),
+    companyText: z.string().optional().describe('free text matched against company names'),
+    schoolText: z.string().optional().describe('free text matched against school names'),
+    openToVolunteer: z.boolean().optional(),
+    filter: z
+      .array(z.string())
+      .optional()
+      .describe('raw key=v1,v2 by the parameter names people_filters lists'),
+  };
+  type PeopleArgs = { [K in keyof typeof peopleQuery]?: z.infer<(typeof peopleQuery)[K]> };
+  const peopleRequest = (a: PeopleArgs, limit: number): PeopleRequest => {
+    const { keywords, location, filter, ...rest } = a;
+    return {
+      limit,
+      ...(keywords !== undefined ? { keywords } : {}),
+      ...(location !== undefined ? { location } : {}),
+      filter: { ...rest, ...(filter !== undefined ? { raw: filter } : {}) },
+    };
+  };
+
+  server.tool(
+    'people',
+    'Search LinkedIn people with every filter the people search has. 1 search call per 50 ' +
+      'people, plus 1 per company, school or place given by name. Filter by current or past ' +
+      'company, school, place, connection degree, industry, title, profile language, or the ' +
+      "connections / followers of a person (their profile id, a row's `id`). Names are looked " +
+      'up to ids and `data.resolved` says what each became: CHECK IT, a name can match a ' +
+      'different organisation. Rows: id, name, headline, location, degree, verified, insight ' +
+      '(mutual connections, services), url. Several keyword sets as a list are searched and ' +
+      'merged by person, with `matched`. Out-of-network people come back as "LinkedIn Member" ' +
+      'with no url: LinkedIn will not name them to this account. LinkedIn pages at most 1000 ' +
+      'people per query; `meta.servedLimit` means it claimed more, so narrow with filters. ' +
+      `\`meta.next\` is the start for the next page. ${READING_CONTRACT} ${NO_RETRY}`,
+    {
+      ...peopleQuery,
+      limit: z.number().int().min(1).max(1000).optional().describe('per keyword set; default 25'),
+      start: z.number().int().min(0).optional(),
+      compact: z.boolean().optional().describe('one line per person'),
+    },
+    async ({ limit, start, compact, ...q }) =>
+      reply(
+        await runPeople(
+          { ...peopleRequest(q, limit ?? 25), ...(start !== undefined ? { start } : {}) },
+          compact === true ? { compact: true } : {},
+        ),
+      ),
+  );
+
+  server.tool(
+    'people_filters',
+    "Every people-search filter for a query, with each option's id and live count, and which " +
+      'filters take free text. The ids go into `people` (geo, industry, service, company, …) ' +
+      `or raw \`filter\` (key=value by the listed key). 1 search call. ${NO_RETRY}`,
+    peopleQuery,
+    async (q) => reply(await runPeopleFilters(peopleRequest(q, 25))),
   );
 
   const jobQuery = {

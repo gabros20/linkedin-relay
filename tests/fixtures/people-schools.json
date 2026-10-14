@@ -1,0 +1,713 @@
+{
+  "data": {
+    "data": {
+      "searchDashClustersByAll": {
+        "metadata": {
+          "entityResultAttributes": null,
+          "totalResultCount": 9,
+          "secondaryFilterCluster": null,
+          "$recipeTypes": ["com.linkedin.dfce49e2c6bb412fb4161cbbc7190d0d"],
+          "lazyRightRail": null,
+          "queryType": null,
+          "$type": "com.linkedin.voyager.dash.search.SearchClusterCollectionMetadata",
+          "primaryResultType": "SCHOOLS",
+          "paginationToken": null,
+          "primaryFilterCluster": null,
+          "blockedQuery": false,
+          "entityActionButtonStyle": null,
+          "searchId": "751ed46d-ca20-418b-80d3-15942bf411a7",
+          "filterAppliedCount": 0,
+          "clusterTitleFontSize": null,
+          "simpleInsightAttributes": null,
+          "knowledgeCardRightRail": null
+        },
+        "paging": {
+          "count": 5,
+          "start": 0,
+          "total": 9,
+          "$recipeTypes": ["com.linkedin.81b214c2cdd4f02cdb7d827958d2f3a1"],
+          "$type": "com.linkedin.restli.common.CollectionMetadata"
+        },
+        "$recipeTypes": ["com.linkedin.5f1d22f924ecb6a031ee124b8b767900"],
+        "elements": [
+          {
+            "quickFilterActions": [],
+            "clusterRenderType": "LIST",
+            "dismissable": false,
+            "totalResultCount": null,
+            "controlName": null,
+            "description": null,
+            "title": null,
+            "$recipeTypes": ["com.linkedin.5c853aba2154c55483e72bf6cdfaaf3e"],
+            "$type": "com.linkedin.voyager.dash.search.SearchClusterViewModel",
+            "actionTypeName": null,
+            "navigationText": null,
+            "feature": null,
+            "navigationCardAction": null,
+            "position": 1,
+            "items": [
+              {
+                "item": {
+                  "entityResult": null,
+                  "cluster": null,
+                  "bannerCard": null,
+                  "searchSuggestionCard": null,
+                  "feedbackCard": null,
+                  "knowledgeCardV2": null,
+                  "keywordsSuggestionCard": null,
+                  "queryClarificationCard": null,
+                  "simpleText": null,
+                  "topicalQuestionCard": null,
+                  "simpleTextV2": {
+                    "showDashes": false,
+                    "textAlignment": "LEFT",
+                    "numDashes": 0,
+                    "text": {
+                      "textDirection": "USER_LOCALE",
+                      "text": "9 results",
+                      "attributesV2": [],
+                      "accessibilityTextAttributesV2": [],
+                      "accessibilityText": null,
+                      "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
+                      "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+                    },
+                    "$recipeTypes": ["com.linkedin.5bbb553a55f0e4d13343716ac69b5f48"],
+                    "$type": "com.linkedin.voyager.dash.search.SimpleText"
+                  },
+                  "promoCard": null,
+                  "centeredText": null,
+                  "simpleImage": null
+                },
+                "position": 1,
+                "$recipeTypes": ["com.linkedin.edd11a570456ce19ca1f5ec3c9bb03c1"],
+                "$type": "com.linkedin.voyager.dash.search.SearchItem"
+              }
+            ],
+            "results": []
+          },
+          {
+            "quickFilterActions": [],
+            "clusterRenderType": "LIST",
+            "dismissable": false,
+            "totalResultCount": null,
+            "controlName": null,
+            "description": null,
+            "title": null,
+            "$recipeTypes": ["com.linkedin.5c853aba2154c55483e72bf6cdfaaf3e"],
+            "$type": "com.linkedin.voyager.dash.search.SearchClusterViewModel",
+            "actionTypeName": null,
+            "navigationText": null,
+            "feature": null,
+            "navigationCardAction": null,
+            "position": 2,
+            "items": [
+              {
+                "item": {
+                  "cluster": null,
+                  "bannerCard": null,
+                  "searchSuggestionCard": null,
+                  "feedbackCard": null,
+                  "knowledgeCardV2": null,
+                  "keywordsSuggestionCard": null,
+                  "queryClarificationCard": null,
+                  "simpleText": null,
+                  "topicalQuestionCard": null,
+                  "*entityResult": "urn:li:fsd_entityResultViewModel:(urn:li:fsd_company:15978,SEARCH_SRP,DEFAULT)",
+                  "simpleTextV2": null,
+                  "promoCard": null,
+                  "centeredText": null,
+                  "simpleImage": null
+                },
+                "position": 1,
+                "$recipeTypes": ["com.linkedin.edd11a570456ce19ca1f5ec3c9bb03c1"],
+                "$type": "com.linkedin.voyager.dash.search.SearchItem"
+              },
+              {
+                "item": {
+                  "cluster": null,
+                  "bannerCard": null,
+                  "searchSuggestionCard": null,
+                  "feedbackCard": null,
+                  "knowledgeCardV2": null,
+                  "keywordsSuggestionCard": null,
+                  "queryClarificationCard": null,
+                  "simpleText": null,
+                  "topicalQuestionCard": null,
+                  "*entityResult": "urn:li:fsd_entityResultViewModel:(urn:li:fsd_company:3575087,SEARCH_SRP,DEFAULT)",
+                  "simpleTextV2": null,
+                  "promoCard": null,
+                  "centeredText": null,
+                  "simpleImage": null
+                },
+                "position": 2,
+                "$recipeTypes": ["com.linkedin.edd11a570456ce19ca1f5ec3c9bb03c1"],
+                "$type": "com.linkedin.voyager.dash.search.SearchItem"
+              },
+              {
+                "item": {
+                  "cluster": null,
+                  "bannerCard": null,
+                  "searchSuggestionCard": null,
+                  "feedbackCard": null,
+                  "knowledgeCardV2": null,
+                  "keywordsSuggestionCard": null,
+                  "queryClarificationCard": null,
+                  "simpleText": null,
+                  "topicalQuestionCard": null,
+                  "*entityResult": "urn:li:fsd_entityResultViewModel:(urn:li:fsd_company:241123,SEARCH_SRP,DEFAULT)",
+                  "simpleTextV2": null,
+                  "promoCard": null,
+                  "centeredText": null,
+                  "simpleImage": null
+                },
+                "position": 3,
+                "$recipeTypes": ["com.linkedin.edd11a570456ce19ca1f5ec3c9bb03c1"],
+                "$type": "com.linkedin.voyager.dash.search.SearchItem"
+              },
+              {
+                "item": {
+                  "cluster": null,
+                  "bannerCard": null,
+                  "searchSuggestionCard": null,
+                  "feedbackCard": null,
+                  "knowledgeCardV2": null,
+                  "keywordsSuggestionCard": null,
+                  "queryClarificationCard": null,
+                  "simpleText": null,
+                  "topicalQuestionCard": null,
+                  "*entityResult": "urn:li:fsd_entityResultViewModel:(urn:li:fsd_company:25333,SEARCH_SRP,DEFAULT)",
+                  "simpleTextV2": null,
+                  "promoCard": null,
+                  "centeredText": null,
+                  "simpleImage": null
+                },
+                "position": 4,
+                "$recipeTypes": ["com.linkedin.edd11a570456ce19ca1f5ec3c9bb03c1"],
+                "$type": "com.linkedin.voyager.dash.search.SearchItem"
+              },
+              {
+                "item": {
+                  "cluster": null,
+                  "bannerCard": null,
+                  "searchSuggestionCard": null,
+                  "feedbackCard": null,
+                  "knowledgeCardV2": null,
+                  "keywordsSuggestionCard": null,
+                  "queryClarificationCard": null,
+                  "simpleText": null,
+                  "topicalQuestionCard": null,
+                  "*entityResult": "urn:li:fsd_entityResultViewModel:(urn:li:fsd_company:15099126,SEARCH_SRP,DEFAULT)",
+                  "simpleTextV2": null,
+                  "promoCard": null,
+                  "centeredText": null,
+                  "simpleImage": null
+                },
+                "position": 5,
+                "$recipeTypes": ["com.linkedin.edd11a570456ce19ca1f5ec3c9bb03c1"],
+                "$type": "com.linkedin.voyager.dash.search.SearchItem"
+              }
+            ],
+            "results": []
+          },
+          {
+            "quickFilterActions": [],
+            "clusterRenderType": "LIST",
+            "dismissable": false,
+            "totalResultCount": null,
+            "controlName": null,
+            "description": null,
+            "title": null,
+            "$recipeTypes": ["com.linkedin.5c853aba2154c55483e72bf6cdfaaf3e"],
+            "$type": "com.linkedin.voyager.dash.search.SearchClusterViewModel",
+            "actionTypeName": null,
+            "navigationText": null,
+            "feature": null,
+            "navigationCardAction": null,
+            "position": 3,
+            "items": [
+              {
+                "item": {
+                  "entityResult": null,
+                  "cluster": null,
+                  "bannerCard": null,
+                  "*feedbackCard": "urn:li:fsd_feedbackCard:SRP_FEEDBACK_SCHOOLS",
+                  "searchSuggestionCard": null,
+                  "knowledgeCardV2": null,
+                  "keywordsSuggestionCard": null,
+                  "queryClarificationCard": null,
+                  "simpleText": null,
+                  "topicalQuestionCard": null,
+                  "simpleTextV2": null,
+                  "promoCard": null,
+                  "centeredText": null,
+                  "simpleImage": null
+                },
+                "position": 6,
+                "$recipeTypes": ["com.linkedin.edd11a570456ce19ca1f5ec3c9bb03c1"],
+                "$type": "com.linkedin.voyager.dash.search.SearchItem"
+              }
+            ],
+            "results": []
+          }
+        ],
+        "$type": "com.linkedin.restli.common.CollectionResponse"
+      },
+      "$recipeTypes": ["com.linkedin.c293aa010e51bae32433eeb13b1682fa"],
+      "$type": "com.linkedin.c293aa010e51bae32433eeb13b1682fa"
+    }
+  },
+  "included": [
+    {
+      "entityUrn": "urn:li:fsd_company:241123",
+      "$recipeTypes": ["com.linkedin.2c2374bef3eaba3e079b4a11e2f7bea8"],
+      "$type": "com.linkedin.voyager.dash.organization.Company"
+    },
+    {
+      "entityUrn": "urn:li:fsd_company:3575087",
+      "$recipeTypes": ["com.linkedin.2c2374bef3eaba3e079b4a11e2f7bea8"],
+      "$type": "com.linkedin.voyager.dash.organization.Company"
+    },
+    {
+      "entityUrn": "urn:li:fsd_company:15099126",
+      "$recipeTypes": ["com.linkedin.2c2374bef3eaba3e079b4a11e2f7bea8"],
+      "$type": "com.linkedin.voyager.dash.organization.Company"
+    },
+    {
+      "entityUrn": "urn:li:fsd_company:15978",
+      "$recipeTypes": ["com.linkedin.2c2374bef3eaba3e079b4a11e2f7bea8"],
+      "$type": "com.linkedin.voyager.dash.organization.Company"
+    },
+    {
+      "entityUrn": "urn:li:fsd_company:25333",
+      "$recipeTypes": ["com.linkedin.2c2374bef3eaba3e079b4a11e2f7bea8"],
+      "$type": "com.linkedin.voyager.dash.organization.Company"
+    },
+    {
+      "template": "UNIVERSAL",
+      "actorNavigationContext": null,
+      "trackingUrn": "urn:li:organization:15978",
+      "controlName": null,
+      "interstitialComponent": null,
+      "primaryActions": [],
+      "entityCustomTrackingInfo": null,
+      "title": {
+        "textDirection": "USER_LOCALE",
+        "text": "Budapest University of Technology and Economics",
+        "attributesV2": [],
+        "accessibilityTextAttributesV2": [],
+        "accessibilityText": null,
+        "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
+        "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+      },
+      "overflowActions": [],
+      "*lazyLoadedActions": "urn:li:fsd_lazyLoadedActions:(urn:li:fsd_company:15978,COMPANIES,SEARCH_SRP)",
+      "searchActionType": null,
+      "actorInsights": [],
+      "insightsResolutionResults": [
+        {
+          "jobPostingInsight": null,
+          "relationshipsInsight": null,
+          "serviceProviderRatingInsight": null,
+          "simpleInsight": {
+            "searchActionType": "SEE_CONNECTIONS_AT_SCHOOL",
+            "subtitle": null,
+            "controlName": null,
+            "navigationUrl": "https://www.linkedin.com/search/results/people/?origin=SHARED_CONNECTIONS_FROM_SCHOOL_CANNED_SEARCH&network=%22F%22&schoolFilter=15978",
+            "title": {
+              "textDirection": "USER_LOCALE",
+              "text": "1 connection is alumni",
+              "attributesV2": [],
+              "accessibilityTextAttributesV2": [],
+              "accessibilityText": null,
+              "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
+              "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+            },
+            "$recipeTypes": ["com.linkedin.bd9a707a5b119c1f331373113f57344a"],
+            "$type": "com.linkedin.voyager.dash.search.SimpleInsight"
+          },
+          "jobPostingFooterInsight": null,
+          "socialActivityCountsInsight": null,
+          "labelsInsight": null
+        }
+      ],
+      "badgeIcon": null,
+      "entityUrn": "urn:li:fsd_entityResultViewModel:(urn:li:fsd_company:15978,SEARCH_SRP,DEFAULT)",
+      "showAdditionalCluster": false,
+      "ringStatus": null,
+      "primarySubtitle": {
+        "textDirection": "USER_LOCALE",
+        "text": "Budapest",
+        "attributesV2": [],
+        "accessibilityTextAttributesV2": [],
+        "accessibilityText": null,
+        "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
+        "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+      },
+      "badgeText": null,
+      "summary": {
+        "textDirection": "USER_LOCALE",
+        "text": "",
+        "attributesV2": [],
+        "accessibilityTextAttributesV2": [],
+        "accessibilityText": null,
+        "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
+        "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+      },
+      "addEntityToSearchHistory": true,
+      "actorNavigationUrl": null,
+      "secondarySubtitle": {
+        "textDirection": "USER_LOCALE",
+        "text": "93,765 students and alumni on LinkedIn",
+        "attributesV2": [],
+        "accessibilityTextAttributesV2": [],
+        "accessibilityText": null,
+        "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
+        "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+      },
+      "navigationUrl": "https://www.linkedin.com/company/unibme-official/",
+      "entityEmbeddedObject": null,
+      "unreadIndicatorDetails": null,
+      "$recipeTypes": ["com.linkedin.cf4b25c18907ea8eafe915c8bfa24109"],
+      "target": null,
+      "$type": "com.linkedin.voyager.dash.search.EntityResultViewModel",
+      "actorTrackingUrn": null,
+      "navigationContext": {
+        "openExternally": false,
+        "$recipeTypes": ["com.linkedin.55ee9afd4182671fe7e271f615659525"],
+        "url": "https://www.linkedin.com/company/unibme-official/",
+        "$type": "com.linkedin.voyager.dash.search.NavigationContext"
+      }
+    },
+    {
+      "template": "UNIVERSAL",
+      "actorNavigationContext": null,
+      "trackingUrn": "urn:li:organization:15099126",
+      "controlName": null,
+      "interstitialComponent": null,
+      "primaryActions": [],
+      "entityCustomTrackingInfo": null,
+      "title": {
+        "textDirection": "USER_LOCALE",
+        "text": "Faculty of Engineering and Information Technology -University of Pécs",
+        "attributesV2": [],
+        "accessibilityTextAttributesV2": [],
+        "accessibilityText": null,
+        "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
+        "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+      },
+      "overflowActions": [],
+      "*lazyLoadedActions": "urn:li:fsd_lazyLoadedActions:(urn:li:fsd_company:15099126,COMPANIES,SEARCH_SRP)",
+      "searchActionType": null,
+      "actorInsights": [],
+      "insightsResolutionResults": [],
+      "badgeIcon": null,
+      "entityUrn": "urn:li:fsd_entityResultViewModel:(urn:li:fsd_company:15099126,SEARCH_SRP,DEFAULT)",
+      "showAdditionalCluster": false,
+      "ringStatus": null,
+      "primarySubtitle": {
+        "textDirection": "USER_LOCALE",
+        "text": "Pécs, Baranya",
+        "attributesV2": [],
+        "accessibilityTextAttributesV2": [],
+        "accessibilityText": null,
+        "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
+        "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+      },
+      "badgeText": null,
+      "summary": {
+        "textDirection": "USER_LOCALE",
+        "text": "Plan your future with us, study at UP FEIT!",
+        "attributesV2": [],
+        "accessibilityTextAttributesV2": [],
+        "accessibilityText": null,
+        "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
+        "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+      },
+      "addEntityToSearchHistory": true,
+      "actorNavigationUrl": null,
+      "secondarySubtitle": {
+        "textDirection": "USER_LOCALE",
+        "text": "4,026 students and alumni on LinkedIn",
+        "attributesV2": [],
+        "accessibilityTextAttributesV2": [],
+        "accessibilityText": null,
+        "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
+        "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+      },
+      "navigationUrl": "https://www.linkedin.com/company/ptemik/",
+      "entityEmbeddedObject": null,
+      "unreadIndicatorDetails": null,
+      "$recipeTypes": ["com.linkedin.cf4b25c18907ea8eafe915c8bfa24109"],
+      "target": null,
+      "$type": "com.linkedin.voyager.dash.search.EntityResultViewModel",
+      "actorTrackingUrn": null,
+      "navigationContext": {
+        "openExternally": false,
+        "$recipeTypes": ["com.linkedin.55ee9afd4182671fe7e271f615659525"],
+        "url": "https://www.linkedin.com/company/ptemik/",
+        "$type": "com.linkedin.voyager.dash.search.NavigationContext"
+      }
+    },
+    {
+      "template": "UNIVERSAL",
+      "actorNavigationContext": null,
+      "trackingUrn": "urn:li:organization:241123",
+      "controlName": null,
+      "interstitialComponent": null,
+      "primaryActions": [],
+      "entityCustomTrackingInfo": null,
+      "title": {
+        "textDirection": "USER_LOCALE",
+        "text": "MOME Budapest",
+        "attributesV2": [],
+        "accessibilityTextAttributesV2": [],
+        "accessibilityText": null,
+        "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
+        "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+      },
+      "overflowActions": [],
+      "*lazyLoadedActions": "urn:li:fsd_lazyLoadedActions:(urn:li:fsd_company:241123,COMPANIES,SEARCH_SRP)",
+      "searchActionType": null,
+      "actorInsights": [],
+      "insightsResolutionResults": [],
+      "badgeIcon": null,
+      "entityUrn": "urn:li:fsd_entityResultViewModel:(urn:li:fsd_company:241123,SEARCH_SRP,DEFAULT)",
+      "showAdditionalCluster": false,
+      "ringStatus": null,
+      "primarySubtitle": null,
+      "badgeText": null,
+      "summary": {
+        "textDirection": "USER_LOCALE",
+        "text": "A community of designers, artists & innovators inspired by László Moholy-Nagy working to tackle global challenges.",
+        "attributesV2": [
+          {
+            "start": 12,
+            "length": 2,
+            "detailData": {
+              "jobPostingName": null,
+              "hyperlink": null,
+              "profileFamiliarName": null,
+              "color": null,
+              "companyName": null,
+              "icon": null,
+              "epoch": null,
+              "systemImage": null,
+              "textLink": null,
+              "listItemStyle": null,
+              "groupName": null,
+              "hyperlinkOpenExternally": null,
+              "listStyle": null,
+              "profileFullName": null,
+              "stringFieldReference": null,
+              "learningCourseName": null,
+              "profileMention": null,
+              "style": "BOLD",
+              "schoolName": null,
+              "hashtag": null
+            },
+            "$recipeTypes": ["com.linkedin.b8a09c2c7547138a1c3aebdda8a94e12"],
+            "$type": "com.linkedin.voyager.dash.common.text.TextAttribute"
+          }
+        ],
+        "accessibilityTextAttributesV2": [],
+        "accessibilityText": null,
+        "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
+        "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+      },
+      "addEntityToSearchHistory": true,
+      "actorNavigationUrl": null,
+      "secondarySubtitle": {
+        "textDirection": "USER_LOCALE",
+        "text": "3,673 students and alumni on LinkedIn",
+        "attributesV2": [],
+        "accessibilityTextAttributesV2": [],
+        "accessibilityText": null,
+        "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
+        "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+      },
+      "navigationUrl": "https://www.linkedin.com/company/mome-budapest/",
+      "entityEmbeddedObject": null,
+      "unreadIndicatorDetails": null,
+      "$recipeTypes": ["com.linkedin.cf4b25c18907ea8eafe915c8bfa24109"],
+      "target": null,
+      "$type": "com.linkedin.voyager.dash.search.EntityResultViewModel",
+      "actorTrackingUrn": null,
+      "navigationContext": {
+        "openExternally": false,
+        "$recipeTypes": ["com.linkedin.55ee9afd4182671fe7e271f615659525"],
+        "url": "https://www.linkedin.com/company/mome-budapest/",
+        "$type": "com.linkedin.voyager.dash.search.NavigationContext"
+      }
+    },
+    {
+      "template": "UNIVERSAL",
+      "actorNavigationContext": null,
+      "trackingUrn": "urn:li:organization:25333",
+      "controlName": null,
+      "interstitialComponent": null,
+      "primaryActions": [],
+      "entityCustomTrackingInfo": null,
+      "title": {
+        "textDirection": "USER_LOCALE",
+        "text": "CEU Executive MBA",
+        "attributesV2": [],
+        "accessibilityTextAttributesV2": [],
+        "accessibilityText": null,
+        "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
+        "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+      },
+      "overflowActions": [],
+      "*lazyLoadedActions": "urn:li:fsd_lazyLoadedActions:(urn:li:fsd_company:25333,COMPANIES,SEARCH_SRP)",
+      "searchActionType": null,
+      "actorInsights": [],
+      "insightsResolutionResults": [],
+      "badgeIcon": null,
+      "entityUrn": "urn:li:fsd_entityResultViewModel:(urn:li:fsd_company:25333,SEARCH_SRP,DEFAULT)",
+      "showAdditionalCluster": false,
+      "ringStatus": null,
+      "primarySubtitle": {
+        "textDirection": "USER_LOCALE",
+        "text": "Vienna, Wien",
+        "attributesV2": [],
+        "accessibilityTextAttributesV2": [],
+        "accessibilityText": null,
+        "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
+        "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+      },
+      "badgeText": null,
+      "summary": {
+        "textDirection": "USER_LOCALE",
+        "text": "The EMBA for the Open World: Central European University’s tailored EMBA for managers with strategic ambition.",
+        "attributesV2": [],
+        "accessibilityTextAttributesV2": [],
+        "accessibilityText": null,
+        "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
+        "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+      },
+      "addEntityToSearchHistory": true,
+      "actorNavigationUrl": null,
+      "secondarySubtitle": {
+        "textDirection": "USER_LOCALE",
+        "text": "421 students and alumni on LinkedIn",
+        "attributesV2": [],
+        "accessibilityTextAttributesV2": [],
+        "accessibilityText": null,
+        "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
+        "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+      },
+      "navigationUrl": "https://www.linkedin.com/company/ceu-business-school/",
+      "entityEmbeddedObject": null,
+      "unreadIndicatorDetails": null,
+      "$recipeTypes": ["com.linkedin.cf4b25c18907ea8eafe915c8bfa24109"],
+      "target": null,
+      "$type": "com.linkedin.voyager.dash.search.EntityResultViewModel",
+      "actorTrackingUrn": null,
+      "navigationContext": {
+        "openExternally": false,
+        "$recipeTypes": ["com.linkedin.55ee9afd4182671fe7e271f615659525"],
+        "url": "https://www.linkedin.com/company/ceu-business-school/",
+        "$type": "com.linkedin.voyager.dash.search.NavigationContext"
+      }
+    },
+    {
+      "template": "UNIVERSAL",
+      "actorNavigationContext": null,
+      "trackingUrn": "urn:li:organization:3575087",
+      "controlName": null,
+      "interstitialComponent": null,
+      "primaryActions": [],
+      "entityCustomTrackingInfo": null,
+      "title": {
+        "textDirection": "USER_LOCALE",
+        "text": "Department of Urban Planning and Design, Budapest University of Technology and Economics",
+        "attributesV2": [],
+        "accessibilityTextAttributesV2": [],
+        "accessibilityText": null,
+        "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
+        "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+      },
+      "overflowActions": [],
+      "*lazyLoadedActions": "urn:li:fsd_lazyLoadedActions:(urn:li:fsd_company:3575087,COMPANIES,SEARCH_SRP)",
+      "searchActionType": null,
+      "actorInsights": [],
+      "insightsResolutionResults": [],
+      "badgeIcon": null,
+      "entityUrn": "urn:li:fsd_entityResultViewModel:(urn:li:fsd_company:3575087,SEARCH_SRP,DEFAULT)",
+      "showAdditionalCluster": false,
+      "ringStatus": null,
+      "primarySubtitle": {
+        "textDirection": "USER_LOCALE",
+        "text": "Budapest",
+        "attributesV2": [],
+        "accessibilityTextAttributesV2": [],
+        "accessibilityText": null,
+        "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
+        "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+      },
+      "badgeText": null,
+      "summary": {
+        "textDirection": "USER_LOCALE",
+        "text": "Interdisciplinary vision",
+        "attributesV2": [],
+        "accessibilityTextAttributesV2": [],
+        "accessibilityText": null,
+        "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
+        "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+      },
+      "addEntityToSearchHistory": true,
+      "actorNavigationUrl": null,
+      "secondarySubtitle": {
+        "textDirection": "USER_LOCALE",
+        "text": "44 students and alumni on LinkedIn",
+        "attributesV2": [],
+        "accessibilityTextAttributesV2": [],
+        "accessibilityText": null,
+        "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
+        "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+      },
+      "navigationUrl": "https://www.linkedin.com/company/department-of-urban-planning-and-design-budapest-university-of-technology-and-economics/",
+      "entityEmbeddedObject": null,
+      "unreadIndicatorDetails": null,
+      "$recipeTypes": ["com.linkedin.cf4b25c18907ea8eafe915c8bfa24109"],
+      "target": null,
+      "$type": "com.linkedin.voyager.dash.search.EntityResultViewModel",
+      "actorTrackingUrn": null,
+      "navigationContext": {
+        "openExternally": false,
+        "$recipeTypes": ["com.linkedin.55ee9afd4182671fe7e271f615659525"],
+        "url": "https://www.linkedin.com/company/department-of-urban-planning-and-design-budapest-university-of-technology-and-economics/",
+        "$type": "com.linkedin.voyager.dash.search.NavigationContext"
+      }
+    },
+    {
+      "entityUrn": "urn:li:fsd_feedbackCard:SRP_FEEDBACK_SCHOOLS",
+      "$recipeTypes": ["com.linkedin.2d3e7b4bccc9c85f103b0dc9fdfd3669"],
+      "$type": "com.linkedin.voyager.dash.search.FeedbackCard"
+    },
+    {
+      "entityUrn": "urn:li:fsd_lazyLoadedActions:(urn:li:fsd_company:15099126,COMPANIES,SEARCH_SRP)",
+      "$recipeTypes": ["com.linkedin.92ece182782ae4412e712925cd97f9fe"],
+      "$type": "com.linkedin.voyager.dash.search.LazyLoadedActions"
+    },
+    {
+      "entityUrn": "urn:li:fsd_lazyLoadedActions:(urn:li:fsd_company:3575087,COMPANIES,SEARCH_SRP)",
+      "$recipeTypes": ["com.linkedin.92ece182782ae4412e712925cd97f9fe"],
+      "$type": "com.linkedin.voyager.dash.search.LazyLoadedActions"
+    },
+    {
+      "entityUrn": "urn:li:fsd_lazyLoadedActions:(urn:li:fsd_company:241123,COMPANIES,SEARCH_SRP)",
+      "$recipeTypes": ["com.linkedin.92ece182782ae4412e712925cd97f9fe"],
+      "$type": "com.linkedin.voyager.dash.search.LazyLoadedActions"
+    },
+    {
+      "entityUrn": "urn:li:fsd_lazyLoadedActions:(urn:li:fsd_company:15978,COMPANIES,SEARCH_SRP)",
+      "$recipeTypes": ["com.linkedin.92ece182782ae4412e712925cd97f9fe"],
+      "$type": "com.linkedin.voyager.dash.search.LazyLoadedActions"
+    },
+    {
+      "entityUrn": "urn:li:fsd_lazyLoadedActions:(urn:li:fsd_company:25333,COMPANIES,SEARCH_SRP)",
+      "$recipeTypes": ["com.linkedin.92ece182782ae4412e712925cd97f9fe"],
+      "$type": "com.linkedin.voyager.dash.search.LazyLoadedActions"
+    }
+  ]
+}
