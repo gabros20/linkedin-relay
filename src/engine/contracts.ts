@@ -193,6 +193,16 @@ export const CONTRACTS: Record<string, OperationContract> = {
     capturedAt: '2026-10-14',
   },
 
+  // One event in full, captured 2026-10-14; see engine/events.ts.
+  professionalEvent: {
+    name: 'professionalEvent',
+    transport: 'voyager-graphql',
+    path: `${VOYAGER}/graphql`,
+    queryId: 'voyagerEventsDashProfessionalEvents.210672c5faddd345ead9663d93cd2241',
+    provenance: 'verified',
+    capturedAt: '2026-10-14',
+  },
+
   jobCards: {
     name: 'jobCards',
     transport: 'voyager-restli',

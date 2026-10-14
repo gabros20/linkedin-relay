@@ -10,6 +10,7 @@ import {
 import { runCacheStatus, runLocal, runPurge, runSourceRead } from './commands/cache.ts';
 import type { ConfirmDeps } from './commands/confirm.ts';
 import { runDelete } from './commands/delete.ts';
+import { runEvent, runEvents } from './commands/events.ts';
 import { terminalDeps } from './commands/gate.ts';
 import { type JobsRequest, runJob, runJobFilters, runJobs } from './commands/jobs.ts';
 import {
@@ -284,6 +285,22 @@ function search(args: ParsedArgs, filtersOnly: boolean): Promise<Envelope> | Env
     : runFind(kind as SearchKindName, findRequest(args), opts);
 }
 
+/** `events`, `event`, `network`: the events page, events in full, and the owner's own network. */
+function mine(command: string, args: ParsedArgs): Promise<Envelope> {
+  if (command === 'events')
+    return runEvents(
+      { limit: num(args, 'limit') ?? 25, ...(bool(args, 'premium') ? { premium: true } : {}) },
+      output(args),
+    );
+  if (command === 'event') return runEvent(args.positionals, output(args));
+  const start = num(args, 'start');
+  return runNetwork(
+    args.positionals[0],
+    { limit: num(args, 'limit') ?? 50, ...(start !== undefined ? { start } : {}) },
+    output(args),
+  );
+}
+
 /** `inbox`, `messages`, `draft`, `drafts`: reading messages and drafting replies, never sending. */
 function messaging(command: string, args: ParsedArgs): Promise<Envelope> | Envelope {
   if (command === 'inbox')
@@ -442,15 +459,10 @@ export async function dispatch(argv: string[], now: number): Promise<Envelope> {
       return runPeople(peopleRequest(args), output(args));
     case 'people-filters':
       return runPeopleFilters(peopleRequest(args), output(args));
+    case 'events':
+    case 'event':
     case 'network':
-      return runNetwork(
-        args.positionals[0],
-        {
-          limit: num(args, 'limit') ?? 50,
-          ...(num(args, 'start') !== undefined ? { start: num(args, 'start') as number } : {}),
-        },
-        output(args),
-      );
+      return mine(command, args);
     case 'inbox':
     case 'messages':
     case 'draft':

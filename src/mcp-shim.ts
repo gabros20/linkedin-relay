@@ -20,6 +20,7 @@ import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import { z } from 'zod';
 import { runCacheStatus, runLocal, runSourceRead } from './commands/cache.ts';
+import { runEvent, runEvents } from './commands/events.ts';
 import { type JobsRequest, runJob, runJobFilters, runJobs } from './commands/jobs.ts';
 import {
   runFeed,
@@ -509,6 +510,41 @@ export function buildServer(): McpServer {
       `skill is the CLI-only \`lnrelay skill\`, a write the user approves. ${NO_RETRY}`,
     {},
     async () => reply(await runSkills()),
+  );
+
+  server.tool(
+    'events',
+    "The events page's own lists: events LinkedIn recommends to the user, and its Premium " +
+      "LinkedIn Live events. Rows: id, name, when (as shown, in the user's language), organizer, " +
+      'attendees, premium, url. 1 page call. To find events by topic use `search` with kind ' +
+      `events; to read one in full use \`event\`. ${NO_RETRY}`,
+    {
+      premium: z.boolean().optional().describe('only the Premium LinkedIn Live events'),
+      limit: z.number().int().min(1).max(100).optional().describe('default 25'),
+      compact: z.boolean().optional(),
+    },
+    async ({ premium, limit, compact }) =>
+      reply(
+        await runEvents(
+          { limit: limit ?? 25, ...(premium === true ? { premium: true } : {}) },
+          compact === true ? { compact: true } : {},
+        ),
+      ),
+  );
+
+  server.tool(
+    'event',
+    'Events in full, by id or URL: name, when (as shown), start/end (ISO), timeZone, state ' +
+      '(FUTURE, ONGOING, PAST), cancelled, online, place (city, region, country), site (its own ' +
+      'registration page), attendees, organizer {name, kind, url}, private, premium, you (the ' +
+      "user's own response, when they gave one), description. 1 page call per event. " +
+      NO_RETRY,
+    {
+      event: z
+        .union([z.string().min(1), z.array(z.string().min(1)).min(1)])
+        .describe('event id or URL, or a list'),
+    },
+    async ({ event }) => reply(await runEvent(Array.isArray(event) ? event : [event])),
   );
 
   server.tool(

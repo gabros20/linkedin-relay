@@ -265,6 +265,28 @@ export const COMMANDS: CommandDef[] = [
     implemented: true,
   },
   {
+    name: 'events',
+    cost: '1 page call',
+    summary:
+      "The events page's own lists: events recommended for you, and the Premium LinkedIn Live " +
+      'events. Searching events by keyword is `search events`.',
+    usage: 'lnrelay events [--premium] [--limit N] [--compact | --fields a,b,c]',
+    audience: ['cli', 'mcp'],
+    risk: 'read',
+    implemented: true,
+  },
+  {
+    name: 'event',
+    cost: '1 page call per event',
+    summary:
+      'Events in full: when (both ends, time zone), upcoming or past, online or where, the ' +
+      "event's own site, attendees, organiser, description.",
+    usage: 'lnrelay event <id|url> [<id|url> ...] [--compact | --fields a,b,c]',
+    audience: ['cli', 'mcp'],
+    risk: 'read',
+    implemented: true,
+  },
+  {
     name: 'network',
     cost: '1 page call per 50 rows; the counts are 7 calls',
     summary:

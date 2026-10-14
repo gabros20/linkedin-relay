@@ -348,6 +348,23 @@ experience
 Each role on their profile with its `positionId` and title. The id is what `lnrelay role edit` and
 `lnrelay role remove` take.
 
+### `events` / `event` — the events page, and events in full.
+```
+events [premium] [limit:N] [compact]            event event:"<id | /events/ URL>" | ["<id>", …]
+```
+CLI: `lnrelay events [--premium] [--compact]`, `lnrelay event <id|url> [...]`. Three ways in:
+- **By topic:** `search kind:events keywords:"…"` (50 a call; rows: name, when, where • organiser).
+  It returns past events too and takes no date filter: check `state` with `event` (`FUTURE` or
+  `ONGOING`) before recommending one.
+- **What LinkedIn recommends:** `events` — the events page's own list, plus its Premium LinkedIn Live
+  events (`premium: true`). One call. Rows: `id`, `name`, `when`, `organizer`, `attendees`, `url`.
+- **One in full:** `event` — `when`, `start`/`end` (ISO), `timeZone`, `state` (`FUTURE`, `ONGOING`,
+  `PAST`), `cancelled`, `online`, `place` (city, region, country), `site` (its own registration
+  page), `attendees`, `organizer`, `description`, and `you` when the user has responded. One call each.
+
+Times shown (`when`) are as LinkedIn displays them to the user, in their language and time zone; use
+`start`/`end` for anything computed. LinkedIn's "not interested" default is not reported as a reply.
+
 ### `network` — the user's My Network. Read only.
 ```
 network [list:connections|following|followers|pages|events|groups|invitations] [limit:N] [start:N] [compact]

@@ -1,0 +1,1629 @@
+{
+  "data": {
+    "data": {
+      "eventsDashProfessionalEventsByEventIdentifier": {
+        "*elements": ["urn:li:fsd_professionalEvent:7460711926000517123"],
+        "$recipeTypes": ["com.linkedin.121d15ba048d84bcf8aefa3b1f05207d"],
+        "$type": "com.linkedin.restli.common.CollectionResponse"
+      },
+      "$recipeTypes": ["com.linkedin.a83cae267006bd92f6b26ffd87cce5c5"],
+      "$type": "com.linkedin.a83cae267006bd92f6b26ffd87cce5c5"
+    }
+  },
+  "included": [
+    {
+      "professionalEventsTopicUrn": "urn:li-realtime:professionalEventsTopic:urn:li:event:7460711926000517123",
+      "enterEventCtaText": null,
+      "leadGenForm": null,
+      "speakerInvitation": null,
+      "mediaUrnForUgcPostCreation": null,
+      "venueDetails": null,
+      "viewerCoHostStatus": null,
+      "createdAt": 1778772336574,
+      "speakers": [],
+      "timeRange": {
+        "start": 1791990000000,
+        "end": 1792098000000,
+        "$recipeTypes": ["com.linkedin.d4c54ef939aa7ded7323e34d2e286164"],
+        "$type": "com.linkedin.common.TimeRange"
+      },
+      "lifecycleState": "FUTURE",
+      "coHosts": [],
+      "ticketPrice": null,
+      "timeZone": "AMERICA_CHICAGO",
+      "boostPostEligibility": null,
+      "fallbackEventDuration": null,
+      "endDateTime": {
+        "dateOn": {
+          "month": 10,
+          "year": 2026,
+          "day": 15,
+          "$recipeTypes": ["com.linkedin.134415a895895ed0aa34e901b0bad346"],
+          "$type": "com.linkedin.common.Date"
+        },
+        "$recipeTypes": ["com.linkedin.c735ff09af7a243ce2d356680e72c0f1"],
+        "timeOfDay": {
+          "hour": 16,
+          "$recipeTypes": ["com.linkedin.ebd172e721bf6f76c23b207bfed0ff98"],
+          "minute": 0,
+          "second": 0,
+          "$type": "com.linkedin.common.TimeOfDay"
+        },
+        "$type": "com.linkedin.voyager.dash.common.DateTime"
+      },
+      "viewerSpeakerStatus": null,
+      "organizerInviteOnly": false,
+      "*update": "urn:li:fsd_update:(urn:li:activity:7460711928449921025,EVENT_FEED,EMPTY,DEFAULT,false)",
+      "name": "Chemical Risk Expo",
+      "cancelled": false,
+      "backgroundImageUrn": null,
+      "eligibleForCashOut": false,
+      "boostForecast": null,
+      "preDashEntityUrn": "urn:li:fs_professionalEvent:7460711926000517123",
+      "defaultShareText": null,
+      "backgroundImage": {
+        "attributes": [
+          {
+            "scalingType": null,
+            "detailData": {
+              "profilePictureWithoutFrame": null,
+              "profilePictureWithRingStatus": null,
+              "companyLogo": null,
+              "icon": null,
+              "systemImage": null,
+              "nonEntityGroupLogo": null,
+              "vectorImage": {
+                "digitalmediaAsset": "urn:li:digitalmediaAsset:D4E1EAQHpGpHNwPYR1Q",
+                "attribution": null,
+                "isStandardDynamicRangeEnforced": false,
+                "c2paManifestData": null,
+                "$recipeTypes": ["com.linkedin.dd87fb811fd73e7ace422877c128c60f"],
+                "artifacts": [
+                  {
+                    "width": 1280,
+                    "$recipeTypes": ["com.linkedin.298fff6350c711b3f8c8e3bd285f8cd4"],
+                    "fileIdentifyingUrlPathSegment": "720_1280/B4EZ4nF8xSKkAQ-/0/1778772335455?e=1792594800&v=beta&t=e5UaDTtmJl0S-Vtp3OSXoAwJTocvDwjsAPfkPvyHrMw",
+                    "expiresAt": 1792594800000,
+                    "height": 720,
+                    "$type": "com.linkedin.common.VectorArtifact"
+                  },
+                  {
+                    "width": 480,
+                    "$recipeTypes": ["com.linkedin.298fff6350c711b3f8c8e3bd285f8cd4"],
+                    "fileIdentifyingUrlPathSegment": "270_480/B4EZ4nF8xSKkAI-/0/1778772335455?e=1792594800&v=beta&t=3FXLcpDgNL-dcE7mzE8DY1zwwXfy3xvW21Fj9AaU8cw",
+                    "expiresAt": 1792594800000,
+                    "height": 270,
+                    "$type": "com.linkedin.common.VectorArtifact"
+                  }
+                ],
+                "rootUrl": "https://media.licdn.com/dms/image/v2/D4E1EAQHpGpHNwPYR1Q/event-background-image-crop_",
+                "$type": "com.linkedin.common.VectorImage"
+              },
+              "nonEntityProfessionalEventLogo": null,
+              "profilePicture": null,
+              "imageUrl": null,
+              "professionalEventLogo": null,
+              "nonEntityCompanyLogo": null,
+              "nonEntitySchoolLogo": null,
+              "groupLogo": null,
+              "schoolLogo": null,
+              "ghostImage": null,
+              "nonEntityProfilePicture": null
+            },
+            "tintColor": null,
+            "$recipeTypes": ["com.linkedin.f70a1a95f7a1c4035ac036705c3e03e9"],
+            "tapTargets": [],
+            "displayAspectRatio": null,
+            "$type": "com.linkedin.voyager.dash.common.image.ImageAttribute"
+          }
+        ],
+        "editableAccessibilityText": false,
+        "actionTarget": null,
+        "accessibilityTextAttributes": [],
+        "totalCount": null,
+        "accessibilityText": null,
+        "$recipeTypes": ["com.linkedin.f6e542101980d311038235187b7ffcb6"],
+        "$type": "com.linkedin.voyager.dash.common.image.ImageViewModel"
+      },
+      "premiumEvent": false,
+      "deletable": false,
+      "description": {
+        "textDirection": "USER_LOCALE",
+        "text": "Chemical Risk Expo is a dedicated industrial risk platform bringing together safety leaders, EHS/PSM professionals, emergency response and mutual aid networks, ports and terminals, environmental remediation specialists, and public-sector stakeholders.\n\nThe focus is on reducing risk, preventing escalation, and accelerating recovery when incidents impact chemical and petrochemical infrastructure.\n\nPart of the Natural Disasters Expo Series, the event provides a focused environment to explore the challenges associated with chemical incidents and the strategies used to mitigate and manage them. Attendees will also gain access to a wider programme featuring 30+ keynote speakers, 6 roundtable discussions, extensive seminar content, and more than 300 exhibitors across the series.\n\nThe event explores resilience, risk management, and operational continuity for chemical plants, refineries, terminals, tank farms, pipelines, and hazmat logistics operating in regions exposed to extreme weather and industrial incidents.\n\nChemical Risk Expo- 14-15 October 2026\nGeorge R. Brown Convention Center, Houston, TX\n",
+        "attributesV2": [],
+        "accessibilityTextAttributesV2": [],
+        "accessibilityText": null,
+        "$recipeTypes": ["com.linkedin.2ac10d298fc714e5a1168c129ecbfa36"],
+        "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+      },
+      "shouldRedirectDueToEventNotValid": false,
+      "*viewerStatus": "urn:li:fsd_scheduledContentViewerState:(urn:li:fsd_professionalEvent:7460711926000517123,urn:li:fsd_profile:ACoAATESTME,urn:li:sponsoredCreative:-1)",
+      "leadGenFormTemplate": null,
+      "streamingUrl": null,
+      "showLeaveEvent": false,
+      "attendeeVisibility": true,
+      "viewerHost": false,
+      "coHostInvitation": null,
+      "entityUrn": "urn:li:fsd_professionalEvent:7460711926000517123",
+      "leaveConfirmationText": null,
+      "socialProof": {
+        "image": null,
+        "text": {
+          "textDirection": "USER_LOCALE",
+          "text": "12 attendees",
+          "attributesV2": [],
+          "accessibilityTextAttributesV2": [],
+          "accessibilityText": null,
+          "$recipeTypes": ["com.linkedin.2ac10d298fc714e5a1168c129ecbfa36"],
+          "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+        },
+        "$recipeTypes": ["com.linkedin.def1f72b2d67e0e100a235d13280e40d"],
+        "$type": "com.linkedin.voyager.dash.common.ux.InsightViewModel"
+      },
+      "annotation": null,
+      "externalUrl": "https://chemicalriskexpo.com/",
+      "vanityName": "chemicalriskexpo7460711926000517123",
+      "logoImageResolutionResult": null,
+      "address": {
+        "country": "US",
+        "geographicArea": "Texas",
+        "line4": null,
+        "city": "Houston",
+        "postalCode": null,
+        "line3": null,
+        "line2": null,
+        "$recipeTypes": ["com.linkedin.6ad5e4b7eaa2c3eb5f43bb6b33f44e61"],
+        "line1": null,
+        "$type": "com.linkedin.common.Address"
+      },
+      "leadSubmissionRequired": false,
+      "displayEventTime": "Oct 14, 2026, 10:00 AM\nOct 15, 2026, 4:00 PM CDT",
+      "privateEvent": false,
+      "broadcastTool": null,
+      "leadGenPrivacyPolicyUrl": null,
+      "$recipeTypes": ["com.linkedin.0fedf6318112029056e36dbee63a4d2f"],
+      "$type": "com.linkedin.voyager.dash.events.ProfessionalEvent",
+      "industryV2": [],
+      "startDateTime": {
+        "dateOn": {
+          "month": 10,
+          "year": 2026,
+          "day": 14,
+          "$recipeTypes": ["com.linkedin.134415a895895ed0aa34e901b0bad346"],
+          "$type": "com.linkedin.common.Date"
+        },
+        "$recipeTypes": ["com.linkedin.c735ff09af7a243ce2d356680e72c0f1"],
+        "timeOfDay": {
+          "hour": 10,
+          "$recipeTypes": ["com.linkedin.ebd172e721bf6f76c23b207bfed0ff98"],
+          "minute": 0,
+          "second": 0,
+          "$type": "com.linkedin.common.TimeOfDay"
+        },
+        "$type": "com.linkedin.voyager.dash.common.DateTime"
+      },
+      "canInvite": false,
+      "ugcPostUrn": "urn:li:ugcPost:7460711927762173953",
+      "organizer": {
+        "organizingProfileUrn": null,
+        "*organizingCompanyUrn": "urn:li:fsd_company:112628621"
+      }
+    },
+    {
+      "followeeCount": null,
+      "entityUrn": "urn:li:fsd_followingState:urn:li:fsd_company:112628621",
+      "preDashFollowingInfoUrn": "urn:li:fs_followingInfo:urn:li:company:112628621",
+      "following": false,
+      "trackingUrn": "urn:li:company:112628621",
+      "followingType": "DEFAULT",
+      "followerCount": 184,
+      "$recipeTypes": ["com.linkedin.fd411dffc8042262315ff293bd1feb3d"],
+      "$type": "com.linkedin.voyager.dash.feed.FollowingState"
+    },
+    {
+      "reactionByOrganizationActor": null,
+      "numLikes": 7,
+      "$recipeTypes": ["com.linkedin.267f4b12a2ffddf3567faa30017aefb1"],
+      "liked": false,
+      "$type": "com.linkedin.voyager.dash.feed.SocialActivityCounts",
+      "urn": "urn:li:ugcPost:7460711927762173953",
+      "numComments": 0,
+      "highlightedReactorName": null,
+      "reactionTypeCounts": [
+        {
+          "count": 7,
+          "reactionType": "LIKE",
+          "$recipeTypes": ["com.linkedin.2ac69149dfb6095c359f216b36d309db"],
+          "$type": "com.linkedin.voyager.dash.feed.social.ReactionTypeCount"
+        }
+      ],
+      "entityUrn": "urn:li:fsd_socialActivityCounts:urn:li:ugcPost:7460711927762173953",
+      "numShares": 1,
+      "numImpressions": null,
+      "reacted": null,
+      "preDashEntityUrn": "urn:li:fs_socialActivityCounts:urn:li:ugcPost:7460711927762173953"
+    },
+    {
+      "metadata": {
+        "actionsPosition": "ACTOR_COMPONENT",
+        "shareMediaUrn": null,
+        "actionTriggerEnabled": false,
+        "coachSummaryText": null,
+        "shareAudience": "PUBLIC",
+        "legoTrackingToken": null,
+        "backendUrn": "urn:li:activity:7460711928449921025",
+        "coachSummaryUrn": null,
+        "$recipeTypes": ["com.linkedin.a90af85a950e7643d82e9451820de995"],
+        "trackingData": {
+          "sponsoredTracking": null,
+          "requestId": "no-request-id",
+          "backendUrn": null,
+          "$recipeTypes": ["com.linkedin.711f7cf578134908f879995ccd52594d"],
+          "trackingId": "DPyHgYH7Q0yq0gj6ybawZg==",
+          "$type": "com.linkedin.voyager.dash.feed.metadata.TrackingData"
+        },
+        "$type": "com.linkedin.voyager.dash.feed.metadata.UpdateMetadata",
+        "*updateActions": "urn:li:fsd_updateActions:(urn:li:activity:7460711928449921025,EVENT_FEED,EMPTY,urn:li:reason:-,urn:li:adCreative:-)",
+        "detailPageType": "FEED_DETAIL",
+        "shouldForceRefetchFromNetwork": false,
+        "shareUrn": "urn:li:ugcPost:7460711927762173953",
+        "excludedFromSeen": false,
+        "coachAction": null,
+        "rootShare": true,
+        "hidePostAction": null,
+        "group": null
+      },
+      "socialContent": {
+        "updateSaveState": null,
+        "hideCommentsCount": false,
+        "hideReactionsCount": false,
+        "hideSocialActivityCounts": false,
+        "hideShareAction": false,
+        "hideSendAction": false,
+        "$recipeTypes": ["com.linkedin.a6af418da521457130affb472fbba7e8"],
+        "hideRepostsCount": false,
+        "$type": "com.linkedin.voyager.dash.social.SocialContent",
+        "hideViewsCount": false,
+        "trustInterventionBanner": null,
+        "hideReactAction": false,
+        "coachAction": null,
+        "hideCommentAction": false,
+        "shareUrl": "https://www.linkedin.com/posts/chemical-risk-expo_chemical-risk-expo-brings-together-facility-activity-7460711928449921025-I4q3?utm_source=social_share_send&utm_medium=member_desktop_web&rcm=ACoAATESTME",
+        "showContributionExperience": false
+      },
+      "showSocialDetail": true,
+      "footer": null,
+      "carouselContent": null,
+      "content": {
+        "toggleButtonComponent": null,
+        "feedDividerComponent": null,
+        "articleComponent": null,
+        "eventComponent": {
+          "ctaButton": null,
+          "description": {
+            "textDirection": "USER_LOCALE",
+            "text": "  Houston, US",
+            "attributesV2": [
+              {
+                "start": 0,
+                "length": 1,
+                "detailData": {
+                  "jobPostingName": null,
+                  "hyperlink": null,
+                  "profileFamiliarName": null,
+                  "color": null,
+                  "companyName": null,
+                  "icon": "IC_MAP_MARKER_16DP",
+                  "epoch": null,
+                  "systemImage": null,
+                  "textLink": null,
+                  "listItemStyle": null,
+                  "groupName": null,
+                  "hyperlinkOpenExternally": null,
+                  "listStyle": null,
+                  "profileFullName": null,
+                  "stringFieldReference": null,
+                  "learningCourseName": null,
+                  "profileMention": null,
+                  "style": null,
+                  "schoolName": null,
+                  "hashtag": null
+                },
+                "$recipeTypes": ["com.linkedin.d1dd3a59671302f6c17e84a27fc5bf74"],
+                "$type": "com.linkedin.voyager.dash.common.text.TextAttribute"
+              }
+            ],
+            "accessibilityTextAttributesV2": [],
+            "accessibilityText": null,
+            "$recipeTypes": ["com.linkedin.2ac10d298fc714e5a1168c129ecbfa36"],
+            "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+          },
+          "banner": {
+            "attributes": [
+              {
+                "scalingType": "ASPECT_FIT",
+                "detailData": {
+                  "profilePictureWithoutFrame": null,
+                  "profilePictureWithRingStatus": null,
+                  "companyLogo": null,
+                  "icon": null,
+                  "systemImage": null,
+                  "nonEntityGroupLogo": null,
+                  "vectorImage": {
+                    "digitalmediaAsset": "urn:li:digitalmediaAsset:D4E1EAQHpGpHNwPYR1Q",
+                    "attribution": null,
+                    "isStandardDynamicRangeEnforced": false,
+                    "c2paManifestData": null,
+                    "$recipeTypes": ["com.linkedin.dd87fb811fd73e7ace422877c128c60f"],
+                    "artifacts": [
+                      {
+                        "width": 1280,
+                        "$recipeTypes": ["com.linkedin.298fff6350c711b3f8c8e3bd285f8cd4"],
+                        "fileIdentifyingUrlPathSegment": "720_1280/B4EZ4nF8xSKkAQ-/0/1778772335455?e=1792594800&v=beta&t=e5UaDTtmJl0S-Vtp3OSXoAwJTocvDwjsAPfkPvyHrMw",
+                        "expiresAt": 1792594800000,
+                        "height": 720,
+                        "$type": "com.linkedin.common.VectorArtifact"
+                      },
+                      {
+                        "width": 480,
+                        "$recipeTypes": ["com.linkedin.298fff6350c711b3f8c8e3bd285f8cd4"],
+                        "fileIdentifyingUrlPathSegment": "270_480/B4EZ4nF8xSKkAI-/0/1778772335455?e=1792594800&v=beta&t=3FXLcpDgNL-dcE7mzE8DY1zwwXfy3xvW21Fj9AaU8cw",
+                        "expiresAt": 1792594800000,
+                        "height": 270,
+                        "$type": "com.linkedin.common.VectorArtifact"
+                      }
+                    ],
+                    "rootUrl": "https://media.licdn.com/dms/image/v2/D4E1EAQHpGpHNwPYR1Q/event-background-image-crop_",
+                    "$type": "com.linkedin.common.VectorImage"
+                  },
+                  "nonEntityProfessionalEventLogo": null,
+                  "profilePicture": null,
+                  "imageUrl": null,
+                  "professionalEventLogo": null,
+                  "nonEntityCompanyLogo": null,
+                  "nonEntitySchoolLogo": null,
+                  "groupLogo": null,
+                  "schoolLogo": null,
+                  "ghostImage": null,
+                  "nonEntityProfilePicture": null
+                },
+                "tintColor": null,
+                "$recipeTypes": ["com.linkedin.f70a1a95f7a1c4035ac036705c3e03e9"],
+                "tapTargets": [],
+                "displayAspectRatio": 0.5625,
+                "$type": "com.linkedin.voyager.dash.common.image.ImageAttribute"
+              }
+            ],
+            "editableAccessibilityText": false,
+            "actionTarget": null,
+            "accessibilityTextAttributes": [],
+            "totalCount": null,
+            "accessibilityText": null,
+            "$recipeTypes": ["com.linkedin.f6e542101980d311038235187b7ffcb6"],
+            "$type": "com.linkedin.voyager.dash.common.image.ImageViewModel"
+          },
+          "title": {
+            "textDirection": "USER_LOCALE",
+            "text": "Chemical Risk Expo",
+            "attributesV2": [],
+            "accessibilityTextAttributesV2": [],
+            "accessibilityText": null,
+            "$recipeTypes": ["com.linkedin.2ac10d298fc714e5a1168c129ecbfa36"],
+            "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+          },
+          "$recipeTypes": ["com.linkedin.209e14bf173e4ec15dde608cfc553661"],
+          "titleContext": {
+            "textDirection": "USER_LOCALE",
+            "text": "Wed, Oct 14, 10:00 AM - Thu, Oct 15, 4:00 PM CDT",
+            "attributesV2": [],
+            "accessibilityTextAttributesV2": [],
+            "accessibilityText": null,
+            "$recipeTypes": ["com.linkedin.2ac10d298fc714e5a1168c129ecbfa36"],
+            "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+          },
+          "$type": "com.linkedin.voyager.dash.feed.component.event.EventComponent",
+          "subtitle": null,
+          "insightImage": null,
+          "navigationContext": {
+            "actionTarget": "https://www.linkedin.com/events/chemicalriskexpo7460711926000517123/",
+            "urlViewingBehavior": "DEFAULT",
+            "trackingActionType": "viewEvent",
+            "accessibilityText": "View event: Chemical Risk Expo",
+            "sponsoredUrlAttributes": null,
+            "$recipeTypes": ["com.linkedin.6ffbd9296dfab0377a818c00a429e35b"],
+            "$type": "com.linkedin.voyager.dash.feed.navigation.FeedNavigationContext"
+          },
+          "logo": null,
+          "shareUrl": null,
+          "insightText": null
+        },
+        "conversationsComponent": null,
+        "promoComponent": null,
+        "seeMoreComponent": null,
+        "reviewComponent": null,
+        "feedDiscoveryGridComponent": null,
+        "gentlePromptComponent": null,
+        "followPromptComponent": null,
+        "jobComponent": null,
+        "learningRecommendationComponent": null,
+        "miniUpdateContentComponent": null,
+        "buttonComponent": null,
+        "surveyComponent": null,
+        "actorComponent": null,
+        "celebrationComponent": null,
+        "documentComponent": null,
+        "creationStatusComponent": null,
+        "dynamicPollComponent": null,
+        "newsletterComponent": null,
+        "postCtaComponent": null,
+        "scheduledLiveContentComponent": null,
+        "entityComponent": null,
+        "externalVideoComponent": null,
+        "videoCarouselItemComponent": null,
+        "linkedInVideoComponent": null,
+        "textOverlayImageComponent": null,
+        "annotationComponent": null,
+        "detailedSurveyComponent": null,
+        "imageComponent": null,
+        "showcaseComponent": null,
+        "pollComponent": null,
+        "feedDiscoveryEntityComponent": null,
+        "promptComponent": null,
+        "contextualActionComponent": null,
+        "announcementComponent": null,
+        "commentaryComponent": null,
+        "miniUpdateCommentaryComponent": null,
+        "slideshowComponent": null,
+        "callToActionComponent": null
+      },
+      "attachment": null,
+      "detailHeader": null,
+      "entityUrn": "urn:li:fsd_update:(urn:li:activity:7460711928449921025,EVENT_FEED,EMPTY,DEFAULT,false)",
+      "leadGenFormContent": null,
+      "annotation": null,
+      "contextualHeader": null,
+      "resharedUpdate": null,
+      "interstitial": null,
+      "aggregatedContent": null,
+      "contextualDescription": null,
+      "$recipeTypes": ["com.linkedin.b1edfa6809b540b38c0d9cff0724329c"],
+      "$type": "com.linkedin.voyager.dash.feed.Update",
+      "actor": {
+        "image": {
+          "attributes": [
+            {
+              "scalingType": null,
+              "detailData": {
+                "profilePictureWithoutFrame": null,
+                "profilePictureWithRingStatus": null,
+                "companyLogo": null,
+                "icon": null,
+                "systemImage": null,
+                "nonEntityGroupLogo": null,
+                "vectorImage": null,
+                "nonEntityProfessionalEventLogo": null,
+                "profilePicture": null,
+                "imageUrl": null,
+                "professionalEventLogo": null,
+                "nonEntityCompanyLogo": {
+                  "*company": "urn:li:fsd_company:112628621",
+                  "$recipeTypes": ["com.linkedin.0d5c613286a0b968e2d0983969a7dd38"],
+                  "vectorImage": {
+                    "digitalmediaAsset": "urn:li:digitalmediaAsset:D4E0BAQHgZEKtMYA5lQ",
+                    "attribution": null,
+                    "isStandardDynamicRangeEnforced": true,
+                    "c2paManifestData": null,
+                    "$recipeTypes": ["com.linkedin.dd87fb811fd73e7ace422877c128c60f"],
+                    "artifacts": [
+                      {
+                        "width": 100,
+                        "$recipeTypes": ["com.linkedin.298fff6350c711b3f8c8e3bd285f8cd4"],
+                        "fileIdentifyingUrlPathSegment": "100_100/B4EZ2RyZ.rJwAQ-/0/1776267403552/chemical_risk_expo_logo?e=1793836800&v=beta&t=hPIMrIQKuMHXTInFQoCh4fl47WQtqAP_y33CZTpAM54",
+                        "expiresAt": 1793836800000,
+                        "height": 100,
+                        "$type": "com.linkedin.common.VectorArtifact"
+                      },
+                      {
+                        "width": 400,
+                        "$recipeTypes": ["com.linkedin.298fff6350c711b3f8c8e3bd285f8cd4"],
+                        "fileIdentifyingUrlPathSegment": "400_400/B4EZ2RyZ.rJwAY-/0/1776267403552/chemical_risk_expo_logo?e=1793836800&v=beta&t=wPMfUcayAZJ-TGNGg7fKPA8WMqKgqTgXO0KleqxXDLg",
+                        "expiresAt": 1793836800000,
+                        "height": 400,
+                        "$type": "com.linkedin.common.VectorArtifact"
+                      },
+                      {
+                        "width": 200,
+                        "$recipeTypes": ["com.linkedin.298fff6350c711b3f8c8e3bd285f8cd4"],
+                        "fileIdentifyingUrlPathSegment": "200_200/B4EZ2RyZ.rJwAI-/0/1776267403552/chemical_risk_expo_logo?e=1793836800&v=beta&t=_yZVsB41FE4UTfCzABpLv5hbIOYQtOpe9DA-AZKogE4",
+                        "expiresAt": 1793836800000,
+                        "height": 200,
+                        "$type": "com.linkedin.common.VectorArtifact"
+                      }
+                    ],
+                    "rootUrl": "https://media.licdn.com/dms/image/v2/D4E0BAQHgZEKtMYA5lQ/company-logo_",
+                    "$type": "com.linkedin.common.VectorImage"
+                  },
+                  "$type": "com.linkedin.voyager.dash.common.image.NonEntityCompanyLogo"
+                },
+                "nonEntitySchoolLogo": null,
+                "groupLogo": null,
+                "schoolLogo": null,
+                "ghostImage": null,
+                "nonEntityProfilePicture": null
+              },
+              "tintColor": null,
+              "$recipeTypes": ["com.linkedin.f70a1a95f7a1c4035ac036705c3e03e9"],
+              "tapTargets": [],
+              "displayAspectRatio": null,
+              "$type": "com.linkedin.voyager.dash.common.image.ImageAttribute"
+            }
+          ],
+          "editableAccessibilityText": false,
+          "actionTarget": null,
+          "accessibilityTextAttributes": [],
+          "totalCount": null,
+          "accessibilityText": null,
+          "$recipeTypes": ["com.linkedin.f6e542101980d311038235187b7ffcb6"],
+          "$type": "com.linkedin.voyager.dash.common.image.ImageViewModel"
+        },
+        "connectAction": null,
+        "supplementaryActorInfo": null,
+        "description": {
+          "textDirection": "USER_LOCALE",
+          "text": "184 followers",
+          "attributesV2": [],
+          "accessibilityTextAttributesV2": [],
+          "accessibilityText": "184 followers",
+          "$recipeTypes": ["com.linkedin.2ac10d298fc714e5a1168c129ecbfa36"],
+          "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+        },
+        "backendUrn": "urn:li:company:112628621",
+        "$recipeTypes": ["com.linkedin.20c7e8c8439a2e4aed150b96c1b21d3f"],
+        "followAction": {
+          "unmuteTrackingActionType": null,
+          "unfollowTrackingActionType": "unfollowCompany",
+          "muteTrackingActionType": null,
+          "followTrackingActionType": "followCompany",
+          "companyFollowingTrackingContext": "MOBILE_NON_SSU",
+          "type": "FOLLOW_TOGGLE",
+          "*followingState": "urn:li:fsd_followingState:urn:li:fsd_company:112628621",
+          "$recipeTypes": ["com.linkedin.4268b80c016c630ebf410dd14e3f71f4"],
+          "$type": "com.linkedin.voyager.dash.feed.actions.follow.FollowAction"
+        },
+        "$type": "com.linkedin.voyager.dash.feed.component.actor.ActorComponent",
+        "subDescriptionButton": null,
+        "name": {
+          "textDirection": "FIRST_STRONG",
+          "text": "Chemical Risk Expo",
+          "attributesV2": [
+            {
+              "start": 0,
+              "length": 18,
+              "detailData": {
+                "jobPostingName": null,
+                "hyperlink": null,
+                "profileFamiliarName": null,
+                "color": null,
+                "icon": null,
+                "epoch": null,
+                "systemImage": null,
+                "*companyName": "urn:li:fsd_company:112628621",
+                "textLink": null,
+                "listItemStyle": null,
+                "groupName": null,
+                "hyperlinkOpenExternally": null,
+                "listStyle": null,
+                "profileFullName": null,
+                "stringFieldReference": null,
+                "learningCourseName": null,
+                "profileMention": null,
+                "style": null,
+                "schoolName": null,
+                "hashtag": null
+              },
+              "$recipeTypes": ["com.linkedin.d1dd3a59671302f6c17e84a27fc5bf74"],
+              "$type": "com.linkedin.voyager.dash.common.text.TextAttribute"
+            }
+          ],
+          "accessibilityTextAttributesV2": [
+            {
+              "start": 0,
+              "length": 18,
+              "detailData": {
+                "jobPostingName": null,
+                "hyperlink": null,
+                "profileFamiliarName": null,
+                "color": null,
+                "icon": null,
+                "epoch": null,
+                "systemImage": null,
+                "*companyName": "urn:li:fsd_company:112628621",
+                "textLink": null,
+                "listItemStyle": null,
+                "groupName": null,
+                "hyperlinkOpenExternally": null,
+                "listStyle": null,
+                "profileFullName": null,
+                "stringFieldReference": null,
+                "learningCourseName": null,
+                "profileMention": null,
+                "style": null,
+                "schoolName": null,
+                "hashtag": null
+              },
+              "$recipeTypes": ["com.linkedin.d1dd3a59671302f6c17e84a27fc5bf74"],
+              "$type": "com.linkedin.voyager.dash.common.text.TextAttribute"
+            }
+          ],
+          "accessibilityText": "Chemical Risk Expo",
+          "$recipeTypes": ["com.linkedin.2ac10d298fc714e5a1168c129ecbfa36"],
+          "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+        },
+        "subDescription": {
+          "textDirection": "USER_LOCALE",
+          "text": "4mo •   ",
+          "attributesV2": [
+            {
+              "start": 6,
+              "length": 1,
+              "detailData": {
+                "jobPostingName": null,
+                "hyperlink": null,
+                "profileFamiliarName": null,
+                "color": null,
+                "companyName": null,
+                "icon": "IC_GLOBE_16DP",
+                "epoch": null,
+                "systemImage": null,
+                "textLink": null,
+                "listItemStyle": null,
+                "groupName": null,
+                "hyperlinkOpenExternally": null,
+                "listStyle": null,
+                "profileFullName": null,
+                "stringFieldReference": null,
+                "learningCourseName": null,
+                "profileMention": null,
+                "style": null,
+                "schoolName": null,
+                "hashtag": null
+              },
+              "$recipeTypes": ["com.linkedin.d1dd3a59671302f6c17e84a27fc5bf74"],
+              "$type": "com.linkedin.voyager.dash.common.text.TextAttribute"
+            }
+          ],
+          "accessibilityTextAttributesV2": [],
+          "accessibilityText": "4 months ago • Visible to anyone on or off LinkedIn",
+          "$recipeTypes": ["com.linkedin.2ac10d298fc714e5a1168c129ecbfa36"],
+          "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+        },
+        "navigationContext": {
+          "actionTarget": "https://www.linkedin.com/company/chemical-risk-expo/posts",
+          "urlViewingBehavior": "DEFAULT",
+          "trackingActionType": "viewAttributedCompany",
+          "accessibilityText": "View company: Chemical Risk Expo",
+          "sponsoredUrlAttributes": null,
+          "$recipeTypes": ["com.linkedin.6ffbd9296dfab0377a818c00a429e35b"],
+          "$type": "com.linkedin.voyager.dash.feed.navigation.FeedNavigationContext"
+        },
+        "ringStatus": null,
+        "groupMembershipForJoinAction": null,
+        "showSmallActorPortrait": false
+      },
+      "boostHeader": null,
+      "*socialDetail": "urn:li:fsd_socialDetail:(urn:li:ugcPost:7460711927762173953,urn:li:ugcPost:7460711927762173953,urn:li:highlightedReply:-)",
+      "header": null,
+      "highlightedComments": [],
+      "preDashEntityUrn": "urn:li:fs_updateV2:(urn:li:activity:7460711928449921025,EVENT_FEED,EMPTY,DEFAULT,false)",
+      "commentary": {
+        "numLines": 3,
+        "translation": null,
+        "navigationContext": null,
+        "metadataText": null,
+        "text": {
+          "textDirection": "FIRST_STRONG",
+          "text": "Chemical Risk Expo brings together facility leaders, hazmat teams, PPE specialists, emergency responders, regulators, and resilience professionals to explore the future of industrial safety and chemical risk management.\n\nThe event will examine data-driven approaches to rapid detection, robust containment, coordinated emergency response, and infrastructure resilience across high-risk environments.\n\n14-15 October 2026 | George R. Brown Convention Center",
+          "attributesV2": [
+            {
+              "start": 0,
+              "length": 18,
+              "detailData": {
+                "jobPostingName": null,
+                "hyperlink": null,
+                "profileFamiliarName": null,
+                "color": null,
+                "icon": null,
+                "epoch": null,
+                "systemImage": null,
+                "*companyName": "urn:li:fsd_company:112628621",
+                "textLink": null,
+                "listItemStyle": null,
+                "groupName": null,
+                "hyperlinkOpenExternally": null,
+                "listStyle": null,
+                "profileFullName": null,
+                "stringFieldReference": null,
+                "learningCourseName": null,
+                "profileMention": null,
+                "style": null,
+                "schoolName": null,
+                "hashtag": null
+              },
+              "$recipeTypes": ["com.linkedin.d1dd3a59671302f6c17e84a27fc5bf74"],
+              "$type": "com.linkedin.voyager.dash.common.text.TextAttribute"
+            }
+          ],
+          "accessibilityTextAttributesV2": [],
+          "accessibilityText": null,
+          "$recipeTypes": ["com.linkedin.2ac10d298fc714e5a1168c129ecbfa36"],
+          "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+        },
+        "$recipeTypes": ["com.linkedin.0ecab8162d90d7058bea6971517f778c"],
+        "$type": "com.linkedin.voyager.dash.feed.component.commentary.CommentaryComponent"
+      },
+      "additionalContents": []
+    },
+    {
+      "entityUrn": "urn:li:fsd_updateActions:(urn:li:activity:7460711928449921025,EVENT_FEED,EMPTY,urn:li:reason:-,urn:li:adCreative:-)",
+      "preDashEntityUrn": "urn:li:fs_updateV2Actions:(urn:li:activity:7460711928449921025,EVENT_FEED,EMPTY,-,-)",
+      "$recipeTypes": ["com.linkedin.1242022b174f956a2507ff64300fdb15"],
+      "$type": "com.linkedin.voyager.dash.feed.controlmenu.UpdateActions"
+    },
+    {
+      "entityUrn": "urn:li:fsd_profile:ACoAATESTPERSON",
+      "$recipeTypes": ["com.linkedin.e87be2cf9350628e0f0f2a1294cd3ea4"],
+      "$type": "com.linkedin.voyager.dash.identity.profile.Profile"
+    },
+    {
+      "entityUrn": "urn:li:fsd_profile:ACoAATESTPERSON",
+      "$recipeTypes": ["com.linkedin.e87be2cf9350628e0f0f2a1294cd3ea4"],
+      "$type": "com.linkedin.voyager.dash.identity.profile.Profile"
+    },
+    {
+      "entityUrn": "urn:li:fsd_profile:ACoAATESTPERSON",
+      "$recipeTypes": ["com.linkedin.e87be2cf9350628e0f0f2a1294cd3ea4"],
+      "$type": "com.linkedin.voyager.dash.identity.profile.Profile"
+    },
+    {
+      "entityUrn": "urn:li:fsd_profile:ACoAATESTPERSON",
+      "$recipeTypes": ["com.linkedin.e87be2cf9350628e0f0f2a1294cd3ea4"],
+      "$type": "com.linkedin.voyager.dash.identity.profile.Profile"
+    },
+    {
+      "entityUrn": "urn:li:fsd_profile:ACoAATESTPERSON",
+      "$recipeTypes": ["com.linkedin.e87be2cf9350628e0f0f2a1294cd3ea4"],
+      "$type": "com.linkedin.voyager.dash.identity.profile.Profile"
+    },
+    {
+      "entityUrn": "urn:li:fsd_profile:ACoAATESTPERSON",
+      "$recipeTypes": ["com.linkedin.e87be2cf9350628e0f0f2a1294cd3ea4"],
+      "$type": "com.linkedin.voyager.dash.identity.profile.Profile"
+    },
+    {
+      "entityUrn": "urn:li:fsd_profile:ACoAATESTPERSON",
+      "$recipeTypes": ["com.linkedin.e87be2cf9350628e0f0f2a1294cd3ea4"],
+      "$type": "com.linkedin.voyager.dash.identity.profile.Profile"
+    },
+    {
+      "pageType": "COMPANY",
+      "entityUrn": "urn:li:fsd_company:112628621",
+      "name": "Chemical Risk Expo",
+      "active": true,
+      "logoResolutionResult": {
+        "url": null,
+        "vectorImage": {
+          "digitalmediaAsset": "urn:li:digitalmediaAsset:D4E0BAQHgZEKtMYA5lQ",
+          "attribution": null,
+          "isStandardDynamicRangeEnforced": true,
+          "c2paManifestData": null,
+          "$recipeTypes": ["com.linkedin.dd87fb811fd73e7ace422877c128c60f"],
+          "artifacts": [
+            {
+              "width": 100,
+              "$recipeTypes": ["com.linkedin.298fff6350c711b3f8c8e3bd285f8cd4"],
+              "fileIdentifyingUrlPathSegment": "100_100/B4EZ2RyZ.rJwAQ-/0/1776267403552/chemical_risk_expo_logo?e=1793836800&v=beta&t=hPIMrIQKuMHXTInFQoCh4fl47WQtqAP_y33CZTpAM54",
+              "expiresAt": 1793836800000,
+              "height": 100,
+              "$type": "com.linkedin.common.VectorArtifact"
+            },
+            {
+              "width": 400,
+              "$recipeTypes": ["com.linkedin.298fff6350c711b3f8c8e3bd285f8cd4"],
+              "fileIdentifyingUrlPathSegment": "400_400/B4EZ2RyZ.rJwAY-/0/1776267403552/chemical_risk_expo_logo?e=1793836800&v=beta&t=wPMfUcayAZJ-TGNGg7fKPA8WMqKgqTgXO0KleqxXDLg",
+              "expiresAt": 1793836800000,
+              "height": 400,
+              "$type": "com.linkedin.common.VectorArtifact"
+            },
+            {
+              "width": 200,
+              "$recipeTypes": ["com.linkedin.298fff6350c711b3f8c8e3bd285f8cd4"],
+              "fileIdentifyingUrlPathSegment": "200_200/B4EZ2RyZ.rJwAI-/0/1776267403552/chemical_risk_expo_logo?e=1793836800&v=beta&t=_yZVsB41FE4UTfCzABpLv5hbIOYQtOpe9DA-AZKogE4",
+              "expiresAt": 1793836800000,
+              "height": 200,
+              "$type": "com.linkedin.common.VectorArtifact"
+            }
+          ],
+          "rootUrl": "https://media.licdn.com/dms/image/v2/D4E0BAQHgZEKtMYA5lQ/company-logo_",
+          "$type": "com.linkedin.common.VectorImage"
+        }
+      },
+      "universalName": "chemical-risk-expo",
+      "$recipeTypes": ["com.linkedin.bc42b001c29eff7570d7e1072e58906f"],
+      "url": "https://www.linkedin.com/company/chemical-risk-expo/",
+      "$type": "com.linkedin.voyager.dash.organization.Company"
+    },
+    {
+      "scheduledContentViewerStatus": "NOT_INTERESTED",
+      "entityUrn": "urn:li:fsd_scheduledContentViewerState:(urn:li:fsd_professionalEvent:7460711926000517123,urn:li:fsd_profile:ACoAATESTME,urn:li:sponsoredCreative:-1)",
+      "$recipeTypes": ["com.linkedin.3341218e0a91dd8d7af06c249709bcc2"],
+      "$type": "com.linkedin.voyager.dash.scheduledcontent.ScheduledContentViewerState"
+    },
+    {
+      "actorUrn": "urn:li:fsd_profile:ACoAATESTPERSON",
+      "reactionType": "LIKE",
+      "entityUrn": "urn:li:fsd_reaction:(urn:li:fsd_profile:ACoAATESTPERSON,urn:li:ugcPost:7460711927762173953,0)",
+      "reactorLockup": {
+        "image": {
+          "attributes": [
+            {
+              "scalingType": null,
+              "detailData": {
+                "profilePictureWithoutFrame": null,
+                "profilePictureWithRingStatus": null,
+                "companyLogo": null,
+                "icon": null,
+                "systemImage": null,
+                "nonEntityGroupLogo": null,
+                "vectorImage": null,
+                "nonEntityProfessionalEventLogo": null,
+                "profilePicture": null,
+                "imageUrl": null,
+                "professionalEventLogo": null,
+                "nonEntityCompanyLogo": null,
+                "nonEntitySchoolLogo": null,
+                "groupLogo": null,
+                "schoolLogo": null,
+                "ghostImage": null,
+                "nonEntityProfilePicture": {
+                  "*profile": "urn:li:fsd_profile:ACoAATESTPERSON",
+                  "ringStatus": null,
+                  "$recipeTypes": ["com.linkedin.f5124aa3076990c8b9bd34ab8b6c8bf1"],
+                  "vectorImage": {
+                    "digitalmediaAsset": "urn:li:digitalmediaAsset:D4E03AQEwHTdHK8FBGA",
+                    "attribution": null,
+                    "isStandardDynamicRangeEnforced": false,
+                    "c2paManifestData": null,
+                    "$recipeTypes": ["com.linkedin.dd87fb811fd73e7ace422877c128c60f"],
+                    "artifacts": [
+                      {
+                        "width": 400,
+                        "$recipeTypes": ["com.linkedin.298fff6350c711b3f8c8e3bd285f8cd4"],
+                        "fileIdentifyingUrlPathSegment": "scale_400_400/B4EZ5uplZxG8Ag-/0/1779972855749?e=1793836800&v=beta&t=4f1EeIHNCiVAIjOZ_fRrOgHLX796k1YLGX8lXxW1G_M",
+                        "expiresAt": 1793836800000,
+                        "height": 400,
+                        "$type": "com.linkedin.common.VectorArtifact"
+                      },
+                      {
+                        "width": 200,
+                        "$recipeTypes": ["com.linkedin.298fff6350c711b3f8c8e3bd285f8cd4"],
+                        "fileIdentifyingUrlPathSegment": "scale_200_200/B4EZ5uplZxG8Ac-/0/1779972855749?e=1793836800&v=beta&t=7quHKLsGoWDiqrasFSFlirvWuUy2uGgywX0VRC87o-Y",
+                        "expiresAt": 1793836800000,
+                        "height": 200,
+                        "$type": "com.linkedin.common.VectorArtifact"
+                      },
+                      {
+                        "width": 100,
+                        "$recipeTypes": ["com.linkedin.298fff6350c711b3f8c8e3bd285f8cd4"],
+                        "fileIdentifyingUrlPathSegment": "scale_100_100/B4EZ5uplZxG8AY-/0/1779972855749?e=1793836800&v=beta&t=rPrqzgSZ-naJsO2HOOOLt1iQaVaAwz3PR2jgY7AXCv8",
+                        "expiresAt": 1793836800000,
+                        "height": 100,
+                        "$type": "com.linkedin.common.VectorArtifact"
+                      },
+                      {
+                        "width": 800,
+                        "$recipeTypes": ["com.linkedin.298fff6350c711b3f8c8e3bd285f8cd4"],
+                        "fileIdentifyingUrlPathSegment": "crop_800_800/B4EZ5uplZxG8AI-/0/1779972855749?e=1793836800&v=beta&t=SWUAzqwtElPRHs4_IIEl0A28sYhQmTBeF-GUh4UKTGk",
+                        "expiresAt": 1793836800000,
+                        "height": 800,
+                        "$type": "com.linkedin.common.VectorArtifact"
+                      }
+                    ],
+                    "rootUrl": "https://media.licdn.com/dms/image/v2/D4E03AQEwHTdHK8FBGA/profile-displayphoto-",
+                    "$type": "com.linkedin.common.VectorImage"
+                  },
+                  "$type": "com.linkedin.voyager.dash.common.image.NonEntityProfilePicture"
+                }
+              },
+              "tintColor": null,
+              "$recipeTypes": ["com.linkedin.f70a1a95f7a1c4035ac036705c3e03e9"],
+              "tapTargets": [],
+              "displayAspectRatio": null,
+              "$type": "com.linkedin.voyager.dash.common.image.ImageAttribute"
+            }
+          ],
+          "editableAccessibilityText": false,
+          "actionTarget": null,
+          "accessibilityTextAttributes": [],
+          "totalCount": null,
+          "accessibilityText": "View Hannah Benn’s",
+          "$recipeTypes": ["com.linkedin.f6e542101980d311038235187b7ffcb6"],
+          "$type": "com.linkedin.voyager.dash.common.image.ImageViewModel"
+        },
+        "navigationUrl": "https://www.linkedin.com/in/ACoAATESTPERSON",
+        "$recipeTypes": ["com.linkedin.6fca66a8ed29209cd26b98d307b3e7f0"],
+        "$type": "com.linkedin.voyager.dash.common.ux.EntityLockupViewModel"
+      },
+      "$recipeTypes": ["com.linkedin.2474c3c1a653f6703a8dbb3116c28857"],
+      "$type": "com.linkedin.voyager.dash.social.Reaction"
+    },
+    {
+      "actorUrn": "urn:li:fsd_profile:ACoAATESTPERSON",
+      "reactionType": "LIKE",
+      "entityUrn": "urn:li:fsd_reaction:(urn:li:fsd_profile:ACoAATESTPERSON,urn:li:ugcPost:7460711927762173953,0)",
+      "reactorLockup": {
+        "image": {
+          "attributes": [
+            {
+              "scalingType": null,
+              "detailData": {
+                "profilePictureWithoutFrame": null,
+                "profilePictureWithRingStatus": null,
+                "companyLogo": null,
+                "icon": null,
+                "systemImage": null,
+                "nonEntityGroupLogo": null,
+                "vectorImage": null,
+                "nonEntityProfessionalEventLogo": null,
+                "profilePicture": null,
+                "imageUrl": null,
+                "professionalEventLogo": null,
+                "nonEntityCompanyLogo": null,
+                "nonEntitySchoolLogo": null,
+                "groupLogo": null,
+                "schoolLogo": null,
+                "ghostImage": null,
+                "nonEntityProfilePicture": {
+                  "*profile": "urn:li:fsd_profile:ACoAATESTPERSON",
+                  "ringStatus": null,
+                  "$recipeTypes": ["com.linkedin.f5124aa3076990c8b9bd34ab8b6c8bf1"],
+                  "vectorImage": {
+                    "digitalmediaAsset": "urn:li:digitalmediaAsset:D4D03AQEkN6jkwPKxPg",
+                    "attribution": null,
+                    "isStandardDynamicRangeEnforced": false,
+                    "c2paManifestData": null,
+                    "$recipeTypes": ["com.linkedin.dd87fb811fd73e7ace422877c128c60f"],
+                    "artifacts": [
+                      {
+                        "width": 100,
+                        "$recipeTypes": ["com.linkedin.298fff6350c711b3f8c8e3bd285f8cd4"],
+                        "fileIdentifyingUrlPathSegment": "scale_100_100/B4DZ63a6b7H0AY-/0/1781193748455?e=1793836800&v=beta&t=sV6Stupa77Nt_rl4SUVU5Uk-ETpKNT-l2Ri0qG-Fo54",
+                        "expiresAt": 1793836800000,
+                        "height": 100,
+                        "$type": "com.linkedin.common.VectorArtifact"
+                      },
+                      {
+                        "width": 800,
+                        "$recipeTypes": ["com.linkedin.298fff6350c711b3f8c8e3bd285f8cd4"],
+                        "fileIdentifyingUrlPathSegment": "crop_800_800/B4DZ63a6b7H0AI-/0/1781193748455?e=1793836800&v=beta&t=ZLCTOMlCyONYLk3N7uH5J91d27GilEmE2sqoynSSS-E",
+                        "expiresAt": 1793836800000,
+                        "height": 800,
+                        "$type": "com.linkedin.common.VectorArtifact"
+                      },
+                      {
+                        "width": 200,
+                        "$recipeTypes": ["com.linkedin.298fff6350c711b3f8c8e3bd285f8cd4"],
+                        "fileIdentifyingUrlPathSegment": "scale_200_200/B4DZ63a6b7H0Ac-/0/1781193748454?e=1793836800&v=beta&t=U3lS3qdRsm7B3kLpUxo5BcWObBd5xzpXgzakt1BT1DM",
+                        "expiresAt": 1793836800000,
+                        "height": 200,
+                        "$type": "com.linkedin.common.VectorArtifact"
+                      },
+                      {
+                        "width": 400,
+                        "$recipeTypes": ["com.linkedin.298fff6350c711b3f8c8e3bd285f8cd4"],
+                        "fileIdentifyingUrlPathSegment": "scale_400_400/B4DZ63a6b7H0Ag-/0/1781193748454?e=1793836800&v=beta&t=fb9j8cHACoAATESTPERSON",
+                        "expiresAt": 1793836800000,
+                        "height": 400,
+                        "$type": "com.linkedin.common.VectorArtifact"
+                      }
+                    ],
+                    "rootUrl": "https://media.licdn.com/dms/image/v2/D4D03AQEkN6jkwPKxPg/profile-displayphoto-",
+                    "$type": "com.linkedin.common.VectorImage"
+                  },
+                  "$type": "com.linkedin.voyager.dash.common.image.NonEntityProfilePicture"
+                }
+              },
+              "tintColor": null,
+              "$recipeTypes": ["com.linkedin.f70a1a95f7a1c4035ac036705c3e03e9"],
+              "tapTargets": [],
+              "displayAspectRatio": null,
+              "$type": "com.linkedin.voyager.dash.common.image.ImageAttribute"
+            }
+          ],
+          "editableAccessibilityText": false,
+          "actionTarget": null,
+          "accessibilityTextAttributes": [],
+          "totalCount": null,
+          "accessibilityText": "View Lloyd Sharp’s",
+          "$recipeTypes": ["com.linkedin.f6e542101980d311038235187b7ffcb6"],
+          "$type": "com.linkedin.voyager.dash.common.image.ImageViewModel"
+        },
+        "navigationUrl": "https://www.linkedin.com/in/ACoAATESTPERSON",
+        "$recipeTypes": ["com.linkedin.6fca66a8ed29209cd26b98d307b3e7f0"],
+        "$type": "com.linkedin.voyager.dash.common.ux.EntityLockupViewModel"
+      },
+      "$recipeTypes": ["com.linkedin.2474c3c1a653f6703a8dbb3116c28857"],
+      "$type": "com.linkedin.voyager.dash.social.Reaction"
+    },
+    {
+      "actorUrn": "urn:li:fsd_profile:ACoAATESTPERSON",
+      "reactionType": "LIKE",
+      "entityUrn": "urn:li:fsd_reaction:(urn:li:fsd_profile:ACoAATESTPERSON,urn:li:ugcPost:7460711927762173953,0)",
+      "reactorLockup": {
+        "image": {
+          "attributes": [
+            {
+              "scalingType": null,
+              "detailData": {
+                "profilePictureWithoutFrame": null,
+                "profilePictureWithRingStatus": null,
+                "companyLogo": null,
+                "icon": null,
+                "systemImage": null,
+                "nonEntityGroupLogo": null,
+                "vectorImage": null,
+                "nonEntityProfessionalEventLogo": null,
+                "profilePicture": null,
+                "imageUrl": null,
+                "professionalEventLogo": null,
+                "nonEntityCompanyLogo": null,
+                "nonEntitySchoolLogo": null,
+                "groupLogo": null,
+                "schoolLogo": null,
+                "ghostImage": null,
+                "nonEntityProfilePicture": {
+                  "*profile": "urn:li:fsd_profile:ACoAATESTPERSON",
+                  "ringStatus": null,
+                  "$recipeTypes": ["com.linkedin.f5124aa3076990c8b9bd34ab8b6c8bf1"],
+                  "vectorImage": {
+                    "digitalmediaAsset": "urn:li:digitalmediaAsset:D4E03AQERjzdWK1QYJg",
+                    "attribution": null,
+                    "isStandardDynamicRangeEnforced": false,
+                    "c2paManifestData": null,
+                    "$recipeTypes": ["com.linkedin.dd87fb811fd73e7ace422877c128c60f"],
+                    "artifacts": [
+                      {
+                        "width": 400,
+                        "$recipeTypes": ["com.linkedin.298fff6350c711b3f8c8e3bd285f8cd4"],
+                        "fileIdentifyingUrlPathSegment": "scale_400_400/B4EZ7LfKzJIwAg-/0/1781530407750?e=1793836800&v=beta&t=NoaIqwTnS9Zj848-RO_5jk9BrQiuVmudQuIS4OH9qkM",
+                        "expiresAt": 1793836800000,
+                        "height": 400,
+                        "$type": "com.linkedin.common.VectorArtifact"
+                      },
+                      {
+                        "width": 100,
+                        "$recipeTypes": ["com.linkedin.298fff6350c711b3f8c8e3bd285f8cd4"],
+                        "fileIdentifyingUrlPathSegment": "scale_100_100/B4EZ7LfKzJIwAY-/0/1781530407750?e=1793836800&v=beta&t=XTU_PVW0dwnEfDJb3a9iD_PEupanBLN95b2gSNfPdPk",
+                        "expiresAt": 1793836800000,
+                        "height": 100,
+                        "$type": "com.linkedin.common.VectorArtifact"
+                      },
+                      {
+                        "width": 800,
+                        "$recipeTypes": ["com.linkedin.298fff6350c711b3f8c8e3bd285f8cd4"],
+                        "fileIdentifyingUrlPathSegment": "crop_800_800/B4EZ7LfKzJIwAI-/0/1781530407750?e=1793836800&v=beta&t=R2BmKrHjNg6SHpFYyLq7KEjWMutfno0nUwN416gJ6Fs",
+                        "expiresAt": 1793836800000,
+                        "height": 800,
+                        "$type": "com.linkedin.common.VectorArtifact"
+                      },
+                      {
+                        "width": 200,
+                        "$recipeTypes": ["com.linkedin.298fff6350c711b3f8c8e3bd285f8cd4"],
+                        "fileIdentifyingUrlPathSegment": "scale_200_200/B4EZ7LfKzJIwAc-/0/1781530407750?e=1793836800&v=beta&t=PQGucdJhddXUMRPsHpi4Ce47jrVrgvLhXJ9mI6NV_w8",
+                        "expiresAt": 1793836800000,
+                        "height": 200,
+                        "$type": "com.linkedin.common.VectorArtifact"
+                      }
+                    ],
+                    "rootUrl": "https://media.licdn.com/dms/image/v2/D4E03AQERjzdWK1QYJg/profile-displayphoto-",
+                    "$type": "com.linkedin.common.VectorImage"
+                  },
+                  "$type": "com.linkedin.voyager.dash.common.image.NonEntityProfilePicture"
+                }
+              },
+              "tintColor": null,
+              "$recipeTypes": ["com.linkedin.f70a1a95f7a1c4035ac036705c3e03e9"],
+              "tapTargets": [],
+              "displayAspectRatio": null,
+              "$type": "com.linkedin.voyager.dash.common.image.ImageAttribute"
+            }
+          ],
+          "editableAccessibilityText": false,
+          "actionTarget": null,
+          "accessibilityTextAttributes": [],
+          "totalCount": null,
+          "accessibilityText": "View Lauren Isabelle Usher, MSc’s",
+          "$recipeTypes": ["com.linkedin.f6e542101980d311038235187b7ffcb6"],
+          "$type": "com.linkedin.voyager.dash.common.image.ImageViewModel"
+        },
+        "navigationUrl": "https://www.linkedin.com/in/ACoAATESTPERSON",
+        "$recipeTypes": ["com.linkedin.6fca66a8ed29209cd26b98d307b3e7f0"],
+        "$type": "com.linkedin.voyager.dash.common.ux.EntityLockupViewModel"
+      },
+      "$recipeTypes": ["com.linkedin.2474c3c1a653f6703a8dbb3116c28857"],
+      "$type": "com.linkedin.voyager.dash.social.Reaction"
+    },
+    {
+      "actorUrn": "urn:li:fsd_profile:ACoAATESTPERSON",
+      "reactionType": "LIKE",
+      "entityUrn": "urn:li:fsd_reaction:(urn:li:fsd_profile:ACoAATESTPERSON,urn:li:ugcPost:7460711927762173953,0)",
+      "reactorLockup": {
+        "image": {
+          "attributes": [
+            {
+              "scalingType": null,
+              "detailData": {
+                "profilePictureWithoutFrame": null,
+                "profilePictureWithRingStatus": null,
+                "companyLogo": null,
+                "icon": null,
+                "systemImage": null,
+                "nonEntityGroupLogo": null,
+                "vectorImage": null,
+                "nonEntityProfessionalEventLogo": null,
+                "profilePicture": null,
+                "imageUrl": null,
+                "professionalEventLogo": null,
+                "nonEntityCompanyLogo": null,
+                "nonEntitySchoolLogo": null,
+                "groupLogo": null,
+                "schoolLogo": null,
+                "ghostImage": null,
+                "nonEntityProfilePicture": {
+                  "*profile": "urn:li:fsd_profile:ACoAATESTPERSON",
+                  "ringStatus": null,
+                  "$recipeTypes": ["com.linkedin.f5124aa3076990c8b9bd34ab8b6c8bf1"],
+                  "vectorImage": {
+                    "digitalmediaAsset": "urn:li:digitalmediaAsset:D5603AQGAq1xEG5XXeA",
+                    "attribution": null,
+                    "isStandardDynamicRangeEnforced": false,
+                    "c2paManifestData": null,
+                    "$recipeTypes": ["com.linkedin.dd87fb811fd73e7ace422877c128c60f"],
+                    "artifacts": [
+                      {
+                        "width": 100,
+                        "$recipeTypes": ["com.linkedin.298fff6350c711b3f8c8e3bd285f8cd4"],
+                        "fileIdentifyingUrlPathSegment": "100_100/profile-displayphoto-shrink_100_100/0/1708444955102?e=1793836800&v=beta&t=xgg1X_Cm5ZwPg4QArgFqBjgEeUvP4So_CqgfV0RyRZc",
+                        "expiresAt": 1793836800000,
+                        "height": 100,
+                        "$type": "com.linkedin.common.VectorArtifact"
+                      },
+                      {
+                        "width": 200,
+                        "$recipeTypes": ["com.linkedin.298fff6350c711b3f8c8e3bd285f8cd4"],
+                        "fileIdentifyingUrlPathSegment": "200_200/profile-displayphoto-shrink_200_200/0/1708444955102?e=1793836800&v=beta&t=iGbAhy9rb4gaM-2BhSNEbCbFQeojAGk9PEvr-gCxf4s",
+                        "expiresAt": 1793836800000,
+                        "height": 200,
+                        "$type": "com.linkedin.common.VectorArtifact"
+                      },
+                      {
+                        "width": 400,
+                        "$recipeTypes": ["com.linkedin.298fff6350c711b3f8c8e3bd285f8cd4"],
+                        "fileIdentifyingUrlPathSegment": "400_400/profile-displayphoto-shrink_400_400/0/1708444955102?e=1793836800&v=beta&t=v2BfEPpbaKnShMeVkCNbxWm-DaO9IZWOMW4EHVeSPmg",
+                        "expiresAt": 1793836800000,
+                        "height": 400,
+                        "$type": "com.linkedin.common.VectorArtifact"
+                      },
+                      {
+                        "width": 800,
+                        "$recipeTypes": ["com.linkedin.298fff6350c711b3f8c8e3bd285f8cd4"],
+                        "fileIdentifyingUrlPathSegment": "800_800/profile-displayphoto-shrink_800_800/0/1708444955102?e=1793836800&v=beta&t=hZTOlQBW36Y3nSjHOjbFE4YRMrFhBV_QlSz8Gck6udw",
+                        "expiresAt": 1793836800000,
+                        "height": 800,
+                        "$type": "com.linkedin.common.VectorArtifact"
+                      }
+                    ],
+                    "rootUrl": "https://media.licdn.com/dms/image/v2/D5603AQGAq1xEG5XXeA/profile-displayphoto-shrink_",
+                    "$type": "com.linkedin.common.VectorImage"
+                  },
+                  "$type": "com.linkedin.voyager.dash.common.image.NonEntityProfilePicture"
+                }
+              },
+              "tintColor": null,
+              "$recipeTypes": ["com.linkedin.f70a1a95f7a1c4035ac036705c3e03e9"],
+              "tapTargets": [],
+              "displayAspectRatio": null,
+              "$type": "com.linkedin.voyager.dash.common.image.ImageAttribute"
+            }
+          ],
+          "editableAccessibilityText": false,
+          "actionTarget": null,
+          "accessibilityTextAttributes": [],
+          "totalCount": null,
+          "accessibilityText": "View Stuart Gruters’",
+          "$recipeTypes": ["com.linkedin.f6e542101980d311038235187b7ffcb6"],
+          "$type": "com.linkedin.voyager.dash.common.image.ImageViewModel"
+        },
+        "navigationUrl": "https://www.linkedin.com/in/ACoAATESTPERSON",
+        "$recipeTypes": ["com.linkedin.6fca66a8ed29209cd26b98d307b3e7f0"],
+        "$type": "com.linkedin.voyager.dash.common.ux.EntityLockupViewModel"
+      },
+      "$recipeTypes": ["com.linkedin.2474c3c1a653f6703a8dbb3116c28857"],
+      "$type": "com.linkedin.voyager.dash.social.Reaction"
+    },
+    {
+      "actorUrn": "urn:li:fsd_profile:ACoAATESTPERSON",
+      "reactionType": "LIKE",
+      "entityUrn": "urn:li:fsd_reaction:(urn:li:fsd_profile:ACoAATESTPERSON,urn:li:ugcPost:7460711927762173953,0)",
+      "reactorLockup": {
+        "image": {
+          "attributes": [
+            {
+              "scalingType": null,
+              "detailData": {
+                "profilePictureWithoutFrame": null,
+                "profilePictureWithRingStatus": null,
+                "companyLogo": null,
+                "icon": null,
+                "systemImage": null,
+                "nonEntityGroupLogo": null,
+                "vectorImage": null,
+                "nonEntityProfessionalEventLogo": null,
+                "profilePicture": null,
+                "imageUrl": null,
+                "professionalEventLogo": null,
+                "nonEntityCompanyLogo": null,
+                "nonEntitySchoolLogo": null,
+                "groupLogo": null,
+                "schoolLogo": null,
+                "ghostImage": null,
+                "nonEntityProfilePicture": {
+                  "*profile": "urn:li:fsd_profile:ACoAATESTPERSON",
+                  "ringStatus": null,
+                  "$recipeTypes": ["com.linkedin.f5124aa3076990c8b9bd34ab8b6c8bf1"],
+                  "vectorImage": {
+                    "digitalmediaAsset": "urn:li:digitalmediaAsset:D5603AQGD2GWP7RgUGw",
+                    "attribution": null,
+                    "isStandardDynamicRangeEnforced": false,
+                    "c2paManifestData": null,
+                    "$recipeTypes": ["com.linkedin.dd87fb811fd73e7ace422877c128c60f"],
+                    "artifacts": [
+                      {
+                        "width": 400,
+                        "$recipeTypes": ["com.linkedin.298fff6350c711b3f8c8e3bd285f8cd4"],
+                        "fileIdentifyingUrlPathSegment": "scale_400_400/B56Z9_gsthIoAk-/0/1784550707640?e=1793836800&v=beta&t=zf_LWebCGP93tukpBHxw94YVFIzzCEovTVQb-ZbmqtE",
+                        "expiresAt": 1793836800000,
+                        "height": 400,
+                        "$type": "com.linkedin.common.VectorArtifact"
+                      },
+                      {
+                        "width": 100,
+                        "$recipeTypes": ["com.linkedin.298fff6350c711b3f8c8e3bd285f8cd4"],
+                        "fileIdentifyingUrlPathSegment": "scale_100_100/B56Z9_gsthIoAc-/0/1784550707640?e=1793836800&v=beta&t=Ye79N9Tob3shzMuEQmKsKgRXNIG-kjdgQKuS7W1Cqv8",
+                        "expiresAt": 1793836800000,
+                        "height": 100,
+                        "$type": "com.linkedin.common.VectorArtifact"
+                      },
+                      {
+                        "width": 800,
+                        "$recipeTypes": ["com.linkedin.298fff6350c711b3f8c8e3bd285f8cd4"],
+                        "fileIdentifyingUrlPathSegment": "crop_800_800/B56Z9_gsthIoAM-/0/1784550707640?e=1793836800&v=beta&t=FXRQfWJjVVAUF6gs88DnTgNHKM1o8WVI0NFJp9yYkfQ",
+                        "expiresAt": 1793836800000,
+                        "height": 800,
+                        "$type": "com.linkedin.common.VectorArtifact"
+                      },
+                      {
+                        "width": 200,
+                        "$recipeTypes": ["com.linkedin.298fff6350c711b3f8c8e3bd285f8cd4"],
+                        "fileIdentifyingUrlPathSegment": "scale_200_200/B56Z9_gsthIoAg-/0/1784550707640?e=1793836800&v=beta&t=rxxS0waX2F1pHHcKaIO3bda2eOxj_XAg-CVQUa8_rtw",
+                        "expiresAt": 1793836800000,
+                        "height": 200,
+                        "$type": "com.linkedin.common.VectorArtifact"
+                      }
+                    ],
+                    "rootUrl": "https://media.licdn.com/dms/image/v2/D5603AQGD2GWP7RgUGw/profile-displayphoto-",
+                    "$type": "com.linkedin.common.VectorImage"
+                  },
+                  "$type": "com.linkedin.voyager.dash.common.image.NonEntityProfilePicture"
+                }
+              },
+              "tintColor": null,
+              "$recipeTypes": ["com.linkedin.f70a1a95f7a1c4035ac036705c3e03e9"],
+              "tapTargets": [],
+              "displayAspectRatio": null,
+              "$type": "com.linkedin.voyager.dash.common.image.ImageAttribute"
+            }
+          ],
+          "editableAccessibilityText": false,
+          "actionTarget": null,
+          "accessibilityTextAttributes": [],
+          "totalCount": null,
+          "accessibilityText": "View Jeff Hernandez, MS’",
+          "$recipeTypes": ["com.linkedin.f6e542101980d311038235187b7ffcb6"],
+          "$type": "com.linkedin.voyager.dash.common.image.ImageViewModel"
+        },
+        "navigationUrl": "https://www.linkedin.com/in/ACoAATESTPERSON",
+        "$recipeTypes": ["com.linkedin.6fca66a8ed29209cd26b98d307b3e7f0"],
+        "$type": "com.linkedin.voyager.dash.common.ux.EntityLockupViewModel"
+      },
+      "$recipeTypes": ["com.linkedin.2474c3c1a653f6703a8dbb3116c28857"],
+      "$type": "com.linkedin.voyager.dash.social.Reaction"
+    },
+    {
+      "actorUrn": "urn:li:fsd_profile:ACoAATESTPERSON",
+      "reactionType": "LIKE",
+      "entityUrn": "urn:li:fsd_reaction:(urn:li:fsd_profile:ACoAATESTPERSON,urn:li:ugcPost:7460711927762173953,0)",
+      "reactorLockup": {
+        "image": {
+          "attributes": [
+            {
+              "scalingType": null,
+              "detailData": {
+                "profilePictureWithoutFrame": null,
+                "profilePictureWithRingStatus": null,
+                "companyLogo": null,
+                "icon": null,
+                "systemImage": null,
+                "nonEntityGroupLogo": null,
+                "vectorImage": null,
+                "nonEntityProfessionalEventLogo": null,
+                "profilePicture": null,
+                "imageUrl": null,
+                "professionalEventLogo": null,
+                "nonEntityCompanyLogo": null,
+                "nonEntitySchoolLogo": null,
+                "groupLogo": null,
+                "schoolLogo": null,
+                "ghostImage": null,
+                "nonEntityProfilePicture": {
+                  "*profile": "urn:li:fsd_profile:ACoAATESTPERSON",
+                  "ringStatus": null,
+                  "$recipeTypes": ["com.linkedin.f5124aa3076990c8b9bd34ab8b6c8bf1"],
+                  "vectorImage": {
+                    "digitalmediaAsset": "urn:li:digitalmediaAsset:C4E03AQEy5NNelrqIrA",
+                    "attribution": null,
+                    "isStandardDynamicRangeEnforced": false,
+                    "c2paManifestData": null,
+                    "$recipeTypes": ["com.linkedin.dd87fb811fd73e7ace422877c128c60f"],
+                    "artifacts": [
+                      {
+                        "width": 100,
+                        "$recipeTypes": ["com.linkedin.298fff6350c711b3f8c8e3bd285f8cd4"],
+                        "fileIdentifyingUrlPathSegment": "100_100/profile-displayphoto-shrink_100_100/0/1562627487987?e=1793836800&v=beta&t=Q1kWDTb3XCbLOPmVxfhN9lZX3HpwRMFVt_PmiiuomaM",
+                        "expiresAt": 1793836800000,
+                        "height": 100,
+                        "$type": "com.linkedin.common.VectorArtifact"
+                      },
+                      {
+                        "width": 200,
+                        "$recipeTypes": ["com.linkedin.298fff6350c711b3f8c8e3bd285f8cd4"],
+                        "fileIdentifyingUrlPathSegment": "200_200/profile-displayphoto-shrink_200_200/0/1562627488052?e=1793836800&v=beta&t=lggNEKgZnDzzc2eGm8vXIGg70G0k-WeyInD6XHTfhkM",
+                        "expiresAt": 1793836800000,
+                        "height": 200,
+                        "$type": "com.linkedin.common.VectorArtifact"
+                      },
+                      {
+                        "width": 400,
+                        "$recipeTypes": ["com.linkedin.298fff6350c711b3f8c8e3bd285f8cd4"],
+                        "fileIdentifyingUrlPathSegment": "400_400/profile-displayphoto-shrink_400_400/0/1562627488069?e=1793836800&v=beta&t=VsskO9wj0_QEB7qvNpSqsSJhVHTsn2WfeHTNC1dRLgY",
+                        "expiresAt": 1793836800000,
+                        "height": 400,
+                        "$type": "com.linkedin.common.VectorArtifact"
+                      },
+                      {
+                        "width": 500,
+                        "$recipeTypes": ["com.linkedin.298fff6350c711b3f8c8e3bd285f8cd4"],
+                        "fileIdentifyingUrlPathSegment": "800_800/profile-displayphoto-shrink_800_800/0/1562627488190?e=1793836800&v=beta&t=eYevM7mo5mAPIGSgLYzgH3xpCwg_cnmHWKhJX63BmQE",
+                        "expiresAt": 1793836800000,
+                        "height": 500,
+                        "$type": "com.linkedin.common.VectorArtifact"
+                      }
+                    ],
+                    "rootUrl": "https://media.licdn.com/dms/image/v2/C4E03AQEy5NNelrqIrA/profile-displayphoto-shrink_",
+                    "$type": "com.linkedin.common.VectorImage"
+                  },
+                  "$type": "com.linkedin.voyager.dash.common.image.NonEntityProfilePicture"
+                }
+              },
+              "tintColor": null,
+              "$recipeTypes": ["com.linkedin.f70a1a95f7a1c4035ac036705c3e03e9"],
+              "tapTargets": [],
+              "displayAspectRatio": null,
+              "$type": "com.linkedin.voyager.dash.common.image.ImageAttribute"
+            }
+          ],
+          "editableAccessibilityText": false,
+          "actionTarget": null,
+          "accessibilityTextAttributes": [],
+          "totalCount": null,
+          "accessibilityText": "View Sten Svendsen’s",
+          "$recipeTypes": ["com.linkedin.f6e542101980d311038235187b7ffcb6"],
+          "$type": "com.linkedin.voyager.dash.common.image.ImageViewModel"
+        },
+        "navigationUrl": "https://www.linkedin.com/in/ACoAATESTPERSON",
+        "$recipeTypes": ["com.linkedin.6fca66a8ed29209cd26b98d307b3e7f0"],
+        "$type": "com.linkedin.voyager.dash.common.ux.EntityLockupViewModel"
+      },
+      "$recipeTypes": ["com.linkedin.2474c3c1a653f6703a8dbb3116c28857"],
+      "$type": "com.linkedin.voyager.dash.social.Reaction"
+    },
+    {
+      "actorUrn": "urn:li:fsd_profile:ACoAATESTPERSON",
+      "reactionType": "LIKE",
+      "entityUrn": "urn:li:fsd_reaction:(urn:li:fsd_profile:ACoAATESTPERSON,urn:li:ugcPost:7460711927762173953,0)",
+      "reactorLockup": {
+        "image": {
+          "attributes": [
+            {
+              "scalingType": null,
+              "detailData": {
+                "profilePictureWithoutFrame": null,
+                "profilePictureWithRingStatus": null,
+                "companyLogo": null,
+                "icon": null,
+                "systemImage": null,
+                "nonEntityGroupLogo": null,
+                "vectorImage": null,
+                "nonEntityProfessionalEventLogo": null,
+                "profilePicture": null,
+                "imageUrl": null,
+                "professionalEventLogo": null,
+                "nonEntityCompanyLogo": null,
+                "nonEntitySchoolLogo": null,
+                "groupLogo": null,
+                "schoolLogo": null,
+                "ghostImage": null,
+                "nonEntityProfilePicture": {
+                  "*profile": "urn:li:fsd_profile:ACoAATESTPERSON",
+                  "ringStatus": null,
+                  "$recipeTypes": ["com.linkedin.f5124aa3076990c8b9bd34ab8b6c8bf1"],
+                  "vectorImage": {
+                    "digitalmediaAsset": "urn:li:digitalmediaAsset:D4E03AQGjtHjBkDUEeA",
+                    "attribution": null,
+                    "isStandardDynamicRangeEnforced": false,
+                    "c2paManifestData": null,
+                    "$recipeTypes": ["com.linkedin.dd87fb811fd73e7ace422877c128c60f"],
+                    "artifacts": [
+                      {
+                        "width": 200,
+                        "$recipeTypes": ["com.linkedin.298fff6350c711b3f8c8e3bd285f8cd4"],
+                        "fileIdentifyingUrlPathSegment": "scale_200_200/B4EZ5u12BSHUAc-/0/1779976070305?e=1793836800&v=beta&t=rs514F81evfSTdcKpGn0uEMt6BnzIMYrKtRJFFkZaHE",
+                        "expiresAt": 1793836800000,
+                        "height": 200,
+                        "$type": "com.linkedin.common.VectorArtifact"
+                      },
+                      {
+                        "width": 100,
+                        "$recipeTypes": ["com.linkedin.298fff6350c711b3f8c8e3bd285f8cd4"],
+                        "fileIdentifyingUrlPathSegment": "scale_100_100/B4EZ5u12BSHUAY-/0/1779976070305?e=1793836800&v=beta&t=94_iy-RZX_mBXPSfylG90HXpPa7Bp6WwpPra4ve9SOA",
+                        "expiresAt": 1793836800000,
+                        "height": 100,
+                        "$type": "com.linkedin.common.VectorArtifact"
+                      },
+                      {
+                        "width": 800,
+                        "$recipeTypes": ["com.linkedin.298fff6350c711b3f8c8e3bd285f8cd4"],
+                        "fileIdentifyingUrlPathSegment": "crop_800_800/B4EZ5u12BSHUAI-/0/1779976070305?e=1793836800&v=beta&t=e45YATJMpY4v3SXwxcokn2_D73oeOP23m4pj1pZeWOE",
+                        "expiresAt": 1793836800000,
+                        "height": 800,
+                        "$type": "com.linkedin.common.VectorArtifact"
+                      },
+                      {
+                        "width": 400,
+                        "$recipeTypes": ["com.linkedin.298fff6350c711b3f8c8e3bd285f8cd4"],
+                        "fileIdentifyingUrlPathSegment": "scale_400_400/B4EZ5u12BSHUAg-/0/1779976070305?e=1793836800&v=beta&t=5jAqFpazIZSTShwL7PooVnx1UKjTX2Bn9CFjN-EtJXQ",
+                        "expiresAt": 1793836800000,
+                        "height": 400,
+                        "$type": "com.linkedin.common.VectorArtifact"
+                      }
+                    ],
+                    "rootUrl": "https://media.licdn.com/dms/image/v2/D4E03AQGjtHjBkDUEeA/profile-displayphoto-",
+                    "$type": "com.linkedin.common.VectorImage"
+                  },
+                  "$type": "com.linkedin.voyager.dash.common.image.NonEntityProfilePicture"
+                }
+              },
+              "tintColor": null,
+              "$recipeTypes": ["com.linkedin.f70a1a95f7a1c4035ac036705c3e03e9"],
+              "tapTargets": [],
+              "displayAspectRatio": null,
+              "$type": "com.linkedin.voyager.dash.common.image.ImageAttribute"
+            }
+          ],
+          "editableAccessibilityText": false,
+          "actionTarget": null,
+          "accessibilityTextAttributes": [],
+          "totalCount": null,
+          "accessibilityText": "View Darcey Youde’s",
+          "$recipeTypes": ["com.linkedin.f6e542101980d311038235187b7ffcb6"],
+          "$type": "com.linkedin.voyager.dash.common.image.ImageViewModel"
+        },
+        "navigationUrl": "https://www.linkedin.com/in/ACoAATESTPERSON",
+        "$recipeTypes": ["com.linkedin.6fca66a8ed29209cd26b98d307b3e7f0"],
+        "$type": "com.linkedin.voyager.dash.common.ux.EntityLockupViewModel"
+      },
+      "$recipeTypes": ["com.linkedin.2474c3c1a653f6703a8dbb3116c28857"],
+      "$type": "com.linkedin.voyager.dash.social.Reaction"
+    },
+    {
+      "hideSocialCountsIfAllowed": false,
+      "quickComments": [],
+      "socialPermissionsPersonalTopicUrn": null,
+      "*socialPermissions": "urn:li:fsd_socialPermissions:(urn:li:ugcPost:7460711927762173953,urn:li:fsd_profile:ACoAATESTME)",
+      "feedDetailSocialActionPromptType": null,
+      "entityUrn": "urn:li:fsd_socialDetail:(urn:li:ugcPost:7460711927762173953,urn:li:ugcPost:7460711927762173953,urn:li:highlightedReply:-)",
+      "socialUpdateType": null,
+      "reactionsTopicUrn": null,
+      "comments": {
+        "metadata": {
+          "paginationToken": "cm::420796777-1791989037155-b225eef6dbfe0bc84e0ebe07f112e78c",
+          "*socialActivityCounts": "urn:li:fsd_socialActivityCounts:urn:li:ugcPost:7460711927762173953",
+          "replyPreviousCursor": null,
+          "sortOrder": "RELEVANCE",
+          "updatedCommentCount": 0,
+          "replyNextCursor": null,
+          "$recipeTypes": ["com.linkedin.33352f7d3db8d5acb42963f3445f34bc"],
+          "$type": "com.linkedin.voyager.dash.social.CommentsMetadata"
+        },
+        "paging": {
+          "count": 10,
+          "start": 0,
+          "total": 0,
+          "$recipeTypes": ["com.linkedin.63ca0ec160c3eb9d42eeeed33b9728b2"],
+          "$type": "com.linkedin.restli.common.CollectionMetadata"
+        },
+        "$recipeTypes": ["com.linkedin.8cb655c633e7e0b653ec8739ea2171d5"],
+        "elements": [],
+        "$type": "com.linkedin.restli.common.CollectionResponse"
+      },
+      "threadUrn": "urn:li:ugcPost:7460711927762173953",
+      "*totalSocialActivityCounts": "urn:li:fsd_socialActivityCounts:urn:li:ugcPost:7460711927762173953",
+      "showPremiumAnalytics": false,
+      "$recipeTypes": ["com.linkedin.d8132f2048cca1c659710fc4b0c2ef16"],
+      "$type": "com.linkedin.voyager.dash.social.SocialDetail",
+      "allowedCommentersScope": "ALL",
+      "reactionsOnCommentsTopicUrn": null,
+      "reactionSummariesTopicUrn": null,
+      "commentsTopicUrn": null,
+      "reshareUpdateUrn": null,
+      "reactions": {
+        "metadata": {
+          "paginationToken": "7fc6124f0aabee76c08b2132e4ac3904",
+          "nextStartOffset": null,
+          "$recipeTypes": ["com.linkedin.64865f146e234f1d835e875740a73959"],
+          "$type": "com.linkedin.voyager.dash.social.ReactionsMetadata"
+        },
+        "paging": {
+          "count": 10,
+          "start": 0,
+          "total": 7,
+          "$recipeTypes": ["com.linkedin.63ca0ec160c3eb9d42eeeed33b9728b2"],
+          "$type": "com.linkedin.restli.common.CollectionMetadata"
+        },
+        "*elements": [
+          "urn:li:fsd_reaction:(urn:li:fsd_profile:ACoAATESTPERSON,urn:li:ugcPost:7460711927762173953,0)",
+          "urn:li:fsd_reaction:(urn:li:fsd_profile:ACoAATESTPERSON,urn:li:ugcPost:7460711927762173953,0)",
+          "urn:li:fsd_reaction:(urn:li:fsd_profile:ACoAATESTPERSON,urn:li:ugcPost:7460711927762173953,0)",
+          "urn:li:fsd_reaction:(urn:li:fsd_profile:ACoAATESTPERSON,urn:li:ugcPost:7460711927762173953,0)",
+          "urn:li:fsd_reaction:(urn:li:fsd_profile:ACoAATESTPERSON,urn:li:ugcPost:7460711927762173953,0)",
+          "urn:li:fsd_reaction:(urn:li:fsd_profile:ACoAATESTPERSON,urn:li:ugcPost:7460711927762173953,0)",
+          "urn:li:fsd_reaction:(urn:li:fsd_profile:ACoAATESTPERSON,urn:li:ugcPost:7460711927762173953,0)"
+        ],
+        "$recipeTypes": ["com.linkedin.fcf7ac8a6bbf4e349101ac39027d40b1"],
+        "$type": "com.linkedin.restli.common.CollectionResponse"
+      },
+      "socialDetailsTopicUrn": null,
+      "preDashEntityUrn": "urn:li:fs_socialDetail:urn:li:ugcPost:7460711927762173953",
+      "commentSocialPermissionsTopicUrn": null
+    },
+    {
+      "entityUrn": "urn:li:fsd_socialPermissions:(urn:li:ugcPost:7460711927762173953,urn:li:fsd_profile:ACoAATESTME)",
+      "messagePermission": "PUBLIC",
+      "canShare": true,
+      "canReact": true,
+      "canPostComments": true,
+      "preDashEntityUrn": "urn:li:fs_socialPermissions:(urn:li:ugcPost:7460711927762173953,urn:li:fs_profile:(ACoAATESTME,en_US))",
+      "$recipeTypes": ["com.linkedin.8e251ac4b1abf5e6a59f5b79ee5c1272"],
+      "$type": "com.linkedin.voyager.dash.social.SocialPermissions"
+    }
+  ]
+}
