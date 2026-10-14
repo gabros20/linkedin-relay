@@ -2,12 +2,15 @@ import { describe, expect, test } from 'bun:test';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import {
+  HIRING_TEAM_URL,
+  hiringTeamBody,
   jobBatchUrl,
   jobDetailUrl,
   jobFilterSelection,
   jobFiltersUrl,
   jobIdOf,
   jobSearchUrl,
+  parseHiringTeam,
   parseJobBatch,
   parseJobCards,
   parseJobDetail,
@@ -309,5 +312,63 @@ describe('friendly filter names', () => {
     const r = jobFilterSelection({ experience: ['wizard'] });
     if (r.ok) throw new Error('expected refusal');
     expect(r.message).toContain('mid-senior');
+  });
+});
+
+// ─── The hiring team ──────────────────────────────────────────────────────────
+//
+// Captured 2026-10-14: the job page's "People you can reach out to" component
+// for a job its recruiter posted, one whose team shows a manager (no role
+// line), and one with no team (`0:null`). Answered in the session's language.
+const raw = (name: string) => readFileSync(join(import.meta.dir, 'fixtures', name), 'utf-8');
+
+describe('hiring team', () => {
+  test('one call to the job page component, with the job id', () => {
+    expect(HIRING_TEAM_URL).toContain(
+      'componentId=com.linkedin.sdui.generated.jobseeker.dsl.impl.peopleWhoCanHelp',
+    );
+    expect(hiringTeamBody('4478111486')).toMatchObject({
+      componentId: 'com.linkedin.sdui.generated.jobseeker.dsl.impl.peopleWhoCanHelp',
+      clientArguments: { payload: { jobId: '4478111486' } },
+    });
+  });
+
+  // 1 person shown; the parser emits 1.
+  test('the poster: name, profile, id for messages, headline, degree, role, verified', () => {
+    const r = parseHiringTeam(raw('job-team-poster.rsc'));
+    if (!r.ok) throw new Error(r.message);
+    expect(r.members).toEqual([
+      {
+        name: 'Person 1',
+        id: 'ACoAATESTPERSON1',
+        url: 'https://www.linkedin.com/in/person-1/',
+        headline: 'Headline 1',
+        degree: 'Több mint harmadik fokú',
+        role: 'Job poster',
+        verified: true,
+      },
+    ]);
+  });
+
+  test('a member with no role line', () => {
+    const r = parseHiringTeam(raw('job-team-member.rsc'));
+    if (!r.ok) throw new Error(r.message);
+    expect(r.members).toHaveLength(1);
+    expect(r.members[0]).toMatchObject({
+      name: 'Person 2',
+      headline: 'Headline 2',
+      degree: 'Harmadik',
+    });
+    expect(r.members[0]?.role).toBeUndefined();
+  });
+
+  test('no team is an empty team, not a failure', () => {
+    expect(parseHiringTeam(raw('job-team-none.rsc'))).toEqual({ ok: true, members: [] });
+  });
+
+  test('people shown but none readable is drift', () => {
+    const broken = raw('job-team-poster.rsc').replaceAll('/in/person-1/', '/x/');
+    expect(parseHiringTeam(broken).ok).toBe(false);
+    expect(parseHiringTeam('<html>').ok).toBe(false);
   });
 });

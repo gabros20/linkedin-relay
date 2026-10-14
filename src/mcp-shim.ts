@@ -414,13 +414,17 @@ export function buildServer(): McpServer {
       'company, location, workplace, employmentType, applicants, listed/expires, state (LISTED or ' +
       'CLOSED), and whether the user already applied or saved it. One id returns the job; ' +
       'several return {items, meta}, read 100 per job read (60 a day), so pass all finalists in ' +
-      `one call. meta.unread lists ids LinkedIn did not return. ${NO_RETRY}`,
+      `one call. meta.unread lists ids LinkedIn did not return. team: true adds hiringTeam ` +
+      '[{name, id, url, headline, degree, role ("Job poster"), verified}] per job — who posted ' +
+      'it and who is hiring — one page call (60 a day) per job; [] means LinkedIn shows no one, ' +
+      `and hiringTeamError says why one could not be read. ${NO_RETRY}`,
     {
       job: z
         .union([z.string().min(1), z.array(z.string().min(1)).min(1)])
         .describe('job id, /jobs/view/ URL or ?currentJobId= URL, or a list of them'),
+      team: z.boolean().optional().describe("also read each job's hiring team"),
     },
-    async ({ job }) => reply(await runJob(job)),
+    async ({ job, team }) => reply(await runJob(job, {}, undefined, { team: team === true })),
   );
 
   server.tool(

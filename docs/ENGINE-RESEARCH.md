@@ -295,6 +295,16 @@ Vienna, Austria". The old `typeahead/hitsV2?type=GEO` lookup is 404.
 
 Neither shape is one the web client sends, which is the trade for the call count.
 
+**The hiring team is not in the posting.** `WebFullJobPosting-65` carries a `JobHiringTeam`, but
+its `hiringTeamMembers` was empty in all 160 jobs read, and `poster` was null. The job page draws
+"Meet the hiring team" from an SDUI component, one POST per job:
+`componentId=com.linkedin.sdui.generated.jobseeker.dsl.impl.peopleWhoCanHelp`, payload
+`{jobId, isTwoPane:false}`, screen `com.linkedin.sdui.flagshipnav.jobs.JobDetails`. Each person is
+a card row (profile link, name, a Verified icon, `• <degree>`, headline, and a role line such as
+"Job poster" when there is one) beside a Message button whose compose URL names their profile id
+(`recipient=`). No team answers `0:null`, which was 22 of 29 jobs probed. The answer is in the
+session's language: the degree came back as "Harmadik" (Hungarian), the role line in English.
+
 ## 5g. People search — ✅ verified 2026-10-14
 
 The people results page now renders over SDUI, but `voyagerSearchDashClusters` (the `search`

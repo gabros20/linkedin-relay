@@ -9,6 +9,15 @@ const CARDS = fixture('jobs-cards.json');
 const OFFSITE = fixture('job-detail-offsite.json');
 const FILTERS = fixture('jobs-filters.json');
 const BATCH = fixture('job-detail-batch.json');
+const TEAM = readFileSync(join(import.meta.dir, 'fixtures', 'job-team-poster.rsc'), 'utf-8');
+
+/** The job page's hiring team: none for 4479054333, one poster for the rest. */
+function team(body: unknown, fails: string[] = []) {
+  const job = (body as { clientArguments: { payload: { jobId: string } } }).clientArguments.payload
+    .jobId;
+  if (fails.includes(job)) return { ok: false as const, code: 'FETCH_FAILED', message: '500' };
+  return { ok: true as const, raw: job === '4479054333' ? '0:null' : TEAM };
+}
 
 /**
  * A fake job search. Behind it is one endless list of jobs, stitched from
@@ -25,7 +34,7 @@ function linkedin(
   } = {},
 ) {
   const total = opts.total ?? 295;
-  const asked: { url: string; spendClass: string }[] = [];
+  const asked: { url: string; spendClass: string; body?: unknown }[] = [];
   const blocks = new Map<number, typeof CARDS>();
   const block = (n: number) => {
     if (!blocks.has(n))
@@ -40,9 +49,10 @@ function linkedin(
       );
     return blocks.get(n);
   };
-  const fetch: JobsFetch = async (url, spendClass) => {
-    asked.push({ url, spendClass });
+  const fetch: JobsFetch = async (url, spendClass, body) => {
+    asked.push({ url, spendClass, ...(body !== undefined ? { body } : {}) });
     const u = new URL(url);
+    if (u.pathname.includes('rsc-action')) return team(body, opts.fails);
     if (u.searchParams.has('ids')) return { ok: true, json: BATCH };
     if (u.pathname.includes('jobPostings')) return { ok: true, json: OFFSITE };
     if (u.pathname.includes('FilterClusters')) return { ok: true, json: FILTERS };
@@ -325,6 +335,44 @@ describe('lnrelay job', () => {
     const d = r.data as { items: { id: string }[]; meta: Record<string, unknown> };
     expect(d.items.map((j) => j.id).sort()).toEqual(['4478760759', '4479054333']);
     expect(d.meta).toMatchObject({ state: 'partial', returnedCount: 2, unread: ['999'] });
+  });
+
+  test('--team adds who posted and is hiring for it, one page call per job', async () => {
+    const { fetch, asked } = linkedin();
+    const r = await runJob('4477825502', {}, fetch, { team: true });
+    if (!r.ok) throw new Error(r.error.message);
+    expect(asked.map((a) => a.spendClass)).toEqual(['jobRead', 'page']);
+    expect(r.data).toMatchObject({
+      id: '4477825502',
+      hiringTeam: [{ name: 'Person 1', role: 'Job poster', id: 'ACoAATESTPERSON1' }],
+    });
+  });
+
+  test('--team on several jobs: each its own team; none shown is an empty team', async () => {
+    const r = await runJob(['4479054333', '4478760759'], {}, linkedin().fetch, { team: true });
+    if (!r.ok) throw new Error(r.error.message);
+    const d = r.data as { items: { id: string; hiringTeam?: unknown[] }[] };
+    expect(d.items.find((j) => j.id === '4479054333')?.hiringTeam).toEqual([]);
+    expect(d.items.find((j) => j.id === '4478760759')?.hiringTeam).toHaveLength(1);
+  });
+
+  test('a team that could not be read says so on the job, which is still returned', async () => {
+    const r = await runJob('4477825502', {}, linkedin({ fails: ['4477825502'] }).fetch, {
+      team: true,
+    });
+    if (!r.ok) throw new Error(r.error.message);
+    expect(r.data).toMatchObject({ id: '4477825502', hiringTeamError: 'FETCH_FAILED: 500' });
+    expect((r.data as { hiringTeam?: unknown }).hiringTeam).toBeUndefined();
+  });
+
+  test('--team with --compact names the team on the line', async () => {
+    const r = await runJob(['4479054333', '4478760759'], { compact: true }, linkedin().fetch, {
+      team: true,
+    });
+    if (!r.ok) throw new Error(r.error.message);
+    expect((r.data as { items: string[] }).items.join('\n')).toContain(
+      'team: Person 1 (Job poster) https://www.linkedin.com/in/person-1/',
+    );
   });
 
   test('something that is not a job is refused', async () => {

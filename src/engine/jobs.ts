@@ -11,12 +11,15 @@
 //                                                          option ids, counts
 //   detail      jobs/jobPostings/<id>                      description, apply
 //                                                          link, applicants
+//   hiring team SDUI component peopleWhoCanHelp            who posted it, who
+//                                                          is hiring for it
 //
 // A typed location goes as `seoLocation`; LinkedIn resolves it and echoes the
 // geo it chose, which we report, because "Vienna, Austria" resolved to one
 // district of Vienna. A `geoId` is exact.
 
 import { CONTRACTS } from './contracts.ts';
+import { Rows } from './posts.ts';
 import { encodeVariables, type RestliValue } from './restli.ts';
 import type { Failure } from './sdui-form.ts';
 
@@ -380,6 +383,90 @@ export function parseJobBatch(json: unknown): JobBatch | Failure {
     return drift(`the batch listed ${claimed} jobs but none could be read`);
   const errors = (root?.data?.errors ?? {}) as Record<string, unknown>;
   return { ok: true, jobs, missing: Object.keys(errors).map((k) => k.replace(/^\*/, '')) };
+}
+
+// ─── The hiring team ──────────────────────────────────────────────────────────
+//
+// Captured 2026-10-14. The detail's own JobHiringTeam is always empty (160 jobs
+// read, 0 members); the job page draws "Meet the hiring team" from an SDUI
+// component instead, one POST per job. It answers `0:null` when the job shows
+// no one, and in the session's language: the degree is LinkedIn's own words.
+
+export const HIRING_TEAM = 'com.linkedin.sdui.generated.jobseeker.dsl.impl.peopleWhoCanHelp';
+export const HIRING_TEAM_URL = `https://www.linkedin.com/flagship-web/rsc-action/actions/component?componentId=${HIRING_TEAM}&sduiid=${HIRING_TEAM}`;
+
+export function hiringTeamBody(jobId: string) {
+  return {
+    componentId: HIRING_TEAM,
+    clientArguments: {
+      payload: { jobId, isTwoPane: false },
+      states: [],
+      requestMetadata: { $type: 'proto.sdui.common.RequestMetadata' },
+      screenId: 'com.linkedin.sdui.flagshipnav.jobs.JobDetails',
+      knownTemplateIds: [],
+    },
+  };
+}
+
+export interface HiringMember {
+  name: string;
+  /** Their profile id: what `profile` and messages take. */
+  id?: string;
+  url: string;
+  headline?: string;
+  /** Connection degree, as LinkedIn words it in the session's language. */
+  degree?: string;
+  /** "Job poster", when LinkedIn says so. */
+  role?: string;
+  verified?: boolean;
+}
+
+const unquote = (s: string) => JSON.parse(`"${s}"`) as string;
+
+/** One person's card row: name, then degree ("• 3rd"), headline and role. */
+function memberOf(card: string, id: string | undefined): HiringMember | undefined {
+  const url = card.match(/"url":"(https:\/\/www\.linkedin\.com\/in\/[^"/]+\/)"/)?.[1];
+  const name = card.match(/\[null,"((?:[^"\\]|\\.)+)"/)?.[1];
+  if (url === undefined || name === undefined) return undefined;
+  const lines = [...card.matchAll(/"children":\["((?:[^"\\$]|\\.)(?:[^"\\]|\\.)*)"\]/g)].map((m) =>
+    unquote(m[1] as string).trim(),
+  );
+  const degree = lines.find((l) => l.startsWith('•'));
+  const [headline, role] = lines.filter((l) => l !== degree && l !== '');
+  return defined({
+    name: unquote(name).trim(),
+    id,
+    url,
+    headline,
+    degree: degree?.replace(/^•\s*/, ''),
+    role,
+    verified: /"role":"img","aria-label"/.test(card) ? true : undefined,
+  });
+}
+
+export function parseHiringTeam(stream: string): { ok: true; members: HiringMember[] } | Failure {
+  if (/^0:null\s*$/.test(stream.trim())) return { ok: true, members: [] };
+  if (!stream.includes('peopleWhoCanHelp'))
+    return drift('the hiring team answer was not the hiring team component');
+  const rows = new Rows(stream);
+  const cards = [...rows.byId].filter(([, row]) => /linkedin\.com\\?\/in\\?\//.test(row));
+  // Each card sits beside its Message button, which names their profile id.
+  const at = (card: string) => stream.indexOf(`"$L${card}"`);
+  const placed = cards.map(([key]) => at(key)).sort((a, b) => a - b);
+  const members: HiringMember[] = [];
+  for (const [key, row] of cards) {
+    const from = at(key);
+    const to = placed.find((p) => p > from) ?? stream.length;
+    const id = stream.slice(from, to).match(/recipient=([A-Za-z0-9_-]+)/)?.[1];
+    const m = memberOf(row, from === -1 ? undefined : id);
+    if (m !== undefined) members.push(m);
+  }
+  const shown = (stream.match(/screenContext=JOB_DETAILS_HIRING_TEAM/g) ?? []).length;
+  if (members.length === 0 && Math.max(shown, cards.length) > 0)
+    return drift(
+      `${Math.max(shown, cards.length)} hiring team members were shown but none could be read`,
+    );
+  return { ok: true, members };
 }
 
 // ─── Filters ──────────────────────────────────────────────────────────────────

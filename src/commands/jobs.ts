@@ -3,11 +3,15 @@
 // See engine/jobs.ts. A search call returns up to 100 jobs and spends the
 // job-search budget; a read returns up to 100 jobs in full (a batch get) and
 // spends the job-read budget. `--details` is opt-in because full descriptions
-// are large: search wide with cards, then read the finalists.
+// are large: search wide with cards, then read the finalists. `job --team`
+// adds each job's hiring team, one page call per job.
 
 import { createLiveClient } from '../engine/index.ts';
 import {
   BATCH_SIZE,
+  HIRING_TEAM_URL,
+  type HiringMember,
+  hiringTeamBody,
   type JobCard,
   type JobDetail,
   type JobFilterOptions,
@@ -19,6 +23,7 @@ import {
   jobIdOf,
   jobSearchUrl,
   PAGE_SIZE,
+  parseHiringTeam,
   parseJobBatch,
   parseJobCards,
   parseJobDetail,
@@ -40,20 +45,30 @@ import {
 } from './paged.ts';
 
 type Fetched =
-  | { ok: true; json: unknown }
+  | { ok: true; json?: unknown; raw?: string }
   | { ok: false; code: string; message: string; hint?: string };
 
-/** One accounted GET. Injectable so tests send nothing. */
-export type JobsFetch = (url: string, spendClass: 'jobSearch' | 'jobRead') => Promise<Fetched>;
+/** One accounted call: a POST when a body is given. Injectable so tests send nothing. */
+export type JobsFetch = (
+  url: string,
+  spendClass: 'jobSearch' | 'jobRead' | 'page',
+  body?: unknown,
+) => Promise<Fetched>;
 
 function liveFetch(command: string, quiet: boolean): JobsFetch | Envelope {
   const session = loadSession();
   if (session.state !== 'ok')
     return err(command, 'AUTH_FAILED', 'no LinkedIn session — run `lnrelay login`');
   const client = createLiveClient(session.session, undefined, quiet);
-  return async (url, spendClass) => {
-    const r = await client.request({ url, spendClass, operation: command });
-    return r.ok ? { ok: true, json: r.json } : r;
+  return async (url, spendClass, body) => {
+    const r = await client.request({
+      url,
+      ...(body !== undefined ? { method: 'POST' as const, body } : {}),
+      spendClass,
+      operation: command,
+    });
+    if (!r.ok) return r;
+    return { ok: true, json: r.json, raw: (r.classification as { raw?: string }).raw ?? '' };
   };
 }
 
@@ -74,7 +89,24 @@ export interface JobsRequest {
 /** LinkedIn serves no further than 1000 into any one job search. */
 const PAGING: Paging = { pageSize: PAGE_SIZE, max: 1000 };
 
-type Row = Matched<JobCard & Partial<Omit<JobDetail, keyof JobCard>>>;
+interface Teamed {
+  hiringTeam?: HiringMember[];
+  /** Why the team could not be read; the job itself was. */
+  hiringTeamError?: string;
+}
+
+type Row = Matched<JobCard & Partial<Omit<JobDetail, keyof JobCard>>> & Teamed;
+
+const teamLine = (team: HiringMember[] | undefined) =>
+  team === undefined || team.length === 0
+    ? undefined
+    : `team: ${team
+        .map((m) =>
+          [m.name, m.role !== undefined ? `(${m.role})` : undefined, m.url]
+            .filter(Boolean)
+            .join(' '),
+        )
+        .join('; ')}`;
 
 function compactJob(j: Row): string {
   return line([
@@ -89,6 +121,7 @@ function compactJob(j: Row): string {
     j.salary,
     j.apply?.url !== undefined ? `apply: ${j.apply.url}` : undefined,
     j.matched !== undefined ? `matched: ${j.matched.join(' + ')}` : undefined,
+    teamLine(j.hiringTeam),
   ]);
 }
 
@@ -226,11 +259,22 @@ export async function runJobs(
   });
 }
 
+/** Each job's hiring team, one call each, onto the job; a failed one says why. */
+async function addTeams(get: JobsFetch, jobs: (JobDetail & Teamed)[]): Promise<void> {
+  for (const job of jobs) {
+    const res = await get(HIRING_TEAM_URL, 'page', hiringTeamBody(job.id));
+    const team = res.ok ? parseHiringTeam(res.raw ?? '') : res;
+    if (team.ok) job.hiringTeam = team.members;
+    else job.hiringTeamError = `${team.code}: ${team.message}`;
+  }
+}
+
 /** One job by its own endpoint; several in batches of 100, one call each. */
 export async function runJob(
   input: string | string[] | undefined,
   opts: OutputOpts = {},
   fetch?: JobsFetch,
+  req: { team?: boolean } = {},
 ): Promise<Envelope> {
   const given = input === undefined ? [] : Array.isArray(input) ? input : [input];
   const ids = [...new Set(given.map(jobIdOf))];
@@ -252,6 +296,7 @@ export async function runJob(
     if (!res.ok) return err('job', res.code, res.message, res.hint);
     const detail = parseJobDetail(res.json);
     if (!detail.ok) return err('job', detail.code, detail.message, detail.hint);
+    if (req.team === true) await addTeams(get, [detail.job]);
     return ok('job', detail.job);
   }
 
@@ -259,7 +304,8 @@ export async function runJob(
   if (read.jobs.size === 0 && read.stoppedBy !== undefined)
     return err('job', read.stoppedBy, 'no job could be read');
   const unread = wanted.filter((id) => !read.jobs.has(id));
-  const jobs = wanted.flatMap((id) => read.jobs.get(id) ?? []);
+  const jobs: (JobDetail & Teamed)[] = wanted.flatMap((id) => read.jobs.get(id) ?? []);
+  if (req.team === true) await addTeams(get, jobs);
   return ok('job', {
     items: shape(jobs, opts, (j) =>
       compactJob({ ...j, easyApply: j.apply?.type === 'easy-apply', promoted: false }),

@@ -465,7 +465,7 @@ export async function dispatch(argv: string[], now: number): Promise<Envelope> {
     case 'jobs':
       return runJobs(jobsRequest(args), output(args));
     case 'job':
-      return runJob(args.positionals, output(args));
+      return runJob(args.positionals, output(args), undefined, { team: bool(args, 'team') });
     case 'job-filters':
       return runJobFilters(jobsRequest(args), output(args));
     case 'people':

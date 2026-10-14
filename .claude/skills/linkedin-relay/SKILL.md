@@ -113,6 +113,11 @@ From a shell the same is
 `lnrelay jobs "frontend engineer" "AI agent developer" --location "European Union" --workplace remote --posted week --limit 200 --compact`
 and `lnrelay job 4479248573 4475225930 4476083905`.
 
+- **Who to contact about a job: `job` with `team:true`** (`--team`). Each job gains `hiringTeam`:
+  name, profile id, profile URL, headline, connection degree, `role` ("Job poster") and `verified`.
+  It costs one page call per job (60 a day), so ask only for the finalists. `[]` means LinkedIn
+  shows no one for that job, which is most jobs; `hiringTeamError` means it could not be read.
+
 - **Put every keyword set in one `jobs` call**, never one call per keyword: the tool merges them by
   job id, so you read each job once and `job` reads it once. Separate calls leave the merging to you
   and spend reads twice on the same job.

@@ -151,6 +151,7 @@ lnrelay job-filters "frontend engineer" --location "European Union"   # every fi
 lnrelay jobs "frontend engineer" "AI agent developer" "agent engineer" \
   --location "European Union" --workplace remote --posted week --limit 200 --compact
 lnrelay job <id> <id> <id>                                            # finalists in full, apply links
+lnrelay job <id> --team                                               # + who posted it, who is hiring
 ```
 
 - **Every filter the jobs page has:** location or exact geo id, distance, date posted, experience,
