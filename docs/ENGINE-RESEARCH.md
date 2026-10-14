@@ -345,6 +345,26 @@ half a megabyte a post, and a post is not one record in it:
   (the label may carry a badge: "Microsoft Prémium").
 - Labels such as the time come in the viewer's LinkedIn language.
 
+## 5i. Messages, My Network, events, My items — ✅ verified 2026-10-14
+
+- **Messages:** `messengerConversations` (by folder category, cursor) and `messengerMessages` on
+  `voyagerMessagingGraphQL`. The page's mark-read, mark-seen and delivery-acknowledgement calls are
+  separate POSTs; reading an unread conversation through the GETs left it unread (tested with a
+  correspondent who knew). An empty page comes as `elements: []`, not `*elements`.
+- **My Network:** the search with origin `CurationHub`, intent `MYNETWORK_CURATION_HUB`, no keywords
+  (an empty one is a 400), result types `CONNECTIONS`, `PEOPLE_FOLLOW`, `FOLLOWERS`, `PAGES`,
+  `EVENTS`, `GROUPS`; `NEWSLETTERS` is a server error. Sent invitations:
+  `relationships/sentInvitationViewsV2` (carries a `sharedSecret`, never output). The page's
+  badge-clearing mutations are separate calls.
+- **Events:** one event is `voyagerEventsDashProfessionalEvents` by id; the events page's lists are
+  the SDUI component `eventsHomeCardGroupsSection`, read card by card in order and shape (labels are
+  in the viewer's language; a "•" separator sits between organiser and attendees).
+- **My items:** the search with intents `SEARCH_MY_ITEMS_SAVED_POSTS`, `SEARCH_MY_ITEMS_LEARNING`,
+  `SEARCH_MY_ITEMS_JOB_SEEKER` (+ `cardType`). The job tracker's stage names come from its own
+  `?stage=` URLs. **LinkedIn does not validate `cardType`**: a misspelled stage returns zero jobs, not
+  an error. `ARCHIVED` was proven with data; `SAVED`, `IN_PROGRESS`, `APPLIED`, `INTERVIEW` agreed
+  with the page's zero counts, which a wrong name would also produce.
+
 ## 6. The Rest.li codec is byte-correct — ✅ verified
 
 The web client sent `variables=(memberIdentity:ACoAA…)`. Our `encodeVariables()` produced the

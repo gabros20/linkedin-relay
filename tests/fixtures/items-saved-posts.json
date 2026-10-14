@@ -1,0 +1,713 @@
+{
+  "data": {
+    "data": {
+      "searchDashClustersByAll": {
+        "metadata": {
+          "entityResultAttributes": null,
+          "totalResultCount": 1,
+          "secondaryFilterCluster": null,
+          "$recipeTypes": ["com.linkedin.dfce49e2c6bb412fb4161cbbc7190d0d"],
+          "lazyRightRail": null,
+          "queryType": null,
+          "$type": "com.linkedin.voyager.dash.search.SearchClusterCollectionMetadata",
+          "paginationToken": "dXJuOmxpOmFjdGl2aXR5Ojc1MTM5ODY5MjkyNjUyNTQ0MDAtMTc5MTgzNDExMDk1OQ==",
+          "primaryResultType": null,
+          "primaryFilterCluster": {
+            "secondaryFilterGroups": [],
+            "primaryFilterGroups": [],
+            "appliedCount": 0,
+            "subsequentRefresh": true,
+            "primaryFilters": [
+              {
+                "appliedCount": null,
+                "displayName": {
+                  "textDirection": "USER_LOCALE",
+                  "text": "Just show me",
+                  "attributesV2": [],
+                  "accessibilityTextAttributesV2": [],
+                  "accessibilityText": null,
+                  "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
+                  "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+                },
+                "highlighted": false,
+                "secondaryFilterValues": [],
+                "parameterName": "savedPostType",
+                "typeaheadHint": null,
+                "typeaheadType": null,
+                "title": null,
+                "$recipeTypes": ["com.linkedin.0134fedeb876326e67efb0b562630cc0"],
+                "$type": "com.linkedin.voyager.dash.search.SearchFilterViewModel",
+                "flatten": false,
+                "primaryFilterValues": [
+                  {
+                    "image": null,
+                    "default": false,
+                    "tooltipText": null,
+                    "displayName": "All",
+                    "count": null,
+                    "disabled": false,
+                    "value": "ALL",
+                    "$recipeTypes": ["com.linkedin.83d0ac7bcab35bfe2d9bcd29421a7f1f"],
+                    "selected": true,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  }
+                ],
+                "renderType": "NAVIGATION"
+              }
+            ],
+            "secondaryFilters": [],
+            "title": null,
+            "$recipeTypes": ["com.linkedin.77f24fd65949d0f1cc3ca16da60fde58"],
+            "showAdvanceFilter": false,
+            "$type": "com.linkedin.voyager.dash.search.SearchFilterCluster"
+          },
+          "blockedQuery": false,
+          "entityActionButtonStyle": null,
+          "searchId": "4b69f7d6-0534-4943-9502-97f40f3bc865",
+          "filterAppliedCount": 0,
+          "clusterTitleFontSize": null,
+          "simpleInsightAttributes": null,
+          "knowledgeCardRightRail": null
+        },
+        "paging": {
+          "count": 10,
+          "start": 0,
+          "total": 1,
+          "$recipeTypes": ["com.linkedin.81b214c2cdd4f02cdb7d827958d2f3a1"],
+          "$type": "com.linkedin.restli.common.CollectionMetadata"
+        },
+        "$recipeTypes": ["com.linkedin.5f1d22f924ecb6a031ee124b8b767900"],
+        "elements": [
+          {
+            "image": null,
+            "quickFilterActions": [],
+            "clusterRenderType": "LIST",
+            "dismissable": false,
+            "totalResultCount": 1,
+            "controlName": null,
+            "description": null,
+            "title": null,
+            "$recipeTypes": ["com.linkedin.5c853aba2154c55483e72bf6cdfaaf3e"],
+            "$type": "com.linkedin.voyager.dash.search.SearchClusterViewModel",
+            "actionTypeName": null,
+            "navigationText": null,
+            "feature": null,
+            "navigationCardAction": null,
+            "position": null,
+            "items": [
+              {
+                "item": {
+                  "cluster": null,
+                  "bannerCard": null,
+                  "searchSuggestionCard": null,
+                  "feedbackCard": null,
+                  "knowledgeCardV2": null,
+                  "keywordsSuggestionCard": null,
+                  "queryClarificationCard": null,
+                  "simpleText": null,
+                  "topicalQuestionCard": null,
+                  "*entityResult": "urn:li:fsd_entityResultViewModel:(urn:li:activity:7513986929265254400,SEARCH_SRP,DEFAULT)",
+                  "simpleTextV2": null,
+                  "promoCard": null,
+                  "centeredText": null,
+                  "simpleImage": null
+                },
+                "position": null,
+                "$recipeTypes": ["com.linkedin.edd11a570456ce19ca1f5ec3c9bb03c1"],
+                "$type": "com.linkedin.voyager.dash.search.SearchItem"
+              }
+            ],
+            "results": [],
+            "trackingId": null
+          }
+        ],
+        "$type": "com.linkedin.restli.common.CollectionResponse"
+      },
+      "$recipeTypes": ["com.linkedin.c293aa010e51bae32433eeb13b1682fa"],
+      "$type": "com.linkedin.c293aa010e51bae32433eeb13b1682fa"
+    },
+    "errors": [
+      {
+        "message": "The field at path '/searchDashClustersByAll/metadata/entityResultAttributes/templateType' was declared as a non null type, but the code involved in retrieving data has wrongly returned a null value.  The graphql specification requires that the parent field be set to null, or if that is non nullable that it bubble up null to its parent and so on. The non-nullable type is 'dash_search_EntityResultTemplate' within parent type 'dash_search_EntityResultAttributes'",
+        "path": ["searchDashClustersByAll", "metadata", "entityResultAttributes", "templateType"],
+        "extensions": { "classification": "NullValueInNonNullableField" }
+      }
+    ]
+  },
+  "included": [
+    {
+      "saved": true,
+      "entityUrn": "urn:li:fsd_saveState:(SAVE,urn:li:activity:7513986929265254400)",
+      "preDashEntityUrn": "urn:li:fs_saveAction:(SAVE,urn:li:activity:7513986929265254400)",
+      "$recipeTypes": ["com.linkedin.f1b2492c05b41398477b887761d337a9"],
+      "$type": "com.linkedin.voyager.dash.feed.SaveState"
+    },
+    {
+      "entityUrn": "urn:li:fsd_profile:ACoAATESTPERSON1",
+      "$recipeTypes": ["com.linkedin.e0372afc4a18480b00ca7e4906904fd7"],
+      "$type": "com.linkedin.voyager.dash.identity.profile.Profile"
+    },
+    {
+      "template": "CONTENT_A",
+      "actorNavigationContext": {
+        "openExternally": false,
+        "$recipeTypes": ["com.linkedin.55ee9afd4182671fe7e271f615659525"],
+        "url": "https://www.linkedin.com/in/person-1?miniProfileUrn=urn%3Ali%3Afs_miniProfile%3AACoAATESTPERSON1",
+        "$type": "com.linkedin.voyager.dash.search.NavigationContext"
+      },
+      "trackingUrn": "urn:li:activity:7513986929265254400",
+      "controlName": null,
+      "interstitialComponent": null,
+      "primaryActions": [],
+      "entityCustomTrackingInfo": null,
+      "title": {
+        "textDirection": "FIRST_STRONG",
+        "text": "Person 1",
+        "attributesV2": [],
+        "accessibilityTextAttributesV2": [],
+        "accessibilityText": "Person 1",
+        "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
+        "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+      },
+      "overflowActions": [
+        {
+          "trackingUrn": null,
+          "icon": {
+            "attributes": [
+              {
+                "scalingType": null,
+                "detailData": {
+                  "profilePictureWithoutFrame": null,
+                  "profilePictureWithRingStatus": null,
+                  "companyLogo": null,
+                  "icon": "IC_RIBBON_FILLED_24DP",
+                  "systemImage": null,
+                  "nonEntityGroupLogo": null,
+                  "vectorImage": null,
+                  "nonEntityProfessionalEventLogo": null,
+                  "profilePicture": null,
+                  "imageUrl": null,
+                  "professionalEventLogo": null,
+                  "nonEntityCompanyLogo": null,
+                  "nonEntitySchoolLogo": null,
+                  "groupLogo": null,
+                  "schoolLogo": null,
+                  "ghostImage": null,
+                  "nonEntityProfilePicture": null
+                },
+                "tintColor": null,
+                "$recipeTypes": ["com.linkedin.eb94fbb1518f790c4545aafdf571c64e"],
+                "tapTargets": [],
+                "displayAspectRatio": null,
+                "$type": "com.linkedin.voyager.dash.common.image.ImageAttribute"
+              }
+            ],
+            "actionTarget": null,
+            "accessibilityTextAttributes": [],
+            "totalCount": null,
+            "accessibilityText": null,
+            "$recipeTypes": ["com.linkedin.fe5b8a3ac5a4a165c17f53b7eae4209b"],
+            "$type": "com.linkedin.voyager.dash.common.image.ImageViewModel"
+          },
+          "controlName": null,
+          "actionRenderStyle": null,
+          "$recipeTypes": ["com.linkedin.30dee75e249786a8e1ceb4c1d056ab57"],
+          "$type": "com.linkedin.voyager.dash.search.EntityAction",
+          "searchActionType": "UNSAVE",
+          "actionBannerFeedback": {
+            "successCtaText": null,
+            "successNavigationUrl": null,
+            "failureNavigationUrl": null,
+            "successUndoneMessage": null,
+            "failureCtaText": "Refresh my list",
+            "successMessage": "Post unsaved",
+            "failureMessage": "Post could not be unsaved",
+            "$recipeTypes": ["com.linkedin.338f0409c0e49a21897c3cb97c10366a"],
+            "$type": "com.linkedin.voyager.dash.search.EntityActionBannerFeedback"
+          },
+          "text": {
+            "textDirection": "USER_LOCALE",
+            "text": "Unsave",
+            "attributesV2": [],
+            "accessibilityTextAttributesV2": [],
+            "accessibilityText": null,
+            "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
+            "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+          },
+          "actionDetails": {
+            "notificationSubscribeAction": null,
+            "shareViaLinkAction": null,
+            "embedHTMLAction": null,
+            "primaryProfileAction": null,
+            "statefulFollowAction": null,
+            "removeConnectionAction": null,
+            "searchSkillAction": null,
+            "navigationAction": null,
+            "followAction": null,
+            "overflowProfileActions": null,
+            "newsletterSubscribeAction": null,
+            "addLearningCourseToProfileAction": null,
+            "closeProjectAction": null,
+            "primaryProfileActionV2": null,
+            "*saveAction": "urn:li:fsd_saveState:(SAVE,urn:li:activity:7513986929265254400)",
+            "shareViaPostAction": null,
+            "leaveGroupAction": null,
+            "reportAction": null,
+            "shareViaMessageAction": null
+          },
+          "actionConfirmationDialog": null
+        },
+        {
+          "trackingUrn": null,
+          "icon": {
+            "attributes": [
+              {
+                "scalingType": null,
+                "detailData": {
+                  "profilePictureWithoutFrame": null,
+                  "profilePictureWithRingStatus": null,
+                  "companyLogo": null,
+                  "icon": "IC_MESSAGES_24DP",
+                  "systemImage": null,
+                  "nonEntityGroupLogo": null,
+                  "vectorImage": null,
+                  "nonEntityProfessionalEventLogo": null,
+                  "profilePicture": null,
+                  "imageUrl": null,
+                  "professionalEventLogo": null,
+                  "nonEntityCompanyLogo": null,
+                  "nonEntitySchoolLogo": null,
+                  "groupLogo": null,
+                  "schoolLogo": null,
+                  "ghostImage": null,
+                  "nonEntityProfilePicture": null
+                },
+                "tintColor": null,
+                "$recipeTypes": ["com.linkedin.eb94fbb1518f790c4545aafdf571c64e"],
+                "tapTargets": [],
+                "displayAspectRatio": null,
+                "$type": "com.linkedin.voyager.dash.common.image.ImageAttribute"
+              }
+            ],
+            "actionTarget": null,
+            "accessibilityTextAttributes": [],
+            "totalCount": null,
+            "accessibilityText": null,
+            "$recipeTypes": ["com.linkedin.fe5b8a3ac5a4a165c17f53b7eae4209b"],
+            "$type": "com.linkedin.voyager.dash.common.image.ImageViewModel"
+          },
+          "controlName": null,
+          "actionRenderStyle": null,
+          "$recipeTypes": ["com.linkedin.30dee75e249786a8e1ceb4c1d056ab57"],
+          "$type": "com.linkedin.voyager.dash.search.EntityAction",
+          "searchActionType": "SHARE_IN_MESSAGE",
+          "actionBannerFeedback": null,
+          "text": {
+            "textDirection": "USER_LOCALE",
+            "text": "Send in a private message",
+            "attributesV2": [],
+            "accessibilityTextAttributesV2": [],
+            "accessibilityText": null,
+            "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
+            "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+          },
+          "actionDetails": {
+            "notificationSubscribeAction": null,
+            "shareViaLinkAction": null,
+            "embedHTMLAction": null,
+            "primaryProfileAction": null,
+            "statefulFollowAction": null,
+            "removeConnectionAction": null,
+            "searchSkillAction": null,
+            "navigationAction": null,
+            "followAction": null,
+            "overflowProfileActions": null,
+            "saveAction": null,
+            "newsletterSubscribeAction": null,
+            "addLearningCourseToProfileAction": null,
+            "closeProjectAction": null,
+            "primaryProfileActionV2": null,
+            "shareViaPostAction": null,
+            "leaveGroupAction": null,
+            "reportAction": null,
+            "shareViaMessageAction": {
+              "messageComposeOption": null,
+              "referringModuleKey": "search:my_items_saved_posts",
+              "icon": null,
+              "text": null,
+              "message": "https://www.linkedin.com/feed/update/urn:li:activity:7513986929265254400?updateEntityUrn=urn%3Ali%3Afs_updateV2%3A%28urn%3Ali%3Aactivity%3A7513986929265254400%2CFEED_DETAIL%2CEMPTY%2CDEFAULT%2Cfalse%29",
+              "$recipeTypes": ["com.linkedin.097bfff3e704fd2f8e33db38806d2312"],
+              "$type": "com.linkedin.voyager.dash.search.ShareViaMessageAction"
+            }
+          },
+          "actionConfirmationDialog": null
+        },
+        {
+          "trackingUrn": null,
+          "icon": {
+            "attributes": [
+              {
+                "scalingType": null,
+                "detailData": {
+                  "profilePictureWithoutFrame": null,
+                  "profilePictureWithRingStatus": null,
+                  "companyLogo": null,
+                  "icon": "IC_SHARE_24DP",
+                  "systemImage": null,
+                  "nonEntityGroupLogo": null,
+                  "vectorImage": null,
+                  "nonEntityProfessionalEventLogo": null,
+                  "profilePicture": null,
+                  "imageUrl": null,
+                  "professionalEventLogo": null,
+                  "nonEntityCompanyLogo": null,
+                  "nonEntitySchoolLogo": null,
+                  "groupLogo": null,
+                  "schoolLogo": null,
+                  "ghostImage": null,
+                  "nonEntityProfilePicture": null
+                },
+                "tintColor": null,
+                "$recipeTypes": ["com.linkedin.eb94fbb1518f790c4545aafdf571c64e"],
+                "tapTargets": [],
+                "displayAspectRatio": null,
+                "$type": "com.linkedin.voyager.dash.common.image.ImageAttribute"
+              }
+            ],
+            "actionTarget": null,
+            "accessibilityTextAttributes": [],
+            "totalCount": null,
+            "accessibilityText": null,
+            "$recipeTypes": ["com.linkedin.fe5b8a3ac5a4a165c17f53b7eae4209b"],
+            "$type": "com.linkedin.voyager.dash.common.image.ImageViewModel"
+          },
+          "controlName": null,
+          "actionRenderStyle": null,
+          "$recipeTypes": ["com.linkedin.30dee75e249786a8e1ceb4c1d056ab57"],
+          "$type": "com.linkedin.voyager.dash.search.EntityAction",
+          "searchActionType": "SHARE_ENTITY_VIA_LINK",
+          "actionBannerFeedback": null,
+          "text": {
+            "textDirection": "USER_LOCALE",
+            "text": "Share via",
+            "attributesV2": [],
+            "accessibilityTextAttributesV2": [],
+            "accessibilityText": null,
+            "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
+            "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+          },
+          "actionDetails": {
+            "notificationSubscribeAction": null,
+            "shareViaLinkAction": {
+              "icon": null,
+              "text": null,
+              "message": null,
+              "$recipeTypes": ["com.linkedin.70640e3147f8e16b1771da60f669f41c"],
+              "url": "https://www.linkedin.com/feed/update/urn:li:activity:7513986929265254400?updateEntityUrn=urn%3Ali%3Afs_updateV2%3A%28urn%3Ali%3Aactivity%3A7513986929265254400%2CFEED_DETAIL%2CEMPTY%2CDEFAULT%2Cfalse%29",
+              "$type": "com.linkedin.voyager.dash.search.ShareViaLinkAction"
+            },
+            "embedHTMLAction": null,
+            "primaryProfileAction": null,
+            "statefulFollowAction": null,
+            "removeConnectionAction": null,
+            "searchSkillAction": null,
+            "navigationAction": null,
+            "followAction": null,
+            "overflowProfileActions": null,
+            "saveAction": null,
+            "newsletterSubscribeAction": null,
+            "addLearningCourseToProfileAction": null,
+            "closeProjectAction": null,
+            "primaryProfileActionV2": null,
+            "shareViaPostAction": null,
+            "leaveGroupAction": null,
+            "reportAction": null,
+            "shareViaMessageAction": null
+          },
+          "actionConfirmationDialog": null
+        },
+        {
+          "trackingUrn": null,
+          "icon": {
+            "attributes": [
+              {
+                "scalingType": null,
+                "detailData": {
+                  "profilePictureWithoutFrame": null,
+                  "profilePictureWithRingStatus": null,
+                  "companyLogo": null,
+                  "icon": "IC_FLAG_24DP",
+                  "systemImage": null,
+                  "nonEntityGroupLogo": null,
+                  "vectorImage": null,
+                  "nonEntityProfessionalEventLogo": null,
+                  "profilePicture": null,
+                  "imageUrl": null,
+                  "professionalEventLogo": null,
+                  "nonEntityCompanyLogo": null,
+                  "nonEntitySchoolLogo": null,
+                  "groupLogo": null,
+                  "schoolLogo": null,
+                  "ghostImage": null,
+                  "nonEntityProfilePicture": null
+                },
+                "tintColor": null,
+                "$recipeTypes": ["com.linkedin.eb94fbb1518f790c4545aafdf571c64e"],
+                "tapTargets": [],
+                "displayAspectRatio": null,
+                "$type": "com.linkedin.voyager.dash.common.image.ImageAttribute"
+              }
+            ],
+            "actionTarget": null,
+            "accessibilityTextAttributes": [],
+            "totalCount": null,
+            "accessibilityText": null,
+            "$recipeTypes": ["com.linkedin.fe5b8a3ac5a4a165c17f53b7eae4209b"],
+            "$type": "com.linkedin.voyager.dash.common.image.ImageViewModel"
+          },
+          "controlName": null,
+          "actionRenderStyle": null,
+          "$recipeTypes": ["com.linkedin.30dee75e249786a8e1ceb4c1d056ab57"],
+          "$type": "com.linkedin.voyager.dash.search.EntityAction",
+          "searchActionType": "REPORT",
+          "actionBannerFeedback": null,
+          "text": {
+            "textDirection": "USER_LOCALE",
+            "text": "Report this post",
+            "attributesV2": [],
+            "accessibilityTextAttributesV2": [],
+            "accessibilityText": null,
+            "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
+            "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+          },
+          "actionDetails": {
+            "notificationSubscribeAction": null,
+            "shareViaLinkAction": null,
+            "embedHTMLAction": null,
+            "primaryProfileAction": null,
+            "statefulFollowAction": null,
+            "removeConnectionAction": null,
+            "searchSkillAction": null,
+            "navigationAction": null,
+            "followAction": null,
+            "overflowProfileActions": null,
+            "saveAction": null,
+            "newsletterSubscribeAction": null,
+            "addLearningCourseToProfileAction": null,
+            "closeProjectAction": null,
+            "primaryProfileActionV2": null,
+            "shareViaPostAction": null,
+            "reportAction": {
+              "urn": "urn:li:share:7513986925922439171",
+              "contentSource": "UGC_POST",
+              "authorProfileId": "ACoAATESTPERSON1",
+              "authorUrn": "urn:li:fsd_profile:ACoAATESTPERSON1",
+              "$recipeTypes": ["com.linkedin.f4b0bc15ad9bff87e37f0fbe3390c14b"],
+              "$type": "com.linkedin.voyager.dash.search.ReportAction"
+            },
+            "leaveGroupAction": null,
+            "shareViaMessageAction": null
+          },
+          "actionConfirmationDialog": null
+        }
+      ],
+      "searchActionType": null,
+      "actorInsights": [],
+      "badgeIcon": null,
+      "entityUrn": "urn:li:fsd_entityResultViewModel:(urn:li:activity:7513986929265254400,SEARCH_SRP,DEFAULT)",
+      "showAdditionalCluster": false,
+      "ringStatus": null,
+      "primarySubtitle": {
+        "textDirection": "USER_LOCALE",
+        "text": "Headline 1",
+        "attributesV2": [],
+        "accessibilityTextAttributesV2": [],
+        "accessibilityText": null,
+        "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
+        "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+      },
+      "badgeText": {
+        "textDirection": "USER_LOCALE",
+        "text": "• 3rd+",
+        "attributesV2": [],
+        "accessibilityTextAttributesV2": [],
+        "accessibilityText": null,
+        "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
+        "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+      },
+      "trackingId": "27dDdTgQQbq4y7yo/GBMpg==",
+      "summary": {
+        "textDirection": "USER_LOCALE",
+        "text": "Post text",
+        "attributesV2": [],
+        "accessibilityTextAttributesV2": [],
+        "accessibilityText": null,
+        "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
+        "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+      },
+      "actorNavigationUrl": "https://www.linkedin.com/in/person-1?miniProfileUrn=urn%3Ali%3Afs_miniProfile%3AACoAATESTPERSON1",
+      "addEntityToSearchHistory": false,
+      "lazyLoadedActions": null,
+      "secondarySubtitle": {
+        "textDirection": "USER_LOCALE",
+        "text": "5d •  ",
+        "attributesV2": [
+          {
+            "start": 5,
+            "length": 1,
+            "detailData": {
+              "jobPostingName": null,
+              "hyperlink": null,
+              "profileFamiliarName": null,
+              "color": null,
+              "companyName": null,
+              "icon": "IC_GLOBE_16DP",
+              "epoch": null,
+              "systemImage": null,
+              "textLink": null,
+              "listItemStyle": null,
+              "groupName": null,
+              "hyperlinkOpenExternally": null,
+              "listStyle": null,
+              "profileFullName": null,
+              "stringFieldReference": null,
+              "learningCourseName": null,
+              "profileMention": null,
+              "style": null,
+              "schoolName": null,
+              "hashtag": null
+            },
+            "$recipeTypes": ["com.linkedin.b8a09c2c7547138a1c3aebdda8a94e12"],
+            "$type": "com.linkedin.voyager.dash.common.text.TextAttribute"
+          }
+        ],
+        "accessibilityTextAttributesV2": [],
+        "accessibilityText": "5d Visible to everyone",
+        "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
+        "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+      },
+      "entityEmbeddedObject": {
+        "summary": null,
+        "image": {
+          "attributes": [
+            {
+              "scalingType": "ASPECT_FILL",
+              "detailData": {
+                "profilePictureWithoutFrame": null,
+                "profilePictureWithRingStatus": null,
+                "companyLogo": null,
+                "icon": null,
+                "systemImage": null,
+                "nonEntityGroupLogo": null,
+                "vectorImage": {
+                  "digitalmediaAsset": "urn:li:digitalmediaAsset:D4D22AQFy5Dp8tKaYDw",
+                  "attribution": null,
+                  "$recipeTypes": ["com.linkedin.28db8575bcf1c65bdc4bc15948d50ee9"],
+                  "artifacts": [
+                    {
+                      "width": 160,
+                      "$recipeTypes": ["com.linkedin.f0f435b4425ee2990eba8f0a4d614944"],
+                      "fileIdentifyingUrlPathSegment": "shrink_160/B4DaEcLSm5KAAk-/0/1791474084537?e=1793836800&v=beta&t=y57M4MHiIxx9REioRXcfeUrwB-YbuHGcxaEwDEpOxLo",
+                      "expiresAt": 1793836800000,
+                      "height": 120,
+                      "$type": "com.linkedin.common.VectorArtifact"
+                    },
+                    {
+                      "width": 800,
+                      "$recipeTypes": ["com.linkedin.f0f435b4425ee2990eba8f0a4d614944"],
+                      "fileIdentifyingUrlPathSegment": "shrink_800/B4DaEcLSm5KAAc-/0/1791474084538?e=1793836800&v=beta&t=kijoN320pfhH3FpDgmygSti4EZlH92jodENNpBVoSCs",
+                      "expiresAt": 1793836800000,
+                      "height": 600,
+                      "$type": "com.linkedin.common.VectorArtifact"
+                    },
+                    {
+                      "width": 20,
+                      "$recipeTypes": ["com.linkedin.f0f435b4425ee2990eba8f0a4d614944"],
+                      "fileIdentifyingUrlPathSegment": "shrink_20/B4DaEcLSm5KAAI-/0/1791474084537?e=1793836800&v=beta&t=3NMR-8wrJk4Nb4eZBnvqlqbnWhqE31w9XHx-lq7Zwlg",
+                      "expiresAt": 1793836800000,
+                      "height": 15,
+                      "$type": "com.linkedin.common.VectorArtifact"
+                    },
+                    {
+                      "width": 480,
+                      "$recipeTypes": ["com.linkedin.f0f435b4425ee2990eba8f0a4d614944"],
+                      "fileIdentifyingUrlPathSegment": "shrink_480/B4DaEcLSm5KAAg-/0/1791474084537?e=1793836800&v=beta&t=j3Oec8jx7HRCkoQNycvNbHXurFWua14a8aFLpNYwBlk",
+                      "expiresAt": 1793836800000,
+                      "height": 360,
+                      "$type": "com.linkedin.common.VectorArtifact"
+                    },
+                    {
+                      "width": 1080,
+                      "$recipeTypes": ["com.linkedin.f0f435b4425ee2990eba8f0a4d614944"],
+                      "fileIdentifyingUrlPathSegment": "image-high-res/B4DaEcLSm5KAAU-/0/1791474084537?e=1793836800&v=beta&t=4G08ls_KeGg3NF1EEfQamBCkiOq8ZQ10-wQXcDqsw_0",
+                      "expiresAt": 1793836800000,
+                      "height": 810,
+                      "$type": "com.linkedin.common.VectorArtifact"
+                    },
+                    {
+                      "width": 1080,
+                      "$recipeTypes": ["com.linkedin.f0f435b4425ee2990eba8f0a4d614944"],
+                      "fileIdentifyingUrlPathSegment": "shrink_1280/B4DaEcLSm5KAAM-/0/1791474084538?e=1793836800&v=beta&t=3MngNFekq7Rm0Bdcp5ZkOxMuaP27cteaCf3ReUlnDPk",
+                      "expiresAt": 1793836800000,
+                      "height": 810,
+                      "$type": "com.linkedin.common.VectorArtifact"
+                    }
+                  ],
+                  "rootUrl": "https://media.licdn.com/dms/image/v2/D4D22AQFy5Dp8tKaYDw/feedshare-",
+                  "$type": "com.linkedin.common.VectorImage"
+                },
+                "nonEntityProfessionalEventLogo": null,
+                "profilePicture": null,
+                "imageUrl": null,
+                "professionalEventLogo": null,
+                "nonEntityCompanyLogo": null,
+                "nonEntitySchoolLogo": null,
+                "groupLogo": null,
+                "schoolLogo": null,
+                "ghostImage": null,
+                "nonEntityProfilePicture": null
+              },
+              "tintColor": null,
+              "$recipeTypes": ["com.linkedin.eb94fbb1518f790c4545aafdf571c64e"],
+              "tapTargets": [],
+              "displayAspectRatio": null,
+              "$type": "com.linkedin.voyager.dash.common.image.ImageAttribute"
+            }
+          ],
+          "actionTarget": null,
+          "accessibilityTextAttributes": [],
+          "totalCount": null,
+          "accessibilityText": "Image preview",
+          "$recipeTypes": ["com.linkedin.fe5b8a3ac5a4a165c17f53b7eae4209b"],
+          "$type": "com.linkedin.voyager.dash.common.image.ImageViewModel"
+        },
+        "headerThumbnail": null,
+        "secondarySubtitle": null,
+        "trackingUrn": null,
+        "primaryActions": [],
+        "showPlayButton": false,
+        "title": null,
+        "$recipeTypes": ["com.linkedin.bd93318ac5710b71fba68ebb50fd5bfd"],
+        "renderStyle": "DEFAULT_CONTENT",
+        "$type": "com.linkedin.voyager.dash.search.EntityEmbeddedObject",
+        "primarySubtitle": null,
+        "headerTitle": null
+      },
+      "navigationUrl": "https://www.linkedin.com/feed/update/urn:li:activity:7513986929265254400?updateEntityUrn=urn%3Ali%3Afs_updateV2%3A%28urn%3Ali%3Aactivity%3A7513986929265254400%2CFEED_DETAIL%2CEMPTY%2CDEFAULT%2Cfalse%29",
+      "unreadIndicatorDetails": null,
+      "$recipeTypes": ["com.linkedin.cf4b25c18907ea8eafe915c8bfa24109"],
+      "target": {
+        "updateV2Urn": "urn:li:fs_updateV2:(urn:li:activity:7513986929265254400,BLENDED_SEARCH_FEED,EMPTY,DEFAULT,false)",
+        "profile": null
+      },
+      "$type": "com.linkedin.voyager.dash.search.EntityResultViewModel",
+      "actorTrackingUrn": "urn:li:member:705148390",
+      "navigationContext": {
+        "openExternally": false,
+        "$recipeTypes": ["com.linkedin.55ee9afd4182671fe7e271f615659525"],
+        "url": "https://www.linkedin.com/feed/update/urn:li:activity:7513986929265254400?updateEntityUrn=urn%3Ali%3Afs_updateV2%3A%28urn%3Ali%3Aactivity%3A7513986929265254400%2CFEED_DETAIL%2CEMPTY%2CDEFAULT%2Cfalse%29",
+        "$type": "com.linkedin.voyager.dash.search.NavigationContext"
+      }
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 ---
 name: linkedin-relay
-description: Research LinkedIn from the user's own account — find people by company, past company, school, place, title, degree or whose connections they are, search posts, companies, groups, events, courses, products, services and schools, hunt jobs with every filter LinkedIn has and collect their apply links, read profiles, read the chronological feed — and, through the lnrelay CLI, post (text, image or video), comment, reply, react, delete and edit the user's own profile (headline, About, roles, skills) under the approval mode the owner chose. Use when looking at the user's own network (connections, followers, who they follow, invitations they sent), when finding or evaluating people (who works or worked somewhere, alumni, people in a role or a city, someone's connections), companies, groups, events, courses, posts on a topic, roles or job openings on LinkedIn, when the user wants job listings or application links, when reading what the user's network is posting, when the user wants to read their LinkedIn messages or draft replies to them, or when the user asks to post, engage or update their profile on LinkedIn. Cannot send messages, connect, or apply to jobs: those do not exist.
+description: Research LinkedIn from the user's own account — find people by company, past company, school, place, title, degree or whose connections they are, search posts, companies, groups, events, courses, products, services and schools, hunt jobs with every filter LinkedIn has and collect their apply links, read profiles, read the chronological feed — and, through the lnrelay CLI, post (text, image or video), comment, reply, react, delete and edit the user's own profile (headline, About, roles, skills) under the approval mode the owner chose. Use when looking at the user's own network (connections, followers, who they follow, invitations they sent) or their saved items (saved posts, courses, the job tracker), when finding or evaluating people (who works or worked somewhere, alumni, people in a role or a city, someone's connections), companies, groups, events, courses, posts on a topic, roles or job openings on LinkedIn, when the user wants job listings or application links, when reading what the user's network is posting, when the user wants to read their LinkedIn messages or draft replies to them, or when the user asks to post, engage or update their profile on LinkedIn. Cannot send messages, connect, or apply to jobs: those do not exist.
 ---
 
 # linkedin-relay
@@ -347,6 +347,19 @@ experience
 ```
 Each role on their profile with its `positionId` and title. The id is what `lnrelay role edit` and
 `lnrelay role remove` take.
+
+### `my-items` — saved posts, learning, the job tracker.
+```
+my_items list:posts|learning|jobs [stage:saved|in-progress|applied|interview|archived] [limit:N] [compact]
+```
+CLI: `lnrelay my-items posts|learning|jobs [--stage …] [--compact]`. 1 page call per 10 items.
+- `posts`: what the user saved — `id` (the post urn: `post` reads its thread), `author`,
+  `authorHeadline`, `posted`, `text`, `url`.
+- `learning`: their courses — `name`, `length`, `detail` (instructor, released), `progress`.
+- `jobs`: the job tracker — `id` (`job` reads it in full: description and apply link), `title`,
+  `company`, `location`, `workplace`, `stage`, `note` (e.g. "No longer accepting applications").
+  With no `stage`, all five stages (5 calls) and `meta.byStage`. LinkedIn does not check stage names:
+  an empty stage and a misnamed one look the same, so trust `byStage` with that in mind.
 
 ### `events` / `event` — the events page, and events in full.
 ```

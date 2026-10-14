@@ -1,0 +1,2824 @@
+{
+  "data": {
+    "data": {
+      "searchDashClustersByAll": {
+        "metadata": {
+          "entityResultAttributes": null,
+          "totalResultCount": 6,
+          "secondaryFilterCluster": null,
+          "$recipeTypes": ["com.linkedin.dfce49e2c6bb412fb4161cbbc7190d0d"],
+          "lazyRightRail": null,
+          "queryType": null,
+          "$type": "com.linkedin.voyager.dash.search.SearchClusterCollectionMetadata",
+          "paginationToken": null,
+          "primaryResultType": null,
+          "primaryFilterCluster": {
+            "secondaryFilterGroups": [],
+            "primaryFilterGroups": [],
+            "appliedCount": 0,
+            "subsequentRefresh": true,
+            "primaryFilters": [
+              {
+                "appliedCount": null,
+                "displayName": {
+                  "textDirection": "USER_LOCALE",
+                  "text": "Sort by",
+                  "attributesV2": [],
+                  "accessibilityTextAttributesV2": [],
+                  "accessibilityText": null,
+                  "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
+                  "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+                },
+                "highlighted": false,
+                "secondaryFilterValues": [],
+                "parameterName": "cardType",
+                "typeaheadHint": null,
+                "typeaheadType": null,
+                "title": null,
+                "$recipeTypes": ["com.linkedin.0134fedeb876326e67efb0b562630cc0"],
+                "$type": "com.linkedin.voyager.dash.search.SearchFilterViewModel",
+                "flatten": false,
+                "primaryFilterValues": [
+                  {
+                    "image": null,
+                    "default": false,
+                    "tooltipText": null,
+                    "displayName": "Saved",
+                    "count": null,
+                    "disabled": false,
+                    "value": "SAVED",
+                    "$recipeTypes": ["com.linkedin.83d0ac7bcab35bfe2d9bcd29421a7f1f"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "image": null,
+                    "default": false,
+                    "tooltipText": null,
+                    "displayName": "In Progress",
+                    "count": null,
+                    "disabled": false,
+                    "value": "IN_PROGRESS",
+                    "$recipeTypes": ["com.linkedin.83d0ac7bcab35bfe2d9bcd29421a7f1f"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "image": null,
+                    "default": false,
+                    "tooltipText": null,
+                    "displayName": "Applied",
+                    "count": null,
+                    "disabled": false,
+                    "value": "APPLIED",
+                    "$recipeTypes": ["com.linkedin.83d0ac7bcab35bfe2d9bcd29421a7f1f"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "image": null,
+                    "default": false,
+                    "tooltipText": null,
+                    "displayName": "Archived",
+                    "count": null,
+                    "disabled": false,
+                    "value": "ARCHIVED",
+                    "$recipeTypes": ["com.linkedin.83d0ac7bcab35bfe2d9bcd29421a7f1f"],
+                    "selected": true,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  }
+                ],
+                "renderType": "NAVIGATION"
+              }
+            ],
+            "secondaryFilters": [],
+            "title": null,
+            "$recipeTypes": ["com.linkedin.77f24fd65949d0f1cc3ca16da60fde58"],
+            "showAdvanceFilter": false,
+            "$type": "com.linkedin.voyager.dash.search.SearchFilterCluster"
+          },
+          "blockedQuery": false,
+          "entityActionButtonStyle": null,
+          "searchId": "624d31f9-db2c-430b-a44a-0f87353ccfe3",
+          "filterAppliedCount": 0,
+          "clusterTitleFontSize": null,
+          "simpleInsightAttributes": null,
+          "knowledgeCardRightRail": null
+        },
+        "paging": {
+          "count": 10,
+          "start": 0,
+          "total": 6,
+          "$recipeTypes": ["com.linkedin.81b214c2cdd4f02cdb7d827958d2f3a1"],
+          "$type": "com.linkedin.restli.common.CollectionMetadata"
+        },
+        "$recipeTypes": ["com.linkedin.5f1d22f924ecb6a031ee124b8b767900"],
+        "elements": [
+          {
+            "image": null,
+            "quickFilterActions": [],
+            "clusterRenderType": "LIST",
+            "dismissable": false,
+            "totalResultCount": 6,
+            "controlName": null,
+            "description": null,
+            "title": null,
+            "$recipeTypes": ["com.linkedin.5c853aba2154c55483e72bf6cdfaaf3e"],
+            "$type": "com.linkedin.voyager.dash.search.SearchClusterViewModel",
+            "actionTypeName": null,
+            "navigationText": null,
+            "feature": null,
+            "navigationCardAction": null,
+            "position": null,
+            "items": [
+              {
+                "item": {
+                  "cluster": null,
+                  "bannerCard": null,
+                  "searchSuggestionCard": null,
+                  "feedbackCard": null,
+                  "knowledgeCardV2": null,
+                  "keywordsSuggestionCard": null,
+                  "queryClarificationCard": null,
+                  "simpleText": null,
+                  "topicalQuestionCard": null,
+                  "*entityResult": "urn:li:fsd_entityResultViewModel:(urn:li:fsd_jobPosting:4462316575,SEARCH_MY_ITEMS_JOB_SEEKER,DEFAULT)",
+                  "simpleTextV2": null,
+                  "promoCard": null,
+                  "centeredText": null,
+                  "simpleImage": null
+                },
+                "position": null,
+                "$recipeTypes": ["com.linkedin.edd11a570456ce19ca1f5ec3c9bb03c1"],
+                "$type": "com.linkedin.voyager.dash.search.SearchItem"
+              },
+              {
+                "item": {
+                  "cluster": null,
+                  "bannerCard": null,
+                  "searchSuggestionCard": null,
+                  "feedbackCard": null,
+                  "knowledgeCardV2": null,
+                  "keywordsSuggestionCard": null,
+                  "queryClarificationCard": null,
+                  "simpleText": null,
+                  "topicalQuestionCard": null,
+                  "*entityResult": "urn:li:fsd_entityResultViewModel:(urn:li:fsd_jobPosting:4457911189,SEARCH_MY_ITEMS_JOB_SEEKER,DEFAULT)",
+                  "simpleTextV2": null,
+                  "promoCard": null,
+                  "centeredText": null,
+                  "simpleImage": null
+                },
+                "position": null,
+                "$recipeTypes": ["com.linkedin.edd11a570456ce19ca1f5ec3c9bb03c1"],
+                "$type": "com.linkedin.voyager.dash.search.SearchItem"
+              },
+              {
+                "item": {
+                  "cluster": null,
+                  "bannerCard": null,
+                  "searchSuggestionCard": null,
+                  "feedbackCard": null,
+                  "knowledgeCardV2": null,
+                  "keywordsSuggestionCard": null,
+                  "queryClarificationCard": null,
+                  "simpleText": null,
+                  "topicalQuestionCard": null,
+                  "*entityResult": "urn:li:fsd_entityResultViewModel:(urn:li:fsd_jobPosting:4443265491,SEARCH_MY_ITEMS_JOB_SEEKER,DEFAULT)",
+                  "simpleTextV2": null,
+                  "promoCard": null,
+                  "centeredText": null,
+                  "simpleImage": null
+                },
+                "position": null,
+                "$recipeTypes": ["com.linkedin.edd11a570456ce19ca1f5ec3c9bb03c1"],
+                "$type": "com.linkedin.voyager.dash.search.SearchItem"
+              },
+              {
+                "item": {
+                  "cluster": null,
+                  "bannerCard": null,
+                  "searchSuggestionCard": null,
+                  "feedbackCard": null,
+                  "knowledgeCardV2": null,
+                  "keywordsSuggestionCard": null,
+                  "queryClarificationCard": null,
+                  "simpleText": null,
+                  "topicalQuestionCard": null,
+                  "*entityResult": "urn:li:fsd_entityResultViewModel:(urn:li:fsd_jobPosting:4458171869,SEARCH_MY_ITEMS_JOB_SEEKER,DEFAULT)",
+                  "simpleTextV2": null,
+                  "promoCard": null,
+                  "centeredText": null,
+                  "simpleImage": null
+                },
+                "position": null,
+                "$recipeTypes": ["com.linkedin.edd11a570456ce19ca1f5ec3c9bb03c1"],
+                "$type": "com.linkedin.voyager.dash.search.SearchItem"
+              },
+              {
+                "item": {
+                  "cluster": null,
+                  "bannerCard": null,
+                  "searchSuggestionCard": null,
+                  "feedbackCard": null,
+                  "knowledgeCardV2": null,
+                  "keywordsSuggestionCard": null,
+                  "queryClarificationCard": null,
+                  "simpleText": null,
+                  "topicalQuestionCard": null,
+                  "*entityResult": "urn:li:fsd_entityResultViewModel:(urn:li:fsd_jobPosting:4459168502,SEARCH_MY_ITEMS_JOB_SEEKER,DEFAULT)",
+                  "simpleTextV2": null,
+                  "promoCard": null,
+                  "centeredText": null,
+                  "simpleImage": null
+                },
+                "position": null,
+                "$recipeTypes": ["com.linkedin.edd11a570456ce19ca1f5ec3c9bb03c1"],
+                "$type": "com.linkedin.voyager.dash.search.SearchItem"
+              },
+              {
+                "item": {
+                  "cluster": null,
+                  "bannerCard": null,
+                  "searchSuggestionCard": null,
+                  "feedbackCard": null,
+                  "knowledgeCardV2": null,
+                  "keywordsSuggestionCard": null,
+                  "queryClarificationCard": null,
+                  "simpleText": null,
+                  "topicalQuestionCard": null,
+                  "*entityResult": "urn:li:fsd_entityResultViewModel:(urn:li:fsd_jobPosting:2733017062,SEARCH_MY_ITEMS_JOB_SEEKER,DEFAULT)",
+                  "simpleTextV2": null,
+                  "promoCard": null,
+                  "centeredText": null,
+                  "simpleImage": null
+                },
+                "position": null,
+                "$recipeTypes": ["com.linkedin.edd11a570456ce19ca1f5ec3c9bb03c1"],
+                "$type": "com.linkedin.voyager.dash.search.SearchItem"
+              }
+            ],
+            "results": [],
+            "trackingId": null
+          }
+        ],
+        "$type": "com.linkedin.restli.common.CollectionResponse"
+      },
+      "$recipeTypes": ["com.linkedin.c293aa010e51bae32433eeb13b1682fa"],
+      "$type": "com.linkedin.c293aa010e51bae32433eeb13b1682fa"
+    }
+  },
+  "included": [
+    {
+      "saved": true,
+      "entityUrn": "urn:li:fsd_saveState:(SAVE,urn:li:fsd_jobPosting:4458171869)",
+      "preDashEntityUrn": "urn:li:fs_saveAction:(SAVE,urn:li:fsd_jobPosting:4458171869)",
+      "$recipeTypes": ["com.linkedin.f1b2492c05b41398477b887761d337a9"],
+      "$type": "com.linkedin.voyager.dash.feed.SaveState"
+    },
+    {
+      "saved": true,
+      "entityUrn": "urn:li:fsd_saveState:(SAVE,urn:li:fsd_jobPosting:2733017062)",
+      "preDashEntityUrn": "urn:li:fs_saveAction:(SAVE,urn:li:fsd_jobPosting:2733017062)",
+      "$recipeTypes": ["com.linkedin.f1b2492c05b41398477b887761d337a9"],
+      "$type": "com.linkedin.voyager.dash.feed.SaveState"
+    },
+    {
+      "saved": true,
+      "entityUrn": "urn:li:fsd_saveState:(SAVE,urn:li:fsd_jobPosting:4457911189)",
+      "preDashEntityUrn": "urn:li:fs_saveAction:(SAVE,urn:li:fsd_jobPosting:4457911189)",
+      "$recipeTypes": ["com.linkedin.f1b2492c05b41398477b887761d337a9"],
+      "$type": "com.linkedin.voyager.dash.feed.SaveState"
+    },
+    {
+      "saved": true,
+      "entityUrn": "urn:li:fsd_saveState:(SAVE,urn:li:fsd_jobPosting:4443265491)",
+      "preDashEntityUrn": "urn:li:fs_saveAction:(SAVE,urn:li:fsd_jobPosting:4443265491)",
+      "$recipeTypes": ["com.linkedin.f1b2492c05b41398477b887761d337a9"],
+      "$type": "com.linkedin.voyager.dash.feed.SaveState"
+    },
+    {
+      "saved": true,
+      "entityUrn": "urn:li:fsd_saveState:(SAVE,urn:li:fsd_jobPosting:4462316575)",
+      "preDashEntityUrn": "urn:li:fs_saveAction:(SAVE,urn:li:fsd_jobPosting:4462316575)",
+      "$recipeTypes": ["com.linkedin.f1b2492c05b41398477b887761d337a9"],
+      "$type": "com.linkedin.voyager.dash.feed.SaveState"
+    },
+    {
+      "saved": true,
+      "entityUrn": "urn:li:fsd_saveState:(SAVE,urn:li:fsd_jobPosting:4459168502)",
+      "preDashEntityUrn": "urn:li:fs_saveAction:(SAVE,urn:li:fsd_jobPosting:4459168502)",
+      "$recipeTypes": ["com.linkedin.f1b2492c05b41398477b887761d337a9"],
+      "$type": "com.linkedin.voyager.dash.feed.SaveState"
+    },
+    {
+      "entityUrn": "urn:li:fsd_company:16289",
+      "logoResolutionResult": {
+        "url": null,
+        "vectorImage": {
+          "digitalmediaAsset": "urn:li:digitalmediaAsset:D4D0BAQFzZe1y4vbFfw",
+          "attribution": null,
+          "$recipeTypes": ["com.linkedin.28db8575bcf1c65bdc4bc15948d50ee9"],
+          "artifacts": [
+            {
+              "width": 200,
+              "$recipeTypes": ["com.linkedin.f0f435b4425ee2990eba8f0a4d614944"],
+              "fileIdentifyingUrlPathSegment": "200_200/B4DZap.l18HwAM-/0/1746608480365/betsson_group_logo?e=1793836800&v=beta&t=k0p9WKhwk0yBtGN_ZcLAs2V2KosDkasusdEnfPw4G0Q",
+              "expiresAt": 1793836800000,
+              "height": 200,
+              "$type": "com.linkedin.common.VectorArtifact"
+            },
+            {
+              "width": 100,
+              "$recipeTypes": ["com.linkedin.f0f435b4425ee2990eba8f0a4d614944"],
+              "fileIdentifyingUrlPathSegment": "100_100/B4DZap.l18HwAU-/0/1746608480365/betsson_group_logo?e=1793836800&v=beta&t=olWJRTsqaR1iMUeTfGW8EyaRWOwyzqCBSMoV7q25ERc",
+              "expiresAt": 1793836800000,
+              "height": 100,
+              "$type": "com.linkedin.common.VectorArtifact"
+            },
+            {
+              "width": 400,
+              "$recipeTypes": ["com.linkedin.f0f435b4425ee2990eba8f0a4d614944"],
+              "fileIdentifyingUrlPathSegment": "400_400/B4DZap.l18HwAc-/0/1746608480365/betsson_group_logo?e=1793836800&v=beta&t=HKKoWepCQPyTkZjJqLjKgbAhOHHJIJsfDgXsoP1QUtQ",
+              "expiresAt": 1793836800000,
+              "height": 400,
+              "$type": "com.linkedin.common.VectorArtifact"
+            }
+          ],
+          "rootUrl": "https://media.licdn.com/dms/image/v2/D4D0BAQFzZe1y4vbFfw/company-logo_",
+          "$type": "com.linkedin.common.VectorImage"
+        }
+      },
+      "$recipeTypes": ["com.linkedin.2c2374bef3eaba3e079b4a11e2f7bea8"],
+      "$type": "com.linkedin.voyager.dash.organization.Company"
+    },
+    {
+      "entityUrn": "urn:li:fsd_company:29019213",
+      "logoResolutionResult": {
+        "url": null,
+        "vectorImage": {
+          "digitalmediaAsset": "urn:li:digitalmediaAsset:D4E0BAQHWii4QGI7tMw",
+          "attribution": null,
+          "$recipeTypes": ["com.linkedin.28db8575bcf1c65bdc4bc15948d50ee9"],
+          "artifacts": [
+            {
+              "width": 100,
+              "$recipeTypes": ["com.linkedin.f0f435b4425ee2990eba8f0a4d614944"],
+              "fileIdentifyingUrlPathSegment": "100_100/B4EZ1MsKkVGcAQ-/0/1775108142858/ewor_logo?e=1793836800&v=beta&t=d-vZGO_NSB7ZLCxgobXmUoEJrRCVmYinZxdh-i8lyC8",
+              "expiresAt": 1793836800000,
+              "height": 100,
+              "$type": "com.linkedin.common.VectorArtifact"
+            },
+            {
+              "width": 400,
+              "$recipeTypes": ["com.linkedin.f0f435b4425ee2990eba8f0a4d614944"],
+              "fileIdentifyingUrlPathSegment": "400_400/B4EZ1MsKkVGcAY-/0/1775108142858/ewor_logo?e=1793836800&v=beta&t=qvJB4tvX96JqW2FJkk9lI25a4ZY4yyG5YTgnLQKhZHM",
+              "expiresAt": 1793836800000,
+              "height": 400,
+              "$type": "com.linkedin.common.VectorArtifact"
+            },
+            {
+              "width": 200,
+              "$recipeTypes": ["com.linkedin.f0f435b4425ee2990eba8f0a4d614944"],
+              "fileIdentifyingUrlPathSegment": "200_200/B4EZ1MsKkVGcAI-/0/1775108142858/ewor_logo?e=1793836800&v=beta&t=KyIzvCm7MJP91ns-15mBR6nqAL2_8xqCW66lGaOH4q0",
+              "expiresAt": 1793836800000,
+              "height": 200,
+              "$type": "com.linkedin.common.VectorArtifact"
+            }
+          ],
+          "rootUrl": "https://media.licdn.com/dms/image/v2/D4E0BAQHWii4QGI7tMw/company-logo_",
+          "$type": "com.linkedin.common.VectorImage"
+        }
+      },
+      "$recipeTypes": ["com.linkedin.2c2374bef3eaba3e079b4a11e2f7bea8"],
+      "$type": "com.linkedin.voyager.dash.organization.Company"
+    },
+    {
+      "entityUrn": "urn:li:fsd_company:110554061",
+      "logoResolutionResult": {
+        "url": null,
+        "vectorImage": {
+          "digitalmediaAsset": "urn:li:digitalmediaAsset:D560BAQHONiaIh1s2pQ",
+          "attribution": null,
+          "$recipeTypes": ["com.linkedin.28db8575bcf1c65bdc4bc15948d50ee9"],
+          "artifacts": [
+            {
+              "width": 400,
+              "$recipeTypes": ["com.linkedin.f0f435b4425ee2990eba8f0a4d614944"],
+              "fileIdentifyingUrlPathSegment": "400_400/B56ZsrqTa1IkAY-/0/1765964069408?e=1793836800&v=beta&t=U0MU3Fj37LcykdkyM0OiYI99TH0xJOIQy2jOwIve6gE",
+              "expiresAt": 1793836800000,
+              "height": 400,
+              "$type": "com.linkedin.common.VectorArtifact"
+            },
+            {
+              "width": 200,
+              "$recipeTypes": ["com.linkedin.f0f435b4425ee2990eba8f0a4d614944"],
+              "fileIdentifyingUrlPathSegment": "200_200/B56ZsrqTa1IkAI-/0/1765964069408?e=1793836800&v=beta&t=dPD80aeckW0W3XWvyyB3qDLY7Ys7pcUR_BSt6cY88S4",
+              "expiresAt": 1793836800000,
+              "height": 200,
+              "$type": "com.linkedin.common.VectorArtifact"
+            },
+            {
+              "width": 100,
+              "$recipeTypes": ["com.linkedin.f0f435b4425ee2990eba8f0a4d614944"],
+              "fileIdentifyingUrlPathSegment": "100_100/B56ZsrqTa1IkAQ-/0/1765964069408?e=1793836800&v=beta&t=ArCY0773MTWMo4Zb-VC-ecdV2_MC8jdZisi2wbc4vJc",
+              "expiresAt": 1793836800000,
+              "height": 100,
+              "$type": "com.linkedin.common.VectorArtifact"
+            }
+          ],
+          "rootUrl": "https://media.licdn.com/dms/image/v2/D560BAQHONiaIh1s2pQ/company-logo_",
+          "$type": "com.linkedin.common.VectorImage"
+        }
+      },
+      "$recipeTypes": ["com.linkedin.2c2374bef3eaba3e079b4a11e2f7bea8"],
+      "$type": "com.linkedin.voyager.dash.organization.Company"
+    },
+    {
+      "entityUrn": "urn:li:fsd_company:17885940",
+      "logoResolutionResult": {
+        "url": null,
+        "vectorImage": {
+          "digitalmediaAsset": "urn:li:digitalmediaAsset:C4E0BAQHXQNgimzPW9w",
+          "attribution": null,
+          "$recipeTypes": ["com.linkedin.28db8575bcf1c65bdc4bc15948d50ee9"],
+          "artifacts": [
+            {
+              "width": 200,
+              "$recipeTypes": ["com.linkedin.f0f435b4425ee2990eba8f0a4d614944"],
+              "fileIdentifyingUrlPathSegment": "200_200/company-logo_200_200/0/1634300938248?e=1793836800&v=beta&t=myr_fUN3TWzz9L5flGQ5lOMS9UL961qsCYkKN88gEvI",
+              "expiresAt": 1793836800000,
+              "height": 200,
+              "$type": "com.linkedin.common.VectorArtifact"
+            },
+            {
+              "width": 100,
+              "$recipeTypes": ["com.linkedin.f0f435b4425ee2990eba8f0a4d614944"],
+              "fileIdentifyingUrlPathSegment": "100_100/company-logo_100_100/0/1634300938248?e=1793836800&v=beta&t=oH2XxexmcIAgoIvwtSaGIPkPsG2qWVtc2n2qZizgw1A",
+              "expiresAt": 1793836800000,
+              "height": 100,
+              "$type": "com.linkedin.common.VectorArtifact"
+            },
+            {
+              "width": 400,
+              "$recipeTypes": ["com.linkedin.f0f435b4425ee2990eba8f0a4d614944"],
+              "fileIdentifyingUrlPathSegment": "400_400/company-logo_400_400/0/1634300938248?e=1793836800&v=beta&t=ApXtOYSPGOQQHazct9lPMgY2mNYEoQ5csYemzKFlbrM",
+              "expiresAt": 1793836800000,
+              "height": 400,
+              "$type": "com.linkedin.common.VectorArtifact"
+            }
+          ],
+          "rootUrl": "https://media.licdn.com/dms/image/v2/C4E0BAQHXQNgimzPW9w/company-logo_",
+          "$type": "com.linkedin.common.VectorImage"
+        }
+      },
+      "$recipeTypes": ["com.linkedin.2c2374bef3eaba3e079b4a11e2f7bea8"],
+      "$type": "com.linkedin.voyager.dash.organization.Company"
+    },
+    {
+      "entityUrn": "urn:li:fsd_company:557964",
+      "logoResolutionResult": {
+        "url": null,
+        "vectorImage": {
+          "digitalmediaAsset": "urn:li:digitalmediaAsset:D4D0BAQFDHzbwMIzWiQ",
+          "attribution": null,
+          "$recipeTypes": ["com.linkedin.28db8575bcf1c65bdc4bc15948d50ee9"],
+          "artifacts": [
+            {
+              "width": 200,
+              "$recipeTypes": ["com.linkedin.f0f435b4425ee2990eba8f0a4d614944"],
+              "fileIdentifyingUrlPathSegment": "200_200/company-logo_200_200/0/1734608227928/raiffeisen_bank_hungary_logo?e=1793836800&v=beta&t=4uhThYrvtGUzM5e3x8DNGNiAyf_BTG1jCIdkG-2aTWE",
+              "expiresAt": 1793836800000,
+              "height": 200,
+              "$type": "com.linkedin.common.VectorArtifact"
+            },
+            {
+              "width": 100,
+              "$recipeTypes": ["com.linkedin.f0f435b4425ee2990eba8f0a4d614944"],
+              "fileIdentifyingUrlPathSegment": "100_100/company-logo_100_100/0/1734608227928/raiffeisen_bank_hungary_logo?e=1793836800&v=beta&t=7LZxaSsFYTrI7gTwnIcYWqjeLQqEZr4CkvpcW-LHyAk",
+              "expiresAt": 1793836800000,
+              "height": 100,
+              "$type": "com.linkedin.common.VectorArtifact"
+            },
+            {
+              "width": 400,
+              "$recipeTypes": ["com.linkedin.f0f435b4425ee2990eba8f0a4d614944"],
+              "fileIdentifyingUrlPathSegment": "400_400/company-logo_400_400/0/1734608227928/raiffeisen_bank_hungary_logo?e=1793836800&v=beta&t=HApM2LkNZ_LCS1yKjsTK-Aq5vJR4UyXqKeeScE_Lohw",
+              "expiresAt": 1793836800000,
+              "height": 400,
+              "$type": "com.linkedin.common.VectorArtifact"
+            }
+          ],
+          "rootUrl": "https://media.licdn.com/dms/image/v2/D4D0BAQFDHzbwMIzWiQ/company-logo_",
+          "$type": "com.linkedin.common.VectorImage"
+        }
+      },
+      "$recipeTypes": ["com.linkedin.2c2374bef3eaba3e079b4a11e2f7bea8"],
+      "$type": "com.linkedin.voyager.dash.organization.Company"
+    },
+    {
+      "template": "UNIVERSAL",
+      "actorNavigationContext": null,
+      "trackingUrn": "urn:li:fsd_jobPosting:4459168502",
+      "controlName": null,
+      "interstitialComponent": null,
+      "primaryActions": [],
+      "entityCustomTrackingInfo": null,
+      "overflowActions": [
+        {
+          "trackingUrn": null,
+          "icon": {
+            "attributes": [
+              {
+                "scalingType": null,
+                "detailData": {
+                  "profilePictureWithoutFrame": null,
+                  "profilePictureWithRingStatus": null,
+                  "companyLogo": null,
+                  "icon": "IC_MESSAGES_24DP",
+                  "systemImage": null,
+                  "nonEntityGroupLogo": null,
+                  "vectorImage": null,
+                  "nonEntityProfessionalEventLogo": null,
+                  "profilePicture": null,
+                  "imageUrl": null,
+                  "professionalEventLogo": null,
+                  "nonEntityCompanyLogo": null,
+                  "nonEntitySchoolLogo": null,
+                  "groupLogo": null,
+                  "schoolLogo": null,
+                  "ghostImage": null,
+                  "nonEntityProfilePicture": null
+                },
+                "tintColor": null,
+                "$recipeTypes": ["com.linkedin.eb94fbb1518f790c4545aafdf571c64e"],
+                "tapTargets": [],
+                "displayAspectRatio": null,
+                "$type": "com.linkedin.voyager.dash.common.image.ImageAttribute"
+              }
+            ],
+            "actionTarget": null,
+            "accessibilityTextAttributes": [],
+            "totalCount": null,
+            "accessibilityText": null,
+            "$recipeTypes": ["com.linkedin.fe5b8a3ac5a4a165c17f53b7eae4209b"],
+            "$type": "com.linkedin.voyager.dash.common.image.ImageViewModel"
+          },
+          "controlName": null,
+          "actionRenderStyle": null,
+          "$recipeTypes": ["com.linkedin.30dee75e249786a8e1ceb4c1d056ab57"],
+          "$type": "com.linkedin.voyager.dash.search.EntityAction",
+          "searchActionType": "SHARE_IN_MESSAGE",
+          "actionBannerFeedback": null,
+          "text": {
+            "textDirection": "USER_LOCALE",
+            "text": "Send in a message",
+            "attributesV2": [],
+            "accessibilityTextAttributesV2": [],
+            "accessibilityText": "Send in a message",
+            "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
+            "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+          },
+          "actionDetails": {
+            "notificationSubscribeAction": null,
+            "shareViaLinkAction": null,
+            "embedHTMLAction": null,
+            "primaryProfileAction": null,
+            "statefulFollowAction": null,
+            "removeConnectionAction": null,
+            "searchSkillAction": null,
+            "navigationAction": null,
+            "followAction": null,
+            "overflowProfileActions": null,
+            "saveAction": null,
+            "newsletterSubscribeAction": null,
+            "addLearningCourseToProfileAction": null,
+            "closeProjectAction": null,
+            "primaryProfileActionV2": null,
+            "shareViaPostAction": null,
+            "leaveGroupAction": null,
+            "reportAction": null,
+            "shareViaMessageAction": {
+              "messageComposeOption": null,
+              "referringModuleKey": "search:my_items_saved_jobs",
+              "icon": null,
+              "text": null,
+              "message": "https://www.linkedin.com/jobs/view/4459168502/",
+              "$recipeTypes": ["com.linkedin.097bfff3e704fd2f8e33db38806d2312"],
+              "$type": "com.linkedin.voyager.dash.search.ShareViaMessageAction"
+            }
+          },
+          "actionConfirmationDialog": null
+        },
+        {
+          "trackingUrn": null,
+          "icon": {
+            "attributes": [
+              {
+                "scalingType": null,
+                "detailData": {
+                  "profilePictureWithoutFrame": null,
+                  "profilePictureWithRingStatus": null,
+                  "companyLogo": null,
+                  "icon": "IC_SHARE_24DP",
+                  "systemImage": null,
+                  "nonEntityGroupLogo": null,
+                  "vectorImage": null,
+                  "nonEntityProfessionalEventLogo": null,
+                  "profilePicture": null,
+                  "imageUrl": null,
+                  "professionalEventLogo": null,
+                  "nonEntityCompanyLogo": null,
+                  "nonEntitySchoolLogo": null,
+                  "groupLogo": null,
+                  "schoolLogo": null,
+                  "ghostImage": null,
+                  "nonEntityProfilePicture": null
+                },
+                "tintColor": null,
+                "$recipeTypes": ["com.linkedin.eb94fbb1518f790c4545aafdf571c64e"],
+                "tapTargets": [],
+                "displayAspectRatio": null,
+                "$type": "com.linkedin.voyager.dash.common.image.ImageAttribute"
+              }
+            ],
+            "actionTarget": null,
+            "accessibilityTextAttributes": [],
+            "totalCount": null,
+            "accessibilityText": null,
+            "$recipeTypes": ["com.linkedin.fe5b8a3ac5a4a165c17f53b7eae4209b"],
+            "$type": "com.linkedin.voyager.dash.common.image.ImageViewModel"
+          },
+          "controlName": null,
+          "actionRenderStyle": null,
+          "$recipeTypes": ["com.linkedin.30dee75e249786a8e1ceb4c1d056ab57"],
+          "$type": "com.linkedin.voyager.dash.search.EntityAction",
+          "searchActionType": "SHARE_ENTITY_VIA_LINK",
+          "actionBannerFeedback": null,
+          "text": {
+            "textDirection": "USER_LOCALE",
+            "text": "Share via...",
+            "attributesV2": [],
+            "accessibilityTextAttributesV2": [],
+            "accessibilityText": null,
+            "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
+            "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+          },
+          "actionDetails": {
+            "notificationSubscribeAction": null,
+            "shareViaLinkAction": {
+              "icon": null,
+              "text": null,
+              "message": null,
+              "$recipeTypes": ["com.linkedin.70640e3147f8e16b1771da60f669f41c"],
+              "url": "https://www.linkedin.com/jobs/view/4459168502/",
+              "$type": "com.linkedin.voyager.dash.search.ShareViaLinkAction"
+            },
+            "embedHTMLAction": null,
+            "primaryProfileAction": null,
+            "statefulFollowAction": null,
+            "removeConnectionAction": null,
+            "searchSkillAction": null,
+            "navigationAction": null,
+            "followAction": null,
+            "overflowProfileActions": null,
+            "saveAction": null,
+            "newsletterSubscribeAction": null,
+            "addLearningCourseToProfileAction": null,
+            "closeProjectAction": null,
+            "primaryProfileActionV2": null,
+            "shareViaPostAction": null,
+            "leaveGroupAction": null,
+            "reportAction": null,
+            "shareViaMessageAction": null
+          },
+          "actionConfirmationDialog": null
+        },
+        {
+          "trackingUrn": null,
+          "icon": {
+            "attributes": [
+              {
+                "scalingType": null,
+                "detailData": {
+                  "profilePictureWithoutFrame": null,
+                  "profilePictureWithRingStatus": null,
+                  "companyLogo": null,
+                  "icon": "IC_RIBBON_24DP",
+                  "systemImage": null,
+                  "nonEntityGroupLogo": null,
+                  "vectorImage": null,
+                  "nonEntityProfessionalEventLogo": null,
+                  "profilePicture": null,
+                  "imageUrl": null,
+                  "professionalEventLogo": null,
+                  "nonEntityCompanyLogo": null,
+                  "nonEntitySchoolLogo": null,
+                  "groupLogo": null,
+                  "schoolLogo": null,
+                  "ghostImage": null,
+                  "nonEntityProfilePicture": null
+                },
+                "tintColor": null,
+                "$recipeTypes": ["com.linkedin.eb94fbb1518f790c4545aafdf571c64e"],
+                "tapTargets": [],
+                "displayAspectRatio": null,
+                "$type": "com.linkedin.voyager.dash.common.image.ImageAttribute"
+              }
+            ],
+            "actionTarget": null,
+            "accessibilityTextAttributes": [],
+            "totalCount": null,
+            "accessibilityText": null,
+            "$recipeTypes": ["com.linkedin.fe5b8a3ac5a4a165c17f53b7eae4209b"],
+            "$type": "com.linkedin.voyager.dash.common.image.ImageViewModel"
+          },
+          "controlName": null,
+          "actionRenderStyle": null,
+          "$recipeTypes": ["com.linkedin.30dee75e249786a8e1ceb4c1d056ab57"],
+          "$type": "com.linkedin.voyager.dash.search.EntityAction",
+          "searchActionType": "UNSAVE_JOB",
+          "actionBannerFeedback": {
+            "successCtaText": null,
+            "successNavigationUrl": null,
+            "failureNavigationUrl": null,
+            "successUndoneMessage": null,
+            "failureCtaText": "Refresh my list",
+            "successMessage": "Job unsaved",
+            "failureMessage": "Job could not be unsaved",
+            "$recipeTypes": ["com.linkedin.338f0409c0e49a21897c3cb97c10366a"],
+            "$type": "com.linkedin.voyager.dash.search.EntityActionBannerFeedback"
+          },
+          "text": {
+            "textDirection": "USER_LOCALE",
+            "text": "Remove job",
+            "attributesV2": [],
+            "accessibilityTextAttributesV2": [],
+            "accessibilityText": null,
+            "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
+            "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+          },
+          "actionDetails": {
+            "notificationSubscribeAction": null,
+            "shareViaLinkAction": null,
+            "embedHTMLAction": null,
+            "primaryProfileAction": null,
+            "statefulFollowAction": null,
+            "removeConnectionAction": null,
+            "searchSkillAction": null,
+            "navigationAction": null,
+            "followAction": null,
+            "overflowProfileActions": null,
+            "newsletterSubscribeAction": null,
+            "addLearningCourseToProfileAction": null,
+            "closeProjectAction": null,
+            "primaryProfileActionV2": null,
+            "*saveAction": "urn:li:fsd_saveState:(SAVE,urn:li:fsd_jobPosting:4459168502)",
+            "shareViaPostAction": null,
+            "leaveGroupAction": null,
+            "reportAction": null,
+            "shareViaMessageAction": null
+          },
+          "actionConfirmationDialog": null
+        }
+      ],
+      "title": {
+        "textDirection": "USER_LOCALE",
+        "text": "AI Developer - Agentic AI",
+        "attributesV2": [],
+        "accessibilityTextAttributesV2": [],
+        "accessibilityText": null,
+        "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
+        "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+      },
+      "searchActionType": null,
+      "actorInsights": [],
+      "insightsResolutionResults": [
+        {
+          "jobPostingInsight": null,
+          "relationshipsInsight": null,
+          "serviceProviderRatingInsight": null,
+          "simpleInsight": {
+            "searchActionType": null,
+            "image": null,
+            "subtitle": null,
+            "controlName": null,
+            "navigationUrl": null,
+            "title": {
+              "textDirection": "USER_LOCALE",
+              "text": "No longer accepting applications",
+              "attributesV2": [],
+              "accessibilityTextAttributesV2": [],
+              "accessibilityText": null,
+              "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
+              "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+            },
+            "$recipeTypes": ["com.linkedin.bd9a707a5b119c1f331373113f57344a"],
+            "$type": "com.linkedin.voyager.dash.search.SimpleInsight"
+          },
+          "jobPostingFooterInsight": null,
+          "socialActivityCountsInsight": null,
+          "labelsInsight": null
+        }
+      ],
+      "badgeIcon": null,
+      "entityUrn": "urn:li:fsd_entityResultViewModel:(urn:li:fsd_jobPosting:4459168502,SEARCH_MY_ITEMS_JOB_SEEKER,DEFAULT)",
+      "showAdditionalCluster": false,
+      "ringStatus": null,
+      "primarySubtitle": {
+        "textDirection": "USER_LOCALE",
+        "text": "ALDI International IT Services (Hungary)",
+        "attributesV2": [],
+        "accessibilityTextAttributesV2": [],
+        "accessibilityText": null,
+        "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
+        "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+      },
+      "badgeText": null,
+      "trackingId": "bReOgp+SRYWVV8jw9dmegw==",
+      "actorNavigationUrl": null,
+      "addEntityToSearchHistory": false,
+      "summary": null,
+      "image": {
+        "attributes": [
+          {
+            "scalingType": null,
+            "detailData": {
+              "profilePictureWithoutFrame": null,
+              "profilePictureWithRingStatus": null,
+              "icon": null,
+              "systemImage": null,
+              "*companyLogo": "urn:li:fsd_company:110554061",
+              "nonEntityGroupLogo": null,
+              "vectorImage": null,
+              "nonEntityProfessionalEventLogo": null,
+              "profilePicture": null,
+              "imageUrl": null,
+              "professionalEventLogo": null,
+              "nonEntityCompanyLogo": null,
+              "nonEntitySchoolLogo": null,
+              "groupLogo": null,
+              "schoolLogo": null,
+              "ghostImage": null,
+              "nonEntityProfilePicture": null
+            },
+            "tintColor": null,
+            "$recipeTypes": ["com.linkedin.eb94fbb1518f790c4545aafdf571c64e"],
+            "tapTargets": [],
+            "displayAspectRatio": null,
+            "$type": "com.linkedin.voyager.dash.common.image.ImageAttribute"
+          }
+        ],
+        "actionTarget": null,
+        "accessibilityTextAttributes": [],
+        "totalCount": null,
+        "accessibilityText": "ALDI International IT Services",
+        "$recipeTypes": ["com.linkedin.fe5b8a3ac5a4a165c17f53b7eae4209b"],
+        "$type": "com.linkedin.voyager.dash.common.image.ImageViewModel"
+      },
+      "lazyLoadedActions": null,
+      "secondarySubtitle": {
+        "textDirection": "USER_LOCALE",
+        "text": "Budapest, Hungary (Hybrid)",
+        "attributesV2": [],
+        "accessibilityTextAttributesV2": [],
+        "accessibilityText": null,
+        "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
+        "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+      },
+      "navigationUrl": "https://www.linkedin.com/jobs/view/4459168502/?refId=x&trackingId=x&trk=flagship3_job_home_archivedjobs",
+      "entityEmbeddedObject": null,
+      "unreadIndicatorDetails": null,
+      "$recipeTypes": ["com.linkedin.cf4b25c18907ea8eafe915c8bfa24109"],
+      "target": null,
+      "$type": "com.linkedin.voyager.dash.search.EntityResultViewModel",
+      "actorTrackingUrn": null,
+      "navigationContext": {
+        "openExternally": false,
+        "$recipeTypes": ["com.linkedin.55ee9afd4182671fe7e271f615659525"],
+        "url": "https://www.linkedin.com/jobs/view/4459168502/?refId=x&trackingId=x&trk=flagship3_job_home_archivedjobs",
+        "$type": "com.linkedin.voyager.dash.search.NavigationContext"
+      }
+    },
+    {
+      "template": "UNIVERSAL",
+      "actorNavigationContext": null,
+      "trackingUrn": "urn:li:fsd_jobPosting:4462316575",
+      "controlName": null,
+      "interstitialComponent": null,
+      "primaryActions": [],
+      "entityCustomTrackingInfo": null,
+      "overflowActions": [
+        {
+          "trackingUrn": null,
+          "icon": {
+            "attributes": [
+              {
+                "scalingType": null,
+                "detailData": {
+                  "profilePictureWithoutFrame": null,
+                  "profilePictureWithRingStatus": null,
+                  "companyLogo": null,
+                  "icon": "IC_MESSAGES_24DP",
+                  "systemImage": null,
+                  "nonEntityGroupLogo": null,
+                  "vectorImage": null,
+                  "nonEntityProfessionalEventLogo": null,
+                  "profilePicture": null,
+                  "imageUrl": null,
+                  "professionalEventLogo": null,
+                  "nonEntityCompanyLogo": null,
+                  "nonEntitySchoolLogo": null,
+                  "groupLogo": null,
+                  "schoolLogo": null,
+                  "ghostImage": null,
+                  "nonEntityProfilePicture": null
+                },
+                "tintColor": null,
+                "$recipeTypes": ["com.linkedin.eb94fbb1518f790c4545aafdf571c64e"],
+                "tapTargets": [],
+                "displayAspectRatio": null,
+                "$type": "com.linkedin.voyager.dash.common.image.ImageAttribute"
+              }
+            ],
+            "actionTarget": null,
+            "accessibilityTextAttributes": [],
+            "totalCount": null,
+            "accessibilityText": null,
+            "$recipeTypes": ["com.linkedin.fe5b8a3ac5a4a165c17f53b7eae4209b"],
+            "$type": "com.linkedin.voyager.dash.common.image.ImageViewModel"
+          },
+          "controlName": null,
+          "actionRenderStyle": null,
+          "$recipeTypes": ["com.linkedin.30dee75e249786a8e1ceb4c1d056ab57"],
+          "$type": "com.linkedin.voyager.dash.search.EntityAction",
+          "searchActionType": "SHARE_IN_MESSAGE",
+          "actionBannerFeedback": null,
+          "text": {
+            "textDirection": "USER_LOCALE",
+            "text": "Send in a message",
+            "attributesV2": [],
+            "accessibilityTextAttributesV2": [],
+            "accessibilityText": "Send in a message",
+            "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
+            "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+          },
+          "actionDetails": {
+            "notificationSubscribeAction": null,
+            "shareViaLinkAction": null,
+            "embedHTMLAction": null,
+            "primaryProfileAction": null,
+            "statefulFollowAction": null,
+            "removeConnectionAction": null,
+            "searchSkillAction": null,
+            "navigationAction": null,
+            "followAction": null,
+            "overflowProfileActions": null,
+            "saveAction": null,
+            "newsletterSubscribeAction": null,
+            "addLearningCourseToProfileAction": null,
+            "closeProjectAction": null,
+            "primaryProfileActionV2": null,
+            "shareViaPostAction": null,
+            "leaveGroupAction": null,
+            "reportAction": null,
+            "shareViaMessageAction": {
+              "messageComposeOption": null,
+              "referringModuleKey": "search:my_items_saved_jobs",
+              "icon": null,
+              "text": null,
+              "message": "https://www.linkedin.com/jobs/view/4462316575/",
+              "$recipeTypes": ["com.linkedin.097bfff3e704fd2f8e33db38806d2312"],
+              "$type": "com.linkedin.voyager.dash.search.ShareViaMessageAction"
+            }
+          },
+          "actionConfirmationDialog": null
+        },
+        {
+          "trackingUrn": null,
+          "icon": {
+            "attributes": [
+              {
+                "scalingType": null,
+                "detailData": {
+                  "profilePictureWithoutFrame": null,
+                  "profilePictureWithRingStatus": null,
+                  "companyLogo": null,
+                  "icon": "IC_SHARE_24DP",
+                  "systemImage": null,
+                  "nonEntityGroupLogo": null,
+                  "vectorImage": null,
+                  "nonEntityProfessionalEventLogo": null,
+                  "profilePicture": null,
+                  "imageUrl": null,
+                  "professionalEventLogo": null,
+                  "nonEntityCompanyLogo": null,
+                  "nonEntitySchoolLogo": null,
+                  "groupLogo": null,
+                  "schoolLogo": null,
+                  "ghostImage": null,
+                  "nonEntityProfilePicture": null
+                },
+                "tintColor": null,
+                "$recipeTypes": ["com.linkedin.eb94fbb1518f790c4545aafdf571c64e"],
+                "tapTargets": [],
+                "displayAspectRatio": null,
+                "$type": "com.linkedin.voyager.dash.common.image.ImageAttribute"
+              }
+            ],
+            "actionTarget": null,
+            "accessibilityTextAttributes": [],
+            "totalCount": null,
+            "accessibilityText": null,
+            "$recipeTypes": ["com.linkedin.fe5b8a3ac5a4a165c17f53b7eae4209b"],
+            "$type": "com.linkedin.voyager.dash.common.image.ImageViewModel"
+          },
+          "controlName": null,
+          "actionRenderStyle": null,
+          "$recipeTypes": ["com.linkedin.30dee75e249786a8e1ceb4c1d056ab57"],
+          "$type": "com.linkedin.voyager.dash.search.EntityAction",
+          "searchActionType": "SHARE_ENTITY_VIA_LINK",
+          "actionBannerFeedback": null,
+          "text": {
+            "textDirection": "USER_LOCALE",
+            "text": "Share via...",
+            "attributesV2": [],
+            "accessibilityTextAttributesV2": [],
+            "accessibilityText": null,
+            "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
+            "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+          },
+          "actionDetails": {
+            "notificationSubscribeAction": null,
+            "shareViaLinkAction": {
+              "icon": null,
+              "text": null,
+              "message": null,
+              "$recipeTypes": ["com.linkedin.70640e3147f8e16b1771da60f669f41c"],
+              "url": "https://www.linkedin.com/jobs/view/4462316575/",
+              "$type": "com.linkedin.voyager.dash.search.ShareViaLinkAction"
+            },
+            "embedHTMLAction": null,
+            "primaryProfileAction": null,
+            "statefulFollowAction": null,
+            "removeConnectionAction": null,
+            "searchSkillAction": null,
+            "navigationAction": null,
+            "followAction": null,
+            "overflowProfileActions": null,
+            "saveAction": null,
+            "newsletterSubscribeAction": null,
+            "addLearningCourseToProfileAction": null,
+            "closeProjectAction": null,
+            "primaryProfileActionV2": null,
+            "shareViaPostAction": null,
+            "leaveGroupAction": null,
+            "reportAction": null,
+            "shareViaMessageAction": null
+          },
+          "actionConfirmationDialog": null
+        },
+        {
+          "trackingUrn": null,
+          "icon": {
+            "attributes": [
+              {
+                "scalingType": null,
+                "detailData": {
+                  "profilePictureWithoutFrame": null,
+                  "profilePictureWithRingStatus": null,
+                  "companyLogo": null,
+                  "icon": "IC_RIBBON_24DP",
+                  "systemImage": null,
+                  "nonEntityGroupLogo": null,
+                  "vectorImage": null,
+                  "nonEntityProfessionalEventLogo": null,
+                  "profilePicture": null,
+                  "imageUrl": null,
+                  "professionalEventLogo": null,
+                  "nonEntityCompanyLogo": null,
+                  "nonEntitySchoolLogo": null,
+                  "groupLogo": null,
+                  "schoolLogo": null,
+                  "ghostImage": null,
+                  "nonEntityProfilePicture": null
+                },
+                "tintColor": null,
+                "$recipeTypes": ["com.linkedin.eb94fbb1518f790c4545aafdf571c64e"],
+                "tapTargets": [],
+                "displayAspectRatio": null,
+                "$type": "com.linkedin.voyager.dash.common.image.ImageAttribute"
+              }
+            ],
+            "actionTarget": null,
+            "accessibilityTextAttributes": [],
+            "totalCount": null,
+            "accessibilityText": null,
+            "$recipeTypes": ["com.linkedin.fe5b8a3ac5a4a165c17f53b7eae4209b"],
+            "$type": "com.linkedin.voyager.dash.common.image.ImageViewModel"
+          },
+          "controlName": null,
+          "actionRenderStyle": null,
+          "$recipeTypes": ["com.linkedin.30dee75e249786a8e1ceb4c1d056ab57"],
+          "$type": "com.linkedin.voyager.dash.search.EntityAction",
+          "searchActionType": "UNSAVE_JOB",
+          "actionBannerFeedback": {
+            "successCtaText": null,
+            "successNavigationUrl": null,
+            "failureNavigationUrl": null,
+            "successUndoneMessage": null,
+            "failureCtaText": "Refresh my list",
+            "successMessage": "Job unsaved",
+            "failureMessage": "Job could not be unsaved",
+            "$recipeTypes": ["com.linkedin.338f0409c0e49a21897c3cb97c10366a"],
+            "$type": "com.linkedin.voyager.dash.search.EntityActionBannerFeedback"
+          },
+          "text": {
+            "textDirection": "USER_LOCALE",
+            "text": "Remove job",
+            "attributesV2": [],
+            "accessibilityTextAttributesV2": [],
+            "accessibilityText": null,
+            "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
+            "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+          },
+          "actionDetails": {
+            "notificationSubscribeAction": null,
+            "shareViaLinkAction": null,
+            "embedHTMLAction": null,
+            "primaryProfileAction": null,
+            "statefulFollowAction": null,
+            "removeConnectionAction": null,
+            "searchSkillAction": null,
+            "navigationAction": null,
+            "followAction": null,
+            "overflowProfileActions": null,
+            "newsletterSubscribeAction": null,
+            "addLearningCourseToProfileAction": null,
+            "closeProjectAction": null,
+            "primaryProfileActionV2": null,
+            "*saveAction": "urn:li:fsd_saveState:(SAVE,urn:li:fsd_jobPosting:4462316575)",
+            "shareViaPostAction": null,
+            "leaveGroupAction": null,
+            "reportAction": null,
+            "shareViaMessageAction": null
+          },
+          "actionConfirmationDialog": null
+        }
+      ],
+      "title": {
+        "textDirection": "USER_LOCALE",
+        "text": "Applied AI Founding Engineer (100 % remote) (m/f/d)",
+        "attributesV2": [],
+        "accessibilityTextAttributesV2": [],
+        "accessibilityText": null,
+        "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
+        "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+      },
+      "searchActionType": null,
+      "actorInsights": [],
+      "insightsResolutionResults": [
+        {
+          "jobPostingInsight": null,
+          "relationshipsInsight": null,
+          "serviceProviderRatingInsight": null,
+          "simpleInsight": {
+            "searchActionType": null,
+            "image": null,
+            "subtitle": null,
+            "controlName": null,
+            "navigationUrl": null,
+            "title": {
+              "textDirection": "USER_LOCALE",
+              "text": "No longer accepting applications",
+              "attributesV2": [],
+              "accessibilityTextAttributesV2": [],
+              "accessibilityText": null,
+              "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
+              "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+            },
+            "$recipeTypes": ["com.linkedin.bd9a707a5b119c1f331373113f57344a"],
+            "$type": "com.linkedin.voyager.dash.search.SimpleInsight"
+          },
+          "jobPostingFooterInsight": null,
+          "socialActivityCountsInsight": null,
+          "labelsInsight": null
+        }
+      ],
+      "badgeIcon": null,
+      "entityUrn": "urn:li:fsd_entityResultViewModel:(urn:li:fsd_jobPosting:4462316575,SEARCH_MY_ITEMS_JOB_SEEKER,DEFAULT)",
+      "showAdditionalCluster": false,
+      "ringStatus": null,
+      "primarySubtitle": {
+        "textDirection": "USER_LOCALE",
+        "text": "EWOR",
+        "attributesV2": [],
+        "accessibilityTextAttributesV2": [],
+        "accessibilityText": null,
+        "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
+        "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+      },
+      "badgeText": null,
+      "trackingId": "P+DXCxAjTbeAqWKSYcUU3A==",
+      "actorNavigationUrl": null,
+      "addEntityToSearchHistory": false,
+      "summary": null,
+      "image": {
+        "attributes": [
+          {
+            "scalingType": null,
+            "detailData": {
+              "profilePictureWithoutFrame": null,
+              "profilePictureWithRingStatus": null,
+              "icon": null,
+              "systemImage": null,
+              "*companyLogo": "urn:li:fsd_company:29019213",
+              "nonEntityGroupLogo": null,
+              "vectorImage": null,
+              "nonEntityProfessionalEventLogo": null,
+              "profilePicture": null,
+              "imageUrl": null,
+              "professionalEventLogo": null,
+              "nonEntityCompanyLogo": null,
+              "nonEntitySchoolLogo": null,
+              "groupLogo": null,
+              "schoolLogo": null,
+              "ghostImage": null,
+              "nonEntityProfilePicture": null
+            },
+            "tintColor": null,
+            "$recipeTypes": ["com.linkedin.eb94fbb1518f790c4545aafdf571c64e"],
+            "tapTargets": [],
+            "displayAspectRatio": null,
+            "$type": "com.linkedin.voyager.dash.common.image.ImageAttribute"
+          }
+        ],
+        "actionTarget": null,
+        "accessibilityTextAttributes": [],
+        "totalCount": null,
+        "accessibilityText": "EWOR",
+        "$recipeTypes": ["com.linkedin.fe5b8a3ac5a4a165c17f53b7eae4209b"],
+        "$type": "com.linkedin.voyager.dash.common.image.ImageViewModel"
+      },
+      "lazyLoadedActions": null,
+      "secondarySubtitle": {
+        "textDirection": "USER_LOCALE",
+        "text": "Budapest (Remote)",
+        "attributesV2": [],
+        "accessibilityTextAttributesV2": [],
+        "accessibilityText": null,
+        "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
+        "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+      },
+      "navigationUrl": "https://www.linkedin.com/jobs/view/4462316575/?refId=x&trackingId=x&trk=flagship3_job_home_archivedjobs",
+      "entityEmbeddedObject": null,
+      "unreadIndicatorDetails": null,
+      "$recipeTypes": ["com.linkedin.cf4b25c18907ea8eafe915c8bfa24109"],
+      "target": null,
+      "$type": "com.linkedin.voyager.dash.search.EntityResultViewModel",
+      "actorTrackingUrn": null,
+      "navigationContext": {
+        "openExternally": false,
+        "$recipeTypes": ["com.linkedin.55ee9afd4182671fe7e271f615659525"],
+        "url": "https://www.linkedin.com/jobs/view/4462316575/?refId=x&trackingId=x&trk=flagship3_job_home_archivedjobs",
+        "$type": "com.linkedin.voyager.dash.search.NavigationContext"
+      }
+    },
+    {
+      "template": "UNIVERSAL",
+      "actorNavigationContext": null,
+      "trackingUrn": "urn:li:fsd_jobPosting:2733017062",
+      "controlName": null,
+      "interstitialComponent": null,
+      "primaryActions": [],
+      "entityCustomTrackingInfo": null,
+      "overflowActions": [
+        {
+          "trackingUrn": null,
+          "icon": {
+            "attributes": [
+              {
+                "scalingType": null,
+                "detailData": {
+                  "profilePictureWithoutFrame": null,
+                  "profilePictureWithRingStatus": null,
+                  "companyLogo": null,
+                  "icon": "IC_MESSAGES_24DP",
+                  "systemImage": null,
+                  "nonEntityGroupLogo": null,
+                  "vectorImage": null,
+                  "nonEntityProfessionalEventLogo": null,
+                  "profilePicture": null,
+                  "imageUrl": null,
+                  "professionalEventLogo": null,
+                  "nonEntityCompanyLogo": null,
+                  "nonEntitySchoolLogo": null,
+                  "groupLogo": null,
+                  "schoolLogo": null,
+                  "ghostImage": null,
+                  "nonEntityProfilePicture": null
+                },
+                "tintColor": null,
+                "$recipeTypes": ["com.linkedin.eb94fbb1518f790c4545aafdf571c64e"],
+                "tapTargets": [],
+                "displayAspectRatio": null,
+                "$type": "com.linkedin.voyager.dash.common.image.ImageAttribute"
+              }
+            ],
+            "actionTarget": null,
+            "accessibilityTextAttributes": [],
+            "totalCount": null,
+            "accessibilityText": null,
+            "$recipeTypes": ["com.linkedin.fe5b8a3ac5a4a165c17f53b7eae4209b"],
+            "$type": "com.linkedin.voyager.dash.common.image.ImageViewModel"
+          },
+          "controlName": null,
+          "actionRenderStyle": null,
+          "$recipeTypes": ["com.linkedin.30dee75e249786a8e1ceb4c1d056ab57"],
+          "$type": "com.linkedin.voyager.dash.search.EntityAction",
+          "searchActionType": "SHARE_IN_MESSAGE",
+          "actionBannerFeedback": null,
+          "text": {
+            "textDirection": "USER_LOCALE",
+            "text": "Send in a message",
+            "attributesV2": [],
+            "accessibilityTextAttributesV2": [],
+            "accessibilityText": "Send in a message",
+            "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
+            "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+          },
+          "actionDetails": {
+            "notificationSubscribeAction": null,
+            "shareViaLinkAction": null,
+            "embedHTMLAction": null,
+            "primaryProfileAction": null,
+            "statefulFollowAction": null,
+            "removeConnectionAction": null,
+            "searchSkillAction": null,
+            "navigationAction": null,
+            "followAction": null,
+            "overflowProfileActions": null,
+            "saveAction": null,
+            "newsletterSubscribeAction": null,
+            "addLearningCourseToProfileAction": null,
+            "closeProjectAction": null,
+            "primaryProfileActionV2": null,
+            "shareViaPostAction": null,
+            "leaveGroupAction": null,
+            "reportAction": null,
+            "shareViaMessageAction": {
+              "messageComposeOption": null,
+              "referringModuleKey": "search:my_items_saved_jobs",
+              "icon": null,
+              "text": null,
+              "message": "https://www.linkedin.com/jobs/view/2733017062/",
+              "$recipeTypes": ["com.linkedin.097bfff3e704fd2f8e33db38806d2312"],
+              "$type": "com.linkedin.voyager.dash.search.ShareViaMessageAction"
+            }
+          },
+          "actionConfirmationDialog": null
+        },
+        {
+          "trackingUrn": null,
+          "icon": {
+            "attributes": [
+              {
+                "scalingType": null,
+                "detailData": {
+                  "profilePictureWithoutFrame": null,
+                  "profilePictureWithRingStatus": null,
+                  "companyLogo": null,
+                  "icon": "IC_SHARE_24DP",
+                  "systemImage": null,
+                  "nonEntityGroupLogo": null,
+                  "vectorImage": null,
+                  "nonEntityProfessionalEventLogo": null,
+                  "profilePicture": null,
+                  "imageUrl": null,
+                  "professionalEventLogo": null,
+                  "nonEntityCompanyLogo": null,
+                  "nonEntitySchoolLogo": null,
+                  "groupLogo": null,
+                  "schoolLogo": null,
+                  "ghostImage": null,
+                  "nonEntityProfilePicture": null
+                },
+                "tintColor": null,
+                "$recipeTypes": ["com.linkedin.eb94fbb1518f790c4545aafdf571c64e"],
+                "tapTargets": [],
+                "displayAspectRatio": null,
+                "$type": "com.linkedin.voyager.dash.common.image.ImageAttribute"
+              }
+            ],
+            "actionTarget": null,
+            "accessibilityTextAttributes": [],
+            "totalCount": null,
+            "accessibilityText": null,
+            "$recipeTypes": ["com.linkedin.fe5b8a3ac5a4a165c17f53b7eae4209b"],
+            "$type": "com.linkedin.voyager.dash.common.image.ImageViewModel"
+          },
+          "controlName": null,
+          "actionRenderStyle": null,
+          "$recipeTypes": ["com.linkedin.30dee75e249786a8e1ceb4c1d056ab57"],
+          "$type": "com.linkedin.voyager.dash.search.EntityAction",
+          "searchActionType": "SHARE_ENTITY_VIA_LINK",
+          "actionBannerFeedback": null,
+          "text": {
+            "textDirection": "USER_LOCALE",
+            "text": "Share via...",
+            "attributesV2": [],
+            "accessibilityTextAttributesV2": [],
+            "accessibilityText": null,
+            "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
+            "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+          },
+          "actionDetails": {
+            "notificationSubscribeAction": null,
+            "shareViaLinkAction": {
+              "icon": null,
+              "text": null,
+              "message": null,
+              "$recipeTypes": ["com.linkedin.70640e3147f8e16b1771da60f669f41c"],
+              "url": "https://www.linkedin.com/jobs/view/2733017062/",
+              "$type": "com.linkedin.voyager.dash.search.ShareViaLinkAction"
+            },
+            "embedHTMLAction": null,
+            "primaryProfileAction": null,
+            "statefulFollowAction": null,
+            "removeConnectionAction": null,
+            "searchSkillAction": null,
+            "navigationAction": null,
+            "followAction": null,
+            "overflowProfileActions": null,
+            "saveAction": null,
+            "newsletterSubscribeAction": null,
+            "addLearningCourseToProfileAction": null,
+            "closeProjectAction": null,
+            "primaryProfileActionV2": null,
+            "shareViaPostAction": null,
+            "leaveGroupAction": null,
+            "reportAction": null,
+            "shareViaMessageAction": null
+          },
+          "actionConfirmationDialog": null
+        },
+        {
+          "trackingUrn": null,
+          "icon": {
+            "attributes": [
+              {
+                "scalingType": null,
+                "detailData": {
+                  "profilePictureWithoutFrame": null,
+                  "profilePictureWithRingStatus": null,
+                  "companyLogo": null,
+                  "icon": "IC_RIBBON_24DP",
+                  "systemImage": null,
+                  "nonEntityGroupLogo": null,
+                  "vectorImage": null,
+                  "nonEntityProfessionalEventLogo": null,
+                  "profilePicture": null,
+                  "imageUrl": null,
+                  "professionalEventLogo": null,
+                  "nonEntityCompanyLogo": null,
+                  "nonEntitySchoolLogo": null,
+                  "groupLogo": null,
+                  "schoolLogo": null,
+                  "ghostImage": null,
+                  "nonEntityProfilePicture": null
+                },
+                "tintColor": null,
+                "$recipeTypes": ["com.linkedin.eb94fbb1518f790c4545aafdf571c64e"],
+                "tapTargets": [],
+                "displayAspectRatio": null,
+                "$type": "com.linkedin.voyager.dash.common.image.ImageAttribute"
+              }
+            ],
+            "actionTarget": null,
+            "accessibilityTextAttributes": [],
+            "totalCount": null,
+            "accessibilityText": null,
+            "$recipeTypes": ["com.linkedin.fe5b8a3ac5a4a165c17f53b7eae4209b"],
+            "$type": "com.linkedin.voyager.dash.common.image.ImageViewModel"
+          },
+          "controlName": null,
+          "actionRenderStyle": null,
+          "$recipeTypes": ["com.linkedin.30dee75e249786a8e1ceb4c1d056ab57"],
+          "$type": "com.linkedin.voyager.dash.search.EntityAction",
+          "searchActionType": "UNSAVE_JOB",
+          "actionBannerFeedback": {
+            "successCtaText": null,
+            "successNavigationUrl": null,
+            "failureNavigationUrl": null,
+            "successUndoneMessage": null,
+            "failureCtaText": "Refresh my list",
+            "successMessage": "Job unsaved",
+            "failureMessage": "Job could not be unsaved",
+            "$recipeTypes": ["com.linkedin.338f0409c0e49a21897c3cb97c10366a"],
+            "$type": "com.linkedin.voyager.dash.search.EntityActionBannerFeedback"
+          },
+          "text": {
+            "textDirection": "USER_LOCALE",
+            "text": "Remove job",
+            "attributesV2": [],
+            "accessibilityTextAttributesV2": [],
+            "accessibilityText": null,
+            "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
+            "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+          },
+          "actionDetails": {
+            "notificationSubscribeAction": null,
+            "shareViaLinkAction": null,
+            "embedHTMLAction": null,
+            "primaryProfileAction": null,
+            "statefulFollowAction": null,
+            "removeConnectionAction": null,
+            "searchSkillAction": null,
+            "navigationAction": null,
+            "followAction": null,
+            "overflowProfileActions": null,
+            "newsletterSubscribeAction": null,
+            "addLearningCourseToProfileAction": null,
+            "closeProjectAction": null,
+            "primaryProfileActionV2": null,
+            "*saveAction": "urn:li:fsd_saveState:(SAVE,urn:li:fsd_jobPosting:2733017062)",
+            "shareViaPostAction": null,
+            "leaveGroupAction": null,
+            "reportAction": null,
+            "shareViaMessageAction": null
+          },
+          "actionConfirmationDialog": null
+        }
+      ],
+      "title": {
+        "textDirection": "USER_LOCALE",
+        "text": "Core - UI/UX Designer (Design Systems Specialist)",
+        "attributesV2": [],
+        "accessibilityTextAttributesV2": [],
+        "accessibilityText": null,
+        "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
+        "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+      },
+      "searchActionType": null,
+      "actorInsights": [],
+      "insightsResolutionResults": [
+        {
+          "jobPostingInsight": null,
+          "relationshipsInsight": null,
+          "serviceProviderRatingInsight": null,
+          "simpleInsight": {
+            "searchActionType": null,
+            "image": null,
+            "subtitle": null,
+            "controlName": null,
+            "navigationUrl": null,
+            "title": {
+              "textDirection": "USER_LOCALE",
+              "text": "No longer accepting applications",
+              "attributesV2": [],
+              "accessibilityTextAttributesV2": [],
+              "accessibilityText": null,
+              "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
+              "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+            },
+            "$recipeTypes": ["com.linkedin.bd9a707a5b119c1f331373113f57344a"],
+            "$type": "com.linkedin.voyager.dash.search.SimpleInsight"
+          },
+          "jobPostingFooterInsight": null,
+          "socialActivityCountsInsight": null,
+          "labelsInsight": null
+        }
+      ],
+      "badgeIcon": null,
+      "entityUrn": "urn:li:fsd_entityResultViewModel:(urn:li:fsd_jobPosting:2733017062,SEARCH_MY_ITEMS_JOB_SEEKER,DEFAULT)",
+      "showAdditionalCluster": false,
+      "ringStatus": null,
+      "primarySubtitle": {
+        "textDirection": "USER_LOCALE",
+        "text": "Betsson Group",
+        "attributesV2": [],
+        "accessibilityTextAttributesV2": [],
+        "accessibilityText": null,
+        "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
+        "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+      },
+      "badgeText": null,
+      "trackingId": "6iz5aadnTqG14Kzw6nhW4A==",
+      "actorNavigationUrl": null,
+      "addEntityToSearchHistory": false,
+      "summary": null,
+      "image": {
+        "attributes": [
+          {
+            "scalingType": null,
+            "detailData": {
+              "profilePictureWithoutFrame": null,
+              "profilePictureWithRingStatus": null,
+              "icon": null,
+              "systemImage": null,
+              "*companyLogo": "urn:li:fsd_company:16289",
+              "nonEntityGroupLogo": null,
+              "vectorImage": null,
+              "nonEntityProfessionalEventLogo": null,
+              "profilePicture": null,
+              "imageUrl": null,
+              "professionalEventLogo": null,
+              "nonEntityCompanyLogo": null,
+              "nonEntitySchoolLogo": null,
+              "groupLogo": null,
+              "schoolLogo": null,
+              "ghostImage": null,
+              "nonEntityProfilePicture": null
+            },
+            "tintColor": null,
+            "$recipeTypes": ["com.linkedin.eb94fbb1518f790c4545aafdf571c64e"],
+            "tapTargets": [],
+            "displayAspectRatio": null,
+            "$type": "com.linkedin.voyager.dash.common.image.ImageAttribute"
+          }
+        ],
+        "actionTarget": null,
+        "accessibilityTextAttributes": [],
+        "totalCount": null,
+        "accessibilityText": "BML Group Ltd",
+        "$recipeTypes": ["com.linkedin.fe5b8a3ac5a4a165c17f53b7eae4209b"],
+        "$type": "com.linkedin.voyager.dash.common.image.ImageViewModel"
+      },
+      "lazyLoadedActions": null,
+      "secondarySubtitle": {
+        "textDirection": "USER_LOCALE",
+        "text": "Budapest (On-site)",
+        "attributesV2": [],
+        "accessibilityTextAttributesV2": [],
+        "accessibilityText": null,
+        "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
+        "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+      },
+      "navigationUrl": "https://www.linkedin.com/jobs/view/2733017062/?refId=x&trackingId=x&trk=flagship3_job_home_archivedjobs",
+      "entityEmbeddedObject": null,
+      "unreadIndicatorDetails": null,
+      "$recipeTypes": ["com.linkedin.cf4b25c18907ea8eafe915c8bfa24109"],
+      "target": null,
+      "$type": "com.linkedin.voyager.dash.search.EntityResultViewModel",
+      "actorTrackingUrn": null,
+      "navigationContext": {
+        "openExternally": false,
+        "$recipeTypes": ["com.linkedin.55ee9afd4182671fe7e271f615659525"],
+        "url": "https://www.linkedin.com/jobs/view/2733017062/?refId=x&trackingId=x&trk=flagship3_job_home_archivedjobs",
+        "$type": "com.linkedin.voyager.dash.search.NavigationContext"
+      }
+    },
+    {
+      "template": "UNIVERSAL",
+      "actorNavigationContext": null,
+      "trackingUrn": "urn:li:fsd_jobPosting:4457911189",
+      "controlName": null,
+      "interstitialComponent": null,
+      "primaryActions": [],
+      "entityCustomTrackingInfo": null,
+      "overflowActions": [
+        {
+          "trackingUrn": null,
+          "icon": {
+            "attributes": [
+              {
+                "scalingType": null,
+                "detailData": {
+                  "profilePictureWithoutFrame": null,
+                  "profilePictureWithRingStatus": null,
+                  "companyLogo": null,
+                  "icon": "IC_MESSAGES_24DP",
+                  "systemImage": null,
+                  "nonEntityGroupLogo": null,
+                  "vectorImage": null,
+                  "nonEntityProfessionalEventLogo": null,
+                  "profilePicture": null,
+                  "imageUrl": null,
+                  "professionalEventLogo": null,
+                  "nonEntityCompanyLogo": null,
+                  "nonEntitySchoolLogo": null,
+                  "groupLogo": null,
+                  "schoolLogo": null,
+                  "ghostImage": null,
+                  "nonEntityProfilePicture": null
+                },
+                "tintColor": null,
+                "$recipeTypes": ["com.linkedin.eb94fbb1518f790c4545aafdf571c64e"],
+                "tapTargets": [],
+                "displayAspectRatio": null,
+                "$type": "com.linkedin.voyager.dash.common.image.ImageAttribute"
+              }
+            ],
+            "actionTarget": null,
+            "accessibilityTextAttributes": [],
+            "totalCount": null,
+            "accessibilityText": null,
+            "$recipeTypes": ["com.linkedin.fe5b8a3ac5a4a165c17f53b7eae4209b"],
+            "$type": "com.linkedin.voyager.dash.common.image.ImageViewModel"
+          },
+          "controlName": null,
+          "actionRenderStyle": null,
+          "$recipeTypes": ["com.linkedin.30dee75e249786a8e1ceb4c1d056ab57"],
+          "$type": "com.linkedin.voyager.dash.search.EntityAction",
+          "searchActionType": "SHARE_IN_MESSAGE",
+          "actionBannerFeedback": null,
+          "text": {
+            "textDirection": "USER_LOCALE",
+            "text": "Send in a message",
+            "attributesV2": [],
+            "accessibilityTextAttributesV2": [],
+            "accessibilityText": "Send in a message",
+            "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
+            "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+          },
+          "actionDetails": {
+            "notificationSubscribeAction": null,
+            "shareViaLinkAction": null,
+            "embedHTMLAction": null,
+            "primaryProfileAction": null,
+            "statefulFollowAction": null,
+            "removeConnectionAction": null,
+            "searchSkillAction": null,
+            "navigationAction": null,
+            "followAction": null,
+            "overflowProfileActions": null,
+            "saveAction": null,
+            "newsletterSubscribeAction": null,
+            "addLearningCourseToProfileAction": null,
+            "closeProjectAction": null,
+            "primaryProfileActionV2": null,
+            "shareViaPostAction": null,
+            "leaveGroupAction": null,
+            "reportAction": null,
+            "shareViaMessageAction": {
+              "messageComposeOption": null,
+              "referringModuleKey": "search:my_items_saved_jobs",
+              "icon": null,
+              "text": null,
+              "message": "https://www.linkedin.com/jobs/view/4457911189/",
+              "$recipeTypes": ["com.linkedin.097bfff3e704fd2f8e33db38806d2312"],
+              "$type": "com.linkedin.voyager.dash.search.ShareViaMessageAction"
+            }
+          },
+          "actionConfirmationDialog": null
+        },
+        {
+          "trackingUrn": null,
+          "icon": {
+            "attributes": [
+              {
+                "scalingType": null,
+                "detailData": {
+                  "profilePictureWithoutFrame": null,
+                  "profilePictureWithRingStatus": null,
+                  "companyLogo": null,
+                  "icon": "IC_SHARE_24DP",
+                  "systemImage": null,
+                  "nonEntityGroupLogo": null,
+                  "vectorImage": null,
+                  "nonEntityProfessionalEventLogo": null,
+                  "profilePicture": null,
+                  "imageUrl": null,
+                  "professionalEventLogo": null,
+                  "nonEntityCompanyLogo": null,
+                  "nonEntitySchoolLogo": null,
+                  "groupLogo": null,
+                  "schoolLogo": null,
+                  "ghostImage": null,
+                  "nonEntityProfilePicture": null
+                },
+                "tintColor": null,
+                "$recipeTypes": ["com.linkedin.eb94fbb1518f790c4545aafdf571c64e"],
+                "tapTargets": [],
+                "displayAspectRatio": null,
+                "$type": "com.linkedin.voyager.dash.common.image.ImageAttribute"
+              }
+            ],
+            "actionTarget": null,
+            "accessibilityTextAttributes": [],
+            "totalCount": null,
+            "accessibilityText": null,
+            "$recipeTypes": ["com.linkedin.fe5b8a3ac5a4a165c17f53b7eae4209b"],
+            "$type": "com.linkedin.voyager.dash.common.image.ImageViewModel"
+          },
+          "controlName": null,
+          "actionRenderStyle": null,
+          "$recipeTypes": ["com.linkedin.30dee75e249786a8e1ceb4c1d056ab57"],
+          "$type": "com.linkedin.voyager.dash.search.EntityAction",
+          "searchActionType": "SHARE_ENTITY_VIA_LINK",
+          "actionBannerFeedback": null,
+          "text": {
+            "textDirection": "USER_LOCALE",
+            "text": "Share via...",
+            "attributesV2": [],
+            "accessibilityTextAttributesV2": [],
+            "accessibilityText": null,
+            "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
+            "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+          },
+          "actionDetails": {
+            "notificationSubscribeAction": null,
+            "shareViaLinkAction": {
+              "icon": null,
+              "text": null,
+              "message": null,
+              "$recipeTypes": ["com.linkedin.70640e3147f8e16b1771da60f669f41c"],
+              "url": "https://www.linkedin.com/jobs/view/4457911189/",
+              "$type": "com.linkedin.voyager.dash.search.ShareViaLinkAction"
+            },
+            "embedHTMLAction": null,
+            "primaryProfileAction": null,
+            "statefulFollowAction": null,
+            "removeConnectionAction": null,
+            "searchSkillAction": null,
+            "navigationAction": null,
+            "followAction": null,
+            "overflowProfileActions": null,
+            "saveAction": null,
+            "newsletterSubscribeAction": null,
+            "addLearningCourseToProfileAction": null,
+            "closeProjectAction": null,
+            "primaryProfileActionV2": null,
+            "shareViaPostAction": null,
+            "leaveGroupAction": null,
+            "reportAction": null,
+            "shareViaMessageAction": null
+          },
+          "actionConfirmationDialog": null
+        },
+        {
+          "trackingUrn": null,
+          "icon": {
+            "attributes": [
+              {
+                "scalingType": null,
+                "detailData": {
+                  "profilePictureWithoutFrame": null,
+                  "profilePictureWithRingStatus": null,
+                  "companyLogo": null,
+                  "icon": "IC_RIBBON_24DP",
+                  "systemImage": null,
+                  "nonEntityGroupLogo": null,
+                  "vectorImage": null,
+                  "nonEntityProfessionalEventLogo": null,
+                  "profilePicture": null,
+                  "imageUrl": null,
+                  "professionalEventLogo": null,
+                  "nonEntityCompanyLogo": null,
+                  "nonEntitySchoolLogo": null,
+                  "groupLogo": null,
+                  "schoolLogo": null,
+                  "ghostImage": null,
+                  "nonEntityProfilePicture": null
+                },
+                "tintColor": null,
+                "$recipeTypes": ["com.linkedin.eb94fbb1518f790c4545aafdf571c64e"],
+                "tapTargets": [],
+                "displayAspectRatio": null,
+                "$type": "com.linkedin.voyager.dash.common.image.ImageAttribute"
+              }
+            ],
+            "actionTarget": null,
+            "accessibilityTextAttributes": [],
+            "totalCount": null,
+            "accessibilityText": null,
+            "$recipeTypes": ["com.linkedin.fe5b8a3ac5a4a165c17f53b7eae4209b"],
+            "$type": "com.linkedin.voyager.dash.common.image.ImageViewModel"
+          },
+          "controlName": null,
+          "actionRenderStyle": null,
+          "$recipeTypes": ["com.linkedin.30dee75e249786a8e1ceb4c1d056ab57"],
+          "$type": "com.linkedin.voyager.dash.search.EntityAction",
+          "searchActionType": "UNSAVE_JOB",
+          "actionBannerFeedback": {
+            "successCtaText": null,
+            "successNavigationUrl": null,
+            "failureNavigationUrl": null,
+            "successUndoneMessage": null,
+            "failureCtaText": "Refresh my list",
+            "successMessage": "Job unsaved",
+            "failureMessage": "Job could not be unsaved",
+            "$recipeTypes": ["com.linkedin.338f0409c0e49a21897c3cb97c10366a"],
+            "$type": "com.linkedin.voyager.dash.search.EntityActionBannerFeedback"
+          },
+          "text": {
+            "textDirection": "USER_LOCALE",
+            "text": "Remove job",
+            "attributesV2": [],
+            "accessibilityTextAttributesV2": [],
+            "accessibilityText": null,
+            "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
+            "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+          },
+          "actionDetails": {
+            "notificationSubscribeAction": null,
+            "shareViaLinkAction": null,
+            "embedHTMLAction": null,
+            "primaryProfileAction": null,
+            "statefulFollowAction": null,
+            "removeConnectionAction": null,
+            "searchSkillAction": null,
+            "navigationAction": null,
+            "followAction": null,
+            "overflowProfileActions": null,
+            "newsletterSubscribeAction": null,
+            "addLearningCourseToProfileAction": null,
+            "closeProjectAction": null,
+            "primaryProfileActionV2": null,
+            "*saveAction": "urn:li:fsd_saveState:(SAVE,urn:li:fsd_jobPosting:4457911189)",
+            "shareViaPostAction": null,
+            "leaveGroupAction": null,
+            "reportAction": null,
+            "shareViaMessageAction": null
+          },
+          "actionConfirmationDialog": null
+        }
+      ],
+      "title": {
+        "textDirection": "USER_LOCALE",
+        "text": "AI/ML Engineer",
+        "attributesV2": [],
+        "accessibilityTextAttributesV2": [],
+        "accessibilityText": null,
+        "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
+        "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+      },
+      "searchActionType": null,
+      "actorInsights": [],
+      "insightsResolutionResults": [
+        {
+          "jobPostingInsight": null,
+          "relationshipsInsight": null,
+          "serviceProviderRatingInsight": null,
+          "simpleInsight": {
+            "searchActionType": null,
+            "image": null,
+            "subtitle": null,
+            "controlName": null,
+            "navigationUrl": null,
+            "title": {
+              "textDirection": "USER_LOCALE",
+              "text": "No longer accepting applications",
+              "attributesV2": [],
+              "accessibilityTextAttributesV2": [],
+              "accessibilityText": null,
+              "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
+              "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+            },
+            "$recipeTypes": ["com.linkedin.bd9a707a5b119c1f331373113f57344a"],
+            "$type": "com.linkedin.voyager.dash.search.SimpleInsight"
+          },
+          "jobPostingFooterInsight": null,
+          "socialActivityCountsInsight": null,
+          "labelsInsight": null
+        }
+      ],
+      "badgeIcon": null,
+      "entityUrn": "urn:li:fsd_entityResultViewModel:(urn:li:fsd_jobPosting:4457911189,SEARCH_MY_ITEMS_JOB_SEEKER,DEFAULT)",
+      "showAdditionalCluster": false,
+      "ringStatus": null,
+      "primarySubtitle": {
+        "textDirection": "USER_LOCALE",
+        "text": "SnapSoft",
+        "attributesV2": [],
+        "accessibilityTextAttributesV2": [],
+        "accessibilityText": null,
+        "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
+        "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+      },
+      "badgeText": null,
+      "trackingId": "PPUHgwTWRjSgOtBst5kQYQ==",
+      "actorNavigationUrl": null,
+      "addEntityToSearchHistory": false,
+      "summary": null,
+      "image": {
+        "attributes": [
+          {
+            "scalingType": null,
+            "detailData": {
+              "profilePictureWithoutFrame": null,
+              "profilePictureWithRingStatus": null,
+              "icon": null,
+              "systemImage": null,
+              "*companyLogo": "urn:li:fsd_company:17885940",
+              "nonEntityGroupLogo": null,
+              "vectorImage": null,
+              "nonEntityProfessionalEventLogo": null,
+              "profilePicture": null,
+              "imageUrl": null,
+              "professionalEventLogo": null,
+              "nonEntityCompanyLogo": null,
+              "nonEntitySchoolLogo": null,
+              "groupLogo": null,
+              "schoolLogo": null,
+              "ghostImage": null,
+              "nonEntityProfilePicture": null
+            },
+            "tintColor": null,
+            "$recipeTypes": ["com.linkedin.eb94fbb1518f790c4545aafdf571c64e"],
+            "tapTargets": [],
+            "displayAspectRatio": null,
+            "$type": "com.linkedin.voyager.dash.common.image.ImageAttribute"
+          }
+        ],
+        "actionTarget": null,
+        "accessibilityTextAttributes": [],
+        "totalCount": null,
+        "accessibilityText": "SnapSoft",
+        "$recipeTypes": ["com.linkedin.fe5b8a3ac5a4a165c17f53b7eae4209b"],
+        "$type": "com.linkedin.voyager.dash.common.image.ImageViewModel"
+      },
+      "lazyLoadedActions": null,
+      "secondarySubtitle": {
+        "textDirection": "USER_LOCALE",
+        "text": "Budapest, Hungary (Hybrid)",
+        "attributesV2": [],
+        "accessibilityTextAttributesV2": [],
+        "accessibilityText": null,
+        "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
+        "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+      },
+      "navigationUrl": "https://www.linkedin.com/jobs/view/4457911189/?refId=x&trackingId=x&trk=flagship3_job_home_archivedjobs",
+      "entityEmbeddedObject": null,
+      "unreadIndicatorDetails": null,
+      "$recipeTypes": ["com.linkedin.cf4b25c18907ea8eafe915c8bfa24109"],
+      "target": null,
+      "$type": "com.linkedin.voyager.dash.search.EntityResultViewModel",
+      "actorTrackingUrn": null,
+      "navigationContext": {
+        "openExternally": false,
+        "$recipeTypes": ["com.linkedin.55ee9afd4182671fe7e271f615659525"],
+        "url": "https://www.linkedin.com/jobs/view/4457911189/?refId=x&trackingId=x&trk=flagship3_job_home_archivedjobs",
+        "$type": "com.linkedin.voyager.dash.search.NavigationContext"
+      }
+    },
+    {
+      "template": "UNIVERSAL",
+      "actorNavigationContext": null,
+      "trackingUrn": "urn:li:fsd_jobPosting:4443265491",
+      "controlName": null,
+      "interstitialComponent": null,
+      "primaryActions": [],
+      "entityCustomTrackingInfo": null,
+      "overflowActions": [
+        {
+          "trackingUrn": null,
+          "icon": {
+            "attributes": [
+              {
+                "scalingType": null,
+                "detailData": {
+                  "profilePictureWithoutFrame": null,
+                  "profilePictureWithRingStatus": null,
+                  "companyLogo": null,
+                  "icon": "IC_MESSAGES_24DP",
+                  "systemImage": null,
+                  "nonEntityGroupLogo": null,
+                  "vectorImage": null,
+                  "nonEntityProfessionalEventLogo": null,
+                  "profilePicture": null,
+                  "imageUrl": null,
+                  "professionalEventLogo": null,
+                  "nonEntityCompanyLogo": null,
+                  "nonEntitySchoolLogo": null,
+                  "groupLogo": null,
+                  "schoolLogo": null,
+                  "ghostImage": null,
+                  "nonEntityProfilePicture": null
+                },
+                "tintColor": null,
+                "$recipeTypes": ["com.linkedin.eb94fbb1518f790c4545aafdf571c64e"],
+                "tapTargets": [],
+                "displayAspectRatio": null,
+                "$type": "com.linkedin.voyager.dash.common.image.ImageAttribute"
+              }
+            ],
+            "actionTarget": null,
+            "accessibilityTextAttributes": [],
+            "totalCount": null,
+            "accessibilityText": null,
+            "$recipeTypes": ["com.linkedin.fe5b8a3ac5a4a165c17f53b7eae4209b"],
+            "$type": "com.linkedin.voyager.dash.common.image.ImageViewModel"
+          },
+          "controlName": null,
+          "actionRenderStyle": null,
+          "$recipeTypes": ["com.linkedin.30dee75e249786a8e1ceb4c1d056ab57"],
+          "$type": "com.linkedin.voyager.dash.search.EntityAction",
+          "searchActionType": "SHARE_IN_MESSAGE",
+          "actionBannerFeedback": null,
+          "text": {
+            "textDirection": "USER_LOCALE",
+            "text": "Send in a message",
+            "attributesV2": [],
+            "accessibilityTextAttributesV2": [],
+            "accessibilityText": "Send in a message",
+            "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
+            "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+          },
+          "actionDetails": {
+            "notificationSubscribeAction": null,
+            "shareViaLinkAction": null,
+            "embedHTMLAction": null,
+            "primaryProfileAction": null,
+            "statefulFollowAction": null,
+            "removeConnectionAction": null,
+            "searchSkillAction": null,
+            "navigationAction": null,
+            "followAction": null,
+            "overflowProfileActions": null,
+            "saveAction": null,
+            "newsletterSubscribeAction": null,
+            "addLearningCourseToProfileAction": null,
+            "closeProjectAction": null,
+            "primaryProfileActionV2": null,
+            "shareViaPostAction": null,
+            "leaveGroupAction": null,
+            "reportAction": null,
+            "shareViaMessageAction": {
+              "messageComposeOption": null,
+              "referringModuleKey": "search:my_items_saved_jobs",
+              "icon": null,
+              "text": null,
+              "message": "https://www.linkedin.com/jobs/view/4443265491/",
+              "$recipeTypes": ["com.linkedin.097bfff3e704fd2f8e33db38806d2312"],
+              "$type": "com.linkedin.voyager.dash.search.ShareViaMessageAction"
+            }
+          },
+          "actionConfirmationDialog": null
+        },
+        {
+          "trackingUrn": null,
+          "icon": {
+            "attributes": [
+              {
+                "scalingType": null,
+                "detailData": {
+                  "profilePictureWithoutFrame": null,
+                  "profilePictureWithRingStatus": null,
+                  "companyLogo": null,
+                  "icon": "IC_SHARE_24DP",
+                  "systemImage": null,
+                  "nonEntityGroupLogo": null,
+                  "vectorImage": null,
+                  "nonEntityProfessionalEventLogo": null,
+                  "profilePicture": null,
+                  "imageUrl": null,
+                  "professionalEventLogo": null,
+                  "nonEntityCompanyLogo": null,
+                  "nonEntitySchoolLogo": null,
+                  "groupLogo": null,
+                  "schoolLogo": null,
+                  "ghostImage": null,
+                  "nonEntityProfilePicture": null
+                },
+                "tintColor": null,
+                "$recipeTypes": ["com.linkedin.eb94fbb1518f790c4545aafdf571c64e"],
+                "tapTargets": [],
+                "displayAspectRatio": null,
+                "$type": "com.linkedin.voyager.dash.common.image.ImageAttribute"
+              }
+            ],
+            "actionTarget": null,
+            "accessibilityTextAttributes": [],
+            "totalCount": null,
+            "accessibilityText": null,
+            "$recipeTypes": ["com.linkedin.fe5b8a3ac5a4a165c17f53b7eae4209b"],
+            "$type": "com.linkedin.voyager.dash.common.image.ImageViewModel"
+          },
+          "controlName": null,
+          "actionRenderStyle": null,
+          "$recipeTypes": ["com.linkedin.30dee75e249786a8e1ceb4c1d056ab57"],
+          "$type": "com.linkedin.voyager.dash.search.EntityAction",
+          "searchActionType": "SHARE_ENTITY_VIA_LINK",
+          "actionBannerFeedback": null,
+          "text": {
+            "textDirection": "USER_LOCALE",
+            "text": "Share via...",
+            "attributesV2": [],
+            "accessibilityTextAttributesV2": [],
+            "accessibilityText": null,
+            "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
+            "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+          },
+          "actionDetails": {
+            "notificationSubscribeAction": null,
+            "shareViaLinkAction": {
+              "icon": null,
+              "text": null,
+              "message": null,
+              "$recipeTypes": ["com.linkedin.70640e3147f8e16b1771da60f669f41c"],
+              "url": "https://www.linkedin.com/jobs/view/4443265491/",
+              "$type": "com.linkedin.voyager.dash.search.ShareViaLinkAction"
+            },
+            "embedHTMLAction": null,
+            "primaryProfileAction": null,
+            "statefulFollowAction": null,
+            "removeConnectionAction": null,
+            "searchSkillAction": null,
+            "navigationAction": null,
+            "followAction": null,
+            "overflowProfileActions": null,
+            "saveAction": null,
+            "newsletterSubscribeAction": null,
+            "addLearningCourseToProfileAction": null,
+            "closeProjectAction": null,
+            "primaryProfileActionV2": null,
+            "shareViaPostAction": null,
+            "leaveGroupAction": null,
+            "reportAction": null,
+            "shareViaMessageAction": null
+          },
+          "actionConfirmationDialog": null
+        },
+        {
+          "trackingUrn": null,
+          "icon": {
+            "attributes": [
+              {
+                "scalingType": null,
+                "detailData": {
+                  "profilePictureWithoutFrame": null,
+                  "profilePictureWithRingStatus": null,
+                  "companyLogo": null,
+                  "icon": "IC_RIBBON_24DP",
+                  "systemImage": null,
+                  "nonEntityGroupLogo": null,
+                  "vectorImage": null,
+                  "nonEntityProfessionalEventLogo": null,
+                  "profilePicture": null,
+                  "imageUrl": null,
+                  "professionalEventLogo": null,
+                  "nonEntityCompanyLogo": null,
+                  "nonEntitySchoolLogo": null,
+                  "groupLogo": null,
+                  "schoolLogo": null,
+                  "ghostImage": null,
+                  "nonEntityProfilePicture": null
+                },
+                "tintColor": null,
+                "$recipeTypes": ["com.linkedin.eb94fbb1518f790c4545aafdf571c64e"],
+                "tapTargets": [],
+                "displayAspectRatio": null,
+                "$type": "com.linkedin.voyager.dash.common.image.ImageAttribute"
+              }
+            ],
+            "actionTarget": null,
+            "accessibilityTextAttributes": [],
+            "totalCount": null,
+            "accessibilityText": null,
+            "$recipeTypes": ["com.linkedin.fe5b8a3ac5a4a165c17f53b7eae4209b"],
+            "$type": "com.linkedin.voyager.dash.common.image.ImageViewModel"
+          },
+          "controlName": null,
+          "actionRenderStyle": null,
+          "$recipeTypes": ["com.linkedin.30dee75e249786a8e1ceb4c1d056ab57"],
+          "$type": "com.linkedin.voyager.dash.search.EntityAction",
+          "searchActionType": "UNSAVE_JOB",
+          "actionBannerFeedback": {
+            "successCtaText": null,
+            "successNavigationUrl": null,
+            "failureNavigationUrl": null,
+            "successUndoneMessage": null,
+            "failureCtaText": "Refresh my list",
+            "successMessage": "Job unsaved",
+            "failureMessage": "Job could not be unsaved",
+            "$recipeTypes": ["com.linkedin.338f0409c0e49a21897c3cb97c10366a"],
+            "$type": "com.linkedin.voyager.dash.search.EntityActionBannerFeedback"
+          },
+          "text": {
+            "textDirection": "USER_LOCALE",
+            "text": "Remove job",
+            "attributesV2": [],
+            "accessibilityTextAttributesV2": [],
+            "accessibilityText": null,
+            "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
+            "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+          },
+          "actionDetails": {
+            "notificationSubscribeAction": null,
+            "shareViaLinkAction": null,
+            "embedHTMLAction": null,
+            "primaryProfileAction": null,
+            "statefulFollowAction": null,
+            "removeConnectionAction": null,
+            "searchSkillAction": null,
+            "navigationAction": null,
+            "followAction": null,
+            "overflowProfileActions": null,
+            "newsletterSubscribeAction": null,
+            "addLearningCourseToProfileAction": null,
+            "closeProjectAction": null,
+            "primaryProfileActionV2": null,
+            "*saveAction": "urn:li:fsd_saveState:(SAVE,urn:li:fsd_jobPosting:4443265491)",
+            "shareViaPostAction": null,
+            "leaveGroupAction": null,
+            "reportAction": null,
+            "shareViaMessageAction": null
+          },
+          "actionConfirmationDialog": null
+        }
+      ],
+      "title": {
+        "textDirection": "USER_LOCALE",
+        "text": "AI ENGINEER",
+        "attributesV2": [],
+        "accessibilityTextAttributesV2": [],
+        "accessibilityText": null,
+        "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
+        "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+      },
+      "searchActionType": null,
+      "actorInsights": [],
+      "insightsResolutionResults": [
+        {
+          "jobPostingInsight": null,
+          "relationshipsInsight": null,
+          "serviceProviderRatingInsight": null,
+          "simpleInsight": {
+            "searchActionType": null,
+            "image": null,
+            "subtitle": null,
+            "controlName": null,
+            "navigationUrl": null,
+            "title": {
+              "textDirection": "USER_LOCALE",
+              "text": "No longer accepting applications",
+              "attributesV2": [],
+              "accessibilityTextAttributesV2": [],
+              "accessibilityText": null,
+              "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
+              "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+            },
+            "$recipeTypes": ["com.linkedin.bd9a707a5b119c1f331373113f57344a"],
+            "$type": "com.linkedin.voyager.dash.search.SimpleInsight"
+          },
+          "jobPostingFooterInsight": null,
+          "socialActivityCountsInsight": null,
+          "labelsInsight": null
+        }
+      ],
+      "badgeIcon": null,
+      "entityUrn": "urn:li:fsd_entityResultViewModel:(urn:li:fsd_jobPosting:4443265491,SEARCH_MY_ITEMS_JOB_SEEKER,DEFAULT)",
+      "showAdditionalCluster": false,
+      "ringStatus": null,
+      "primarySubtitle": {
+        "textDirection": "USER_LOCALE",
+        "text": "Raiffeisen Bank Hungary",
+        "attributesV2": [],
+        "accessibilityTextAttributesV2": [],
+        "accessibilityText": null,
+        "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
+        "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+      },
+      "badgeText": null,
+      "trackingId": "P8nXkww0SwCeUaB0Otv10A==",
+      "actorNavigationUrl": null,
+      "addEntityToSearchHistory": false,
+      "summary": null,
+      "image": {
+        "attributes": [
+          {
+            "scalingType": null,
+            "detailData": {
+              "profilePictureWithoutFrame": null,
+              "profilePictureWithRingStatus": null,
+              "icon": null,
+              "systemImage": null,
+              "*companyLogo": "urn:li:fsd_company:557964",
+              "nonEntityGroupLogo": null,
+              "vectorImage": null,
+              "nonEntityProfessionalEventLogo": null,
+              "profilePicture": null,
+              "imageUrl": null,
+              "professionalEventLogo": null,
+              "nonEntityCompanyLogo": null,
+              "nonEntitySchoolLogo": null,
+              "groupLogo": null,
+              "schoolLogo": null,
+              "ghostImage": null,
+              "nonEntityProfilePicture": null
+            },
+            "tintColor": null,
+            "$recipeTypes": ["com.linkedin.eb94fbb1518f790c4545aafdf571c64e"],
+            "tapTargets": [],
+            "displayAspectRatio": null,
+            "$type": "com.linkedin.voyager.dash.common.image.ImageAttribute"
+          }
+        ],
+        "actionTarget": null,
+        "accessibilityTextAttributes": [],
+        "totalCount": null,
+        "accessibilityText": "Raiffeisen Bank Hungary",
+        "$recipeTypes": ["com.linkedin.fe5b8a3ac5a4a165c17f53b7eae4209b"],
+        "$type": "com.linkedin.voyager.dash.common.image.ImageViewModel"
+      },
+      "lazyLoadedActions": null,
+      "secondarySubtitle": {
+        "textDirection": "USER_LOCALE",
+        "text": "Budapest, Hungary (Hybrid)",
+        "attributesV2": [],
+        "accessibilityTextAttributesV2": [],
+        "accessibilityText": null,
+        "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
+        "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+      },
+      "navigationUrl": "https://www.linkedin.com/jobs/view/4443265491/?refId=x&trackingId=x&trk=flagship3_job_home_archivedjobs",
+      "entityEmbeddedObject": null,
+      "unreadIndicatorDetails": null,
+      "$recipeTypes": ["com.linkedin.cf4b25c18907ea8eafe915c8bfa24109"],
+      "target": null,
+      "$type": "com.linkedin.voyager.dash.search.EntityResultViewModel",
+      "actorTrackingUrn": null,
+      "navigationContext": {
+        "openExternally": false,
+        "$recipeTypes": ["com.linkedin.55ee9afd4182671fe7e271f615659525"],
+        "url": "https://www.linkedin.com/jobs/view/4443265491/?refId=x&trackingId=x&trk=flagship3_job_home_archivedjobs",
+        "$type": "com.linkedin.voyager.dash.search.NavigationContext"
+      }
+    },
+    {
+      "template": "UNIVERSAL",
+      "actorNavigationContext": null,
+      "trackingUrn": "urn:li:fsd_jobPosting:4458171869",
+      "controlName": null,
+      "interstitialComponent": null,
+      "primaryActions": [],
+      "entityCustomTrackingInfo": null,
+      "overflowActions": [
+        {
+          "trackingUrn": null,
+          "icon": {
+            "attributes": [
+              {
+                "scalingType": null,
+                "detailData": {
+                  "profilePictureWithoutFrame": null,
+                  "profilePictureWithRingStatus": null,
+                  "companyLogo": null,
+                  "icon": "IC_MESSAGES_24DP",
+                  "systemImage": null,
+                  "nonEntityGroupLogo": null,
+                  "vectorImage": null,
+                  "nonEntityProfessionalEventLogo": null,
+                  "profilePicture": null,
+                  "imageUrl": null,
+                  "professionalEventLogo": null,
+                  "nonEntityCompanyLogo": null,
+                  "nonEntitySchoolLogo": null,
+                  "groupLogo": null,
+                  "schoolLogo": null,
+                  "ghostImage": null,
+                  "nonEntityProfilePicture": null
+                },
+                "tintColor": null,
+                "$recipeTypes": ["com.linkedin.eb94fbb1518f790c4545aafdf571c64e"],
+                "tapTargets": [],
+                "displayAspectRatio": null,
+                "$type": "com.linkedin.voyager.dash.common.image.ImageAttribute"
+              }
+            ],
+            "actionTarget": null,
+            "accessibilityTextAttributes": [],
+            "totalCount": null,
+            "accessibilityText": null,
+            "$recipeTypes": ["com.linkedin.fe5b8a3ac5a4a165c17f53b7eae4209b"],
+            "$type": "com.linkedin.voyager.dash.common.image.ImageViewModel"
+          },
+          "controlName": null,
+          "actionRenderStyle": null,
+          "$recipeTypes": ["com.linkedin.30dee75e249786a8e1ceb4c1d056ab57"],
+          "$type": "com.linkedin.voyager.dash.search.EntityAction",
+          "searchActionType": "SHARE_IN_MESSAGE",
+          "actionBannerFeedback": null,
+          "text": {
+            "textDirection": "USER_LOCALE",
+            "text": "Send in a message",
+            "attributesV2": [],
+            "accessibilityTextAttributesV2": [],
+            "accessibilityText": "Send in a message",
+            "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
+            "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+          },
+          "actionDetails": {
+            "notificationSubscribeAction": null,
+            "shareViaLinkAction": null,
+            "embedHTMLAction": null,
+            "primaryProfileAction": null,
+            "statefulFollowAction": null,
+            "removeConnectionAction": null,
+            "searchSkillAction": null,
+            "navigationAction": null,
+            "followAction": null,
+            "overflowProfileActions": null,
+            "saveAction": null,
+            "newsletterSubscribeAction": null,
+            "addLearningCourseToProfileAction": null,
+            "closeProjectAction": null,
+            "primaryProfileActionV2": null,
+            "shareViaPostAction": null,
+            "leaveGroupAction": null,
+            "reportAction": null,
+            "shareViaMessageAction": {
+              "messageComposeOption": null,
+              "referringModuleKey": "search:my_items_saved_jobs",
+              "icon": null,
+              "text": null,
+              "message": "https://www.linkedin.com/jobs/view/4458171869/",
+              "$recipeTypes": ["com.linkedin.097bfff3e704fd2f8e33db38806d2312"],
+              "$type": "com.linkedin.voyager.dash.search.ShareViaMessageAction"
+            }
+          },
+          "actionConfirmationDialog": null
+        },
+        {
+          "trackingUrn": null,
+          "icon": {
+            "attributes": [
+              {
+                "scalingType": null,
+                "detailData": {
+                  "profilePictureWithoutFrame": null,
+                  "profilePictureWithRingStatus": null,
+                  "companyLogo": null,
+                  "icon": "IC_SHARE_24DP",
+                  "systemImage": null,
+                  "nonEntityGroupLogo": null,
+                  "vectorImage": null,
+                  "nonEntityProfessionalEventLogo": null,
+                  "profilePicture": null,
+                  "imageUrl": null,
+                  "professionalEventLogo": null,
+                  "nonEntityCompanyLogo": null,
+                  "nonEntitySchoolLogo": null,
+                  "groupLogo": null,
+                  "schoolLogo": null,
+                  "ghostImage": null,
+                  "nonEntityProfilePicture": null
+                },
+                "tintColor": null,
+                "$recipeTypes": ["com.linkedin.eb94fbb1518f790c4545aafdf571c64e"],
+                "tapTargets": [],
+                "displayAspectRatio": null,
+                "$type": "com.linkedin.voyager.dash.common.image.ImageAttribute"
+              }
+            ],
+            "actionTarget": null,
+            "accessibilityTextAttributes": [],
+            "totalCount": null,
+            "accessibilityText": null,
+            "$recipeTypes": ["com.linkedin.fe5b8a3ac5a4a165c17f53b7eae4209b"],
+            "$type": "com.linkedin.voyager.dash.common.image.ImageViewModel"
+          },
+          "controlName": null,
+          "actionRenderStyle": null,
+          "$recipeTypes": ["com.linkedin.30dee75e249786a8e1ceb4c1d056ab57"],
+          "$type": "com.linkedin.voyager.dash.search.EntityAction",
+          "searchActionType": "SHARE_ENTITY_VIA_LINK",
+          "actionBannerFeedback": null,
+          "text": {
+            "textDirection": "USER_LOCALE",
+            "text": "Share via...",
+            "attributesV2": [],
+            "accessibilityTextAttributesV2": [],
+            "accessibilityText": null,
+            "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
+            "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+          },
+          "actionDetails": {
+            "notificationSubscribeAction": null,
+            "shareViaLinkAction": {
+              "icon": null,
+              "text": null,
+              "message": null,
+              "$recipeTypes": ["com.linkedin.70640e3147f8e16b1771da60f669f41c"],
+              "url": "https://www.linkedin.com/jobs/view/4458171869/",
+              "$type": "com.linkedin.voyager.dash.search.ShareViaLinkAction"
+            },
+            "embedHTMLAction": null,
+            "primaryProfileAction": null,
+            "statefulFollowAction": null,
+            "removeConnectionAction": null,
+            "searchSkillAction": null,
+            "navigationAction": null,
+            "followAction": null,
+            "overflowProfileActions": null,
+            "saveAction": null,
+            "newsletterSubscribeAction": null,
+            "addLearningCourseToProfileAction": null,
+            "closeProjectAction": null,
+            "primaryProfileActionV2": null,
+            "shareViaPostAction": null,
+            "leaveGroupAction": null,
+            "reportAction": null,
+            "shareViaMessageAction": null
+          },
+          "actionConfirmationDialog": null
+        },
+        {
+          "trackingUrn": null,
+          "icon": {
+            "attributes": [
+              {
+                "scalingType": null,
+                "detailData": {
+                  "profilePictureWithoutFrame": null,
+                  "profilePictureWithRingStatus": null,
+                  "companyLogo": null,
+                  "icon": "IC_RIBBON_24DP",
+                  "systemImage": null,
+                  "nonEntityGroupLogo": null,
+                  "vectorImage": null,
+                  "nonEntityProfessionalEventLogo": null,
+                  "profilePicture": null,
+                  "imageUrl": null,
+                  "professionalEventLogo": null,
+                  "nonEntityCompanyLogo": null,
+                  "nonEntitySchoolLogo": null,
+                  "groupLogo": null,
+                  "schoolLogo": null,
+                  "ghostImage": null,
+                  "nonEntityProfilePicture": null
+                },
+                "tintColor": null,
+                "$recipeTypes": ["com.linkedin.eb94fbb1518f790c4545aafdf571c64e"],
+                "tapTargets": [],
+                "displayAspectRatio": null,
+                "$type": "com.linkedin.voyager.dash.common.image.ImageAttribute"
+              }
+            ],
+            "actionTarget": null,
+            "accessibilityTextAttributes": [],
+            "totalCount": null,
+            "accessibilityText": null,
+            "$recipeTypes": ["com.linkedin.fe5b8a3ac5a4a165c17f53b7eae4209b"],
+            "$type": "com.linkedin.voyager.dash.common.image.ImageViewModel"
+          },
+          "controlName": null,
+          "actionRenderStyle": null,
+          "$recipeTypes": ["com.linkedin.30dee75e249786a8e1ceb4c1d056ab57"],
+          "$type": "com.linkedin.voyager.dash.search.EntityAction",
+          "searchActionType": "UNSAVE_JOB",
+          "actionBannerFeedback": {
+            "successCtaText": null,
+            "successNavigationUrl": null,
+            "failureNavigationUrl": null,
+            "successUndoneMessage": null,
+            "failureCtaText": "Refresh my list",
+            "successMessage": "Job unsaved",
+            "failureMessage": "Job could not be unsaved",
+            "$recipeTypes": ["com.linkedin.338f0409c0e49a21897c3cb97c10366a"],
+            "$type": "com.linkedin.voyager.dash.search.EntityActionBannerFeedback"
+          },
+          "text": {
+            "textDirection": "USER_LOCALE",
+            "text": "Remove job",
+            "attributesV2": [],
+            "accessibilityTextAttributesV2": [],
+            "accessibilityText": null,
+            "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
+            "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+          },
+          "actionDetails": {
+            "notificationSubscribeAction": null,
+            "shareViaLinkAction": null,
+            "embedHTMLAction": null,
+            "primaryProfileAction": null,
+            "statefulFollowAction": null,
+            "removeConnectionAction": null,
+            "searchSkillAction": null,
+            "navigationAction": null,
+            "followAction": null,
+            "overflowProfileActions": null,
+            "newsletterSubscribeAction": null,
+            "addLearningCourseToProfileAction": null,
+            "closeProjectAction": null,
+            "primaryProfileActionV2": null,
+            "*saveAction": "urn:li:fsd_saveState:(SAVE,urn:li:fsd_jobPosting:4458171869)",
+            "shareViaPostAction": null,
+            "leaveGroupAction": null,
+            "reportAction": null,
+            "shareViaMessageAction": null
+          },
+          "actionConfirmationDialog": null
+        }
+      ],
+      "title": {
+        "textDirection": "USER_LOCALE",
+        "text": "Medior AI Software Engineer - GenAI",
+        "attributesV2": [],
+        "accessibilityTextAttributesV2": [],
+        "accessibilityText": null,
+        "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
+        "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+      },
+      "searchActionType": null,
+      "actorInsights": [],
+      "insightsResolutionResults": [
+        {
+          "jobPostingInsight": null,
+          "relationshipsInsight": null,
+          "serviceProviderRatingInsight": null,
+          "simpleInsight": {
+            "searchActionType": null,
+            "image": null,
+            "subtitle": null,
+            "controlName": null,
+            "navigationUrl": null,
+            "title": {
+              "textDirection": "USER_LOCALE",
+              "text": "No longer accepting applications",
+              "attributesV2": [],
+              "accessibilityTextAttributesV2": [],
+              "accessibilityText": null,
+              "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
+              "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+            },
+            "$recipeTypes": ["com.linkedin.bd9a707a5b119c1f331373113f57344a"],
+            "$type": "com.linkedin.voyager.dash.search.SimpleInsight"
+          },
+          "jobPostingFooterInsight": null,
+          "socialActivityCountsInsight": null,
+          "labelsInsight": null
+        }
+      ],
+      "badgeIcon": null,
+      "entityUrn": "urn:li:fsd_entityResultViewModel:(urn:li:fsd_jobPosting:4458171869,SEARCH_MY_ITEMS_JOB_SEEKER,DEFAULT)",
+      "showAdditionalCluster": false,
+      "ringStatus": null,
+      "primarySubtitle": {
+        "textDirection": "USER_LOCALE",
+        "text": "ALDI International IT Services (Hungary)",
+        "attributesV2": [],
+        "accessibilityTextAttributesV2": [],
+        "accessibilityText": null,
+        "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
+        "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+      },
+      "badgeText": null,
+      "trackingId": "bXIJCfcNSciX6042rims/A==",
+      "actorNavigationUrl": null,
+      "addEntityToSearchHistory": false,
+      "summary": null,
+      "image": {
+        "attributes": [
+          {
+            "scalingType": null,
+            "detailData": {
+              "profilePictureWithoutFrame": null,
+              "profilePictureWithRingStatus": null,
+              "icon": null,
+              "systemImage": null,
+              "*companyLogo": "urn:li:fsd_company:110554061",
+              "nonEntityGroupLogo": null,
+              "vectorImage": null,
+              "nonEntityProfessionalEventLogo": null,
+              "profilePicture": null,
+              "imageUrl": null,
+              "professionalEventLogo": null,
+              "nonEntityCompanyLogo": null,
+              "nonEntitySchoolLogo": null,
+              "groupLogo": null,
+              "schoolLogo": null,
+              "ghostImage": null,
+              "nonEntityProfilePicture": null
+            },
+            "tintColor": null,
+            "$recipeTypes": ["com.linkedin.eb94fbb1518f790c4545aafdf571c64e"],
+            "tapTargets": [],
+            "displayAspectRatio": null,
+            "$type": "com.linkedin.voyager.dash.common.image.ImageAttribute"
+          }
+        ],
+        "actionTarget": null,
+        "accessibilityTextAttributes": [],
+        "totalCount": null,
+        "accessibilityText": "ALDI International IT Services",
+        "$recipeTypes": ["com.linkedin.fe5b8a3ac5a4a165c17f53b7eae4209b"],
+        "$type": "com.linkedin.voyager.dash.common.image.ImageViewModel"
+      },
+      "lazyLoadedActions": null,
+      "secondarySubtitle": {
+        "textDirection": "USER_LOCALE",
+        "text": "Budapest, Hungary (Hybrid)",
+        "attributesV2": [],
+        "accessibilityTextAttributesV2": [],
+        "accessibilityText": null,
+        "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
+        "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+      },
+      "navigationUrl": "https://www.linkedin.com/jobs/view/4458171869/?refId=x&trackingId=x&trk=flagship3_job_home_archivedjobs",
+      "entityEmbeddedObject": null,
+      "unreadIndicatorDetails": null,
+      "$recipeTypes": ["com.linkedin.cf4b25c18907ea8eafe915c8bfa24109"],
+      "target": null,
+      "$type": "com.linkedin.voyager.dash.search.EntityResultViewModel",
+      "actorTrackingUrn": null,
+      "navigationContext": {
+        "openExternally": false,
+        "$recipeTypes": ["com.linkedin.55ee9afd4182671fe7e271f615659525"],
+        "url": "https://www.linkedin.com/jobs/view/4458171869/?refId=x&trackingId=x&trk=flagship3_job_home_archivedjobs",
+        "$type": "com.linkedin.voyager.dash.search.NavigationContext"
+      }
+    }
+  ]
+}

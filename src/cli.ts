@@ -32,6 +32,7 @@ import {
   runInbox,
   runMessages,
 } from './commands/messaging.ts';
+import { runMyItems } from './commands/my-items.ts';
 import { runNetwork } from './commands/network.ts';
 import { runOauthLogin, runOauthLogout, runOauthStatus } from './commands/oauth.ts';
 import { type PeopleRequest, runPeople, runPeopleFilters } from './commands/people.ts';
@@ -52,6 +53,7 @@ import {
 } from './commands/write.ts';
 import type { JobFilterOptions } from './engine/jobs.ts';
 import type { Folder } from './engine/messaging.ts';
+import type { Stage } from './engine/my-items.ts';
 import type { PeopleFilterOptions } from './engine/people.ts';
 import { SEARCH_KINDS, type SearchKindName } from './engine/search.ts';
 import { shouldRunAsEntry } from './entry.ts';
@@ -285,7 +287,7 @@ function search(args: ParsedArgs, filtersOnly: boolean): Promise<Envelope> | Env
     : runFind(kind as SearchKindName, findRequest(args), opts);
 }
 
-/** `events`, `event`, `network`: the events page, events in full, and the owner's own network. */
+/** `events`, `event`, `my-items`, `network`: the events page, events in full, the owner's items and network. */
 function mine(command: string, args: ParsedArgs): Promise<Envelope> {
   if (command === 'events')
     return runEvents(
@@ -293,6 +295,17 @@ function mine(command: string, args: ParsedArgs): Promise<Envelope> {
       output(args),
     );
   if (command === 'event') return runEvent(args.positionals, output(args));
+  if (command === 'my-items') {
+    const stage = str(args, 'stage');
+    return runMyItems(
+      args.positionals[0],
+      {
+        limit: num(args, 'limit') ?? 50,
+        ...(stage !== undefined ? { stage: stage as Stage } : {}),
+      },
+      output(args),
+    );
+  }
   const start = num(args, 'start');
   return runNetwork(
     args.positionals[0],
@@ -461,6 +474,7 @@ export async function dispatch(argv: string[], now: number): Promise<Envelope> {
       return runPeopleFilters(peopleRequest(args), output(args));
     case 'events':
     case 'event':
+    case 'my-items':
     case 'network':
       return mine(command, args);
     case 'inbox':

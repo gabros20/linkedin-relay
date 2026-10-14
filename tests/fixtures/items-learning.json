@@ -1,0 +1,317 @@
+{
+  "data": {
+    "data": {
+      "searchDashClustersByAll": {
+        "metadata": {
+          "entityResultAttributes": null,
+          "totalResultCount": 1,
+          "secondaryFilterCluster": null,
+          "$recipeTypes": ["com.linkedin.dfce49e2c6bb412fb4161cbbc7190d0d"],
+          "lazyRightRail": null,
+          "queryType": null,
+          "$type": "com.linkedin.voyager.dash.search.SearchClusterCollectionMetadata",
+          "paginationToken": null,
+          "primaryResultType": null,
+          "primaryFilterCluster": {
+            "secondaryFilterGroups": [],
+            "primaryFilterGroups": [],
+            "appliedCount": 0,
+            "subsequentRefresh": true,
+            "primaryFilters": [
+              {
+                "appliedCount": null,
+                "displayName": {
+                  "textDirection": "USER_LOCALE",
+                  "text": "Just show me",
+                  "attributesV2": [],
+                  "accessibilityTextAttributesV2": [],
+                  "accessibilityText": null,
+                  "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
+                  "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+                },
+                "highlighted": false,
+                "secondaryFilterValues": [],
+                "parameterName": "learningContentState",
+                "typeaheadHint": null,
+                "typeaheadType": null,
+                "title": null,
+                "$recipeTypes": ["com.linkedin.0134fedeb876326e67efb0b562630cc0"],
+                "$type": "com.linkedin.voyager.dash.search.SearchFilterViewModel",
+                "flatten": false,
+                "primaryFilterValues": [
+                  {
+                    "image": null,
+                    "default": false,
+                    "tooltipText": null,
+                    "displayName": "In Progress",
+                    "count": null,
+                    "disabled": false,
+                    "value": "IN_PROGRESS",
+                    "$recipeTypes": ["com.linkedin.83d0ac7bcab35bfe2d9bcd29421a7f1f"],
+                    "selected": true,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  }
+                ],
+                "renderType": "NAVIGATION"
+              }
+            ],
+            "secondaryFilters": [],
+            "title": null,
+            "$recipeTypes": ["com.linkedin.77f24fd65949d0f1cc3ca16da60fde58"],
+            "showAdvanceFilter": false,
+            "$type": "com.linkedin.voyager.dash.search.SearchFilterCluster"
+          },
+          "blockedQuery": false,
+          "entityActionButtonStyle": null,
+          "searchId": "765301d7-1c78-4043-9ca2-71aae000e3d8",
+          "filterAppliedCount": 0,
+          "clusterTitleFontSize": null,
+          "simpleInsightAttributes": null,
+          "knowledgeCardRightRail": null
+        },
+        "paging": {
+          "count": 10,
+          "start": 0,
+          "total": 1,
+          "$recipeTypes": ["com.linkedin.81b214c2cdd4f02cdb7d827958d2f3a1"],
+          "$type": "com.linkedin.restli.common.CollectionMetadata"
+        },
+        "$recipeTypes": ["com.linkedin.5f1d22f924ecb6a031ee124b8b767900"],
+        "elements": [
+          {
+            "image": null,
+            "quickFilterActions": [],
+            "clusterRenderType": "LIST",
+            "dismissable": false,
+            "totalResultCount": 1,
+            "controlName": null,
+            "description": null,
+            "title": null,
+            "$recipeTypes": ["com.linkedin.5c853aba2154c55483e72bf6cdfaaf3e"],
+            "$type": "com.linkedin.voyager.dash.search.SearchClusterViewModel",
+            "actionTypeName": null,
+            "navigationText": null,
+            "feature": null,
+            "navigationCardAction": null,
+            "position": null,
+            "items": [
+              {
+                "item": {
+                  "cluster": null,
+                  "bannerCard": null,
+                  "searchSuggestionCard": null,
+                  "feedbackCard": null,
+                  "knowledgeCardV2": null,
+                  "keywordsSuggestionCard": null,
+                  "queryClarificationCard": null,
+                  "simpleText": null,
+                  "topicalQuestionCard": null,
+                  "*entityResult": "urn:li:fsd_entityResultViewModel:(urn:li:lyndaCourse:2818086,SEARCH_MY_ITEMS_LEARNING,DEFAULT)",
+                  "simpleTextV2": null,
+                  "promoCard": null,
+                  "centeredText": null,
+                  "simpleImage": null
+                },
+                "position": null,
+                "$recipeTypes": ["com.linkedin.edd11a570456ce19ca1f5ec3c9bb03c1"],
+                "$type": "com.linkedin.voyager.dash.search.SearchItem"
+              }
+            ],
+            "results": [],
+            "trackingId": null
+          }
+        ],
+        "$type": "com.linkedin.restli.common.CollectionResponse"
+      },
+      "$recipeTypes": ["com.linkedin.c293aa010e51bae32433eeb13b1682fa"],
+      "$type": "com.linkedin.c293aa010e51bae32433eeb13b1682fa"
+    }
+  },
+  "included": [
+    {
+      "template": "UNIVERSAL",
+      "actorNavigationContext": null,
+      "trackingUrn": "urn:li:lyndaCourse:2818086",
+      "controlName": null,
+      "interstitialComponent": null,
+      "primaryActions": [],
+      "entityCustomTrackingInfo": null,
+      "title": {
+        "textDirection": "USER_LOCALE",
+        "text": "After Effects 2020 New Features",
+        "attributesV2": [
+          {
+            "start": 0,
+            "length": 31,
+            "detailData": {
+              "jobPostingName": null,
+              "hyperlink": null,
+              "profileFamiliarName": null,
+              "color": null,
+              "companyName": null,
+              "icon": null,
+              "epoch": null,
+              "systemImage": null,
+              "textLink": null,
+              "listItemStyle": null,
+              "groupName": null,
+              "hyperlinkOpenExternally": null,
+              "listStyle": null,
+              "profileFullName": null,
+              "stringFieldReference": null,
+              "learningCourseName": null,
+              "profileMention": null,
+              "style": "BOLD",
+              "schoolName": null,
+              "hashtag": null
+            },
+            "$recipeTypes": ["com.linkedin.b8a09c2c7547138a1c3aebdda8a94e12"],
+            "$type": "com.linkedin.voyager.dash.common.text.TextAttribute"
+          }
+        ],
+        "accessibilityTextAttributesV2": [],
+        "accessibilityText": null,
+        "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
+        "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+      },
+      "overflowActions": [],
+      "searchActionType": null,
+      "actorInsights": [],
+      "insightsResolutionResults": [],
+      "badgeIcon": null,
+      "entityUrn": "urn:li:fsd_entityResultViewModel:(urn:li:lyndaCourse:2818086,SEARCH_MY_ITEMS_LEARNING,DEFAULT)",
+      "showAdditionalCluster": false,
+      "ringStatus": null,
+      "primarySubtitle": {
+        "textDirection": "USER_LOCALE",
+        "text": "Course · 9m",
+        "attributesV2": [],
+        "accessibilityTextAttributesV2": [],
+        "accessibilityText": "Course 9 minutes",
+        "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
+        "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+      },
+      "badgeText": null,
+      "trackingId": "xKgXJZY5RQuLArXncWH+2Q==",
+      "summary": {
+        "textDirection": "USER_LOCALE",
+        "text": "6m left",
+        "attributesV2": [],
+        "accessibilityTextAttributesV2": [],
+        "accessibilityText": "6 minutes left",
+        "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
+        "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+      },
+      "actorNavigationUrl": null,
+      "addEntityToSearchHistory": false,
+      "image": {
+        "attributes": [
+          {
+            "scalingType": null,
+            "detailData": {
+              "profilePictureWithoutFrame": null,
+              "profilePictureWithRingStatus": null,
+              "companyLogo": null,
+              "icon": null,
+              "systemImage": null,
+              "nonEntityGroupLogo": null,
+              "vectorImage": {
+                "digitalmediaAsset": "urn:li:digitalmediaAsset:C4D0DAQFrdsfDMqzeDg",
+                "attribution": null,
+                "$recipeTypes": ["com.linkedin.28db8575bcf1c65bdc4bc15948d50ee9"],
+                "artifacts": [
+                  {
+                    "width": 256,
+                    "$recipeTypes": ["com.linkedin.f0f435b4425ee2990eba8f0a4d614944"],
+                    "fileIdentifyingUrlPathSegment": "144_256/learning-public-crop_144_256/0/1572553557977?e=1792594800&v=beta&t=bujbIRSv0nVEDOj-cbEQAxqnwnbwDIr5IpcdaOv9_xE",
+                    "expiresAt": 1792594800000,
+                    "height": 144,
+                    "$type": "com.linkedin.common.VectorArtifact"
+                  },
+                  {
+                    "width": 512,
+                    "$recipeTypes": ["com.linkedin.f0f435b4425ee2990eba8f0a4d614944"],
+                    "fileIdentifyingUrlPathSegment": "288_512/learning-public-crop_288_512/0/1572553558766?e=1792594800&v=beta&t=1gHjvSSJFjnXl29csIpv-gv8ZOuNspyUp_F5VEL23Js",
+                    "expiresAt": 1792594800000,
+                    "height": 288,
+                    "$type": "com.linkedin.common.VectorArtifact"
+                  },
+                  {
+                    "width": 100,
+                    "$recipeTypes": ["com.linkedin.f0f435b4425ee2990eba8f0a4d614944"],
+                    "fileIdentifyingUrlPathSegment": "60_100/learning-public-crop_60_100/0/1572553559118?e=1792594800&v=beta&t=aJFrRrAcsU7mZkOvRfK43Osa4n4Otl_TuYNs6HlgLNI",
+                    "expiresAt": 1792594800000,
+                    "height": 60,
+                    "$type": "com.linkedin.common.VectorArtifact"
+                  },
+                  {
+                    "width": 432,
+                    "$recipeTypes": ["com.linkedin.f0f435b4425ee2990eba8f0a4d614944"],
+                    "fileIdentifyingUrlPathSegment": "240_432/learning-public-crop_240_432/0/1572553557732?e=1792594800&v=beta&t=7GCYIYXPfbARIyAj9g8jW3ud9LCIs5PUK74IvOhVmU8",
+                    "expiresAt": 1792594800000,
+                    "height": 240,
+                    "$type": "com.linkedin.common.VectorArtifact"
+                  },
+                  {
+                    "width": 1200,
+                    "$recipeTypes": ["com.linkedin.f0f435b4425ee2990eba8f0a4d614944"],
+                    "fileIdentifyingUrlPathSegment": "675_1200/learning-public-crop_675_1200/0/1572553558501?e=1792594800&v=beta&t=wOovXj4kE7VUX1ViqHObaXtTeWbiyJxNKvdJlkx2iuA",
+                    "expiresAt": 1792594800000,
+                    "height": 675,
+                    "$type": "com.linkedin.common.VectorArtifact"
+                  }
+                ],
+                "rootUrl": "https://media.licdn.com/dms/image/v2/C4D0DAQFrdsfDMqzeDg/learning-public-crop_",
+                "$type": "com.linkedin.common.VectorImage"
+              },
+              "nonEntityProfessionalEventLogo": null,
+              "profilePicture": null,
+              "imageUrl": null,
+              "professionalEventLogo": null,
+              "nonEntityCompanyLogo": null,
+              "nonEntitySchoolLogo": null,
+              "groupLogo": null,
+              "schoolLogo": null,
+              "ghostImage": null,
+              "nonEntityProfilePicture": null
+            },
+            "tintColor": null,
+            "$recipeTypes": ["com.linkedin.eb94fbb1518f790c4545aafdf571c64e"],
+            "tapTargets": [],
+            "displayAspectRatio": null,
+            "$type": "com.linkedin.voyager.dash.common.image.ImageAttribute"
+          }
+        ],
+        "actionTarget": null,
+        "accessibilityTextAttributes": [],
+        "totalCount": null,
+        "accessibilityText": null,
+        "$recipeTypes": ["com.linkedin.fe5b8a3ac5a4a165c17f53b7eae4209b"],
+        "$type": "com.linkedin.voyager.dash.common.image.ImageViewModel"
+      },
+      "lazyLoadedActions": null,
+      "secondarySubtitle": {
+        "textDirection": "USER_LOCALE",
+        "text": "By: Mark Christiansen · Released Nov 4, 2019",
+        "attributesV2": [],
+        "accessibilityTextAttributesV2": [],
+        "accessibilityText": null,
+        "$recipeTypes": ["com.linkedin.6a224ca38654a84754a1eb3e97c0f846"],
+        "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+      },
+      "navigationUrl": "https://www.linkedin.com/learning/after-effects-2020-new-features?trk=tracker-hub_flagship_learning",
+      "entityEmbeddedObject": null,
+      "unreadIndicatorDetails": null,
+      "$recipeTypes": ["com.linkedin.cf4b25c18907ea8eafe915c8bfa24109"],
+      "target": null,
+      "$type": "com.linkedin.voyager.dash.search.EntityResultViewModel",
+      "actorTrackingUrn": null,
+      "navigationContext": {
+        "openExternally": true,
+        "$recipeTypes": ["com.linkedin.55ee9afd4182671fe7e271f615659525"],
+        "url": "https://www.linkedin.com/learning/after-effects-2020-new-features?trk=tracker-hub_flagship_learning",
+        "$type": "com.linkedin.voyager.dash.search.NavigationContext"
+      }
+    }
+  ]
+}

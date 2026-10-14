@@ -265,6 +265,19 @@ export const COMMANDS: CommandDef[] = [
     implemented: true,
   },
   {
+    name: 'my-items',
+    cost: '1 page call per 10 items; jobs with no --stage read all 5 stages',
+    summary:
+      'Your My items: saved posts, LinkedIn Learning courses, and the job tracker (saved, in ' +
+      'progress, applied, interview, archived).',
+    usage:
+      'lnrelay my-items posts|learning|jobs [--stage saved|in-progress|applied|interview|archived]\n' +
+      '       [--limit N] [--compact | --fields a,b,c]',
+    audience: ['cli', 'mcp'],
+    risk: 'read',
+    implemented: true,
+  },
+  {
     name: 'events',
     cost: '1 page call',
     summary:

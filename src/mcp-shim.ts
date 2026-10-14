@@ -38,6 +38,7 @@ import {
   runInbox,
   runMessages,
 } from './commands/messaging.ts';
+import { runMyItems } from './commands/my-items.ts';
 import { runNetwork } from './commands/network.ts';
 import { type PeopleRequest, runPeople, runPeopleFilters } from './commands/people.ts';
 import { runPostsSearch } from './commands/posts-search.ts';
@@ -510,6 +511,30 @@ export function buildServer(): McpServer {
       `skill is the CLI-only \`lnrelay skill\`, a write the user approves. ${NO_RETRY}`,
     {},
     async () => reply(await runSkills()),
+  );
+
+  server.tool(
+    'my_items',
+    "The user's My items. posts: posts they saved — id (the post urn, which `post` takes), url, " +
+      'author, authorHeadline, posted, text. learning: their LinkedIn Learning courses — name, ' +
+      'length, detail (instructor, released), progress, url. jobs: the job tracker — id (which ' +
+      '`job` takes), title, company, location, workplace, stage, note ("No longer accepting ' +
+      'applications"), url; with no stage, all five stages (5 page calls) and `meta.byStage`. ' +
+      `1 page call per 10 items. ${NO_RETRY}`,
+    {
+      list: z.enum(['posts', 'learning', 'jobs']),
+      stage: z.enum(['saved', 'in-progress', 'applied', 'interview', 'archived']).optional(),
+      limit: z.number().int().min(1).max(500).optional().describe('default 50'),
+      compact: z.boolean().optional(),
+    },
+    async ({ list, stage, limit, compact }) =>
+      reply(
+        await runMyItems(
+          list,
+          { limit: limit ?? 50, ...(stage !== undefined ? { stage } : {}) },
+          compact === true ? { compact: true } : {},
+        ),
+      ),
   );
 
   server.tool(

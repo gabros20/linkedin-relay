@@ -24,7 +24,7 @@ lnrelay local "rust"                       # then search it offline, free
 
 ## As an MCP server
 
-Twenty-nine tools, none of which writes to LinkedIn, so an agent does the reading. Writes are not on that surface at any price.
+Thirty tools, none of which writes to LinkedIn, so an agent does the reading. Writes are not on that surface at any price.
 The bundled Claude Code skill (`.claude/skills/linkedin-relay/SKILL.md`) teaches an agent the
 funnels, the budget, and how to read `meta` — including step-by-step recipes for finding people and
 for job hunting.
@@ -43,6 +43,7 @@ claude mcp add linkedin-relay -s user -- bun "$(npm root -g)/linkedin-relay-mcp/
 | `jobs` · `job` · `job-filters` | job search with every filter, several keyword sets merged in one call, and apply links |
 | `post` · `reactions` | a post's comment thread, and who engaged |
 | `scheduled` · `experience` · `skills` | your queued posts, and your own roles and skills |
+| `my-items` | your saved posts, LinkedIn Learning courses, and the job tracker by stage |
 | `events` · `event` | the events page's recommended and Premium events, and any event in full: when, where, attendees, organiser, its site |
 | `network` | your My Network: connections, following, followers, pages, events, groups, invitations sent — or the count of each |
 | `inbox` · `messages` · `draft` · `drafts` | read your messages without marking them read; draft replies locally — nothing is ever sent |
