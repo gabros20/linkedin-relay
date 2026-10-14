@@ -143,6 +143,12 @@ experience
 Each role on their profile with its `positionId` and title. The id is what `lnrelay role edit` and
 `lnrelay role remove` take.
 
+### `skills` — live, ~3 calls. The user's skills.
+```
+skills
+```
+Each skill on their profile with its `skillId` and name. The id is what `lnrelay skill remove` takes.
+
 ### `sync` — CLI-only. Fills the cache.
 ```
 lnrelay sync my-posts | lnrelay sync connections [--limit N] [--force]
@@ -212,6 +218,7 @@ Writes are **not on the MCP surface**. They exist only as CLI commands:
 | `lnrelay edit headline\|about ("<text>" \| --file <path>)` | change their profile headline (max 220 characters) or About section |
 | `lnrelay role add --title "…" --company "…" --start YYYY-MM [--end YYYY-MM \| --current] [--location "…"] [--description "…" \| --description-file <path>] [--notify]` | add a role to their Experience |
 | `lnrelay role edit <position-id> [the same flags]` / `lnrelay role remove <position-id>` | change or remove one of their roles (ids from `experience`) |
+| `lnrelay skill add "<name>"` / `lnrelay skill remove <skill-id>` | add a skill (free text, linked to nothing) or remove one (ids from `skills`); removing drops its endorsements |
 | `lnrelay react <urn> [--type X] [--remove]` | react to a post or comment |
 | `lnrelay delete <activity-urn \| comment-urn>` | delete their post or comment |
 

@@ -1,0 +1,776 @@
+{
+  "requestId": "com.linkedin.sdui.requests.profile.saveProfileSkillForm",
+  "serverRequest": {
+    "requestId": "com.linkedin.sdui.requests.profile.saveProfileSkillForm",
+    "requestedArguments": {
+      "$type": "proto.sdui.actions.requests.RequestedArguments",
+      "requestedStateKeys": [
+        {
+          "key": {
+            "value": {
+              "$case": "id",
+              "id": "addSkillsTypeaheadSkillNamef54b6adc-632c-43e5-9ef8-0242afed715d"
+            }
+          }
+        },
+        {
+          "key": {
+            "value": {
+              "$case": "id",
+              "id": "addSkillsTypeaheadSkillIdf54b6adc-632c-43e5-9ef8-0242afed715d"
+            }
+          }
+        },
+        {
+          "key": {
+            "value": {
+              "$case": "id",
+              "id": "skillAssociationsExperiencef54b6adc-632c-43e5-9ef8-0242afed715d"
+            }
+          }
+        },
+        {
+          "key": {
+            "value": {
+              "$case": "id",
+              "id": "skillAssociationsEducationf54b6adc-632c-43e5-9ef8-0242afed715d"
+            }
+          }
+        },
+        {
+          "key": {
+            "value": {
+              "$case": "id",
+              "id": "skillAssociationsCertificationf54b6adc-632c-43e5-9ef8-0242afed715d"
+            }
+          }
+        },
+        {
+          "key": {
+            "value": {
+              "$case": "id",
+              "id": "skillAssociationsProjectf54b6adc-632c-43e5-9ef8-0242afed715d"
+            }
+          }
+        },
+        {
+          "key": {
+            "value": {
+              "$case": "id",
+              "id": "skillAssociationsPublicationf54b6adc-632c-43e5-9ef8-0242afed715d"
+            }
+          }
+        },
+        {
+          "key": {
+            "value": {
+              "$case": "id",
+              "id": "skillAssociationsCoursef54b6adc-632c-43e5-9ef8-0242afed715d"
+            }
+          }
+        },
+        {
+          "key": {
+            "value": {
+              "$case": "id",
+              "id": "skillAssociationsHonorf54b6adc-632c-43e5-9ef8-0242afed715d"
+            }
+          }
+        },
+        {
+          "key": {
+            "value": {
+              "$case": "id",
+              "id": "skillAssociationsVolunteerf54b6adc-632c-43e5-9ef8-0242afed715d"
+            }
+          }
+        },
+        {
+          "key": {
+            "value": {
+              "$case": "id",
+              "id": "skillAssociationsOrganizationf54b6adc-632c-43e5-9ef8-0242afed715d"
+            }
+          }
+        },
+        {
+          "key": {
+            "value": {
+              "$case": "id",
+              "id": "skillAssociationsPatentf54b6adc-632c-43e5-9ef8-0242afed715d"
+            }
+          }
+        },
+        {
+          "key": {
+            "value": {
+              "$case": "id",
+              "id": "skillsFollowToKeepUpf54b6adc-632c-43e5-9ef8-0242afed715d"
+            }
+          }
+        }
+      ],
+      "payload": {
+        "skillName": {
+          "key": "addSkillsTypeaheadSkillNamef54b6adc-632c-43e5-9ef8-0242afed715d",
+          "namespace": "MemoryNamespace"
+        },
+        "skillId": {
+          "key": "addSkillsTypeaheadSkillIdf54b6adc-632c-43e5-9ef8-0242afed715d",
+          "namespace": "MemoryNamespace"
+        },
+        "experienceAssociations": {
+          "key": "skillAssociationsExperiencef54b6adc-632c-43e5-9ef8-0242afed715d",
+          "namespace": "MemoryNamespace"
+        },
+        "educationAssociations": {
+          "key": "skillAssociationsEducationf54b6adc-632c-43e5-9ef8-0242afed715d",
+          "namespace": "MemoryNamespace"
+        },
+        "certificationAssociations": {
+          "key": "skillAssociationsCertificationf54b6adc-632c-43e5-9ef8-0242afed715d",
+          "namespace": "MemoryNamespace"
+        },
+        "projectAssociations": {
+          "key": "skillAssociationsProjectf54b6adc-632c-43e5-9ef8-0242afed715d",
+          "namespace": "MemoryNamespace"
+        },
+        "publicationAssociations": {
+          "key": "skillAssociationsPublicationf54b6adc-632c-43e5-9ef8-0242afed715d",
+          "namespace": "MemoryNamespace"
+        },
+        "courseAssociations": {
+          "key": "skillAssociationsCoursef54b6adc-632c-43e5-9ef8-0242afed715d",
+          "namespace": "MemoryNamespace"
+        },
+        "honorAssociations": {
+          "key": "skillAssociationsHonorf54b6adc-632c-43e5-9ef8-0242afed715d",
+          "namespace": "MemoryNamespace"
+        },
+        "volunteerAssociations": {
+          "key": "skillAssociationsVolunteerf54b6adc-632c-43e5-9ef8-0242afed715d",
+          "namespace": "MemoryNamespace"
+        },
+        "organizationAssociations": {
+          "key": "skillAssociationsOrganizationf54b6adc-632c-43e5-9ef8-0242afed715d",
+          "namespace": "MemoryNamespace"
+        },
+        "patentAssociations": {
+          "key": "skillAssociationsPatentf54b6adc-632c-43e5-9ef8-0242afed715d",
+          "namespace": "MemoryNamespace"
+        },
+        "followToKeepUp": {
+          "key": "skillsFollowToKeepUpf54b6adc-632c-43e5-9ef8-0242afed715d",
+          "namespace": "MemoryNamespace"
+        },
+        "isEdit": false,
+        "vanityName": "ada-l",
+        "profileId": "ACoAATESTPROFILEID",
+        "hasChanges": {
+          "key": "auto-binding-0f6194c5-33aa-47e1-9a1c-731a883b4ad5isActiveProfileFormHasChanges",
+          "namespace": "MemoryNamespace"
+        },
+        "showLoader": {
+          "key": "auto-binding-34ff3925-eb46-41a4-aa66-0a7b04870cfdisActiveProfileFormLoading",
+          "namespace": "MemoryNamespace"
+        },
+        "userExitedForm": {
+          "key": "auto-binding-d9d86a8c-ee19-472b-9ac5-9528bad50960profileFormUserExitedForm",
+          "namespace": "MemoryNamespace"
+        },
+        "saveOrDeleteRequestPending": {
+          "key": "auto-binding-e19f18b5-bb2f-4e62-b1de-f951966f55b4profileFormSaveOrDeleteRequestPending",
+          "namespace": "MemoryNamespace"
+        },
+        "disableAddAnotherSkillNba": false,
+        "isFromDetailScreen": false,
+        "totalSkills": 35
+      },
+      "requestMetadata": {
+        "$type": "proto.sdui.common.RequestMetadata"
+      }
+    },
+    "onClientRequestFailureAction": {
+      "actions": [
+        {
+          "$type": "proto.sdui.actions.core.SetState",
+          "value": {
+            "state": {
+              "key": {
+                "key": {
+                  "value": {
+                    "$case": "id",
+                    "id": "auto-binding-34ff3925-eb46-41a4-aa66-0a7b04870cfdisActiveProfileFormLoading"
+                  }
+                }
+              },
+              "value": {
+                "$case": "booleanValue",
+                "booleanValue": false
+              }
+            }
+          }
+        },
+        {
+          "$type": "proto.sdui.actions.core.ShowToast",
+          "value": {
+            "duration": "ToastDuration_UNKNOWN",
+            "key": "f5ee8671-0957-4275-b4c2-65cb9dbe4de3",
+            "presetToast": {
+              "category": "ToastPresetCategory_ERROR",
+              "text": {
+                "_payload": {
+                  "status": "resolved_model",
+                  "value": "[\"Save failed\"]",
+                  "reason": {
+                    "_moduleLoading": null,
+                    "_chunks": {},
+                    "_stringDecoder": {},
+                    "_closed": true,
+                    "_closedReason": {},
+                    "_allowPartialStream": false
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "isApfcEnabled": false,
+    "isStreaming": false,
+    "rumPageKey": ""
+  },
+  "states": [
+    {
+      "key": "addSkillsTypeaheadSkillNamef54b6adc-632c-43e5-9ef8-0242afed715d",
+      "namespace": "MemoryNamespace",
+      "value": "lnrelay test skill",
+      "originalProtoCase": "stringValue",
+      "protoKey": {
+        "$type": "proto.sdui.Key",
+        "value": {
+          "$case": "id",
+          "id": "addSkillsTypeaheadSkillNamef54b6adc-632c-43e5-9ef8-0242afed715d"
+        }
+      }
+    },
+    {
+      "key": "addSkillsTypeaheadSkillIdf54b6adc-632c-43e5-9ef8-0242afed715d",
+      "namespace": "MemoryNamespace",
+      "value": "",
+      "originalProtoCase": "stringValue",
+      "protoKey": {
+        "$type": "proto.sdui.Key",
+        "value": {
+          "$case": "id",
+          "id": "addSkillsTypeaheadSkillIdf54b6adc-632c-43e5-9ef8-0242afed715d"
+        }
+      }
+    },
+    {
+      "key": "skillAssociationsExperiencef54b6adc-632c-43e5-9ef8-0242afed715d",
+      "namespace": "MemoryNamespace",
+      "value": [],
+      "originalProtoCase": "stringListValue",
+      "protoKey": {
+        "$type": "proto.sdui.Key",
+        "value": {
+          "$case": "id",
+          "id": "skillAssociationsExperiencef54b6adc-632c-43e5-9ef8-0242afed715d"
+        }
+      }
+    },
+    {
+      "key": "skillAssociationsEducationf54b6adc-632c-43e5-9ef8-0242afed715d",
+      "namespace": "MemoryNamespace",
+      "value": [],
+      "originalProtoCase": "stringListValue",
+      "protoKey": {
+        "$type": "proto.sdui.Key",
+        "value": {
+          "$case": "id",
+          "id": "skillAssociationsEducationf54b6adc-632c-43e5-9ef8-0242afed715d"
+        }
+      }
+    },
+    {
+      "key": "skillAssociationsCertificationf54b6adc-632c-43e5-9ef8-0242afed715d",
+      "namespace": "MemoryNamespace",
+      "value": [],
+      "originalProtoCase": "stringListValue",
+      "protoKey": {
+        "$type": "proto.sdui.Key",
+        "value": {
+          "$case": "id",
+          "id": "skillAssociationsCertificationf54b6adc-632c-43e5-9ef8-0242afed715d"
+        }
+      }
+    },
+    {
+      "key": "skillAssociationsProjectf54b6adc-632c-43e5-9ef8-0242afed715d",
+      "namespace": "MemoryNamespace",
+      "value": [],
+      "originalProtoCase": "stringListValue",
+      "protoKey": {
+        "$type": "proto.sdui.Key",
+        "value": {
+          "$case": "id",
+          "id": "skillAssociationsProjectf54b6adc-632c-43e5-9ef8-0242afed715d"
+        }
+      }
+    },
+    {
+      "key": "skillAssociationsPublicationf54b6adc-632c-43e5-9ef8-0242afed715d",
+      "namespace": "MemoryNamespace",
+      "value": [],
+      "originalProtoCase": "stringListValue",
+      "protoKey": {
+        "$type": "proto.sdui.Key",
+        "value": {
+          "$case": "id",
+          "id": "skillAssociationsPublicationf54b6adc-632c-43e5-9ef8-0242afed715d"
+        }
+      }
+    },
+    {
+      "key": "skillAssociationsCoursef54b6adc-632c-43e5-9ef8-0242afed715d",
+      "namespace": "MemoryNamespace",
+      "value": [],
+      "originalProtoCase": "stringListValue",
+      "protoKey": {
+        "$type": "proto.sdui.Key",
+        "value": {
+          "$case": "id",
+          "id": "skillAssociationsCoursef54b6adc-632c-43e5-9ef8-0242afed715d"
+        }
+      }
+    },
+    {
+      "key": "skillAssociationsHonorf54b6adc-632c-43e5-9ef8-0242afed715d",
+      "namespace": "MemoryNamespace",
+      "value": [],
+      "originalProtoCase": "stringListValue",
+      "protoKey": {
+        "$type": "proto.sdui.Key",
+        "value": {
+          "$case": "id",
+          "id": "skillAssociationsHonorf54b6adc-632c-43e5-9ef8-0242afed715d"
+        }
+      }
+    },
+    {
+      "key": "skillAssociationsVolunteerf54b6adc-632c-43e5-9ef8-0242afed715d",
+      "namespace": "MemoryNamespace",
+      "value": [],
+      "originalProtoCase": "stringListValue",
+      "protoKey": {
+        "$type": "proto.sdui.Key",
+        "value": {
+          "$case": "id",
+          "id": "skillAssociationsVolunteerf54b6adc-632c-43e5-9ef8-0242afed715d"
+        }
+      }
+    },
+    {
+      "key": "skillAssociationsOrganizationf54b6adc-632c-43e5-9ef8-0242afed715d",
+      "namespace": "MemoryNamespace",
+      "value": [],
+      "originalProtoCase": "stringListValue",
+      "protoKey": {
+        "$type": "proto.sdui.Key",
+        "value": {
+          "$case": "id",
+          "id": "skillAssociationsOrganizationf54b6adc-632c-43e5-9ef8-0242afed715d"
+        }
+      }
+    },
+    {
+      "key": "skillAssociationsPatentf54b6adc-632c-43e5-9ef8-0242afed715d",
+      "namespace": "MemoryNamespace",
+      "value": [],
+      "originalProtoCase": "stringListValue",
+      "protoKey": {
+        "$type": "proto.sdui.Key",
+        "value": {
+          "$case": "id",
+          "id": "skillAssociationsPatentf54b6adc-632c-43e5-9ef8-0242afed715d"
+        }
+      }
+    },
+    {
+      "key": "skillsFollowToKeepUpf54b6adc-632c-43e5-9ef8-0242afed715d",
+      "namespace": "MemoryNamespace",
+      "value": false,
+      "originalProtoCase": "booleanValue",
+      "protoKey": {
+        "$type": "proto.sdui.Key",
+        "value": {
+          "$case": "id",
+          "id": "skillsFollowToKeepUpf54b6adc-632c-43e5-9ef8-0242afed715d"
+        }
+      }
+    }
+  ],
+  "requestedArguments": {
+    "$type": "proto.sdui.actions.requests.RequestedArguments",
+    "requestedStateKeys": [
+      {
+        "key": {
+          "value": {
+            "$case": "id",
+            "id": "addSkillsTypeaheadSkillNamef54b6adc-632c-43e5-9ef8-0242afed715d"
+          }
+        }
+      },
+      {
+        "key": {
+          "value": {
+            "$case": "id",
+            "id": "addSkillsTypeaheadSkillIdf54b6adc-632c-43e5-9ef8-0242afed715d"
+          }
+        }
+      },
+      {
+        "key": {
+          "value": {
+            "$case": "id",
+            "id": "skillAssociationsExperiencef54b6adc-632c-43e5-9ef8-0242afed715d"
+          }
+        }
+      },
+      {
+        "key": {
+          "value": {
+            "$case": "id",
+            "id": "skillAssociationsEducationf54b6adc-632c-43e5-9ef8-0242afed715d"
+          }
+        }
+      },
+      {
+        "key": {
+          "value": {
+            "$case": "id",
+            "id": "skillAssociationsCertificationf54b6adc-632c-43e5-9ef8-0242afed715d"
+          }
+        }
+      },
+      {
+        "key": {
+          "value": {
+            "$case": "id",
+            "id": "skillAssociationsProjectf54b6adc-632c-43e5-9ef8-0242afed715d"
+          }
+        }
+      },
+      {
+        "key": {
+          "value": {
+            "$case": "id",
+            "id": "skillAssociationsPublicationf54b6adc-632c-43e5-9ef8-0242afed715d"
+          }
+        }
+      },
+      {
+        "key": {
+          "value": {
+            "$case": "id",
+            "id": "skillAssociationsCoursef54b6adc-632c-43e5-9ef8-0242afed715d"
+          }
+        }
+      },
+      {
+        "key": {
+          "value": {
+            "$case": "id",
+            "id": "skillAssociationsHonorf54b6adc-632c-43e5-9ef8-0242afed715d"
+          }
+        }
+      },
+      {
+        "key": {
+          "value": {
+            "$case": "id",
+            "id": "skillAssociationsVolunteerf54b6adc-632c-43e5-9ef8-0242afed715d"
+          }
+        }
+      },
+      {
+        "key": {
+          "value": {
+            "$case": "id",
+            "id": "skillAssociationsOrganizationf54b6adc-632c-43e5-9ef8-0242afed715d"
+          }
+        }
+      },
+      {
+        "key": {
+          "value": {
+            "$case": "id",
+            "id": "skillAssociationsPatentf54b6adc-632c-43e5-9ef8-0242afed715d"
+          }
+        }
+      },
+      {
+        "key": {
+          "value": {
+            "$case": "id",
+            "id": "skillsFollowToKeepUpf54b6adc-632c-43e5-9ef8-0242afed715d"
+          }
+        }
+      }
+    ],
+    "payload": {
+      "skillName": {
+        "key": "addSkillsTypeaheadSkillNamef54b6adc-632c-43e5-9ef8-0242afed715d",
+        "namespace": "MemoryNamespace"
+      },
+      "skillId": {
+        "key": "addSkillsTypeaheadSkillIdf54b6adc-632c-43e5-9ef8-0242afed715d",
+        "namespace": "MemoryNamespace"
+      },
+      "experienceAssociations": {
+        "key": "skillAssociationsExperiencef54b6adc-632c-43e5-9ef8-0242afed715d",
+        "namespace": "MemoryNamespace"
+      },
+      "educationAssociations": {
+        "key": "skillAssociationsEducationf54b6adc-632c-43e5-9ef8-0242afed715d",
+        "namespace": "MemoryNamespace"
+      },
+      "certificationAssociations": {
+        "key": "skillAssociationsCertificationf54b6adc-632c-43e5-9ef8-0242afed715d",
+        "namespace": "MemoryNamespace"
+      },
+      "projectAssociations": {
+        "key": "skillAssociationsProjectf54b6adc-632c-43e5-9ef8-0242afed715d",
+        "namespace": "MemoryNamespace"
+      },
+      "publicationAssociations": {
+        "key": "skillAssociationsPublicationf54b6adc-632c-43e5-9ef8-0242afed715d",
+        "namespace": "MemoryNamespace"
+      },
+      "courseAssociations": {
+        "key": "skillAssociationsCoursef54b6adc-632c-43e5-9ef8-0242afed715d",
+        "namespace": "MemoryNamespace"
+      },
+      "honorAssociations": {
+        "key": "skillAssociationsHonorf54b6adc-632c-43e5-9ef8-0242afed715d",
+        "namespace": "MemoryNamespace"
+      },
+      "volunteerAssociations": {
+        "key": "skillAssociationsVolunteerf54b6adc-632c-43e5-9ef8-0242afed715d",
+        "namespace": "MemoryNamespace"
+      },
+      "organizationAssociations": {
+        "key": "skillAssociationsOrganizationf54b6adc-632c-43e5-9ef8-0242afed715d",
+        "namespace": "MemoryNamespace"
+      },
+      "patentAssociations": {
+        "key": "skillAssociationsPatentf54b6adc-632c-43e5-9ef8-0242afed715d",
+        "namespace": "MemoryNamespace"
+      },
+      "followToKeepUp": {
+        "key": "skillsFollowToKeepUpf54b6adc-632c-43e5-9ef8-0242afed715d",
+        "namespace": "MemoryNamespace"
+      },
+      "isEdit": false,
+      "vanityName": "ada-l",
+      "profileId": "ACoAATESTPROFILEID",
+      "hasChanges": {
+        "key": "auto-binding-0f6194c5-33aa-47e1-9a1c-731a883b4ad5isActiveProfileFormHasChanges",
+        "namespace": "MemoryNamespace"
+      },
+      "showLoader": {
+        "key": "auto-binding-34ff3925-eb46-41a4-aa66-0a7b04870cfdisActiveProfileFormLoading",
+        "namespace": "MemoryNamespace"
+      },
+      "userExitedForm": {
+        "key": "auto-binding-d9d86a8c-ee19-472b-9ac5-9528bad50960profileFormUserExitedForm",
+        "namespace": "MemoryNamespace"
+      },
+      "saveOrDeleteRequestPending": {
+        "key": "auto-binding-e19f18b5-bb2f-4e62-b1de-f951966f55b4profileFormSaveOrDeleteRequestPending",
+        "namespace": "MemoryNamespace"
+      },
+      "disableAddAnotherSkillNba": false,
+      "isFromDetailScreen": false,
+      "totalSkills": 35
+    },
+    "requestMetadata": {
+      "$type": "proto.sdui.common.RequestMetadata"
+    },
+    "states": [
+      {
+        "key": "addSkillsTypeaheadSkillNamef54b6adc-632c-43e5-9ef8-0242afed715d",
+        "namespace": "MemoryNamespace",
+        "value": "lnrelay test skill",
+        "originalProtoCase": "stringValue",
+        "protoKey": {
+          "$type": "proto.sdui.Key",
+          "value": {
+            "$case": "id",
+            "id": "addSkillsTypeaheadSkillNamef54b6adc-632c-43e5-9ef8-0242afed715d"
+          }
+        }
+      },
+      {
+        "key": "addSkillsTypeaheadSkillIdf54b6adc-632c-43e5-9ef8-0242afed715d",
+        "namespace": "MemoryNamespace",
+        "value": "",
+        "originalProtoCase": "stringValue",
+        "protoKey": {
+          "$type": "proto.sdui.Key",
+          "value": {
+            "$case": "id",
+            "id": "addSkillsTypeaheadSkillIdf54b6adc-632c-43e5-9ef8-0242afed715d"
+          }
+        }
+      },
+      {
+        "key": "skillAssociationsExperiencef54b6adc-632c-43e5-9ef8-0242afed715d",
+        "namespace": "MemoryNamespace",
+        "value": [],
+        "originalProtoCase": "stringListValue",
+        "protoKey": {
+          "$type": "proto.sdui.Key",
+          "value": {
+            "$case": "id",
+            "id": "skillAssociationsExperiencef54b6adc-632c-43e5-9ef8-0242afed715d"
+          }
+        }
+      },
+      {
+        "key": "skillAssociationsEducationf54b6adc-632c-43e5-9ef8-0242afed715d",
+        "namespace": "MemoryNamespace",
+        "value": [],
+        "originalProtoCase": "stringListValue",
+        "protoKey": {
+          "$type": "proto.sdui.Key",
+          "value": {
+            "$case": "id",
+            "id": "skillAssociationsEducationf54b6adc-632c-43e5-9ef8-0242afed715d"
+          }
+        }
+      },
+      {
+        "key": "skillAssociationsCertificationf54b6adc-632c-43e5-9ef8-0242afed715d",
+        "namespace": "MemoryNamespace",
+        "value": [],
+        "originalProtoCase": "stringListValue",
+        "protoKey": {
+          "$type": "proto.sdui.Key",
+          "value": {
+            "$case": "id",
+            "id": "skillAssociationsCertificationf54b6adc-632c-43e5-9ef8-0242afed715d"
+          }
+        }
+      },
+      {
+        "key": "skillAssociationsProjectf54b6adc-632c-43e5-9ef8-0242afed715d",
+        "namespace": "MemoryNamespace",
+        "value": [],
+        "originalProtoCase": "stringListValue",
+        "protoKey": {
+          "$type": "proto.sdui.Key",
+          "value": {
+            "$case": "id",
+            "id": "skillAssociationsProjectf54b6adc-632c-43e5-9ef8-0242afed715d"
+          }
+        }
+      },
+      {
+        "key": "skillAssociationsPublicationf54b6adc-632c-43e5-9ef8-0242afed715d",
+        "namespace": "MemoryNamespace",
+        "value": [],
+        "originalProtoCase": "stringListValue",
+        "protoKey": {
+          "$type": "proto.sdui.Key",
+          "value": {
+            "$case": "id",
+            "id": "skillAssociationsPublicationf54b6adc-632c-43e5-9ef8-0242afed715d"
+          }
+        }
+      },
+      {
+        "key": "skillAssociationsCoursef54b6adc-632c-43e5-9ef8-0242afed715d",
+        "namespace": "MemoryNamespace",
+        "value": [],
+        "originalProtoCase": "stringListValue",
+        "protoKey": {
+          "$type": "proto.sdui.Key",
+          "value": {
+            "$case": "id",
+            "id": "skillAssociationsCoursef54b6adc-632c-43e5-9ef8-0242afed715d"
+          }
+        }
+      },
+      {
+        "key": "skillAssociationsHonorf54b6adc-632c-43e5-9ef8-0242afed715d",
+        "namespace": "MemoryNamespace",
+        "value": [],
+        "originalProtoCase": "stringListValue",
+        "protoKey": {
+          "$type": "proto.sdui.Key",
+          "value": {
+            "$case": "id",
+            "id": "skillAssociationsHonorf54b6adc-632c-43e5-9ef8-0242afed715d"
+          }
+        }
+      },
+      {
+        "key": "skillAssociationsVolunteerf54b6adc-632c-43e5-9ef8-0242afed715d",
+        "namespace": "MemoryNamespace",
+        "value": [],
+        "originalProtoCase": "stringListValue",
+        "protoKey": {
+          "$type": "proto.sdui.Key",
+          "value": {
+            "$case": "id",
+            "id": "skillAssociationsVolunteerf54b6adc-632c-43e5-9ef8-0242afed715d"
+          }
+        }
+      },
+      {
+        "key": "skillAssociationsOrganizationf54b6adc-632c-43e5-9ef8-0242afed715d",
+        "namespace": "MemoryNamespace",
+        "value": [],
+        "originalProtoCase": "stringListValue",
+        "protoKey": {
+          "$type": "proto.sdui.Key",
+          "value": {
+            "$case": "id",
+            "id": "skillAssociationsOrganizationf54b6adc-632c-43e5-9ef8-0242afed715d"
+          }
+        }
+      },
+      {
+        "key": "skillAssociationsPatentf54b6adc-632c-43e5-9ef8-0242afed715d",
+        "namespace": "MemoryNamespace",
+        "value": [],
+        "originalProtoCase": "stringListValue",
+        "protoKey": {
+          "$type": "proto.sdui.Key",
+          "value": {
+            "$case": "id",
+            "id": "skillAssociationsPatentf54b6adc-632c-43e5-9ef8-0242afed715d"
+          }
+        }
+      },
+      {
+        "key": "skillsFollowToKeepUpf54b6adc-632c-43e5-9ef8-0242afed715d",
+        "namespace": "MemoryNamespace",
+        "value": false,
+        "originalProtoCase": "booleanValue",
+        "protoKey": {
+          "$type": "proto.sdui.Key",
+          "value": {
+            "$case": "id",
+            "id": "skillsFollowToKeepUpf54b6adc-632c-43e5-9ef8-0242afed715d"
+          }
+        }
+      }
+    ],
+    "screenId": "com.linkedin.sdui.flagshipnav.profile.ProfileSkillAddForm",
+    "knownTemplateIds": []
+  }
+}

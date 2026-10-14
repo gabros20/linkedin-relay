@@ -198,6 +198,15 @@ export const COMMANDS: CommandDef[] = [
     implemented: true,
   },
   {
+    name: 'skills',
+    cost: '3 calls',
+    summary: 'The skills on your own profile, with the skill id `skill remove` takes.',
+    usage: 'lnrelay skills',
+    audience: ['cli', 'mcp'],
+    risk: 'read',
+    implemented: true,
+  },
+  {
     name: 'local',
     cost: 'free — local cache',
     summary: 'Offline search across everything synced. The default research path after a sync.',
@@ -352,6 +361,19 @@ export const COMMANDS: CommandDef[] = [
       '       Position ids come from `lnrelay experience`. The preview shows the role as it is and\n' +
       '       as it will be; the result is read back from the profile. A role with media attached\n' +
       '       is refused. The company is free text (not linked to a company page).',
+    audience: ['cli'],
+    risk: 'write',
+    implemented: true,
+  },
+  {
+    name: 'skill',
+    cost: '4-5 reads + 1 write',
+    summary: 'Add a skill to your profile, or remove one.',
+    usage:
+      'lnrelay skill add "<name>"\n' +
+      '       lnrelay skill remove <skill-id>\n' +
+      '       Skill ids come from `lnrelay skills`. A skill is added as free text, linked to no role,\n' +
+      '       school or project. Removing a skill removes its endorsements with it.',
     audience: ['cli'],
     risk: 'write',
     implemented: true,

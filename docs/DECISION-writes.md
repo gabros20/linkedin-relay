@@ -273,6 +273,19 @@ back equal to the original both times):
   except the headline rewrite), then live through `lnrelay role add/edit/remove` on a past test
   role, with the headline, About, intro fields and role list compared to a baseline after each step.
 
+### ✅ Skills: list, add, remove — captured 2026-10-14
+
+- **Add** is `saveProfileSkillForm`, carried directly by `ProfileSkillAddForm`: the name, an empty
+  catalogue id (free text) and empty association lists (roles, schools, projects…).
+- **Remove** is `deleteProfileSkillForm`, in `ProfileSkillDetailsEditForm` (opened with
+  `{ vanityName, skillId, isFromDetailScreen }`); there is also `updateProfileSkillForm`, not built.
+- **The list** is the pager `pagers.profile.details.skills`, its payload (`profileId`, `filter`,
+  `count`) taken from the `ProfileSkillDetails` screen and paged by `start`. Each row's name is the
+  single text node before its edit action; any other count leaves the name null.
+- **Verified** by rebuilding the browser's add save from a fresh form read, then live: the
+  browser-added test skill removed through `lnrelay skill remove`, and a second one added and removed
+  through `lnrelay`, the skill list compared to the baseline afterwards.
+
 Not built: `MULTIPART` tickets (large files get several part URLs and a completion call that has not
 been observed). `parseUploadTicket` refuses them before anything is uploaded.
 

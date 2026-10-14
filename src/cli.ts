@@ -26,6 +26,7 @@ import { runBudget, runDoctor, runRisk } from './commands/local.ts';
 import { runOauthLogin, runOauthLogout, runOauthStatus } from './commands/oauth.ts';
 import { findCommand, helpText } from './commands/registry.ts';
 import { type RoleRequest, runExperience, runRole } from './commands/role.ts';
+import { runSkill, runSkills } from './commands/skill.ts';
 import { runSync } from './commands/sync.ts';
 import {
   type MediaRequest,
@@ -158,6 +159,8 @@ export async function dispatch(argv: string[], now: number): Promise<Envelope> {
       );
     case 'experience':
       return runExperience(bool(args, 'quiet'));
+    case 'skills':
+      return runSkills(bool(args, 'quiet'));
     case 'scheduled':
       return runScheduled(bool(args, 'quiet'));
     case 'sync':
@@ -312,6 +315,8 @@ function runWrite(
       return runDelete(first, now, deps, bool(args, 'quiet'));
     case 'role':
       return role(args, now, deps);
+    case 'skill':
+      return runSkill(first, second, now, deps);
     default:
       return err(command, 'NOT_IMPLEMENTED', `'${command}' has no write runner`);
   }

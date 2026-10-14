@@ -32,6 +32,7 @@ import {
 import { runBudget, runDoctor, runRisk } from './commands/local.ts';
 import { mcpCommands } from './commands/registry.ts';
 import { runExperience } from './commands/role.ts';
+import { runSkills } from './commands/skill.ts';
 import { shouldRunAsEntry } from './entry.ts';
 import type { Envelope } from './types.ts';
 
@@ -187,6 +188,15 @@ export function buildServer(): McpServer {
       `the user approves). ${NO_RETRY}`,
     {},
     async () => reply(await runExperience()),
+  );
+
+  server.tool(
+    'skills',
+    "The skills on the user's own LinkedIn profile: skillId and name. LIVE — about 3 calls. " +
+      '`name` is null when it could not be matched to its row for certain. Adding or removing a ' +
+      `skill is the CLI-only \`lnrelay skill\`, a write the user approves. ${NO_RETRY}`,
+    {},
+    async () => reply(await runSkills()),
   );
 
   server.tool(
