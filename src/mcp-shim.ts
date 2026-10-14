@@ -120,7 +120,10 @@ export function buildServer(): McpServer {
   );
 
   const jobQuery = {
-    keywords: z.string().optional().describe('search terms'),
+    keywords: z
+      .union([z.string(), z.array(z.string()).min(1)])
+      .optional()
+      .describe('search terms; a list runs one search per entry and merges them by job id'),
     location: z
       .string()
       .optional()
@@ -179,13 +182,17 @@ export function buildServer(): McpServer {
       'Rows carry id, title, company, location, workplace, listed (date), easyApply, promoted, ' +
       'salary when shown, url. RANK ON THOSE, then call `job` on finalists for the description ' +
       'and apply link; `details:true` reads every row in full, 100 per job read (60 a day). ' +
+      'Pass several keyword sets as a list to search them all with the same filters in one ' +
+      'call: jobs found by several come back once, with `matched` naming the sets that found ' +
+      'them, most-matched first; `meta.searches` reports each set and `meta.duplicates` how ' +
+      'many repeats were merged. ' +
       'Ids for company/industry/title/place/filter come from `job_filters`. `data.location` is ' +
       "the place a typed location resolved to: check it. `meta.claimedCount` is LinkedIn's total; " +
       '`meta.next` is the start for the next page; LinkedIn serves at most 1000 per search. ' +
       `${READING_CONTRACT} ${NO_RETRY}`,
     {
       ...jobQuery,
-      limit: z.number().int().min(1).max(100).optional().describe('default 25'),
+      limit: z.number().int().min(1).max(1000).optional().describe('per keyword set; default 25'),
       start: z.number().int().min(0).optional(),
       details: z.boolean().optional().describe('read each job: apply link, applicants'),
       description: z.boolean().optional().describe('with details, keep full descriptions'),
@@ -287,7 +294,7 @@ export function buildServer(): McpServer {
       query: z.string().optional().describe('substring match; omit to list everything'),
       source: z.string().optional().describe('comma-separated: connections,my-posts,third-party'),
       since: z.string().optional().describe('YYYY-MM-DD'),
-      limit: z.number().int().min(1).max(100).optional().describe('default 25'),
+      limit: z.number().int().min(1).max(1000).optional().describe('per keyword set; default 25'),
     },
     async ({ query, source, since, limit }) => reply(runLocal(query, source, since, limit ?? 25)),
   );
@@ -330,7 +337,7 @@ export function buildServer(): McpServer {
         'themselves (it is CLI-only). Check `meta.cachedTotal` to tell the two apart.',
       {
         query: z.string().optional().describe('substring match; omit to list everything'),
-        limit: z.number().int().min(1).max(100).optional().describe('default 25'),
+        limit: z.number().int().min(1).max(1000).optional().describe('per keyword set; default 25'),
       },
       async ({ query, limit }) => reply(runSourceRead(source, query, limit ?? 25)),
     );

@@ -61,16 +61,23 @@ presenting it as a data problem.
 
 ### `jobs` — 1 job-search call per 100 results. Job search with every filter.
 ```
-jobs keywords:"<terms>" [location:"<place>" | geoId:"<id>"] [distance:<miles>]
+jobs keywords:"<terms>" | ["<terms>", "<terms>", …] [location:"<place>" | geoId:"<id>"] [distance:<miles>]
      [posted:"24h|week|month|<N>h|<N>d"] [experience:[internship|entry|associate|mid-senior|director|executive]]
      [type:[full-time|part-time|contract|temporary|volunteer|internship|other]]
      [workplace:[on-site|remote|hybrid]] [easyApply] [under10] [verified] [inNetwork] [fairChance]
      [company|industry|function|title|place:[ids]] [filter:["key=v1,v2"]] [sort:recent|relevant]
-     [limit:1-100] [start:N] [details] [description] [compact]
+     [limit:1-1000 per keyword set] [start:N] [details] [description] [compact]
 ```
 Each item: `id`, `title`, `company`, `location`, `workplace`, `listed` (YYYY-MM-DD), `easyApply`,
 `promoted`, `salary` (when the card shows one), `insights`, `url`. `compact` gives one line per job.
 
+- **Several keyword sets in one call.** Pass `keywords` as a list: each set is searched with the
+  same filters, and the results are merged by job id. A job found by several sets comes back once,
+  with `matched` naming them; the most-matched come first. Treat that order as a hint, not a
+  ranking: LinkedIn matches keywords loosely ("AI agent developer" returns plain frontend jobs),
+  so a generic job can match every set. Rank on title and company.
+  `meta.searches` has each set's total, count, state and `next`; `meta.duplicates` is how many
+  repeats were merged. One set failing leaves the others, with `state: "failed"` in its entry.
 - **Rank on the rows, then read the finalists with `job`.** `details` reads every row in full, 100
   per job read, to add the apply link, applicants and employment type.
 - **Check `data.location`.** A typed location is resolved by LinkedIn, and the place it chose is
@@ -80,9 +87,9 @@ Each item: `id`, `title`, `company`, `location`, `workplace`, `listed` (YYYY-MM-
   batch, and `meta.state` is `complete` only when the results ran out. LinkedIn serves at most 1000
   per search; narrow the query rather than paging deep.
 - Job hunting has its own budget: 150 job-search calls and 60 job reads a day, apart from the
-  people and company `search`. A search call returns 100 jobs, so ten keyword searches of a few
-  hundred results each take about 30 calls. The same job turns
-  up under several keywords; merge the lists by `id` before reading any in full.
+  people and company `search`. A search call returns 100 jobs, so ten keyword sets of a few
+  hundred results each take about 30 calls. Reposts and recruiter copies of one role carry
+  different ids, so they are not merged: judge those by company, title and description.
 
 ### `job` — 1 job read per 100 jobs. Jobs, in full.
 ```

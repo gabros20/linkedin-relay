@@ -11,36 +11,60 @@ const FILTERS = fixture('jobs-filters.json');
 const BATCH = fixture('job-detail-batch.json');
 
 /**
- * A fake job search over `total` results. Each page is stitched from shifted
- * copies of the captured 25-card page, so ids stay distinct, and holds
- * `count` cards or whatever is left before `total`.
+ * A fake job search. Behind it is one endless list of jobs, stitched from
+ * shifted copies of the captured 25-card page so every position has its own
+ * id. Each keyword reads that list from its own `offset`, so two keywords
+ * share exactly the jobs where their windows overlap; each holds `total`.
  */
-function linkedin(opts: { total?: number; failAt?: number } = {}) {
+function linkedin(
+  opts: {
+    total?: number;
+    failAt?: number;
+    offsets?: Record<string, number>;
+    fails?: string[];
+  } = {},
+) {
   const total = opts.total ?? 295;
   const asked: { url: string; spendClass: string }[] = [];
-  const copy = (offset: number) =>
-    JSON.parse(
-      JSON.stringify(CARDS).replace(
-        /(jobPosting(?:Card)?:\(?)(\d+)/g,
-        (_, p, id) => `${p}${Number(id) + offset}`,
-      ),
-    );
+  const blocks = new Map<number, typeof CARDS>();
+  const block = (n: number) => {
+    if (!blocks.has(n))
+      blocks.set(
+        n,
+        JSON.parse(
+          JSON.stringify(CARDS).replace(
+            /(jobPosting(?:Card)?:\(?)(\d+)/g,
+            (_, p, id) => `${p}${Number(id) + n * 25}`,
+          ),
+        ),
+      );
+    return blocks.get(n);
+  };
   const fetch: JobsFetch = async (url, spendClass) => {
     asked.push({ url, spendClass });
     const u = new URL(url);
     if (u.searchParams.has('ids')) return { ok: true, json: BATCH };
     if (u.pathname.includes('jobPostings')) return { ok: true, json: OFFSITE };
     if (u.pathname.includes('FilterClusters')) return { ok: true, json: FILTERS };
+    const keywords = decodeURIComponent(u.searchParams.get('query') ?? '').match(
+      /keywords:([^,)]*)/,
+    )?.[1];
     const start = Number(u.searchParams.get('start'));
     const count = Number(u.searchParams.get('count'));
-    if (opts.failAt !== undefined && start >= opts.failAt)
+    if (
+      (opts.failAt !== undefined && start >= opts.failAt) ||
+      (keywords !== undefined && opts.fails?.includes(keywords))
+    )
       return { ok: false, code: 'BUDGET_EXHAUSTED', message: 'search budget spent' };
+    const offset = (keywords !== undefined ? opts.offsets?.[keywords] : undefined) ?? 0;
     const size = Math.max(0, Math.min(count, total - start));
     const page = { data: { ...CARDS.data, elements: [] as unknown[] }, included: [] as unknown[] };
-    for (let at = 0; at < size; at += 25) {
-      const c = copy(start + at);
-      page.data.elements.push(...c.data.elements.slice(0, size - at));
-      page.included.push(...c.included);
+    const used = new Set<number>();
+    for (let p = start + offset; p < start + offset + size; p++) {
+      const n = Math.floor(p / 25);
+      page.data.elements.push(block(n).data.elements[p % 25]);
+      if (!used.has(n)) page.included.push(...block(n).included);
+      used.add(n);
     }
     page.data.paging = { ...CARDS.data.paging, start, count, total };
     return { ok: true, json: page };
@@ -191,6 +215,94 @@ describe('lnrelay jobs', () => {
   });
 });
 
+describe('lnrelay jobs with several keyword sets', () => {
+  // "frontend" reads positions 0-39; "agents" reads 25-64: they share 15 jobs.
+  const overlapping = () => linkedin({ total: 40, offsets: { frontend: 0, agents: 25 } });
+
+  test('each keyword is searched, and a job found twice is one row', async () => {
+    const { fetch, asked } = overlapping();
+    const r = items(await runJobs({ keywords: ['frontend', 'agents'], limit: 100 }, {}, fetch));
+    expect(asked).toHaveLength(2);
+    expect(r.items).toHaveLength(65);
+    expect(new Set(r.items.map((j) => j.id)).size).toBe(65);
+    expect(r.meta).toMatchObject({ state: 'complete', returnedCount: 65, duplicates: 15 });
+  });
+
+  test('each job says which keywords found it; the most-found come first', async () => {
+    const { fetch } = overlapping();
+    const r = items(await runJobs({ keywords: ['frontend', 'agents'], limit: 100 }, {}, fetch));
+    const both = r.items.slice(0, 15);
+    expect(both.every((j) => JSON.stringify(j.matched) === '["frontend","agents"]')).toBe(true);
+    expect(r.items[15]?.matched).toEqual(['frontend']);
+    expect(r.items.at(-1)?.matched).toEqual(['agents']);
+  });
+
+  test('meta reports every search on its own', async () => {
+    const { fetch } = overlapping();
+    const r = items(await runJobs({ keywords: ['frontend', 'agents'], limit: 30 }, {}, fetch));
+    expect(r.meta.searches).toEqual([
+      { keywords: 'frontend', claimedCount: 40, returnedCount: 30, state: 'partial', next: 30 },
+      { keywords: 'agents', claimedCount: 40, returnedCount: 30, state: 'partial', next: 30 },
+    ]);
+    expect(r.meta.state).toBe('partial');
+  });
+
+  test('--details reads each unique job once', async () => {
+    const { fetch, asked } = overlapping();
+    await runJobs({ keywords: ['frontend', 'agents'], limit: 100, details: true }, {}, fetch);
+    const reads = asked
+      .filter((a) => a.spendClass === 'jobRead')
+      .map((a) => decodeURIComponent(a.url));
+    const ids = reads.flatMap((u) => u.match(/ids=List\(([^)]*)\)/)?.[1]?.split(',') ?? []);
+    expect(ids).toHaveLength(65);
+    expect(new Set(ids).size).toBe(65);
+  });
+
+  test('one keyword failing keeps the others, and says which failed', async () => {
+    const { fetch } = linkedin({ total: 40, offsets: { agents: 25 }, fails: ['agents'] });
+    const r = items(await runJobs({ keywords: ['frontend', 'agents'], limit: 100 }, {}, fetch));
+    expect(r.items).toHaveLength(40);
+    expect(r.meta.state).toBe('partial');
+    expect((r.meta.searches as Record<string, unknown>[])[1]).toMatchObject({
+      keywords: 'agents',
+      returnedCount: 0,
+      state: 'failed',
+      stoppedBy: 'BUDGET_EXHAUSTED',
+    });
+  });
+
+  test('every keyword failing is a failure', async () => {
+    const { fetch } = linkedin({ fails: ['frontend', 'agents'] });
+    const r = await runJobs({ keywords: ['frontend', 'agents'], limit: 10 }, {}, fetch);
+    expect(r.ok).toBe(false);
+  });
+
+  test('the same keyword set twice is searched once', async () => {
+    const { fetch, asked } = overlapping();
+    await runJobs({ keywords: ['frontend', 'Frontend ', 'agents'], limit: 10 }, {}, fetch);
+    expect(asked).toHaveLength(2);
+  });
+
+  test('--compact shows the keywords that found each job', async () => {
+    const { fetch } = overlapping();
+    const r = items(
+      await runJobs({ keywords: ['frontend', 'agents'], limit: 100 }, { compact: true }, fetch),
+    );
+    expect(String(r.items[0])).toEndWith(' | matched: frontend + agents');
+  });
+
+  test('one keyword set keeps the plain shape: no matched, no searches', async () => {
+    const r = items(await runJobs({ keywords: ['frontend'], limit: 5 }, {}, linkedin().fetch));
+    expect(r.items[0]?.matched).toBeUndefined();
+    expect(r.meta.searches).toBeUndefined();
+  });
+
+  test('job-filters takes one keyword set only', async () => {
+    const r = await runJobFilters({ keywords: ['a', 'b'] }, {}, linkedin().fetch);
+    expect(r.ok).toBe(false);
+  });
+});
+
 describe('lnrelay job', () => {
   test('reads one job, with its description and apply link', async () => {
     const { fetch, asked } = linkedin();
@@ -283,7 +395,7 @@ describe('jobs flags', () => {
       ]),
     );
     expect(req).toEqual({
-      keywords: 'react developer',
+      keywords: ['react developer'],
       location: 'Budapest',
       limit: 60,
       start: 25,
@@ -311,11 +423,20 @@ describe('jobs flags', () => {
     });
   });
 
+  test('every quoted keyword set is its own search', async () => {
+    const { parseArgs } = await import('../src/args.ts');
+    const { jobsRequest } = await import('../src/cli.ts');
+    const req = jobsRequest(
+      parseArgs(['jobs', 'frontend engineer', 'AI agent developer', '--easy-apply']),
+    );
+    expect(req.keywords).toEqual(['frontend engineer', 'AI agent developer']);
+  });
+
   test('defaults: 25 results from the top, no details, no filters', async () => {
     const { parseArgs } = await import('../src/args.ts');
     const { jobsRequest } = await import('../src/cli.ts');
     expect(jobsRequest(parseArgs(['jobs', 'rust']))).toEqual({
-      keywords: 'rust',
+      keywords: ['rust'],
       limit: 25,
       filter: {},
     });

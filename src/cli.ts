@@ -98,8 +98,8 @@ export function jobsRequest(args: ParsedArgs): JobsRequest {
   if (sort !== undefined) filter.sort = sort;
 
   const req: JobsRequest = { limit: num(args, 'limit') ?? 25, filter };
-  const keywords = args.positionals[0];
-  if (keywords !== undefined) req.keywords = keywords;
+  // Every quoted argument is its own keyword set, searched and merged.
+  if (args.positionals.length > 0) req.keywords = [...args.positionals];
   const location = str(args, 'location');
   if (location !== undefined) req.location = location;
   const geo = str(args, 'geo');

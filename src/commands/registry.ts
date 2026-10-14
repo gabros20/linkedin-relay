@@ -104,7 +104,8 @@ export const COMMANDS: CommandDef[] = [
       'Job search with every filter the jobs page has. Cards carry id, title, company, place, ' +
       'workplace, listed date, Easy Apply. Read finalists with `job`.',
     usage:
-      'lnrelay jobs "<keywords>" [--location "<place>" | --geo <id>] [--distance <miles>]\n' +
+      'lnrelay jobs "<keywords>" ["<more keywords>" ...] [--location "<place>" | --geo <id>]\n' +
+      '       [--distance <miles>]\n' +
       '       [--posted 24h|week|month|<N>h|<N>d] [--experience internship,entry,associate,\n' +
       '       mid-senior,director,executive] [--type full-time,part-time,contract,temporary,\n' +
       '       volunteer,internship,other] [--workplace on-site,remote,hybrid] [--easy-apply]\n' +
