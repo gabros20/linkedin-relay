@@ -1,3 +1,10 @@
+# [3.14.0](https://github.com/gabros20/linkedin-relay/compare/v3.13.0...v3.14.0) (2026-10-14)
+
+
+### Features
+
+* **search:** search posts, companies, groups, events, courses, products, services and schools ([ffa5c43](https://github.com/gabros20/linkedin-relay/commit/ffa5c435b3912f3f42febbe09277bd57da7a60aa))
+
 # [3.13.0](https://github.com/gabros20/linkedin-relay/compare/v3.12.1...v3.13.0) (2026-10-14)
 
 
