@@ -1,3 +1,10 @@
+# [3.8.0](https://github.com/gabros20/linkedin-relay/compare/v3.7.0...v3.8.0) (2026-10-14)
+
+
+### Features
+
+* **role:** add, edit and remove roles in your Experience ([e70150c](https://github.com/gabros20/linkedin-relay/commit/e70150c3f5369795d254485f773b10cc9771dd36))
+
 # [3.7.0](https://github.com/gabros20/linkedin-relay/compare/v3.6.1...v3.7.0) (2026-10-13)
 
 
