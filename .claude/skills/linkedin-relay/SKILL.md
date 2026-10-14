@@ -12,8 +12,8 @@ in the request path.
 ## Three things to know before you call anything
 
 1. **Every call spends a budget that cannot be topped up.** Caps are deliberately low (30 profile
-   reads a day, 25 searches, 350 requests total; job hunting has its own 150 job searches and 60
-   job reads) because LinkedIn restricts accounts for *read*
+   reads a day, 25 search calls shared by `people`, `search` (every kind) and name lookups, 350
+   requests total; job hunting has its own 150 job searches and 60 job reads) because LinkedIn restricts accounts for *read*
    velocity alone — several documented restrictions involved no automation and no writes, just fast
    browsing. Check `meta.budget.remaining`; when it's low, tell the user and stop rather than
    spending the rest.

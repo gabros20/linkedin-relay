@@ -146,7 +146,7 @@ lnrelay job <id> <id> <id>                                            # finalist
 - **The apply link** is the employer's own site (`external`) or LinkedIn's Easy Apply. This tool
   finds jobs; it does not apply to them.
 - Job hunting has its own daily budget — 150 search calls, 60 job reads — so it neither uses up nor
-  is stopped by people and company research.
+  is stopped by the other searches, which share 25 search calls a day.
 
 ## Design in one screen
 
