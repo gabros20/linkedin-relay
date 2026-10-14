@@ -1,3 +1,10 @@
+# [3.17.0](https://github.com/gabros20/linkedin-relay/compare/v3.16.0...v3.17.0) (2026-10-14)
+
+
+### Features
+
+* **events:** the events page's recommendations, and any event in full ([35b7192](https://github.com/gabros20/linkedin-relay/commit/35b7192386d6b031c632f2b7ca17558ea7fb45f4))
+
 # [3.16.0](https://github.com/gabros20/linkedin-relay/compare/v3.15.0...v3.16.0) (2026-10-14)
 
 
