@@ -1,3 +1,10 @@
+## [3.10.1](https://github.com/gabros20/linkedin-relay/compare/v3.10.0...v3.10.1) (2026-10-14)
+
+
+### Bug Fixes
+
+* **budget:** give job hunting its own daily allowance ([f73aa2e](https://github.com/gabros20/linkedin-relay/commit/f73aa2e7bebb3d15525d97bdc76c355804c922d4))
+
 # [3.10.0](https://github.com/gabros20/linkedin-relay/compare/v3.9.0...v3.10.0) (2026-10-14)
 
 
