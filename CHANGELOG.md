@@ -1,3 +1,10 @@
+# [3.10.0](https://github.com/gabros20/linkedin-relay/compare/v3.9.0...v3.10.0) (2026-10-14)
+
+
+### Features
+
+* **jobs:** search jobs with every filter, read a job's apply link ([47a5c59](https://github.com/gabros20/linkedin-relay/commit/47a5c59a6c8d218685d8b9dcefd45b926feeca52))
+
 # [3.9.0](https://github.com/gabros20/linkedin-relay/compare/v3.8.0...v3.9.0) (2026-10-14)
 
 
