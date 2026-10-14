@@ -1,3 +1,10 @@
+# [3.9.0](https://github.com/gabros20/linkedin-relay/compare/v3.8.0...v3.9.0) (2026-10-14)
+
+
+### Features
+
+* **skill:** list, add and remove the skills on your profile ([678c143](https://github.com/gabros20/linkedin-relay/commit/678c143328a5f0a74bc72cc70360c5a98ceab168))
+
 # [3.8.0](https://github.com/gabros20/linkedin-relay/compare/v3.7.0...v3.8.0) (2026-10-14)
 
 
