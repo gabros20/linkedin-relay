@@ -91,8 +91,49 @@ export const COMMANDS: CommandDef[] = [
     cost: 'cheap — the net',
     summary: 'Search people, companies or jobs. Cast wide, then deep-read the finalists.',
     usage:
-      'lnrelay search people|companies|jobs "<query>" [--limit N]\n' +
+      'lnrelay search people|companies|jobs "<query>" [--limit N]   (jobs: see `jobs`)\n' +
       '       [--compact | --fields a,b,c] [--retain] [--raw]',
+    audience: ['cli', 'mcp'],
+    risk: 'read',
+    implemented: true,
+  },
+  {
+    name: 'jobs',
+    cost: '1 search call per 25 jobs; --details adds 1 profile call per job',
+    summary:
+      'Job search with every filter the jobs page has. Cards carry id, title, company, place, ' +
+      'workplace, listed date, Easy Apply. Read finalists with `job`.',
+    usage:
+      'lnrelay jobs "<keywords>" [--location "<place>" | --geo <id>] [--distance <miles>]\n' +
+      '       [--posted 24h|week|month|<N>h|<N>d] [--experience internship,entry,associate,\n' +
+      '       mid-senior,director,executive] [--type full-time,part-time,contract,temporary,\n' +
+      '       volunteer,internship,other] [--workplace on-site,remote,hybrid] [--easy-apply]\n' +
+      '       [--under-10] [--verified] [--in-network] [--fair-chance] [--company <ids>]\n' +
+      '       [--industry <ids>] [--function <codes>] [--title <ids>] [--place <geo-ids>]\n' +
+      '       [--filter key=v1,v2 ...] [--sort recent|relevant] [--limit N] [--start N]\n' +
+      '       [--details [--description]] [--compact | --fields a,b,c]\n' +
+      '       Ids for --company/--industry/--title/--place/--filter come from `job-filters`.\n' +
+      '       The resolved place is in data.location: check it, "Vienna" may resolve narrow.',
+    audience: ['cli', 'mcp'],
+    risk: 'read',
+    implemented: true,
+  },
+  {
+    name: 'job',
+    cost: '1 profile call',
+    summary: 'One job: description, apply link (external or Easy Apply), applicants, state.',
+    usage: 'lnrelay job <id|job-url>',
+    audience: ['cli', 'mcp'],
+    risk: 'read',
+    implemented: true,
+  },
+  {
+    name: 'job-filters',
+    cost: '1 search call',
+    summary:
+      'Every job filter for a query, with option ids and live counts: what `jobs --filter` and ' +
+      '--company/--industry/--title/--place take.',
+    usage: 'lnrelay job-filters "<keywords>" [--location "<place>" | --geo <id>] [jobs filters]',
     audience: ['cli', 'mcp'],
     risk: 'read',
     implemented: true,
@@ -123,15 +164,6 @@ export const COMMANDS: CommandDef[] = [
     cost: 'medium',
     summary: 'A company page, optionally with a bounded sample of its updates.',
     usage: 'lnrelay company <universal-name|url> [--updates N]',
-    audience: ['cli', 'mcp'],
-    risk: 'read',
-    implemented: false,
-  },
-  {
-    name: 'job',
-    cost: '1 call',
-    summary: 'A job posting detail.',
-    usage: 'lnrelay job <job-id|url>',
     audience: ['cli', 'mcp'],
     risk: 'read',
     implemented: false,

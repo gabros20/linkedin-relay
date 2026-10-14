@@ -1,0 +1,2080 @@
+{
+  "data": {
+    "entityUrn": "urn:li:collectionResponse:SgfCS1AQ3jCFFEtYz0V97ATh/CS/qay8J6ZGXYmL+Sc=",
+    "elements": [
+      {
+        "secondaryFilterGroups": [
+          {
+            "filters": [
+              {
+                "*upsellSlot": "urn:li:fsd_premiumUpsellSlot:JOB_SEARCH_FILTER_TAJ",
+                "displayName": {
+                  "textDirection": "USER_LOCALE",
+                  "text": "placeholder_upsell",
+                  "attributesV2": [],
+                  "$recipeTypes": ["com.linkedin.voyager.dash.deco.common.text.TextViewModelV2"],
+                  "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+                },
+                "upsellSlotUrn": "urn:li:fsd_premiumUpsellSlot:JOB_SEARCH_FILTER_TAJ",
+                "parameterName": "placeholder_upsell",
+                "renderType": "FREE_TEXT",
+                "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterViewModel"],
+                "$type": "com.linkedin.voyager.dash.search.SearchFilterViewModel"
+              }
+            ],
+            "title": "placeholder_upsell",
+            "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterGroupViewModel"],
+            "$type": "com.linkedin.voyager.dash.search.SearchFilterGroupViewModel"
+          },
+          {
+            "filters": [
+              {
+                "appliedCount": 0,
+                "displayName": {
+                  "textDirection": "USER_LOCALE",
+                  "text": "Sort by",
+                  "attributesV2": [],
+                  "$recipeTypes": ["com.linkedin.voyager.dash.deco.common.text.TextViewModelV2"],
+                  "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+                },
+                "highlighted": false,
+                "secondaryFilterValues": [
+                  {
+                    "default": false,
+                    "displayName": "Most recent",
+                    "value": "DD",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "default": true,
+                    "displayName": "Most relevant",
+                    "value": "R",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": true,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  }
+                ],
+                "parameterName": "sortBy",
+                "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterViewModel"],
+                "$type": "com.linkedin.voyager.dash.search.SearchFilterViewModel",
+                "renderType": "SINGLE_SELECT"
+              }
+            ],
+            "title": "Sort by",
+            "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterGroupViewModel"],
+            "$type": "com.linkedin.voyager.dash.search.SearchFilterGroupViewModel"
+          },
+          {
+            "filters": [
+              {
+                "viewImpressionEventName": "search_filter_timepostedrange_view",
+                "appliedCount": 0,
+                "displayName": {
+                  "textDirection": "USER_LOCALE",
+                  "text": "Date posted",
+                  "attributesV2": [],
+                  "$recipeTypes": ["com.linkedin.voyager.dash.deco.common.text.TextViewModelV2"],
+                  "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+                },
+                "filterClickControlName": "timepostedrange_click",
+                "highlighted": false,
+                "secondaryFilterValues": [
+                  {
+                    "default": true,
+                    "displayName": "Any time",
+                    "count": 3076,
+                    "value": "",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": true,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "default": false,
+                    "displayName": "Past month",
+                    "count": 2910,
+                    "value": "r2592000",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "default": false,
+                    "displayName": "Past week",
+                    "count": 1475,
+                    "value": "r604800",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "default": false,
+                    "displayName": "Past 24 hours",
+                    "count": 578,
+                    "value": "r86400",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  }
+                ],
+                "parameterName": "timePostedRange",
+                "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterViewModel"],
+                "$type": "com.linkedin.voyager.dash.search.SearchFilterViewModel",
+                "filterApplyControlName": "timepostedrange_show_results",
+                "renderType": "SINGLE_SELECT"
+              }
+            ],
+            "title": "Date posted",
+            "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterGroupViewModel"],
+            "$type": "com.linkedin.voyager.dash.search.SearchFilterGroupViewModel"
+          },
+          {
+            "filters": [
+              {
+                "viewImpressionEventName": "search_filter_experience_view",
+                "appliedCount": 0,
+                "displayName": {
+                  "textDirection": "USER_LOCALE",
+                  "text": "Experience level",
+                  "attributesV2": [],
+                  "$recipeTypes": ["com.linkedin.voyager.dash.deco.common.text.TextViewModelV2"],
+                  "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+                },
+                "filterClickControlName": "experience_click",
+                "highlighted": false,
+                "secondaryFilterValues": [
+                  {
+                    "default": false,
+                    "displayName": "Internship",
+                    "count": 60,
+                    "value": "1",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "default": false,
+                    "displayName": "Entry level",
+                    "count": 566,
+                    "value": "2",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "default": false,
+                    "displayName": "Associate",
+                    "count": 427,
+                    "value": "3",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "default": false,
+                    "displayName": "Mid-Senior level",
+                    "count": 1866,
+                    "value": "4",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "default": false,
+                    "displayName": "Director",
+                    "count": 11,
+                    "value": "5",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "default": false,
+                    "displayName": "Executive",
+                    "count": 9,
+                    "value": "6",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  }
+                ],
+                "parameterName": "experience",
+                "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterViewModel"],
+                "$type": "com.linkedin.voyager.dash.search.SearchFilterViewModel",
+                "filterApplyControlName": "experience_show_results",
+                "renderType": "MULTI_SELECT"
+              }
+            ],
+            "title": "Experience level",
+            "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterGroupViewModel"],
+            "$type": "com.linkedin.voyager.dash.search.SearchFilterGroupViewModel"
+          },
+          {
+            "filters": [
+              {
+                "viewImpressionEventName": "search_filter_company_view",
+                "appliedCount": 0,
+                "displayName": {
+                  "textDirection": "USER_LOCALE",
+                  "text": "Company",
+                  "attributesV2": [],
+                  "$recipeTypes": ["com.linkedin.voyager.dash.deco.common.text.TextViewModelV2"],
+                  "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+                },
+                "filterClickControlName": "company_click",
+                "highlighted": false,
+                "secondaryFilterValues": [
+                  {
+                    "default": false,
+                    "displayName": "adesso SE",
+                    "count": 47,
+                    "value": "41629",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "default": false,
+                    "displayName": "Kraken",
+                    "count": 33,
+                    "value": "3787845",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "default": false,
+                    "displayName": "SearchApi",
+                    "count": 29,
+                    "value": "92715218",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "default": false,
+                    "displayName": "Tieto",
+                    "count": 29,
+                    "value": "110311109",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "default": false,
+                    "displayName": "Luxoft",
+                    "count": 27,
+                    "value": "5300",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "default": false,
+                    "displayName": "Quik Hire Staffing",
+                    "count": 21,
+                    "value": "110240773",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "default": false,
+                    "displayName": "EY",
+                    "count": 21,
+                    "value": "1073",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "default": false,
+                    "displayName": "Proxify",
+                    "count": 19,
+                    "value": "18548980",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "default": false,
+                    "displayName": "NTT DATA Europe & Latam",
+                    "count": 17,
+                    "value": "76533648",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "default": false,
+                    "displayName": "Computer Futures",
+                    "count": 17,
+                    "value": "7214",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "default": false,
+                    "displayName": "Kicklox",
+                    "count": 16,
+                    "value": "9485372",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "default": false,
+                    "displayName": "Gofore",
+                    "count": 16,
+                    "value": "102326",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "default": false,
+                    "displayName": "Ethos",
+                    "count": 15,
+                    "value": "99316157",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "default": false,
+                    "displayName": "Capgemini",
+                    "count": 13,
+                    "value": "157240",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  }
+                ],
+                "typeaheadType": "COMPANY",
+                "parameterName": "company",
+                "typeaheadHint": "Add a company",
+                "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterViewModel"],
+                "$type": "com.linkedin.voyager.dash.search.SearchFilterViewModel",
+                "filterApplyControlName": "company_show_results",
+                "renderType": "MULTI_SELECT"
+              }
+            ],
+            "title": "Company",
+            "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterGroupViewModel"],
+            "$type": "com.linkedin.voyager.dash.search.SearchFilterGroupViewModel"
+          },
+          {
+            "filters": [
+              {
+                "viewImpressionEventName": "search_filter_jobtype_view",
+                "appliedCount": 0,
+                "displayName": {
+                  "textDirection": "USER_LOCALE",
+                  "text": "Job type",
+                  "attributesV2": [],
+                  "$recipeTypes": ["com.linkedin.voyager.dash.deco.common.text.TextViewModelV2"],
+                  "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+                },
+                "filterClickControlName": "jobtype_click",
+                "highlighted": false,
+                "secondaryFilterValues": [
+                  {
+                    "default": false,
+                    "displayName": "Full-time",
+                    "count": 2885,
+                    "value": "F",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "default": false,
+                    "displayName": "Part-time",
+                    "count": 33,
+                    "value": "P",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "default": false,
+                    "displayName": "Contract",
+                    "count": 164,
+                    "value": "C",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "default": false,
+                    "displayName": "Temporary",
+                    "count": 9,
+                    "value": "T",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "default": false,
+                    "displayName": "Volunteer",
+                    "count": 7,
+                    "value": "V",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "default": false,
+                    "displayName": "Internship",
+                    "count": 27,
+                    "value": "I",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "default": false,
+                    "displayName": "Other",
+                    "count": 15,
+                    "value": "O",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  }
+                ],
+                "parameterName": "jobType",
+                "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterViewModel"],
+                "$type": "com.linkedin.voyager.dash.search.SearchFilterViewModel",
+                "filterApplyControlName": "jobtype_show_results",
+                "renderType": "MULTI_SELECT"
+              }
+            ],
+            "title": "Job type",
+            "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterGroupViewModel"],
+            "$type": "com.linkedin.voyager.dash.search.SearchFilterGroupViewModel"
+          },
+          {
+            "filters": [
+              {
+                "viewImpressionEventName": "search_filter_workplacetype_view",
+                "appliedCount": 0,
+                "displayName": {
+                  "textDirection": "USER_LOCALE",
+                  "text": "Remote",
+                  "attributesV2": [],
+                  "$recipeTypes": ["com.linkedin.voyager.dash.deco.common.text.TextViewModelV2"],
+                  "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+                },
+                "filterClickControlName": "workplacetype_click",
+                "highlighted": false,
+                "secondaryFilterValues": [
+                  {
+                    "default": false,
+                    "displayName": "Hybrid",
+                    "count": 1423,
+                    "value": "3",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "default": false,
+                    "displayName": "On-site",
+                    "count": 977,
+                    "value": "1",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "default": false,
+                    "displayName": "Remote",
+                    "count": 858,
+                    "value": "2",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  }
+                ],
+                "parameterName": "workplaceType",
+                "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterViewModel"],
+                "$type": "com.linkedin.voyager.dash.search.SearchFilterViewModel",
+                "filterApplyControlName": "workplacetype_show_results",
+                "renderType": "MULTI_SELECT"
+              }
+            ],
+            "title": "Remote",
+            "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterGroupViewModel"],
+            "$type": "com.linkedin.voyager.dash.search.SearchFilterGroupViewModel"
+          },
+          {
+            "filters": [
+              {
+                "viewImpressionEventName": "search_filter_applywithlinkedin_view",
+                "appliedCount": 0,
+                "displayName": {
+                  "textDirection": "USER_LOCALE",
+                  "text": "Easy Apply",
+                  "attributesV2": [],
+                  "$recipeTypes": ["com.linkedin.voyager.dash.deco.common.text.TextViewModelV2"],
+                  "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+                },
+                "highlighted": false,
+                "secondaryFilterValues": [
+                  {
+                    "default": false,
+                    "displayName": "Easy Apply",
+                    "count": 1024,
+                    "value": "true",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  }
+                ],
+                "parameterName": "applyWithLinkedin",
+                "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterViewModel"],
+                "$type": "com.linkedin.voyager.dash.search.SearchFilterViewModel",
+                "filterApplyControlName": "applywithlinkedin_show_results",
+                "renderType": "TOGGLE"
+              }
+            ],
+            "title": "Easy Apply",
+            "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterGroupViewModel"],
+            "$type": "com.linkedin.voyager.dash.search.SearchFilterGroupViewModel"
+          },
+          {
+            "filters": [
+              {
+                "viewImpressionEventName": "search_filter_verifiedjob_view",
+                "appliedCount": 0,
+                "displayName": {
+                  "textDirection": "USER_LOCALE",
+                  "text": "Has verifications",
+                  "attributesV2": [],
+                  "$recipeTypes": ["com.linkedin.voyager.dash.deco.common.text.TextViewModelV2"],
+                  "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+                },
+                "highlighted": false,
+                "secondaryFilterValues": [
+                  {
+                    "tooltipText": {
+                      "textDirection": "USER_LOCALE",
+                      "text": "Show jobs with a verification badge. Learn more about verifications on jobs.",
+                      "attributesV2": [
+                        {
+                          "detailDataUnion": { "style": "BOLD" },
+                          "length": 10,
+                          "start": 37,
+                          "$recipeTypes": [
+                            "com.linkedin.voyager.dash.deco.common.text.TextAttributeV2"
+                          ],
+                          "$type": "com.linkedin.voyager.dash.common.text.TextAttribute"
+                        },
+                        {
+                          "detailDataUnion": {
+                            "hyperlink": "https://www.linkedin.com/help/linkedin/answer/a1492056"
+                          },
+                          "length": 10,
+                          "start": 37,
+                          "$recipeTypes": [
+                            "com.linkedin.voyager.dash.deco.common.text.TextAttributeV2"
+                          ],
+                          "$type": "com.linkedin.voyager.dash.common.text.TextAttribute"
+                        }
+                      ],
+                      "$recipeTypes": [
+                        "com.linkedin.voyager.dash.deco.common.text.TextViewModelV2"
+                      ],
+                      "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+                    },
+                    "displayName": "Has verifications",
+                    "count": 2373,
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue",
+                    "default": false,
+                    "value": "true",
+                    "selected": false
+                  }
+                ],
+                "parameterName": "verifiedJob",
+                "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterViewModel"],
+                "$type": "com.linkedin.voyager.dash.search.SearchFilterViewModel",
+                "filterApplyControlName": "verifiedjob_show_results",
+                "renderType": "TOGGLE"
+              }
+            ],
+            "title": "Has verifications",
+            "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterGroupViewModel"],
+            "$type": "com.linkedin.voyager.dash.search.SearchFilterGroupViewModel"
+          },
+          {
+            "filters": [
+              {
+                "viewImpressionEventName": "search_filter_populatedplace_view",
+                "appliedCount": 0,
+                "displayName": {
+                  "textDirection": "USER_LOCALE",
+                  "text": "Location",
+                  "attributesV2": [],
+                  "$recipeTypes": ["com.linkedin.voyager.dash.deco.common.text.TextViewModelV2"],
+                  "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+                },
+                "filterClickControlName": "populatedplace_click",
+                "highlighted": false,
+                "secondaryFilterValues": [
+                  {
+                    "default": false,
+                    "displayName": "Helsinki",
+                    "count": 94,
+                    "value": "106591199",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "default": false,
+                    "displayName": "Munich",
+                    "count": 85,
+                    "value": "100477049",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "default": false,
+                    "displayName": "Budapest",
+                    "count": 80,
+                    "value": "104291169",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "default": false,
+                    "displayName": "Warsaw",
+                    "count": 78,
+                    "value": "102560051",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "default": false,
+                    "displayName": "Berlin",
+                    "count": 75,
+                    "value": "106967730",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "default": false,
+                    "displayName": "Stockholm",
+                    "count": 51,
+                    "value": "103264854",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "default": false,
+                    "displayName": "Bucharest",
+                    "count": 44,
+                    "value": "105889820",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "default": false,
+                    "displayName": "Tallinn",
+                    "count": 39,
+                    "value": "104199723",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "default": false,
+                    "displayName": "Barcelona",
+                    "count": 39,
+                    "value": "105088894",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "default": false,
+                    "displayName": "Madrid",
+                    "count": 38,
+                    "value": "103374081",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "default": false,
+                    "displayName": "Cracow",
+                    "count": 37,
+                    "value": "103348205",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "default": false,
+                    "displayName": "Sofia",
+                    "count": 37,
+                    "value": "103835801",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "default": false,
+                    "displayName": "Copenhagen",
+                    "count": 36,
+                    "value": "102194656",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "default": false,
+                    "displayName": "Gothenburg",
+                    "count": 35,
+                    "value": "104114836",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "default": false,
+                    "displayName": "Vienna",
+                    "count": 33,
+                    "value": "105890822",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  }
+                ],
+                "parameterName": "populatedPlace",
+                "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterViewModel"],
+                "$type": "com.linkedin.voyager.dash.search.SearchFilterViewModel",
+                "filterApplyControlName": "populatedplace_show_results",
+                "renderType": "MULTI_SELECT"
+              }
+            ],
+            "title": "Location",
+            "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterGroupViewModel"],
+            "$type": "com.linkedin.voyager.dash.search.SearchFilterGroupViewModel"
+          },
+          {
+            "filters": [
+              {
+                "viewImpressionEventName": "search_filter_industry_view",
+                "appliedCount": 0,
+                "displayName": {
+                  "textDirection": "USER_LOCALE",
+                  "text": "Industry",
+                  "attributesV2": [],
+                  "$recipeTypes": ["com.linkedin.voyager.dash.deco.common.text.TextViewModelV2"],
+                  "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+                },
+                "filterClickControlName": "industry_click",
+                "highlighted": false,
+                "secondaryFilterValues": [
+                  {
+                    "default": false,
+                    "displayName": "IT Services and IT Consulting",
+                    "count": 976,
+                    "value": "96",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "default": false,
+                    "displayName": "Software Development",
+                    "count": 759,
+                    "value": "4",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "default": false,
+                    "displayName": "Financial Services",
+                    "count": 230,
+                    "value": "43",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "default": false,
+                    "displayName": "Technology, Information and Internet",
+                    "count": 193,
+                    "value": "6",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "default": false,
+                    "displayName": "Technology, Information and Media",
+                    "count": 132,
+                    "value": "1594",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "default": false,
+                    "displayName": "Information Services",
+                    "count": 89,
+                    "value": "84",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "default": false,
+                    "displayName": "Business Consulting and Services",
+                    "count": 82,
+                    "value": "11",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "default": false,
+                    "displayName": "Staffing and Recruiting",
+                    "count": 71,
+                    "value": "104",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "default": false,
+                    "displayName": "Banking",
+                    "count": 69,
+                    "value": "41",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "default": false,
+                    "displayName": "IT System Custom Software Development",
+                    "count": 64,
+                    "value": "3102",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "default": false,
+                    "displayName": "Advertising Services",
+                    "count": 43,
+                    "value": "80",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  }
+                ],
+                "typeaheadType": "INDUSTRY",
+                "parameterName": "industry",
+                "typeaheadHint": "Add an industry",
+                "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterViewModel"],
+                "$type": "com.linkedin.voyager.dash.search.SearchFilterViewModel",
+                "filterApplyControlName": "industry_show_results",
+                "renderType": "MULTI_SELECT"
+              }
+            ],
+            "title": "Industry",
+            "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterGroupViewModel"],
+            "$type": "com.linkedin.voyager.dash.search.SearchFilterGroupViewModel"
+          },
+          {
+            "filters": [
+              {
+                "viewImpressionEventName": "search_filter_function_view",
+                "appliedCount": 0,
+                "displayName": {
+                  "textDirection": "USER_LOCALE",
+                  "text": "Job function",
+                  "attributesV2": [],
+                  "$recipeTypes": ["com.linkedin.voyager.dash.deco.common.text.TextViewModelV2"],
+                  "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+                },
+                "filterClickControlName": "function_click",
+                "highlighted": false,
+                "secondaryFilterValues": [
+                  {
+                    "default": false,
+                    "displayName": "Information Technology",
+                    "count": 2306,
+                    "value": "it",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "default": false,
+                    "displayName": "Engineering",
+                    "count": 1905,
+                    "value": "eng",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "default": false,
+                    "displayName": "Other",
+                    "count": 108,
+                    "value": "othr",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "default": false,
+                    "displayName": "Consulting",
+                    "count": 103,
+                    "value": "cnsl",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "default": false,
+                    "displayName": "Design",
+                    "count": 47,
+                    "value": "dsgn",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "default": false,
+                    "displayName": "Research",
+                    "count": 43,
+                    "value": "rsch",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "default": false,
+                    "displayName": "Art/Creative",
+                    "count": 36,
+                    "value": "art",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "default": false,
+                    "displayName": "Product Management",
+                    "count": 36,
+                    "value": "prdm",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "default": false,
+                    "displayName": "Quality Assurance",
+                    "count": 32,
+                    "value": "qa",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "default": false,
+                    "displayName": "Business Development",
+                    "count": 30,
+                    "value": "bd",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "default": false,
+                    "displayName": "Analyst",
+                    "count": 20,
+                    "value": "anls",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "default": false,
+                    "displayName": "Project Management",
+                    "count": 20,
+                    "value": "prjm",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  }
+                ],
+                "typeaheadType": "JOB_FUNCTION",
+                "parameterName": "function",
+                "typeaheadHint": "Add a job function",
+                "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterViewModel"],
+                "$type": "com.linkedin.voyager.dash.search.SearchFilterViewModel",
+                "filterApplyControlName": "function_show_results",
+                "renderType": "MULTI_SELECT"
+              }
+            ],
+            "title": "Job function",
+            "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterGroupViewModel"],
+            "$type": "com.linkedin.voyager.dash.search.SearchFilterGroupViewModel"
+          },
+          {
+            "filters": [
+              {
+                "viewImpressionEventName": "search_filter_title_view",
+                "appliedCount": 0,
+                "displayName": {
+                  "textDirection": "USER_LOCALE",
+                  "text": "Title",
+                  "attributesV2": [],
+                  "$recipeTypes": ["com.linkedin.voyager.dash.deco.common.text.TextViewModelV2"],
+                  "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+                },
+                "filterClickControlName": "title_click",
+                "highlighted": false,
+                "secondaryFilterValues": [
+                  {
+                    "default": false,
+                    "displayName": "Frontend Developer",
+                    "count": 847,
+                    "value": "3172",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "default": false,
+                    "displayName": "Software Engineer",
+                    "count": 690,
+                    "value": "9",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "default": false,
+                    "displayName": "Full Stack Engineer",
+                    "count": 392,
+                    "value": "25201",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "default": false,
+                    "displayName": "Artificial Intelligence Engineer",
+                    "count": 316,
+                    "value": "30128",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "default": false,
+                    "displayName": "Senior Software Engineer",
+                    "count": 235,
+                    "value": "39",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "default": false,
+                    "displayName": "Javascript Developer",
+                    "count": 219,
+                    "value": "25170",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "default": false,
+                    "displayName": "Senior Frontend Developer",
+                    "count": 211,
+                    "value": "17265",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "default": false,
+                    "displayName": "Back End Developer",
+                    "count": 109,
+                    "value": "25194",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "default": false,
+                    "displayName": "Data Engineer",
+                    "count": 85,
+                    "value": "2732",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "default": false,
+                    "displayName": "Platform Engineer",
+                    "count": 81,
+                    "value": "6483",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "default": false,
+                    "displayName": "Python Developer",
+                    "count": 70,
+                    "value": "25169",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  }
+                ],
+                "parameterName": "title",
+                "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterViewModel"],
+                "$type": "com.linkedin.voyager.dash.search.SearchFilterViewModel",
+                "filterApplyControlName": "title_show_results",
+                "renderType": "MULTI_SELECT"
+              }
+            ],
+            "title": "Title",
+            "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterGroupViewModel"],
+            "$type": "com.linkedin.voyager.dash.search.SearchFilterGroupViewModel"
+          },
+          {
+            "filters": [
+              {
+                "viewImpressionEventName": "search_filter_earlyapplicant_view",
+                "appliedCount": 0,
+                "displayName": {
+                  "textDirection": "USER_LOCALE",
+                  "text": "Under 10 applicants",
+                  "attributesV2": [],
+                  "$recipeTypes": ["com.linkedin.voyager.dash.deco.common.text.TextViewModelV2"],
+                  "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+                },
+                "highlighted": false,
+                "secondaryFilterValues": [
+                  {
+                    "default": false,
+                    "displayName": "Under 10 applicants",
+                    "count": 333,
+                    "value": "true",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  }
+                ],
+                "parameterName": "earlyApplicant",
+                "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterViewModel"],
+                "$type": "com.linkedin.voyager.dash.search.SearchFilterViewModel",
+                "filterApplyControlName": "earlyapplicant_show_results",
+                "renderType": "TOGGLE"
+              }
+            ],
+            "title": "Under 10 applicants",
+            "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterGroupViewModel"],
+            "$type": "com.linkedin.voyager.dash.search.SearchFilterGroupViewModel"
+          },
+          {
+            "filters": [
+              {
+                "viewImpressionEventName": "search_filter_jobinyournetwork_view",
+                "appliedCount": 0,
+                "displayName": {
+                  "textDirection": "USER_LOCALE",
+                  "text": "In your network",
+                  "attributesV2": [],
+                  "$recipeTypes": ["com.linkedin.voyager.dash.deco.common.text.TextViewModelV2"],
+                  "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+                },
+                "highlighted": false,
+                "secondaryFilterValues": [
+                  {
+                    "default": false,
+                    "displayName": "In your network",
+                    "count": 0,
+                    "value": "true",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  }
+                ],
+                "parameterName": "jobInYourNetwork",
+                "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterViewModel"],
+                "$type": "com.linkedin.voyager.dash.search.SearchFilterViewModel",
+                "filterApplyControlName": "jobinyournetwork_show_results",
+                "renderType": "TOGGLE"
+              }
+            ],
+            "title": "In your network",
+            "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterGroupViewModel"],
+            "$type": "com.linkedin.voyager.dash.search.SearchFilterGroupViewModel"
+          },
+          {
+            "filters": [
+              {
+                "viewImpressionEventName": "search_filter_fairchanceemployer_view",
+                "appliedCount": 0,
+                "displayName": {
+                  "textDirection": "USER_LOCALE",
+                  "text": "Fair Chance Employer",
+                  "attributesV2": [],
+                  "$recipeTypes": ["com.linkedin.voyager.dash.deco.common.text.TextViewModelV2"],
+                  "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+                },
+                "highlighted": false,
+                "secondaryFilterValues": [
+                  {
+                    "tooltipText": {
+                      "textDirection": "USER_LOCALE",
+                      "text": "Show jobs from employers who have pledged to consider applicants with criminal records. Learn more",
+                      "attributesV2": [
+                        {
+                          "detailDataUnion": { "style": "BOLD" },
+                          "length": 10,
+                          "start": 88,
+                          "$recipeTypes": [
+                            "com.linkedin.voyager.dash.deco.common.text.TextAttributeV2"
+                          ],
+                          "$type": "com.linkedin.voyager.dash.common.text.TextAttribute"
+                        },
+                        {
+                          "detailDataUnion": {
+                            "hyperlink": "https://www.linkedin.com/help/linkedin/answer/a1396623"
+                          },
+                          "length": 10,
+                          "start": 88,
+                          "$recipeTypes": [
+                            "com.linkedin.voyager.dash.deco.common.text.TextAttributeV2"
+                          ],
+                          "$type": "com.linkedin.voyager.dash.common.text.TextAttribute"
+                        }
+                      ],
+                      "$recipeTypes": [
+                        "com.linkedin.voyager.dash.deco.common.text.TextViewModelV2"
+                      ],
+                      "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+                    },
+                    "displayName": "Fair Chance Employer",
+                    "count": 22,
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue",
+                    "default": false,
+                    "value": "true",
+                    "selected": false
+                  }
+                ],
+                "parameterName": "fairChanceEmployer",
+                "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterViewModel"],
+                "$type": "com.linkedin.voyager.dash.search.SearchFilterViewModel",
+                "filterApplyControlName": "fairchanceemployer_show_results",
+                "renderType": "TOGGLE"
+              }
+            ],
+            "title": "Fair Chance Employer",
+            "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterGroupViewModel"],
+            "$type": "com.linkedin.voyager.dash.search.SearchFilterGroupViewModel"
+          },
+          {
+            "filters": [
+              {
+                "viewImpressionEventName": "search_filter_benefits_view",
+                "appliedCount": 0,
+                "displayName": {
+                  "textDirection": "USER_LOCALE",
+                  "text": "Benefits",
+                  "attributesV2": [],
+                  "$recipeTypes": ["com.linkedin.voyager.dash.deco.common.text.TextViewModelV2"],
+                  "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+                },
+                "filterClickControlName": "benefits_click",
+                "highlighted": false,
+                "secondaryFilterValues": [
+                  {
+                    "default": false,
+                    "displayName": "Medical insurance",
+                    "count": 240,
+                    "value": "1",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "default": false,
+                    "displayName": "Vision insurance",
+                    "count": 4,
+                    "value": "2",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "default": false,
+                    "displayName": "Dental insurance",
+                    "count": 10,
+                    "value": "3",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "default": false,
+                    "displayName": "401(k)",
+                    "count": 3,
+                    "value": "4",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "default": false,
+                    "displayName": "Pension plan",
+                    "count": 52,
+                    "value": "5",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "default": false,
+                    "displayName": "Paid maternity leave",
+                    "count": 5,
+                    "value": "7",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "default": false,
+                    "displayName": "Paid paternity leave",
+                    "count": 16,
+                    "value": "8",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "default": false,
+                    "displayName": "Commuter benefits",
+                    "count": 3,
+                    "value": "9",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "default": false,
+                    "displayName": "Student loan assistance",
+                    "count": 0,
+                    "value": "10",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "default": false,
+                    "displayName": "Tuition assistance",
+                    "count": 0,
+                    "value": "11",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "default": false,
+                    "displayName": "Disability insurance",
+                    "count": 23,
+                    "value": "12",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  }
+                ],
+                "parameterName": "benefits",
+                "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterViewModel"],
+                "$type": "com.linkedin.voyager.dash.search.SearchFilterViewModel",
+                "filterApplyControlName": "benefits_show_results",
+                "renderType": "MULTI_SELECT"
+              }
+            ],
+            "title": "Benefits",
+            "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterGroupViewModel"],
+            "$type": "com.linkedin.voyager.dash.search.SearchFilterGroupViewModel"
+          },
+          {
+            "filters": [
+              {
+                "viewImpressionEventName": "search_filter_commitments_view",
+                "appliedCount": 0,
+                "displayName": {
+                  "textDirection": "USER_LOCALE",
+                  "text": "Commitments",
+                  "attributesV2": [],
+                  "$recipeTypes": ["com.linkedin.voyager.dash.deco.common.text.TextViewModelV2"],
+                  "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+                },
+                "filterClickControlName": "commitments_click",
+                "highlighted": false,
+                "secondaryFilterValues": [
+                  {
+                    "default": false,
+                    "displayName": "Career growth and learning",
+                    "count": 277,
+                    "value": "5",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "default": false,
+                    "displayName": "Diversity, equity, and inclusion",
+                    "count": 258,
+                    "value": "1",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "default": false,
+                    "displayName": "Environmental sustainability",
+                    "count": 221,
+                    "value": "2",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "default": false,
+                    "displayName": "Social impact",
+                    "count": 207,
+                    "value": "4",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "default": false,
+                    "displayName": "Work-life balance",
+                    "count": 213,
+                    "value": "3",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  }
+                ],
+                "parameterName": "commitments",
+                "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterViewModel"],
+                "$type": "com.linkedin.voyager.dash.search.SearchFilterViewModel",
+                "filterApplyControlName": "commitments_show_results",
+                "renderType": "MULTI_SELECT"
+              }
+            ],
+            "title": "Commitments",
+            "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterGroupViewModel"],
+            "$type": "com.linkedin.voyager.dash.search.SearchFilterGroupViewModel"
+          }
+        ],
+        "primaryFilterGroups": [
+          {
+            "filters": [
+              {
+                "appliedCount": 1,
+                "displayName": {
+                  "textDirection": "USER_LOCALE",
+                  "text": "Jobs",
+                  "attributesV2": [],
+                  "$recipeTypes": ["com.linkedin.voyager.dash.deco.common.text.TextViewModelV2"],
+                  "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+                },
+                "highlighted": false,
+                "secondaryFilterValues": [
+                  {
+                    "displayName": "All",
+                    "value": "ALL",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "displayName": "People",
+                    "value": "PEOPLE",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "displayName": "Jobs",
+                    "value": "JOBS",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": true,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "displayName": "Posts",
+                    "value": "CONTENT",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "displayName": "Companies",
+                    "value": "COMPANIES",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "displayName": "Products",
+                    "value": "PRODUCTS",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "displayName": "Schools",
+                    "value": "SCHOOLS",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "displayName": "Groups",
+                    "value": "GROUPS",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "displayName": "Events",
+                    "value": "EVENTS",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "displayName": "Courses",
+                    "value": "LEARNING",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "displayName": "Services",
+                    "value": "SERVICES",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  }
+                ],
+                "parameterName": "resultType",
+                "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterViewModel"],
+                "$type": "com.linkedin.voyager.dash.search.SearchFilterViewModel",
+                "renderType": "NAVIGATION"
+              }
+            ],
+            "title": "Jobs",
+            "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterGroupViewModel"],
+            "$type": "com.linkedin.voyager.dash.search.SearchFilterGroupViewModel"
+          },
+          {
+            "filters": [
+              {
+                "viewImpressionEventName": "search_filter_timepostedrange_view",
+                "appliedCount": 0,
+                "displayName": {
+                  "textDirection": "USER_LOCALE",
+                  "text": "Date posted",
+                  "attributesV2": [],
+                  "$recipeTypes": ["com.linkedin.voyager.dash.deco.common.text.TextViewModelV2"],
+                  "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+                },
+                "filterClickControlName": "timepostedrange_click",
+                "highlighted": false,
+                "secondaryFilterValues": [
+                  {
+                    "default": true,
+                    "displayName": "Any time",
+                    "count": 3076,
+                    "value": "",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": true,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "default": false,
+                    "displayName": "Past month",
+                    "count": 2910,
+                    "value": "r2592000",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "default": false,
+                    "displayName": "Past week",
+                    "count": 1475,
+                    "value": "r604800",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "default": false,
+                    "displayName": "Past 24 hours",
+                    "count": 578,
+                    "value": "r86400",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  }
+                ],
+                "parameterName": "timePostedRange",
+                "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterViewModel"],
+                "$type": "com.linkedin.voyager.dash.search.SearchFilterViewModel",
+                "filterApplyControlName": "timepostedrange_show_results",
+                "renderType": "SINGLE_SELECT"
+              }
+            ],
+            "title": "Date posted",
+            "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterGroupViewModel"],
+            "$type": "com.linkedin.voyager.dash.search.SearchFilterGroupViewModel"
+          },
+          {
+            "filters": [
+              {
+                "viewImpressionEventName": "search_filter_experience_view",
+                "appliedCount": 0,
+                "displayName": {
+                  "textDirection": "USER_LOCALE",
+                  "text": "Experience level",
+                  "attributesV2": [],
+                  "$recipeTypes": ["com.linkedin.voyager.dash.deco.common.text.TextViewModelV2"],
+                  "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+                },
+                "filterClickControlName": "experience_click",
+                "highlighted": false,
+                "secondaryFilterValues": [
+                  {
+                    "default": false,
+                    "displayName": "Internship",
+                    "count": 60,
+                    "value": "1",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "default": false,
+                    "displayName": "Entry level",
+                    "count": 566,
+                    "value": "2",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "default": false,
+                    "displayName": "Associate",
+                    "count": 427,
+                    "value": "3",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "default": false,
+                    "displayName": "Mid-Senior level",
+                    "count": 1866,
+                    "value": "4",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "default": false,
+                    "displayName": "Director",
+                    "count": 11,
+                    "value": "5",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "default": false,
+                    "displayName": "Executive",
+                    "count": 9,
+                    "value": "6",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  }
+                ],
+                "parameterName": "experience",
+                "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterViewModel"],
+                "$type": "com.linkedin.voyager.dash.search.SearchFilterViewModel",
+                "filterApplyControlName": "experience_show_results",
+                "renderType": "MULTI_SELECT"
+              }
+            ],
+            "title": "Experience level",
+            "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterGroupViewModel"],
+            "$type": "com.linkedin.voyager.dash.search.SearchFilterGroupViewModel"
+          },
+          {
+            "filters": [
+              {
+                "viewImpressionEventName": "search_filter_company_view",
+                "appliedCount": 0,
+                "displayName": {
+                  "textDirection": "USER_LOCALE",
+                  "text": "Company",
+                  "attributesV2": [],
+                  "$recipeTypes": ["com.linkedin.voyager.dash.deco.common.text.TextViewModelV2"],
+                  "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+                },
+                "filterClickControlName": "company_click",
+                "highlighted": false,
+                "secondaryFilterValues": [
+                  {
+                    "default": false,
+                    "displayName": "adesso SE",
+                    "count": 47,
+                    "value": "41629",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "default": false,
+                    "displayName": "Kraken",
+                    "count": 33,
+                    "value": "3787845",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "default": false,
+                    "displayName": "SearchApi",
+                    "count": 29,
+                    "value": "92715218",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "default": false,
+                    "displayName": "Tieto",
+                    "count": 29,
+                    "value": "110311109",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "default": false,
+                    "displayName": "Luxoft",
+                    "count": 27,
+                    "value": "5300",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "default": false,
+                    "displayName": "Quik Hire Staffing",
+                    "count": 21,
+                    "value": "110240773",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "default": false,
+                    "displayName": "EY",
+                    "count": 21,
+                    "value": "1073",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "default": false,
+                    "displayName": "Proxify",
+                    "count": 19,
+                    "value": "18548980",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "default": false,
+                    "displayName": "NTT DATA Europe & Latam",
+                    "count": 17,
+                    "value": "76533648",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "default": false,
+                    "displayName": "Computer Futures",
+                    "count": 17,
+                    "value": "7214",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "default": false,
+                    "displayName": "Kicklox",
+                    "count": 16,
+                    "value": "9485372",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "default": false,
+                    "displayName": "Gofore",
+                    "count": 16,
+                    "value": "102326",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "default": false,
+                    "displayName": "Ethos",
+                    "count": 15,
+                    "value": "99316157",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "default": false,
+                    "displayName": "Capgemini",
+                    "count": 13,
+                    "value": "157240",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  }
+                ],
+                "typeaheadType": "COMPANY",
+                "parameterName": "company",
+                "typeaheadHint": "Add a company",
+                "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterViewModel"],
+                "$type": "com.linkedin.voyager.dash.search.SearchFilterViewModel",
+                "filterApplyControlName": "company_show_results",
+                "renderType": "MULTI_SELECT"
+              }
+            ],
+            "title": "Company",
+            "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterGroupViewModel"],
+            "$type": "com.linkedin.voyager.dash.search.SearchFilterGroupViewModel"
+          },
+          {
+            "filters": [
+              {
+                "viewImpressionEventName": "search_filter_workplacetype_view",
+                "appliedCount": 0,
+                "displayName": {
+                  "textDirection": "USER_LOCALE",
+                  "text": "Remote",
+                  "attributesV2": [],
+                  "$recipeTypes": ["com.linkedin.voyager.dash.deco.common.text.TextViewModelV2"],
+                  "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+                },
+                "filterClickControlName": "workplacetype_click",
+                "highlighted": false,
+                "secondaryFilterValues": [
+                  {
+                    "default": false,
+                    "displayName": "Hybrid",
+                    "count": 1423,
+                    "value": "3",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "default": false,
+                    "displayName": "On-site",
+                    "count": 977,
+                    "value": "1",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  },
+                  {
+                    "default": false,
+                    "displayName": "Remote",
+                    "count": 858,
+                    "value": "2",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  }
+                ],
+                "parameterName": "workplaceType",
+                "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterViewModel"],
+                "$type": "com.linkedin.voyager.dash.search.SearchFilterViewModel",
+                "filterApplyControlName": "workplacetype_show_results",
+                "renderType": "MULTI_SELECT"
+              }
+            ],
+            "title": "Remote",
+            "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterGroupViewModel"],
+            "$type": "com.linkedin.voyager.dash.search.SearchFilterGroupViewModel"
+          },
+          {
+            "filters": [
+              {
+                "viewImpressionEventName": "search_filter_applywithlinkedin_view",
+                "appliedCount": 0,
+                "displayName": {
+                  "textDirection": "USER_LOCALE",
+                  "text": "Easy Apply",
+                  "attributesV2": [],
+                  "$recipeTypes": ["com.linkedin.voyager.dash.deco.common.text.TextViewModelV2"],
+                  "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+                },
+                "highlighted": false,
+                "secondaryFilterValues": [
+                  {
+                    "default": false,
+                    "displayName": "Easy Apply",
+                    "count": 1024,
+                    "value": "true",
+                    "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterValue"],
+                    "selected": false,
+                    "$type": "com.linkedin.voyager.dash.search.SearchFilterValue"
+                  }
+                ],
+                "parameterName": "applyWithLinkedin",
+                "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterViewModel"],
+                "$type": "com.linkedin.voyager.dash.search.SearchFilterViewModel",
+                "filterApplyControlName": "applywithlinkedin_show_results",
+                "renderType": "TOGGLE"
+              }
+            ],
+            "title": "Easy Apply",
+            "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterGroupViewModel"],
+            "$type": "com.linkedin.voyager.dash.search.SearchFilterGroupViewModel"
+          }
+        ],
+        "appliedCount": 0,
+        "$recipeTypes": ["com.linkedin.voyager.dash.deco.search.SearchFilterCluster"],
+        "$type": "com.linkedin.voyager.dash.search.SearchFilterCluster"
+      }
+    ],
+    "paging": { "count": 10, "start": 0, "links": [] },
+    "$type": "com.linkedin.restli.common.CollectionResponse"
+  },
+  "included": [
+    {
+      "entityUrn": "urn:li:fsd_premiumUpsellSlot:JOB_SEARCH_FILTER_TAJ",
+      "upsellCard": {
+        "socialProofInsight": {
+          "image": {
+            "attributes": [
+              {
+                "detailDataUnion": {
+                  "imageUrl": {
+                    "$recipeTypes": ["com.linkedin.deco.recipe.anonymous.Anon1529112441"],
+                    "url": "https://media.licdn.com/media/AAUQAgE2AAgAAQAAAAAAAAdKAAAAJDQ1YjQ5MTk5LTY2ZGUtNDI2MC05YmQ1LTE3YjE4ZWNlN2ZkYg.png",
+                    "$type": "com.linkedin.voyager.dash.common.ImageUrl"
+                  }
+                },
+                "$recipeTypes": ["com.linkedin.voyager.dash.deco.common.image.ImageAttribute"],
+                "$type": "com.linkedin.voyager.dash.common.image.ImageAttribute"
+              },
+              {
+                "detailDataUnion": {
+                  "imageUrl": {
+                    "$recipeTypes": ["com.linkedin.deco.recipe.anonymous.Anon1529112441"],
+                    "url": "https://media.licdn.com/media/AAUQAgE2AAgAAQAAAAAAAAHzAAAAJGJiZDM1MGJkLTIzOTAtNDhmMS1hZTM5LTEzZDk2NWQ4ZDhjYQ.png",
+                    "$type": "com.linkedin.voyager.dash.common.ImageUrl"
+                  }
+                },
+                "$recipeTypes": ["com.linkedin.voyager.dash.deco.common.image.ImageAttribute"],
+                "$type": "com.linkedin.voyager.dash.common.image.ImageAttribute"
+              },
+              {
+                "detailData": { "*profilePicture": "urn:li:fsd_profile:ACoAATESTPROFILEID" },
+                "detailDataUnion": { "profilePicture": "urn:li:fsd_profile:ACoAATESTPROFILEID" },
+                "$recipeTypes": ["com.linkedin.voyager.dash.deco.common.image.ImageAttribute"],
+                "$type": "com.linkedin.voyager.dash.common.image.ImageAttribute"
+              }
+            ],
+            "accessibilityTextAttributes": [],
+            "accessibilityText": "Premium Member",
+            "$recipeTypes": ["com.linkedin.voyager.dash.deco.common.image.ImageViewModel"],
+            "$type": "com.linkedin.voyager.dash.common.image.ImageViewModel"
+          },
+          "text": {
+            "textDirection": "USER_LOCALE",
+            "text": "Ada and millions of other members use Premium",
+            "attributesV2": [],
+            "$recipeTypes": ["com.linkedin.voyager.dash.deco.common.text.TextViewModelV2"],
+            "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+          },
+          "$recipeTypes": ["com.linkedin.voyager.dash.deco.common.ux.baseInsightViewModel"],
+          "$type": "com.linkedin.voyager.dash.common.ux.InsightViewModel"
+        },
+        "ctaText": {
+          "textDirection": "USER_LOCALE",
+          "text": "Activate Premium for Ft 0",
+          "attributesV2": [],
+          "$recipeTypes": ["com.linkedin.voyager.dash.deco.common.text.TextViewModelV2"],
+          "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+        },
+        "upsellOrderOrigin": "Tracking:v1:premium_job_search_filter_top_applicant_upsell:Job Seeker:In-Product",
+        "controlName": "premium_job_search_filter_top_applicant_upsell_click",
+        "actionUrl": "http://www.linkedin.com/premium/products/?upsellOrderOrigin=Tracking%3Av1%3Apremium_job_search_filter_top_applicant_upsell%3AJob+Seeker%3AIn-Product&utype=job&referenceId=YbVFmNqYSXezYQg91DVm%2FQ%3D%3D&isSS=false&upsellSlotId=JOB_SEARCH_FILTER_TAJ",
+        "title": {
+          "textDirection": "USER_LOCALE",
+          "text": "See jobs where you’re most likely to hear back",
+          "attributesV2": [],
+          "$recipeTypes": ["com.linkedin.voyager.dash.deco.common.text.TextViewModelV2"],
+          "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+        },
+        "$recipeTypes": ["com.linkedin.voyager.dash.deco.premium.PremiumUpsellCard"],
+        "$type": "com.linkedin.voyager.dash.premium.PremiumUpsellCard",
+        "funnelCommonHeader": {
+          "utype": "job",
+          "$recipeTypes": ["com.linkedin.voyager.dash.deco.premium.FullPremiumFunnelCommonHeader"],
+          "$type": "com.linkedin.voyager.dash.premium.PremiumFunnelCommonHeader"
+        },
+        "dismissible": false,
+        "layoutStyle": "CUSTOM"
+      },
+      "$recipeTypes": ["com.linkedin.voyager.dash.deco.premium.PremiumUpsellSlotContent"],
+      "$type": "com.linkedin.voyager.dash.premium.PremiumUpsellSlotContent"
+    }
+  ]
+}

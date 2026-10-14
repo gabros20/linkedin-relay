@@ -93,7 +93,7 @@ describe('advertised flags actually exist', () => {
     // NOT_IMPLEMENTED and are marked in help, so their usage is a sketch of
     // what they WILL take rather than a promise about today.
     return COMMANDS.filter((c) => c.implemented).flatMap((c) =>
-      [...c.usage.matchAll(/--([a-z][a-z-]*)/g)].map((m) => ({
+      [...c.usage.matchAll(/--([a-z][a-z0-9-]*)/g)].map((m) => ({
         command: c.name,
         flag: m[1] as string,
       })),

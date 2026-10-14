@@ -11,6 +11,7 @@ import { runCacheStatus, runLocal, runPurge, runSourceRead } from './commands/ca
 import type { ConfirmDeps } from './commands/confirm.ts';
 import { runDelete } from './commands/delete.ts';
 import { terminalDeps } from './commands/gate.ts';
+import { type JobsRequest, runJob, runJobFilters, runJobs } from './commands/jobs.ts';
 import {
   type OutputOpts,
   runFeed,
@@ -37,6 +38,7 @@ import {
   runReply,
   runShare,
 } from './commands/write.ts';
+import type { JobFilterOptions } from './engine/jobs.ts';
 import { shouldRunAsEntry } from './entry.ts';
 import { err, exitCodeFor, toJson } from './output.ts';
 import type { Envelope } from './types.ts';
@@ -51,6 +53,62 @@ function output(args: ParsedArgs): OutputOpts {
   const fields = str(args, 'fields');
   if (fields !== undefined) opts.fields = fields;
   return opts;
+}
+
+/** A list flag, given comma-separated, repeated, or both. */
+function many(args: ParsedArgs, name: string): string[] {
+  return list(args, name)
+    .flatMap((v) => v.split(','))
+    .map((v) => v.trim())
+    .filter((v) => v !== '');
+}
+
+/** `jobs` and `job-filters` flags. Pure, so the whole surface is testable. */
+export function jobsRequest(args: ParsedArgs): JobsRequest {
+  const filter: JobFilterOptions = {};
+  const distance = num(args, 'distance');
+  if (distance !== undefined) filter.distance = distance;
+  const posted = str(args, 'posted');
+  if (posted !== undefined) filter.posted = posted;
+  const lists = [
+    ['experience', 'experience'],
+    ['type', 'type'],
+    ['workplace', 'workplace'],
+    ['company', 'company'],
+    ['industry', 'industry'],
+    ['function', 'function'],
+    ['title', 'title'],
+    ['place', 'place'],
+  ] as const;
+  for (const [flag, key] of lists) {
+    const values = many(args, flag);
+    if (values.length > 0) filter[key] = values;
+  }
+  const flags = [
+    ['easy-apply', 'easyApply'],
+    ['under-10', 'under10'],
+    ['verified', 'verified'],
+    ['in-network', 'inNetwork'],
+    ['fair-chance', 'fairChance'],
+  ] as const;
+  for (const [flag, key] of flags) if (bool(args, flag)) filter[key] = true;
+  const raw = list(args, 'filter');
+  if (raw.length > 0) filter.raw = raw;
+  const sort = str(args, 'sort');
+  if (sort !== undefined) filter.sort = sort;
+
+  const req: JobsRequest = { limit: num(args, 'limit') ?? 25, filter };
+  const keywords = args.positionals[0];
+  if (keywords !== undefined) req.keywords = keywords;
+  const location = str(args, 'location');
+  if (location !== undefined) req.location = location;
+  const geo = str(args, 'geo');
+  if (geo !== undefined) req.geoId = geo;
+  const start = num(args, 'start');
+  if (start !== undefined) req.start = start;
+  if (bool(args, 'details')) req.details = true;
+  if (bool(args, 'description')) req.description = true;
+  return req;
 }
 
 /**
@@ -179,7 +237,19 @@ export async function dispatch(argv: string[], now: number): Promise<Envelope> {
       return runPost(args.positionals[0], num(args, 'limit') ?? 20, output(args));
     case 'reactions':
       return runReactions(args.positionals[0], num(args, 'limit') ?? 20, output(args));
+    case 'jobs':
+      return runJobs(jobsRequest(args), output(args));
+    case 'job':
+      return runJob(args.positionals[0], output(args));
+    case 'job-filters':
+      return runJobFilters(jobsRequest(args), output(args));
     case 'search':
+      // The generic search returns no job cards; jobs have their own search.
+      if (args.positionals[0] === 'jobs')
+        return runJobs(
+          { keywords: args.positionals[1] ?? '', limit: num(args, 'limit') ?? 10, filter: {} },
+          output(args),
+        );
       return runSearch(
         args.positionals[0],
         args.positionals[1],

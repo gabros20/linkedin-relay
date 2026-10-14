@@ -20,6 +20,7 @@ import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import { z } from 'zod';
 import { runCacheStatus, runLocal, runSourceRead } from './commands/cache.ts';
+import { type JobsRequest, runJob, runJobFilters, runJobs } from './commands/jobs.ts';
 import {
   runFeed,
   runPost,
@@ -116,6 +117,110 @@ export function buildServer(): McpServer {
       limit: z.number().int().min(1).max(25).optional().describe('default 10'),
     },
     async ({ kind, query, limit }) => reply(await runSearch(kind, query, limit ?? 10)),
+  );
+
+  const jobQuery = {
+    keywords: z.string().optional().describe('search terms'),
+    location: z
+      .string()
+      .optional()
+      .describe('a place, resolved by LinkedIn; check data.location for what it chose'),
+    geoId: z.string().optional().describe('an exact geo id, in place of location'),
+    distance: z.number().int().optional().describe('miles around the location'),
+    posted: z.string().optional().describe('24h | week | month | <N>h | <N>d'),
+    experience: z
+      .array(z.enum(['internship', 'entry', 'associate', 'mid-senior', 'director', 'executive']))
+      .optional(),
+    type: z
+      .array(
+        z.enum([
+          'full-time',
+          'part-time',
+          'contract',
+          'temporary',
+          'volunteer',
+          'internship',
+          'other',
+        ]),
+      )
+      .optional(),
+    workplace: z.array(z.enum(['on-site', 'remote', 'hybrid'])).optional(),
+    easyApply: z.boolean().optional(),
+    under10: z.boolean().optional().describe('fewer than 10 applicants'),
+    verified: z.boolean().optional(),
+    inNetwork: z.boolean().optional(),
+    fairChance: z.boolean().optional(),
+    company: z.array(z.string()).optional().describe('company ids, from job_filters'),
+    industry: z.array(z.string()).optional().describe('industry ids, from job_filters'),
+    function: z.array(z.string()).optional().describe('function codes, from job_filters'),
+    title: z.array(z.string()).optional().describe('title ids, from job_filters'),
+    place: z.array(z.string()).optional().describe('city geo ids, from job_filters'),
+    filter: z
+      .array(z.string())
+      .optional()
+      .describe('raw key=v1,v2 by the parameter names job_filters lists'),
+    sort: z.enum(['recent', 'relevant']).optional(),
+  };
+  type JobArgs = { [K in keyof typeof jobQuery]?: z.infer<(typeof jobQuery)[K]> };
+  const jobRequest = (a: JobArgs, limit: number): JobsRequest => {
+    const { keywords, location, geoId, filter, ...rest } = a;
+    return {
+      limit,
+      ...(keywords !== undefined ? { keywords } : {}),
+      ...(location !== undefined ? { location } : {}),
+      ...(geoId !== undefined ? { geoId } : {}),
+      filter: { ...rest, ...(filter !== undefined ? { raw: filter } : {}) },
+    };
+  };
+
+  server.tool(
+    'jobs',
+    'Search LinkedIn jobs with every filter the jobs page has. 1 search call per 25 results. ' +
+      'Rows carry id, title, company, location, workplace, listed (date), easyApply, promoted, ' +
+      'salary when shown, url. RANK ON THOSE, then call `job` on finalists for the description ' +
+      'and apply link; `details:true` reads every row (1 profile call EACH, budget 30/day). ' +
+      'Ids for company/industry/title/place/filter come from `job_filters`. `data.location` is ' +
+      "the place a typed location resolved to: check it. `meta.claimedCount` is LinkedIn's total; " +
+      '`meta.next` is the start for the next page; LinkedIn serves at most 1000 per search. ' +
+      `${READING_CONTRACT} ${NO_RETRY}`,
+    {
+      ...jobQuery,
+      limit: z.number().int().min(1).max(100).optional().describe('default 25'),
+      start: z.number().int().min(0).optional(),
+      details: z.boolean().optional().describe('read each job: apply link, applicants'),
+      description: z.boolean().optional().describe('with details, keep full descriptions'),
+      compact: z.boolean().optional().describe('one line per job'),
+    },
+    async ({ limit, start, details, description, compact, ...q }) =>
+      reply(
+        await runJobs(
+          {
+            ...jobRequest(q, limit ?? 25),
+            ...(start !== undefined ? { start } : {}),
+            ...(details !== undefined ? { details } : {}),
+            ...(description !== undefined ? { description } : {}),
+          },
+          compact === true ? { compact: true } : {},
+        ),
+      ),
+  );
+
+  server.tool(
+    'job',
+    'One LinkedIn job by id or URL: description, apply {type: external | easy-apply, url}, ' +
+      'company, location, workplace, employmentType, applicants, listed/expires, state (LISTED or ' +
+      `CLOSED), and whether the user already applied or saved it. 1 profile call. ${NO_RETRY}`,
+    { job: z.string().min(1).describe('job id, /jobs/view/ URL, or ?currentJobId= URL') },
+    async ({ job }) => reply(await runJob(job)),
+  );
+
+  server.tool(
+    'job_filters',
+    "Every job-search filter for a query, with each option's id and live result count: the " +
+      'values `jobs` takes for company, industry, function, title, place, and raw `filter` ' +
+      `(key=value by the listed key). 1 search call. ${NO_RETRY}`,
+    jobQuery,
+    async (q) => reply(await runJobFilters(jobRequest(q, 25))),
   );
 
   server.tool(

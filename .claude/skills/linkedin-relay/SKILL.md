@@ -47,7 +47,7 @@ every search result is how a day's budget disappears in one request.
 
 ### `search` — cheap. The net.
 ```
-search kind:people|companies|jobs query:"<terms>" [limit:1-25]
+search kind:people|companies query:"<terms>" [limit:1-25]   (jobs: use `jobs`)
 ```
 Returns `{items, meta}`. Each item: `name`, `headline`, `location`, `url`, `urn`.
 
@@ -57,6 +57,47 @@ got. `meta.state` is always `unknown` here: this is one page of many and we neve
 Out-of-network people come back as `name: "LinkedIn Member"` with a `/headless` URL. That is real
 LinkedIn behaviour, not a bug — LinkedIn will not name them to this account. Say so rather than
 presenting it as a data problem.
+
+### `jobs` — 1 search call per 25 results. Job search with every filter.
+```
+jobs keywords:"<terms>" [location:"<place>" | geoId:"<id>"] [distance:<miles>]
+     [posted:"24h|week|month|<N>h|<N>d"] [experience:[internship|entry|associate|mid-senior|director|executive]]
+     [type:[full-time|part-time|contract|temporary|volunteer|internship|other]]
+     [workplace:[on-site|remote|hybrid]] [easyApply] [under10] [verified] [inNetwork] [fairChance]
+     [company|industry|function|title|place:[ids]] [filter:["key=v1,v2"]] [sort:recent|relevant]
+     [limit:1-100] [start:N] [details] [description] [compact]
+```
+Each item: `id`, `title`, `company`, `location`, `workplace`, `listed` (YYYY-MM-DD), `easyApply`,
+`promoted`, `salary` (when the card shows one), `insights`, `url`. `compact` gives one line per job.
+
+- **Rank on the rows, then read the finalists with `job`.** `details` reads *every* row (1 profile
+  call each, 30 a day) to add the apply link, applicants and employment type.
+- **Check `data.location`.** A typed location is resolved by LinkedIn, and the place it chose is
+  reported there. "Vienna, Austria" resolved to one district of Vienna. Pass `geoId` for an exact
+  place; ids are in `job_filters` under `populatedPlace`.
+- **Paging:** `meta.claimedCount` is LinkedIn's total, `meta.next` is the `start` for the next
+  batch, and `meta.state` is `complete` only when the results ran out. LinkedIn serves at most 1000
+  per search; narrow the query rather than paging deep.
+- For several searches (keyword variants), keep each one narrow with filters. Every 25 rows costs a
+  search call, and the day has 25.
+
+### `job` — 1 profile call. One job, in full.
+```
+job job:"<id | /jobs/view/ URL | ?currentJobId= URL>"
+```
+`description`, `apply: {type: "external" | "easy-apply", url}`, `company`, `companyUrl`,
+`location`, `workplace`, `employmentType`, `experienceLevel`, `industries`, `functions`, `listed`,
+`expires`, `state` (`LISTED` or `CLOSED`), `applicants`, `ats` (the employer's applicant tracking
+system), and `applied` / `saved` for this user. For an external application, `apply.url` goes to
+the employer's own site.
+
+### `job-filters` — 1 search call. The knobs, with ids.
+```
+job_filters keywords:"<terms>" [location | geoId] [any jobs filter]
+```
+Every filter LinkedIn offers for this query, each with its options' `value`, `label` and live
+`count`. These values go into `company`, `industry`, `function`, `title`, `place`, or raw
+`filter:["<key>=<value>,…"]` for anything else (benefits, commitments, …).
 
 ### `profile` — mid. Read only the finalists.
 ```

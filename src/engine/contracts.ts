@@ -160,15 +160,33 @@ export const CONTRACTS: Record<string, OperationContract> = {
     capturedAt: '2026-08-02',
   },
 
-  // A job CARDS list, not a job detail. Observed on /jobs/collections/recommended
-  // and never exercised; `job` needs a detail endpoint we have not captured.
+  // Job search, captured 2026-10-14. The jobs page itself now opens an SDUI
+  // "AI job search" that drops filters it does not support; these are the
+  // classic Voyager resources still behind /jobs/search/, which take them all.
+  // See engine/jobs.ts.
   jobCards: {
     name: 'jobCards',
-    transport: 'voyager-graphql',
-    path: `${VOYAGER}/graphql`,
-    queryId: 'voyagerJobsDashJobCards.e5b6b761ede078dabe8ad857aa42c220',
-    provenance: 'discovered',
-    capturedAt: '2026-08-02',
+    transport: 'voyager-restli',
+    path: `${VOYAGER}/voyagerJobsDashJobCards`,
+    decorationId: 'com.linkedin.voyager.dash.deco.jobs.search.JobSearchCardsCollection-220',
+    provenance: 'verified',
+    capturedAt: '2026-10-14',
+  },
+  jobFilters: {
+    name: 'jobFilters',
+    transport: 'voyager-restli',
+    path: `${VOYAGER}/voyagerJobsDashSearchFilterClustersResource`,
+    decorationId: 'com.linkedin.voyager.dash.deco.search.SearchFilterCluster-44',
+    provenance: 'verified',
+    capturedAt: '2026-10-14',
+  },
+  jobPosting: {
+    name: 'jobPosting',
+    transport: 'voyager-restli',
+    path: `${VOYAGER}/jobs/jobPostings`,
+    decorationId: 'com.linkedin.voyager.deco.jobs.web.shared.WebFullJobPosting-65',
+    provenance: 'verified',
+    capturedAt: '2026-10-14',
   },
 };
 

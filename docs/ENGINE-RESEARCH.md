@@ -262,6 +262,26 @@ identifies itself.** The exclusion filter was built to survive renames of the ty
 does — but an entity can also be noise for reasons the type never expresses. Ads are now dropped on
 that marker and counted in `excludedCount`, so the exclusion stays visible rather than silent.
 
+## 5f. Job search — ✅ verified 2026-10-14
+
+The generic `search` with `resultType:JOBS` returns no job cards, so jobs have their own search
+(`lnrelay jobs`). The jobs page itself now opens an SDUI "AI job search"
+(`/flagship-web/jobs/search-results/`, screen `SemanticJobDetails`). It answers in an RSC stream and
+dropped the location and experience level from the URL we gave it. The classic Voyager resources
+behind `/jobs/search/` still answer in JSON and take every filter:
+
+| resource | gives |
+|---|---|
+| `voyagerJobsDashJobCards?q=jobSearch` | 25 cards a page, `paging.total`, the resolved geo |
+| `voyagerJobsDashSearchFilterClustersResource?q=filters` | every filter for the query: parameter name, option ids, live counts |
+| `jobs/jobPostings/<id>` (`WebFullJobPosting-65`) | description, `applyMethod` (`OffsiteApply.companyApplyUrl` or `ComplexOnsiteApply.easyApplyUrl`), applicants, state, ATS |
+
+The query is one Rest.li tuple: `(origin:JOB_SEARCH_PAGE_JOB_FILTER,keywords:…,
+locationUnion:(geoId:…) | (seoLocation:(location:…)),selectedFilters:(<param>:List(…)),
+spellCorrectionEnabled:true)`. A typed location is resolved server-side and the chosen `Geo` comes
+back in `included`. That match can be narrower than meant: "Vienna, Austria" became "Innere Stadt,
+Vienna, Austria". The old `typeahead/hitsV2?type=GEO` lookup is 404.
+
 ## 6. The Rest.li codec is byte-correct — ✅ verified
 
 The web client sent `variables=(memberIdentity:ACoAA…)`. Our `encodeVariables()` produced the
