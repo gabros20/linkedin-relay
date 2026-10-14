@@ -1,3 +1,10 @@
+# [3.19.0](https://github.com/gabros20/linkedin-relay/compare/v3.18.0...v3.19.0) (2026-10-14)
+
+
+### Features
+
+* **job:** --team, who posted a job and who is hiring for it ([2b0ad84](https://github.com/gabros20/linkedin-relay/commit/2b0ad84ca564cfc17f681dd48e3148c2074c6a2b))
+
 # [3.18.0](https://github.com/gabros20/linkedin-relay/compare/v3.17.0...v3.18.0) (2026-10-14)
 
 
