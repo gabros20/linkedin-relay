@@ -1,3 +1,10 @@
+# [3.12.0](https://github.com/gabros20/linkedin-relay/compare/v3.11.0...v3.12.0) (2026-10-14)
+
+
+### Features
+
+* **jobs:** search several keyword sets at once, merged by job id ([90145f9](https://github.com/gabros20/linkedin-relay/commit/90145f94e19bb5bb2c516c28686666b5b7ae32e2))
+
 # [3.11.0](https://github.com/gabros20/linkedin-relay/compare/v3.10.1...v3.11.0) (2026-10-14)
 
 
