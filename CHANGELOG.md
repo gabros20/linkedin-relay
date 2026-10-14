@@ -1,3 +1,10 @@
+# [3.13.0](https://github.com/gabros20/linkedin-relay/compare/v3.12.1...v3.13.0) (2026-10-14)
+
+
+### Features
+
+* **people:** people search with every filter, names looked up to ids ([4616403](https://github.com/gabros20/linkedin-relay/commit/46164038666101c2a02c81e5fd65af90e2cc9afb))
+
 ## [3.12.1](https://github.com/gabros20/linkedin-relay/compare/v3.12.0...v3.12.1) (2026-10-14)
 
 
