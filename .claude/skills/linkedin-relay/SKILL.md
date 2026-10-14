@@ -30,8 +30,10 @@ in the request path.
 ## The funnel
 
 ```
-search          cheap  — cast wide, rank on the returned headline/location
-  ↓ pick 2-3 finalists from the search rows alone, not by reading each one
+people          1 call / 50 — find people with filters (company, school, place, degree, …)
+jobs            1 call / 100 — find jobs with filters; `job` reads finalists, 100 a call
+search          cheap  — one page of people or companies, no filters
+  ↓ pick 2-3 finalists from the rows alone, not by reading each one
 profile         mid    — deep-read ONLY the finalists
 feed            mid    — what the user's network is posting right now
   ↓ feed rows carry likes/comments counts — rank on those before reading a thread
@@ -41,7 +43,7 @@ whoami          cheap  — who we are authenticated as
 risk / budget   free   — check standing BEFORE spending
 ```
 
-Search rows already carry name, headline, location and URL. **Rank on those.** Calling `profile` on
+People and search rows already carry name, headline, location and URL. **Rank on those.** Calling `profile` on
 every search result is how a day's budget disappears in one request.
 
 ## Finding people — the recipe
@@ -75,6 +77,9 @@ From a shell: `lnrelay people "engineering manager" "head of engineering" --comp
   "who does A know" is `connectionOf` with A's `id`. Keywords match anywhere on a profile.
 - **`title` is free text against the current title**; `companyText`/`schoolText` are free text too,
   for when there is no single organisation to name.
+- **Budget:** people searches and name lookups spend the general search budget, 25 calls a day.
+  A deep query of 1000 people is 20 of them, so ask for the depth you need (`limit`), not the most
+  LinkedIn serves; check `budget` before a big run.
 - **LinkedIn pages at most 1000 people per query.** `meta.servedLimit` means it claimed more: split
   the query (by location, by company) rather than reporting the 1000 as everyone.
 - **Not everyone is named.** LinkedIn may return people outside the user's network as

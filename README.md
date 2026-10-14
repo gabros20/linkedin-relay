@@ -98,6 +98,8 @@ lnrelay people-filters "frontend developer" --location Budapest                 
   the tool never does. Several keyword sets merge by person, as for jobs.
 - **LinkedIn serves at most 1000 people per query**, whatever it claims to have matched;
   `meta.servedLimit` says when it held back, and the list is reported partial, not complete.
+- People searches and name lookups spend the general search budget (25 calls a day), so a
+  1000-person query takes most of a day's allowance.
 
 ## Job hunting
 
