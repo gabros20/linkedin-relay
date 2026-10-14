@@ -1,3 +1,10 @@
+# [3.11.0](https://github.com/gabros20/linkedin-relay/compare/v3.10.1...v3.11.0) (2026-10-14)
+
+
+### Features
+
+* **job:** read many jobs in one call; search 100 jobs a call ([c50d02f](https://github.com/gabros20/linkedin-relay/commit/c50d02ff9c471c1a2a14d06ab55b7296630c8989))
+
 ## [3.10.1](https://github.com/gabros20/linkedin-relay/compare/v3.10.0...v3.10.1) (2026-10-14)
 
 
