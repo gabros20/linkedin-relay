@@ -10,6 +10,9 @@ Sibling to [`x-relay`](../x-relay), [`github-relay`](../github-relay) and
 npm i -g linkedin-relay-mcp
 lnrelay login                              # mint a session from your own Chrome
 lnrelay search people "rust developer"     # ranked rows: name, headline, location, url
+lnrelay jobs "frontend engineer" "AI agent developer" --workplace remote --posted week --compact
+                                           # one merged job list across keyword sets
+lnrelay job 4479248573 4475225930          # full jobs, with their apply links
 lnrelay feed --compact                     # your feed, with engagement counts
 lnrelay post <activity-urn>                # a post's comment thread
 lnrelay sync connections
@@ -18,7 +21,9 @@ lnrelay local "rust"                       # then search it offline, free
 
 ## As an MCP server
 
-Thirteen read-only tools, so an agent does the reading. Writes are not on that surface at any price.
+Nineteen read-only tools, so an agent does the reading. Writes are not on that surface at any price.
+The bundled Claude Code skill (`.claude/skills/linkedin-relay/SKILL.md`) teaches an agent the
+funnels, the budget, and how to read `meta` — including a step-by-step job-hunting recipe.
 
 ```bash
 claude mcp add linkedin-relay -s user -- bun "$(npm root -g)/linkedin-relay-mcp/dist/mcp-shim.js"
@@ -28,11 +33,15 @@ claude mcp add linkedin-relay -s user -- bun "$(npm root -g)/linkedin-relay-mcp/
 
 | | |
 |---|---|
-| `search` · `profile` · `feed` | the research surface — people, companies, jobs |
+| `search` · `profile` · `feed` | the research surface — people and companies |
+| `jobs` · `job` · `job-filters` | job search with every filter, several keyword sets merged in one call, and apply links |
 | `post` · `reactions` | a post's comment thread, and who engaged |
+| `scheduled` · `experience` · `skills` | your queued posts, and your own roles and skills |
 | `sync` · `local` · `connections` · `my-posts` | fill a local cache, then query it for free |
 | `whoami` · `doctor` · `risk` · `budget` · `cache-status` | session, standing and spend |
-| `oauth` · `share` · `comment` · `react` · `delete` | writes — OAuth when available, private API otherwise |
+| `share` · `comment` · `reply` · `edit` · `react` · `delete` | writes to your feed — OAuth when available, private API otherwise |
+| `edit headline\|about` · `role` · `skill` | writes to your own profile |
+| `oauth` · `approval` | the write credential, and how writes are approved |
 | `purge` | delete cached data |
 
 Every command prints a JSON envelope on stdout. `--compact` and `--fields a,b` trim the output;
@@ -56,8 +65,41 @@ private API using the same session your reads use. It breaches §8.2 and puts th
 the prompt says so, names the transport, and asks anyway. An expired OAuth token is never silently
 demoted to it. Reasoning and alternatives: **[docs/DECISION-writes.md](docs/DECISION-writes.md)**.
 
-Every write stops at an interactive terminal and shows exactly what it will send, over which
-surface, and how reversible it is — no TTY means no write and no network call. There is no `--yes`.
+Every write shows exactly what it will send, over which surface, and how reversible it is, and is
+approved the way **you** chose with `lnrelay approval set` (only at a real terminal):
+
+| mode | how a write is approved |
+|---|---|
+| `interactive` (default) | a token typed at the terminal; no TTY means no write and no network call |
+| `agent` | `--plan` returns a preview and a token; you approve it in chat; `--confirm <token>` runs exactly that content |
+| `unattended` | runs as given |
+
+There is no `--yes` and no environment variable. Every approval and outcome is logged to
+`~/.lnrelay/writes.jsonl`.
+
+## Job hunting
+
+```bash
+lnrelay job-filters "frontend engineer" --location "European Union"   # every filter, its ids and counts
+lnrelay jobs "frontend engineer" "AI agent developer" "agent engineer" \
+  --location "European Union" --workplace remote --posted week --limit 200 --compact
+lnrelay job <id> <id> <id>                                            # finalists in full, apply links
+```
+
+- **Every filter the jobs page has:** location or exact geo id, distance, date posted, experience,
+  job type, workplace, Easy Apply, under 10 applicants, verified, in your network, fair chance,
+  company, industry, function, title, city, sort — and any other by its own name with
+  `--filter key=value`.
+- **Several keyword sets, one list.** Each set is searched with the same filters and the results are
+  merged by job id: a job found by three sets comes back once, saying which. Live, four sets of 200
+  gave 800 rows, of which 280 were repeats.
+- **100 jobs a call, both ways.** Searches ask for 100 results a page (the browser asks for 25), and
+  `job` / `--details` read up to 100 jobs in full in one batch call. 250 jobs with every apply link
+  took 6 calls.
+- **The apply link** is the employer's own site (`external`) or LinkedIn's Easy Apply. This tool
+  finds jobs; it does not apply to them.
+- Job hunting has its own daily budget — 150 search calls, 60 job reads — so it neither uses up nor
+  is stopped by people and company research.
 
 ## Design in one screen
 
@@ -76,7 +118,8 @@ surface, and how reversible it is — no TTY means no write and no network call.
   `claimedCount`; a claimed-but-empty response is an error, not "no results".
 - **Third-party data is not cached by default.** When retained, a 30-day TTL swept on the read path;
   on expiry the body dies and only an identity stub survives.
-- **Writes need a human at a terminal.** No TTY, no write — and no network call on that path.
+- **Writes are approved under a mode only the owner can set** — at a terminal, behind a typed token.
+  An agent can plan a write but never choose its own approval.
 - **Single account by construction** — multi-account isn't disallowed, it's unrepresentable.
 
 Full reasoning: **[docs/DESIGN.md](docs/DESIGN.md)** · Engine internals:
@@ -109,7 +152,7 @@ position under argument. The convergence and the full disagreement record are in
 ## Development
 
 ```bash
-bun run check   # typecheck + lint + 366 tests
+bun run check   # typecheck + lint + tests
 bun run build
 bun run dev -- <command>
 ```

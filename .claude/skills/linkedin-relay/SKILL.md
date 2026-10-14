@@ -1,6 +1,6 @@
 ---
 name: linkedin-relay
-description: Research LinkedIn from the user's own account — search people/companies/jobs, read profiles, read the chronological feed — and, through the lnrelay CLI, post (text, image or video), comment, reply, react and delete under the approval mode the owner chose. Use when finding or evaluating people, companies or roles on LinkedIn, reading what the user's network is posting, or when the user asks to post or engage on LinkedIn. Not for messaging or connection requests, which do not exist.
+description: Research LinkedIn from the user's own account — search people and companies, hunt jobs with every filter LinkedIn has and collect their apply links, read profiles, read the chronological feed — and, through the lnrelay CLI, post (text, image or video), comment, reply, react, delete and edit the user's own profile (headline, About, roles, skills) under the approval mode the owner chose. Use when finding or evaluating people, companies, roles or job openings on LinkedIn, when the user wants job listings or application links, when reading what the user's network is posting, or when the user asks to post, engage or update their profile on LinkedIn. Not for messaging, connection requests or applying to jobs, which do not exist.
 ---
 
 # linkedin-relay
@@ -44,6 +44,48 @@ risk / budget   free   — check standing BEFORE spending
 Search rows already carry name, headline, location and URL. **Rank on those.** Calling `profile` on
 every search result is how a day's budget disappears in one request.
 
+## Job hunting — the recipe
+
+Jobs have their own commands, their own budget (150 job searches, 60 job reads a day) and their own
+funnel. Each call moves 100 jobs, so a whole hunt is a few dozen calls, not hundreds.
+
+```
+1. job_filters  (optional, 1 call)  the ids for company / industry / title / place, and live counts
+2. jobs         ALL keyword sets in ONE call, the same filters, compact:true
+                → one merged list; `matched` says which sets found each job
+3. rank         on title, company, location, workplace, listed — from the rows alone
+4. job          ALL finalists in ONE call (a list of ids) → description + apply.url
+5. report       title · company · location · apply.url, and say how the list was cut
+```
+
+A worked call, the shape to copy:
+
+```
+jobs keywords:["frontend engineer", "AI agent developer", "agent engineer"]
+     location:"European Union" workplace:["remote"] posted:"week" limit:200 compact:true
+job  job:["4479248573", "4475225930", "4476083905"]
+```
+
+From a shell the same is
+`lnrelay jobs "frontend engineer" "AI agent developer" --location "European Union" --workplace remote --posted week --limit 200 --compact`
+and `lnrelay job 4479248573 4475225930 4476083905`.
+
+- **Put every keyword set in one `jobs` call**, never one call per keyword: the tool merges them by
+  job id, so you read each job once and `job` reads it once. Separate calls leave the merging to you
+  and spend reads twice on the same job.
+- **Use filters, not keywords, to narrow.** `posted:"week"`, `workplace`, `experience` and `geoId`
+  cut a list from hundreds to tens. Keywords are matched loosely by LinkedIn, so "AI agent
+  developer" also returns plain frontend jobs; a narrow keyword is not a narrow search.
+- **`compact:true` for the wide pass** (one line per job, under half the size of the full rows), the full rows or
+  `job` only for what you will actually judge.
+- **`details:true` only when you need every job's apply link** (for a full export, say). It costs one
+  read per 100 jobs and adds the employer, applicant count and apply link to every row; add
+  `description:true` only if you will read them all, because descriptions are long.
+- **Most results are promoted** (often three in four). That is LinkedIn's ranking, not a filter we
+  can turn off; `promoted` on each row says which.
+- **This tool cannot apply.** It finds the job and the link. `apply.type: "external"` is the
+  employer's own site; `"easy-apply"` is LinkedIn's form, done by the user in a browser.
+
 ## Commands
 
 ### `search` — cheap. The net.
@@ -68,8 +110,14 @@ jobs keywords:"<terms>" | ["<terms>", "<terms>", …] [location:"<place>" | geoI
      [company|industry|function|title|place:[ids]] [filter:["key=v1,v2"]] [sort:recent|relevant]
      [limit:1-1000 per keyword set] [start:N] [details] [description] [compact]
 ```
+CLI: `lnrelay jobs "<terms>" ["<more terms>" …] [--location … | --geo …] [--workplace remote,hybrid]
+[--posted week] [--experience mid-senior] [--easy-apply] [--limit N] [--details] [--compact]` — every
+option is in `lnrelay help`; list options take commas or repeat.
+
 Each item: `id`, `title`, `company`, `location`, `workplace`, `listed` (YYYY-MM-DD), `easyApply`,
-`promoted`, `salary` (when the card shows one), `insights`, `url`. `compact` gives one line per job.
+`promoted`, `salary` (when the card shows one), `insights`, `url`, and `matched` with several
+keyword sets. `compact` gives one line per job:
+`<id> | <title> | <company> | <location> | <workplace> | <listed> | easy apply | promoted | matched: a + b`.
 
 - **Several keyword sets in one call.** Pass `keywords` as a list: each set is searched with the
   same filters, and the results are merged by job id. A job found by several sets comes back once,
@@ -234,7 +282,10 @@ Every collection carries:
 |---|---|
 | `state: complete` | every reference resolved; an empty `items` here genuinely means none |
 | `state: partial` | **some references failed to resolve** — the record is incomplete, not small |
-| `state: unknown` | we stopped at the limit and cannot prove exhaustion (all searches) |
+| `state: unknown` | we stopped at the limit and cannot prove exhaustion (people/company `search`, `post`, `reactions`) |
+| `next` | `jobs`: the `start` that continues this search; absent when the results ran out |
+| `searches` / `duplicates` | `jobs` with several keyword sets: each set's own count and state, and how many repeats were merged |
+| `unread` | `jobs --details` / `job`: jobs LinkedIn did not return in full — they are not closed, just unread |
 | `returnedCount` vs `claimedCount` | `claimed > 0` with `returned === 0` is a **failed fetch**, never "no results" |
 | `excludedCount` | ads and UI chrome deliberately dropped |
 | `unknownCount` / `unknownTypes` | **LinkedIn shipped a shape we don't recognise.** Data is still returned, but the parser is behind. Worth telling the user. |
