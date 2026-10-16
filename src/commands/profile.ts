@@ -2,9 +2,16 @@
 //
 // A profile in full; see engine/full-profile.ts. One call on the profile
 // budget, and one more per 50 position groups past the first 10, so the
-// experience is whole. `--compact` turns every role, school and entry into a
+// experience is whole. `--contact` adds the contact info overlay, one more
+// call on the profile budget. `--compact` turns every role, school and entry into a
 // line and drops the descriptions; `--fields` keeps only the named fields.
 
+import {
+  CONTACT_INFO_URL,
+  type ContactInfo,
+  contactInfoBody,
+  parseContactInfo,
+} from '../engine/contact-info.ts';
 import {
   type Entry,
   type FullProfile,
@@ -25,20 +32,26 @@ import type { OutputOpts } from './live.ts';
 import { line } from './paged.ts';
 
 type Fetched =
-  | { ok: true; json: unknown }
+  | { ok: true; json?: unknown; raw?: string }
   | { ok: false; code: string; message: string; hint?: string };
 
-/** One accounted GET. Injectable so tests send nothing. */
-export type ProfileFetch = (url: string, spendClass: 'profile') => Promise<Fetched>;
+/** One accounted call: a POST when a body is given. Injectable so tests send nothing. */
+export type ProfileFetch = (url: string, spendClass: 'profile', body?: unknown) => Promise<Fetched>;
 
 function liveFetch(quiet: boolean): ProfileFetch | Envelope {
   const session = loadSession();
   if (session.state !== 'ok')
     return err('profile', 'AUTH_FAILED', 'no LinkedIn session — run `lnrelay login`');
   const client = createLiveClient(session.session, undefined, quiet);
-  return async (url, spendClass) => {
-    const r = await client.request({ url, spendClass, operation: 'profile' });
-    return r.ok ? { ok: true, json: r.json } : r;
+  return async (url, spendClass, body) => {
+    const r = await client.request({
+      url,
+      ...(body !== undefined ? { method: 'POST' as const, body } : {}),
+      spendClass,
+      operation: 'profile',
+    });
+    if (!r.ok) return r;
+    return { ok: true, json: r.json, raw: (r.classification as { raw?: string }).raw ?? '' };
   };
 }
 
@@ -56,7 +69,12 @@ export function memberIdOf(input: string): string {
   return s.match(/urn:li:fsd?_(?:mini)?[Pp]rofile:([^,)]+)/)?.[1] ?? s;
 }
 
-type Read = FullProfile & { experienceError?: string; raw?: unknown };
+type Read = FullProfile & {
+  experienceError?: string;
+  contact?: ContactInfo;
+  contactError?: string;
+  raw?: unknown;
+};
 
 /** Reads the position groups the profile did not hold, until all are in. */
 async function readRestOfExperience(get: ProfileFetch, p: Read): Promise<void> {
@@ -79,6 +97,19 @@ async function readRestOfExperience(get: ProfileFetch, p: Read): Promise<void> {
   else counts.experience = { shown: start, total: want.total };
   if (Object.keys(counts).length > 0) p.counts = counts;
   else delete p.counts;
+}
+
+/** The contact info overlay, which names the member by public id and name. */
+async function readContact(get: ProfileFetch, p: Read): Promise<void> {
+  if (p.publicId === undefined || p.firstName === undefined) {
+    p.contactError = 'NOT_FOUND: the profile has no public id or name to ask with';
+    return;
+  }
+  const body = contactInfoBody(p.publicId, p.firstName, p.lastName ?? '');
+  const res = await get(CONTACT_INFO_URL, 'profile', body);
+  const read = res.ok ? parseContactInfo(res.raw ?? '') : res;
+  if (read.ok) p.contact = read.contact;
+  else p.contactError = `${read.code}: ${read.message}`;
 }
 
 const span = (x: { start?: string; end?: string; current?: boolean }) =>
@@ -126,6 +157,7 @@ export async function runProfile(
   input: string | undefined,
   opts: OutputOpts = {},
   fetch?: ProfileFetch,
+  req: { contact?: boolean } = {},
 ): Promise<Envelope> {
   if (input === undefined || input.trim() === '')
     return err(
@@ -143,6 +175,7 @@ export async function runProfile(
   if (!parsed.ok) return err('profile', parsed.code, parsed.message, parsed.hint);
   const p: Read = parsed.profile;
   await readRestOfExperience(get, p);
+  if (req.contact === true) await readContact(get, p);
 
   if (opts.raw === true) return ok('profile', { ...p, raw: res.json });
   if (opts.fields !== undefined && opts.fields !== '')

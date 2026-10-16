@@ -39,7 +39,7 @@ claude mcp add linkedin-relay -s user -- bun "$(npm root -g)/linkedin-relay-mcp/
 |---|---|
 | `people` · `people-filters` | people search with every filter: company, past company, school, place, degree, title, someone's connections |
 | `search` · `search-filters` | posts, companies, groups, events, courses, products, services, schools — each with its filters |
-| `profile` · `feed` | a profile in full — name, about, every role with dates, education, skills and the other sections — and your feed |
+| `profile` · `feed` | a profile in full — name, about, every role with dates, education, skills and the other sections, and with `--contact` its contact info — and your feed |
 | `jobs` · `job` · `job-filters` | job search with every filter, several keyword sets merged in one call, and apply links |
 | `post` · `reactions` | a post's comment thread, and who engaged |
 | `scheduled` · `experience` · `skills` | your queued posts, and your own roles and skills |

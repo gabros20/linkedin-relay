@@ -256,7 +256,20 @@ profileUrn=…&decorationId=…FullProfilePositionGroup-50&start=10&count=50` (2
 call; `-75` answered the same). `profileSkills?q=viewee` answered 400 with two decorations tried, so
 skills report `shown`/`total`. Certifications, languages, projects, courses, organizations, patents
 and test scores were empty in all six profiles read; their field names are unverified. Not read:
-recommendations, contact info, birth date (the owner's own profile carries one).
+recommendations.
+
+**Contact info (2026-10-16).** The legacy `identity/profiles/<id>/profileContactInfo` answers 410
+Gone, and the full profile carries no email, phone or website. The page's "Contact info" link opens
+an SDUI overlay: `POST flagship-web/rsc-action/actions/navigation?screenId=com.linkedin.sdui.
+flagshipnav.profile.ProfileContactDetailsOverlay` with `payload: {vanityName, givenName, familyName,
+isVanityNameResolved: true}`, which is why `--contact` reads the full profile first. The answer is an
+RSC stream of labelled fields (a `p` label, then value text and link actions), most wrapped in a
+tracking spec naming the field: `contact-your-profile`, `contact-email`, `contact-website`,
+`contact-birthday`. "Connected since" has no tracking name and is read by label. Websites link
+through `/safety/go/?url=…`, unwrapped; the type is a bare `"(Other)"` string after the link. A
+Premium upsell follows the fields and has its own `p` label, so the stream is cut at
+`premium-upsell-card`. Seen with data on three profiles (a connection, a 3rd-degree member, the
+owner): email, website, birthday, connected since. Phone, address and Twitter are unverified.
 
 Location, current position and education arrive as URN references into `included[]`, so the profile
 node alone is mostly pointers — `shapeProfile()` takes the index and dereferences them.

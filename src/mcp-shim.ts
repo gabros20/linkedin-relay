@@ -439,20 +439,28 @@ export function buildServer(): McpServer {
       'first 10 companies), education, skills (top 20; counts.skills has the total), ' +
       'certifications, languages, honors, publications, projects, volunteering, courses, ' +
       'organizations, patents, testScores. Empty sections are left out. 1 profile read (30 a day), ' +
-      '+1 per 50 more companies. MEDIUM cost — use only on finalists surfaced by `people` or ' +
+      '+1 per 50 more companies. contact: true adds contact {email, websites [{url, type}], ' +
+      'phones, birthday, connectedSince, …} as the profile shows it to you, for 1 more profile ' +
+      'read; it failing leaves contactError. MEDIUM cost — use only on finalists surfaced by `people` or ' +
       '`search`. compact: true makes each role, school and entry one line and drops ' +
       `descriptions; fields keeps only those named. ${NO_RETRY}`,
     {
       id: z.string().min(1).describe('public id, urn, or profile URL'),
       compact: z.boolean().optional().describe('one line per role, school and entry'),
       fields: z.string().optional().describe('comma-separated top-level fields to keep'),
+      contact: z.boolean().optional().describe('also read the contact info (1 more profile read)'),
     },
-    async ({ id, compact, fields }) =>
+    async ({ id, compact, fields, contact }) =>
       reply(
-        await runProfile(id, {
-          ...(compact === true ? { compact: true } : {}),
-          ...(fields !== undefined ? { fields } : {}),
-        }),
+        await runProfile(
+          id,
+          {
+            ...(compact === true ? { compact: true } : {}),
+            ...(fields !== undefined ? { fields } : {}),
+          },
+          undefined,
+          { contact: contact === true },
+        ),
       ),
   );
 

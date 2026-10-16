@@ -271,9 +271,9 @@ Every filter LinkedIn offers for this query, each with its options' `value`, `la
 
 ### `profile` — mid. Read only the finalists.
 ```
-profile id:"<public-id | profile id | urn | linkedin.com/in/… URL>" [compact] [fields:"a,b"]
+profile id:"<public-id | profile id | urn | linkedin.com/in/… URL>" [contact] [compact] [fields:"a,b"]
 ```
-CLI: `lnrelay profile <id|url> [--compact | --fields a,b,c]`. The whole profile page: `name`,
+CLI: `lnrelay profile <id|url> [--contact] [--compact | --fields a,b,c]`. The whole profile page: `name`,
 `headline`, `about`, `location`, `industry`, the top card (`title`, `company`, `school`), and every
 section that has entries:
 - `experience`: every role, newest company first: `title`, `company`, `companyId` (what `company`
@@ -289,6 +289,12 @@ section that has entries:
 Descriptions make a full profile long. **`compact:true`** turns each role, school and entry into
 one line and drops descriptions (About stays); `fields:"name,experience"` keeps only those.
 Recommendations are not read.
+
+**`contact:true`** (`--contact`) adds `contact`, the profile's Contact info as it shows to the user,
+for one more profile read: `email`, `websites` [{`url`, `type`}], `phones` [{`number`, `type`}],
+`twitter`, `address`, `birthday`, `connectedSince` (1st-degree only), and any other field under its
+own name. In the profiles read, only a connection showed an email. It failing leaves `contactError`
+and the rest of the profile. Ask for it only when the user wants to reach someone.
 
 ### `feed` — mid. What the network is posting.
 ```

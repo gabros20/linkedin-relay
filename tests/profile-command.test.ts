@@ -7,11 +7,20 @@ const fixture = (name: string) =>
   JSON.parse(readFileSync(join(import.meta.dir, 'fixtures', name), 'utf-8'));
 const FULL = fixture('profile-full.json');
 const PAGE = fixture('profile-positions-page.json');
+const CONTACT = readFileSync(
+  join(import.meta.dir, 'fixtures', 'profile-contact-connection.rsc'),
+  'utf-8',
+);
 
 function linkedin(fails: string[] = []) {
-  const asked: { url: string; spendClass: string }[] = [];
-  const fetch: ProfileFetch = async (url, spendClass) => {
-    asked.push({ url, spendClass });
+  const asked: { url: string; spendClass: string; body?: unknown }[] = [];
+  const fetch: ProfileFetch = async (url, spendClass, body) => {
+    asked.push({ url, spendClass, ...(body !== undefined ? { body } : {}) });
+    if (url.includes('ContactDetailsOverlay')) {
+      if (fails.includes('contact'))
+        return { ok: false, code: 'BUDGET_EXHAUSTED', message: 'spent' };
+      return { ok: true, raw: CONTACT };
+    }
     if (url.includes('profilePositionGroups')) {
       if (fails.includes('page')) return { ok: false, code: 'BUDGET_EXHAUSTED', message: 'spent' };
       return { ok: true, json: PAGE };
@@ -71,6 +80,34 @@ describe('lnrelay profile', () => {
   test('--fields keeps only the named fields', async () => {
     const p = data(await runProfile('person-1', { fields: 'name,skills' }, linkedin().fetch));
     expect(Object.keys(p).sort()).toEqual(['name', 'skills']);
+  });
+
+  test('--contact: the contact info overlay for that member, one more profile read', async () => {
+    const { fetch, asked } = linkedin();
+    const p = data(await runProfile('person-1', {}, fetch, { contact: true }));
+    const call = asked.find((a) => a.url.includes('ContactDetailsOverlay'));
+    expect(call?.spendClass).toBe('profile');
+    expect(call?.body).toMatchObject({
+      clientArguments: {
+        payload: { vanityName: 'person-1', givenName: 'Person', familyName: '1' },
+      },
+    });
+    expect(p.contact).toEqual({ email: 'person-1@example.com', connectedSince: 'Jan 2, 2024' });
+  });
+
+  test('no --contact, no contact call', async () => {
+    const { fetch, asked } = linkedin();
+    await runProfile('person-1', {}, fetch);
+    expect(asked.some((a) => a.url.includes('ContactDetailsOverlay'))).toBe(false);
+  });
+
+  test('the contact info failing keeps the profile, and says so', async () => {
+    const p = data(
+      await runProfile('person-1', {}, linkedin(['contact']).fetch, { contact: true }),
+    );
+    expect(p.name).toBe('Person 1');
+    expect(p.contact).toBeUndefined();
+    expect(p.contactError).toBe('BUDGET_EXHAUSTED: spent');
   });
 
   test('nothing to read is refused before any call', async () => {

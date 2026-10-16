@@ -460,7 +460,9 @@ export async function dispatch(argv: string[], now: number): Promise<Envelope> {
     case 'whoami':
       return runWhoami(bool(args, 'raw'));
     case 'profile':
-      return runProfile(args.positionals[0], output(args));
+      return runProfile(args.positionals[0], output(args), undefined, {
+        contact: bool(args, 'contact'),
+      });
     case 'feed':
       return runFeed(num(args, 'limit') ?? 10, output(args));
     case 'post':
