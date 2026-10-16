@@ -1,3 +1,10 @@
+# [3.22.0](https://github.com/gabros20/linkedin-relay/compare/v3.21.0...v3.22.0) (2026-10-16)
+
+
+### Features
+
+* **profile:** --contact, a profile's contact info ([93b86a9](https://github.com/gabros20/linkedin-relay/commit/93b86a9bd7cdb38883027e1100114019c76092c6))
+
 # [3.21.0](https://github.com/gabros20/linkedin-relay/compare/v3.20.0...v3.21.0) (2026-10-16)
 
 
