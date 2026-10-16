@@ -239,10 +239,24 @@ We shipped `b5c27c04…` first and `lnrelay profile` returned a type and a URN �
 200 with no information in it. Worth noting as a distinct failure mode from the ones this design
 already guards: not drift, not an empty result, just the *wrong projection* of a working endpoint.
 
-**None of the three returns `firstName`/`lastName`/`publicIdentifier`.** LinkedIn splits names into a
-projection we have not identified, so a looked-up profile currently has no name attached. The caller
-supplied the identifier, so this is a real limit rather than a silent one — recorded in
-`src/engine/contracts.ts` next to the queryId.
+**None of the three returns `firstName`/`lastName`/`publicIdentifier`.** That was the limit until
+2026-10-16; `profile` now reads the REST finder instead (below).
+
+**The full profile (2026-10-16).** `identity/dash/profiles?q=memberIdentity&memberIdentity=<public
+id or profile id>&decorationId=…FullProfileWithEntities-93` returns the name, `summary` (About) and
+every section of the profile page as a collection in `included`: `*profilePositionGroups` (a company
+and its roles, each group's `*profilePositionInPositionGroup`), `*profileEducations`,
+`*profileSkills`, `*profileCertifications`, `*profileLanguages`, `*profileHonors`,
+`*profilePublications`, `*profileProjects`, `*profileVolunteerExperiences`, `*profileCourses`,
+`*profileOrganizations`, `*profilePatents`, `*profileTestScores`. Order is the collections'
+`*elements` order; `included` is unordered, and holds extra nodes (an honor's link to an older role
+is a `Position` outside every group). It holds the first 10 position groups and 20 skills, with the
+true `paging.total`. The rest of the experience: `identity/dash/profilePositionGroups?q=viewee&
+profileUrn=…&decorationId=…FullProfilePositionGroup-50&start=10&count=50` (22 more groups in one
+call; `-75` answered the same). `profileSkills?q=viewee` answered 400 with two decorations tried, so
+skills report `shown`/`total`. Certifications, languages, projects, courses, organizations, patents
+and test scores were empty in all six profiles read; their field names are unverified. Not read:
+recommendations, contact info, birth date (the owner's own profile carries one).
 
 Location, current position and education arrive as URN references into `included[]`, so the profile
 node alone is mostly pointers — `shapeProfile()` takes the index and dereferences them.

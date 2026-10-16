@@ -271,13 +271,24 @@ Every filter LinkedIn offers for this query, each with its options' `value`, `la
 
 ### `profile` — mid. Read only the finalists.
 ```
-profile id:"<public-id|urn|linkedin.com/in/… URL>"
+profile id:"<public-id | profile id | urn | linkedin.com/in/… URL>" [compact] [fields:"a,b"]
 ```
-Returns `headline`, `location`, `title`, `company`, `school`, `urn`.
+CLI: `lnrelay profile <id|url> [--compact | --fields a,b,c]`. The whole profile page: `name`,
+`headline`, `about`, `location`, `industry`, the top card (`title`, `company`, `school`), and every
+section that has entries:
+- `experience`: every role, newest company first: `title`, `company`, `companyId` (what `company`
+  and the company filters take), `employmentType`, `location`, `start`/`end` ("2017-08") or
+  `current`, `description`. Read whole: past the first 10 companies it reads on, one more profile
+  read per 50 companies.
+- `education` (`school`, `degree`, `field`, years, `activities`), `skills` (the top 20),
+  `honors`, `publications`, `volunteering`, `certifications`, `languages`, `projects`, `courses`,
+  `organizations`, `patents`, `testScores`.
+- `counts` names a section LinkedIn holds more of than it sent (`skills: {shown: 20, total: 47}`).
+  `experienceError` says why the rest of the experience could not be read.
 
-**Known limit: no name.** None of LinkedIn's profile projections returns first/last name, so a
-looked-up profile has a headline but no name attached. You supplied the identifier, so use that.
-Don't tell the user the profile is empty — it isn't.
+Descriptions make a full profile long. **`compact:true`** turns each role, school and entry into
+one line and drops descriptions (About stays); `fields:"name,experience"` keeps only those.
+Recommendations are not read.
 
 ### `feed` — mid. What the network is posting.
 ```

@@ -18,7 +18,6 @@ import { canonicalUrn, encodeVariables } from './restli.ts';
 
 export interface Engine {
   whoami(): Promise<EngineResult<Entity | undefined>>;
-  profile(memberId: string): Promise<EngineResult<ProfileResult | undefined>>;
   feed(limit: number): Promise<EngineResult<Collection>>;
   search(kind: SearchKind, query: string, limit: number): Promise<EngineResult<Collection>>;
   post(postUrn: string, limit: number): Promise<EngineResult<Collection>>;
@@ -37,11 +36,6 @@ export type SearchKind = 'people' | 'companies' | 'jobs';
 /** A parsed collection plus the side-table its entities reference. */
 export interface Collection {
   parsed: ParseResult;
-  index: Map<string, Entity>;
-}
-
-export interface ProfileResult {
-  profile: Entity;
   index: Map<string, Entity>;
 }
 
@@ -114,24 +108,6 @@ export function createEngine(session: Session, deps?: Partial<ClientDeps>, quiet
       });
       if (!res.ok) return res;
       return { ok: true, value: parseSingle(res.json) };
-    },
-
-    async profile(memberId) {
-      const contract = contractFor('profile');
-      if (contract === undefined) return missingContract('profile');
-
-      const variables = encodeVariables({ memberIdentity: memberId });
-      const url = `${contract.path}?includeWebMetadata=true&variables=${variables}&queryId=${contract.queryId}`;
-      const res = await client.request({ url, spendClass: 'profile', operation: 'profile' });
-      if (!res.ok) return res;
-
-      const envelope = res.json as { included?: unknown };
-      const index = indexIncluded(envelope.included);
-      const profile = [...new Set(index.values())].find((n) =>
-        String(n.$type ?? '').endsWith('profile.Profile'),
-      );
-      if (profile === undefined) return { ok: true, value: undefined };
-      return { ok: true, value: { profile, index } };
     },
 
     async feed(limit) {

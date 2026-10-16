@@ -23,14 +23,7 @@ import { runCacheStatus, runLocal, runSourceRead } from './commands/cache.ts';
 import { runCompany } from './commands/company.ts';
 import { runEvent, runEvents } from './commands/events.ts';
 import { type JobsRequest, runJob, runJobFilters, runJobs } from './commands/jobs.ts';
-import {
-  runFeed,
-  runPost,
-  runProfile,
-  runReactions,
-  runScheduled,
-  runWhoami,
-} from './commands/live.ts';
+import { runFeed, runPost, runReactions, runScheduled, runWhoami } from './commands/live.ts';
 import { runBudget, runDoctor, runRisk } from './commands/local.ts';
 import {
   runDraft,
@@ -43,6 +36,7 @@ import { runMyItems } from './commands/my-items.ts';
 import { runNetwork } from './commands/network.ts';
 import { type PeopleRequest, runPeople, runPeopleFilters } from './commands/people.ts';
 import { runPostsSearch } from './commands/posts-search.ts';
+import { runProfile } from './commands/profile.ts';
 import { mcpCommands } from './commands/registry.ts';
 import { runExperience } from './commands/role.ts';
 import { runFind, runFindFilters } from './commands/search-kinds.ts';
@@ -439,13 +433,27 @@ export function buildServer(): McpServer {
 
   server.tool(
     'profile',
-    'Read one LinkedIn profile: headline, location, current title, company, school. MEDIUM cost — ' +
-      'use only on finalists surfaced by `search`. Accepts a public id, a urn, or a ' +
-      "linkedin.com/in/… URL. KNOWN LIMIT: LinkedIn's profile projections do not return a name, " +
-      'so the result has a headline but no first/last name — use the identifier you passed in. ' +
-      `Do NOT report the profile as empty on that basis. ${NO_RETRY}`,
-    { id: z.string().min(1).describe('public id, urn, or profile URL') },
-    async ({ id }) => reply(await runProfile(id)),
+    'Read one LinkedIn profile in full: name, headline, about, location, industry, the top card ' +
+      '(title, company, school), and every section — experience [{title, company, companyId, ' +
+      'employmentType, location, start, end | current, description}] whole (read on past the ' +
+      'first 10 companies), education, skills (top 20; counts.skills has the total), ' +
+      'certifications, languages, honors, publications, projects, volunteering, courses, ' +
+      'organizations, patents, testScores. Empty sections are left out. 1 profile read (30 a day), ' +
+      '+1 per 50 more companies. MEDIUM cost — use only on finalists surfaced by `people` or ' +
+      '`search`. compact: true makes each role, school and entry one line and drops ' +
+      `descriptions; fields keeps only those named. ${NO_RETRY}`,
+    {
+      id: z.string().min(1).describe('public id, urn, or profile URL'),
+      compact: z.boolean().optional().describe('one line per role, school and entry'),
+      fields: z.string().optional().describe('comma-separated top-level fields to keep'),
+    },
+    async ({ id, compact, fields }) =>
+      reply(
+        await runProfile(id, {
+          ...(compact === true ? { compact: true } : {}),
+          ...(fields !== undefined ? { fields } : {}),
+        }),
+      ),
   );
 
   server.tool(

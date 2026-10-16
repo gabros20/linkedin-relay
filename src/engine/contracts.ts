@@ -40,9 +40,9 @@ export const CONTRACTS: Record<string, OperationContract> = {
   //   e9b08094…  the real profile: headline, geo, top position, education.  ← this
   //   da93c92b…  400s with (profileUrn:…); its variables shape is unknown.
   //
-  // None of them returns firstName/lastName/publicIdentifier — LinkedIn splits
-  // names into a projection we have not identified. Documented rather than
-  // faked; the caller already knows who they asked for.
+  // None of them returns firstName/lastName/publicIdentifier. Since 2026-10-16
+  // `lnrelay profile` reads `fullProfile` below instead, which has the name
+  // and every section; this one stays recorded for the projection trap.
   profile: {
     name: 'profile',
     transport: 'voyager-graphql',
@@ -143,6 +143,28 @@ export const CONTRACTS: Record<string, OperationContract> = {
     queryId: 'voyagerFeedDashProfileUpdates.20c70fe0314184158516a7ec004c0408',
     provenance: 'verified',
     capturedAt: '2026-08-02',
+  },
+
+  // A profile in full, probed 2026-10-16: name, About and every section, each
+  // a collection in `included`. It holds the first 10 position groups and 20
+  // skills; the rest of the experience pages through `profilePositions`
+  // (32 of 32 in two calls). Skills did not page (profileSkills answered 400).
+  // See engine/full-profile.ts.
+  fullProfile: {
+    name: 'fullProfile',
+    transport: 'voyager-restli',
+    path: `${VOYAGER}/identity/dash/profiles`,
+    decorationId: 'com.linkedin.voyager.dash.deco.identity.profile.FullProfileWithEntities-93',
+    provenance: 'verified',
+    capturedAt: '2026-10-16',
+  },
+  profilePositions: {
+    name: 'profilePositions',
+    transport: 'voyager-restli',
+    path: `${VOYAGER}/identity/dash/profilePositionGroups`,
+    decorationId: 'com.linkedin.voyager.dash.deco.identity.profile.FullProfilePositionGroup-50',
+    provenance: 'verified',
+    capturedAt: '2026-10-16',
   },
 
   // A company page, captured 2026-10-14. The GraphQL company query by

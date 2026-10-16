@@ -16,14 +16,7 @@ import {
   mintSessionFromBrowser,
   saveSession,
 } from '../engine/session.ts';
-import {
-  compactRows,
-  project,
-  type Shaped,
-  shapeAll,
-  shapeEntity,
-  shapeProfile,
-} from '../format.ts';
+import { compactRows, project, type Shaped, shapeAll, shapeEntity } from '../format.ts';
 import { err, ok } from '../output.ts';
 import type { Envelope } from '../types.ts';
 import { retain } from './cache.ts';
@@ -98,27 +91,6 @@ export async function runWhoami(raw = false): Promise<Envelope> {
     'whoami',
     raw ? { ...shapeEntity(result.value), raw: result.value } : shapeEntity(result.value),
   );
-}
-
-export async function runProfile(memberId: string | undefined, raw = false): Promise<Envelope> {
-  if (memberId === undefined || memberId === '') {
-    return err(
-      'profile',
-      'INVALID_INPUT',
-      'a member id or urn is required',
-      'lnrelay profile <public-id|urn>',
-    );
-  }
-  const ctx = withSession('profile');
-  if ('ok' in ctx) return ctx;
-
-  const result = await ctx.engine.profile(normaliseMemberId(memberId));
-  if (!result.ok) return toEnvelope('profile', result);
-  if (result.value === undefined) {
-    return err('profile', 'NOT_FOUND', `no profile for '${memberId}'`);
-  }
-  const shaped = shapeProfile(result.value.profile, result.value.index);
-  return ok('profile', raw ? { ...shaped, raw: result.value.profile } : shaped);
 }
 
 export async function runFeed(limit: number, opts: OutputOpts = {}): Promise<Envelope> {
@@ -208,14 +180,6 @@ function normalisePostUrn(input: string | undefined): string | undefined {
 }
 
 /** A URL, a public id, or a bare urn all reduce to the member identity. */
-function normaliseMemberId(input: string): string {
-  const fromUrl = input.match(/linkedin\.com\/in\/([^/?#]+)/);
-  if (fromUrl?.[1] !== undefined) return fromUrl[1];
-  const fromUrn = input.match(/urn:li:fsd?_(?:mini)?[Pp]rofile:([^,)]+)/);
-  if (fromUrn?.[1] !== undefined) return fromUrn[1];
-  return input;
-}
-
 /** How the caller wants the rows rendered. */
 export interface OutputOpts {
   raw?: boolean;

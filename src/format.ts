@@ -165,39 +165,6 @@ function deref(
   return undefined;
 }
 
-/**
- * Shape a full profile, resolving the references LinkedIn leaves dangling.
- *
- * Note the honest gap: none of the observed projections returns
- * firstName/lastName/publicIdentifier, so a looked-up profile has no name.
- * The caller supplied the identifier, so this is a real limit rather than a
- * silent one — see src/engine/contracts.ts.
- */
-export function shapeProfile(node: Entity, index?: Map<string, Entity>): Shaped {
-  const base = shapeMember(node);
-  const geo = deref(node, 'geoLocation', index);
-  const position =
-    deref(node, 'profileTopPosition', index) ?? firstOfType(index, 'profile.Position');
-  const education =
-    deref(node, 'profileTopEducation', index) ?? firstOfType(index, 'profile.Education');
-
-  return defined({
-    ...base,
-    location: text(geo?.defaultLocalizedName) ?? text(geo?.localizedName),
-    title: text(position?.title),
-    company: text(position?.companyName),
-    school: text(education?.schoolName),
-  });
-}
-
-function firstOfType(index: Map<string, Entity> | undefined, suffix: string): Entity | undefined {
-  if (index === undefined) return undefined;
-  for (const node of new Set(index.values())) {
-    if (String(node.$type ?? '').endsWith(suffix)) return node;
-  }
-  return undefined;
-}
-
 function shapeMember(node: Entity): Shaped {
   const first = text(node.firstName);
   const last = text(node.lastName);

@@ -19,7 +19,6 @@ import {
   runFeed,
   runLogin,
   runPost,
-  runProfile,
   runReactions,
   runScheduled,
   runWhoami,
@@ -38,6 +37,7 @@ import { runNetwork } from './commands/network.ts';
 import { runOauthLogin, runOauthLogout, runOauthStatus } from './commands/oauth.ts';
 import { type PeopleRequest, runPeople, runPeopleFilters } from './commands/people.ts';
 import { type PostsRequest, runPostsSearch } from './commands/posts-search.ts';
+import { runProfile } from './commands/profile.ts';
 import { findCommand, helpText } from './commands/registry.ts';
 import { type RoleRequest, runExperience, runRole } from './commands/role.ts';
 import { type FindRequest, runFind, runFindFilters } from './commands/search-kinds.ts';
@@ -460,7 +460,7 @@ export async function dispatch(argv: string[], now: number): Promise<Envelope> {
     case 'whoami':
       return runWhoami(bool(args, 'raw'));
     case 'profile':
-      return runProfile(args.positionals[0], bool(args, 'raw'));
+      return runProfile(args.positionals[0], output(args));
     case 'feed':
       return runFeed(num(args, 'limit') ?? 10, output(args));
     case 'post':

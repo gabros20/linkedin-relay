@@ -76,12 +76,11 @@ export const COMMANDS: CommandDef[] = [
   },
   {
     name: 'profile',
-    cost: '1 call (+1 per section)',
-    summary: 'A member profile. Expensive sections are opt-in.',
-    usage:
-      'lnrelay profile <public-id|urn|url> [--raw]\n' +
-      "       Returns headline, location, current title, company and school. LinkedIn's profile\n" +
-      '       projections do not return a name — use the identifier you passed in.',
+    cost: '1 profile read (+1 per 50 companies past the first 10)',
+    summary:
+      'A profile in full: name, headline, about, every role with dates and descriptions, ' +
+      'education, skills, honors, publications, volunteering and the other sections.',
+    usage: 'lnrelay profile <public-id|profile-id|urn|url> [--compact | --fields a,b,c] [--raw]',
     audience: ['cli', 'mcp'],
     risk: 'read',
     implemented: true,
