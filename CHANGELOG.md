@@ -1,3 +1,10 @@
+# [3.21.0](https://github.com/gabros20/linkedin-relay/compare/v3.20.0...v3.21.0) (2026-10-16)
+
+
+### Features
+
+* **profile:** profiles in full — name, about, every role, education, skills ([2be539f](https://github.com/gabros20/linkedin-relay/commit/2be539f65c6cbfe78906e4efcd1af0de37ab79d0))
+
 # [3.20.0](https://github.com/gabros20/linkedin-relay/compare/v3.19.0...v3.20.0) (2026-10-16)
 
 
