@@ -1,3 +1,10 @@
+# [3.23.0](https://github.com/gabros20/linkedin-relay/compare/v3.22.0...v3.23.0) (2026-10-16)
+
+
+### Features
+
+* **viewers:** who viewed your profile ([dcf7581](https://github.com/gabros20/linkedin-relay/commit/dcf758173c92f9db021c44a0ea16a5dab9651df4))
+
 # [3.22.0](https://github.com/gabros20/linkedin-relay/compare/v3.21.0...v3.22.0) (2026-10-16)
 
 
