@@ -304,6 +304,18 @@ export const COMMANDS: CommandDef[] = [
     implemented: true,
   },
   {
+    name: 'viewers',
+    cost: '2 page calls',
+    summary:
+      'Who viewed your profile, as your profile-views page shows it: the total for the period, ' +
+      'the viewers LinkedIn names (up to 3 on a free account), anonymous ones as LinkedIn ' +
+      'describes them, and how many looked in private mode.',
+    usage: 'lnrelay viewers [--compact | --fields a,b,c]',
+    audience: ['cli', 'mcp'],
+    risk: 'read',
+    implemented: true,
+  },
+  {
     name: 'network',
     cost: '1 page call per 50 rows; the counts are 7 calls',
     summary:

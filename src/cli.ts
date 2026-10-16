@@ -43,6 +43,7 @@ import { type RoleRequest, runExperience, runRole } from './commands/role.ts';
 import { type FindRequest, runFind, runFindFilters } from './commands/search-kinds.ts';
 import { runSkill, runSkills } from './commands/skill.ts';
 import { runSync } from './commands/sync.ts';
+import { runViewers } from './commands/viewers.ts';
 import {
   type MediaRequest,
   type PollRequest,
@@ -479,6 +480,8 @@ export async function dispatch(argv: string[], now: number): Promise<Envelope> {
       return runPeople(peopleRequest(args), output(args));
     case 'people-filters':
       return runPeopleFilters(peopleRequest(args), output(args));
+    case 'viewers':
+      return runViewers(output(args));
     case 'events':
     case 'event':
     case 'company':

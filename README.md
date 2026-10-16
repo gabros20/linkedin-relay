@@ -47,6 +47,7 @@ claude mcp add linkedin-relay -s user -- bun "$(npm root -g)/linkedin-relay-mcp/
 | `company` | a company page in full: about, website, industry, size, employees, followers, headquarters, specialties, locations, affiliated and showcase pages — and, with `--posts N`, its newest posts |
 | `events` · `event` | the events page's recommended and Premium events, and any event in full: when, where, attendees, organiser, its site |
 | `network` | your My Network: connections, following, followers, pages, events, groups, invitations sent — or the count of each |
+| `viewers` | who viewed your profile: the total, the viewers LinkedIn names (3 on a free account), anonymous ones, the private-mode count |
 | `inbox` · `messages` · `draft` · `drafts` | read your messages without marking them read; draft replies locally — nothing is ever sent |
 | `sync` · `local` · `connections` · `my-posts` | fill a local cache, then query it for free |
 | `whoami` · `doctor` · `risk` · `budget` · `cache-status` | session, standing and spend |

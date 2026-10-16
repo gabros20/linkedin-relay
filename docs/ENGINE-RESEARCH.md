@@ -271,6 +271,18 @@ Premium upsell follows the fields and has its own `p` label, so the stream is cu
 `premium-upsell-card`. Seen with data on three profiles (a connection, a 3rd-degree member, the
 owner): email, website, birthday, connected since. Phone, address and Twitter are unverified.
 
+**Who viewed your profile (2026-10-16).** `/me/profile-views/` (now `/analytics/profile-views/`) is
+two SDUI server requests, `POST flagship-web/rsc-action/actions/server-request?sduiid=WvmpAnalytics`
+(the total over the default 90 days) and `?sduiid=WvmpEntityList` (`sortType:
+ProfileViewSortType_TIME_DESCENDING`), each keyed by an empty date-range state. Each viewer is its own
+RSC row tracked `viewer-list-item` with a `semanticPosition`; a named one links to `/in/`, an
+anonymous one to a people search (`origin=WHO_VIEWED_ME`). The profile id is not in the viewer's row
+but in the Connect/Message action the list row references after it: as `$Q14` (a map row) or `$L1a`.
+Path references like `$b:4:props:…` point back into the list itself and must not be followed. Private
+viewers are a bare count. A free account is shown 3 viewers of the total; the next-page marker
+`wvmp-entity-list-next-page-loaded` was not exercised. The replayed answer came back in Hungarian
+where the browser showed English, so nothing reads LinkedIn's words but the "•" before a degree.
+
 Location, current position and education arrive as URN references into `included[]`, so the profile
 node alone is mostly pointers — `shapeProfile()` takes the index and dereferences them.
 

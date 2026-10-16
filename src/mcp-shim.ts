@@ -41,6 +41,7 @@ import { mcpCommands } from './commands/registry.ts';
 import { runExperience } from './commands/role.ts';
 import { runFind, runFindFilters } from './commands/search-kinds.ts';
 import { runSkills } from './commands/skill.ts';
+import { runViewers } from './commands/viewers.ts';
 import { shouldRunAsEntry } from './entry.ts';
 import type { Envelope } from './types.ts';
 
@@ -556,6 +557,18 @@ export function buildServer(): McpServer {
           compact === true ? { compact: true } : {},
         ),
       ),
+  );
+
+  server.tool(
+    'viewers',
+    "Who viewed the user's profile, as their profile-views page shows it: total (over period, " +
+      "LinkedIn's words), privateViewers (a count only), and items — named viewers {name, id, " +
+      'url, degree, headline, viewed} and anonymous ones {anonymous, description, viewed, ' +
+      'searchUrl}. A free account is shown up to 3, so meta.state is partial when total is ' +
+      "higher. Degree and times are in the user's language. 2 page calls. " +
+      NO_RETRY,
+    { compact: z.boolean().optional().describe('one line a viewer') },
+    async ({ compact }) => reply(await runViewers(compact === true ? { compact: true } : {})),
   );
 
   server.tool(
