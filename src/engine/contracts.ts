@@ -145,19 +145,18 @@ export const CONTRACTS: Record<string, OperationContract> = {
     capturedAt: '2026-08-02',
   },
 
-  // Discovered and returns 200, but the projection is useless: 39 KB containing
-  // one `guideFetcher` wrapper and no name, tagline, description or headcount.
-  // The same trap as the thin profile projection, so it stays unverified and
-  // `company` does not ship. The richer path is probably
-  // voyagerOrganizationDashViewWrapper with an organizationalPageUrn, which
-  // first requires resolving that urn — unfinished work, not a dead end.
+  // A company page, captured 2026-10-14. The GraphQL company query by
+  // universalName answers only the company's urn, so this is the REST
+  // resource: by id (`/<id>`) or by name (`q=universalName`). It carries the
+  // About tab's fields, the affiliated and showcase pages, and followers. See
+  // engine/company.ts.
   company: {
     name: 'company',
-    transport: 'voyager-graphql',
-    path: `${VOYAGER}/graphql`,
-    queryId: 'voyagerOrganizationDashCompanies.148b1aebfadd0a455f32806df656c3c1',
-    provenance: 'discovered',
-    capturedAt: '2026-08-02',
+    transport: 'voyager-restli',
+    path: `${VOYAGER}/organization/companies`,
+    decorationId: 'com.linkedin.voyager.deco.organization.web.WebFullCompanyMain-12',
+    provenance: 'verified',
+    capturedAt: '2026-10-14',
   },
 
   // Job search, captured 2026-10-14. The jobs page itself now opens an SDUI

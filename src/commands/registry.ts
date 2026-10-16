@@ -217,12 +217,15 @@ export const COMMANDS: CommandDef[] = [
   },
   {
     name: 'company',
-    cost: 'medium',
-    summary: 'A company page, optionally with a bounded sample of its updates.',
-    usage: 'lnrelay company <universal-name|url> [--updates N]',
+    cost: '1 page call per company; --posts adds search calls (20 posts a call)',
+    summary:
+      'A company page in full: about, website, industry, size, employees on LinkedIn, followers, ' +
+      'headquarters, specialties, locations, affiliated and showcase pages. --posts N adds its ' +
+      'newest posts.',
+    usage: 'lnrelay company <universal-name|url|id> [...] [--posts N] [--compact | --fields a,b,c]',
     audience: ['cli', 'mcp'],
     risk: 'read',
-    implemented: false,
+    implemented: true,
   },
   {
     name: 'feed',

@@ -35,6 +35,7 @@ jobs            1 call / 100 — find jobs with filters; `job` reads finalists, 
 search          1 call / 50 — posts, companies, groups, events, courses, products, services, schools
   ↓ pick 2-3 finalists from the rows alone, not by reading each one
 profile         mid    — deep-read ONLY the finalists
+company         mid    — a company page in full; `posts:N` adds its newest posts
 feed            mid    — what the user's network is posting right now
   ↓ feed rows carry likes/comments counts — rank on those before reading a thread
 post            exp    — a post's comment thread
@@ -365,6 +366,22 @@ CLI: `lnrelay my-items posts|learning|jobs [--stage …] [--compact]`. 1 page ca
   `company`, `location`, `workplace`, `stage`, `note` (e.g. "No longer accepting applications").
   With no `stage`, all five stages (5 calls) and `meta.byStage`. LinkedIn does not check stage names:
   an empty stage and a misnamed one look the same, so trust `byStage` with that in mind.
+
+### `company` — a company page in full.
+```
+company company:"<universal name | /company/ or /showcase/ URL | id>" | ["…", …] [posts:N] [compact]
+```
+CLI: `lnrelay company microsoft [--posts 5] [--compact]`. One page call per company. Returns `id`,
+`name`, `tagline`, `about`, `website`, `industry`, `type` ("Public Company"), `size` (the band the
+company chose, "501-1,000"), `employeesOnLinkedIn` (members who list it, often far more than the
+band), `followers`, `headquarters`, `specialties`, `locations`, `affiliated` and `showcasePages`
+(`{id, name, url, followers}`), and `jobsUrl`.
+- **The `id` is what the filters take:** `people company:[id]`, `jobs company:[id]`,
+  `search kind:posts fromCompany:[id]`. Find a company by topic with `search kind:companies` first.
+- **`posts:N`** adds its N newest posts: a posts search from the company, sorted by date, on the
+  search budget (20 a call). `postsError` says why they could not be read; the company still comes.
+- Several companies in one call return `{items, meta}`; a name LinkedIn does not know is listed in
+  `meta.unread` (`NOT_FOUND`). The same company by name and by id is listed once.
 
 ### `events` / `event` — the events page, and events in full.
 ```

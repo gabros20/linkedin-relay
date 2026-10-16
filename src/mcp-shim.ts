@@ -20,6 +20,7 @@ import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import { z } from 'zod';
 import { runCacheStatus, runLocal, runSourceRead } from './commands/cache.ts';
+import { runCompany } from './commands/company.ts';
 import { runEvent, runEvents } from './commands/events.ts';
 import { type JobsRequest, runJob, runJobFilters, runJobs } from './commands/jobs.ts';
 import {
@@ -574,6 +575,32 @@ export function buildServer(): McpServer {
         .describe('event id or URL, or a list'),
     },
     async ({ event }) => reply(await runEvent(Array.isArray(event) ? event : [event])),
+  );
+
+  server.tool(
+    'company',
+    'A LinkedIn company page in full, by universal name, /company/ or /showcase/ URL, or id: ' +
+      'id (what people/jobs company filters and search posts fromCompany take), name, about, ' +
+      'website, industry, type, size (the band it chose), employeesOnLinkedIn, followers, ' +
+      'headquarters, specialties, locations, affiliated and showcasePages [{id, name, url, ' +
+      'followers}], jobsUrl. 1 page call per company; several return {items, meta}, with ' +
+      'meta.unread for any not found. posts: N adds its N newest posts (a posts search, on the ' +
+      `search budget); postsError says why they could not be read. ${NO_RETRY}`,
+    {
+      company: z
+        .union([z.string().min(1), z.array(z.string().min(1)).min(1)])
+        .describe('universal name (microsoft), company URL or id, or a list'),
+      posts: z.number().int().min(1).max(50).optional().describe('also its newest N posts'),
+      compact: z.boolean().optional().describe('one line per company (several) and per post'),
+    },
+    async ({ company, posts, compact }) =>
+      reply(
+        await runCompany(
+          Array.isArray(company) ? company : [company],
+          posts !== undefined ? { posts } : {},
+          compact === true ? { compact: true } : {},
+        ),
+      ),
   );
 
   server.tool(

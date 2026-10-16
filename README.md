@@ -44,6 +44,7 @@ claude mcp add linkedin-relay -s user -- bun "$(npm root -g)/linkedin-relay-mcp/
 | `post` · `reactions` | a post's comment thread, and who engaged |
 | `scheduled` · `experience` · `skills` | your queued posts, and your own roles and skills |
 | `my-items` | your saved posts, LinkedIn Learning courses, and the job tracker by stage |
+| `company` | a company page in full: about, website, industry, size, employees, followers, headquarters, specialties, locations, affiliated and showcase pages — and, with `--posts N`, its newest posts |
 | `events` · `event` | the events page's recommended and Premium events, and any event in full: when, where, attendees, organiser, its site |
 | `network` | your My Network: connections, following, followers, pages, events, groups, invitations sent — or the count of each |
 | `inbox` · `messages` · `draft` · `drafts` | read your messages without marking them read; draft replies locally — nothing is ever sent |

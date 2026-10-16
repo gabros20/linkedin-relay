@@ -4,6 +4,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { bool, list, num, parseArgs, str } from '../src/args.ts';
 import { dispatch } from '../src/cli.ts';
+import { findCommand } from '../src/commands/registry.ts';
 import { exitCodeFor } from '../src/output.ts';
 
 const T0 = 1_800_000_000_000;
@@ -68,11 +69,19 @@ describe('dispatch', () => {
 
   // Commands that are designed but unbuilt must say so plainly rather than
   // pretending to succeed with empty data.
+  // Every designed command is built today (`company` was the last), so the
+  // guard is shown on one marked unbuilt for the test.
   test('a designed-but-unbuilt command fails loudly with NOT_IMPLEMENTED', async () => {
-    const e = await dispatch(['company', 'acme'], T0);
-    if (e.ok) throw new Error('expected failure');
-    expect(e.error.code).toBe('NOT_IMPLEMENTED');
-    expect(e.error.hint).toContain('docs/PLAN.md');
+    const def = findCommand('company') as NonNullable<ReturnType<typeof findCommand>>;
+    def.implemented = false;
+    try {
+      const e = await dispatch(['company', 'acme'], T0);
+      if (e.ok) throw new Error('expected failure');
+      expect(e.error.code).toBe('NOT_IMPLEMENTED');
+      expect(e.error.hint).toContain('docs/PLAN.md');
+    } finally {
+      def.implemented = true;
+    }
   });
 
   // A live command with no stored session must say so plainly rather than

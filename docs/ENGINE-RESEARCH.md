@@ -355,7 +355,7 @@ half a megabyte a post, and a post is not one record in it:
   (the label may carry a badge: "Microsoft Prémium").
 - Labels such as the time come in the viewer's LinkedIn language.
 
-## 5i. Messages, My Network, events, My items — ✅ verified 2026-10-14
+## 5i. Messages, My Network, events, My items, company pages — ✅ verified 2026-10-14
 
 - **Messages:** `messengerConversations` (by folder category, cursor) and `messengerMessages` on
   `voyagerMessagingGraphQL`. The page's mark-read, mark-seen and delivery-acknowledgement calls are
@@ -369,6 +369,15 @@ half a megabyte a post, and a post is not one record in it:
 - **Events:** one event is `voyagerEventsDashProfessionalEvents` by id; the events page's lists are
   the SDUI component `eventsHomeCardGroupsSection`, read card by card in order and shape (labels are
   in the viewer's language; a "•" separator sits between organiser and attendees).
+- **Company pages:** the page is server-rendered SDUI (its only call is the `pagesStickyTopCardAsync`
+  component), and `voyagerOrganizationDashCompanies` by `universalName` answers only the company's
+  urn. The REST resource `organization/companies` with `WebFullCompanyMain-12` answers in JSON, by id
+  (`/<id>`) or by name (`q=universalName&universalName=…`, a collection of one): description,
+  `companyPageUrl`, `*companyIndustries`, `companyType`, `staffCountRange`, `staffCount`,
+  `headquarter`, `confirmedLocations`, `specialities`, and `affiliatedCompanies` / `showcasePages`
+  resolved in `included`, each with a `FollowingInfo` holding `followerCount`. About 100 KB for
+  Microsoft. A name LinkedIn does not know is a 404. Its posts are the posts search with
+  `fromOrganization:[id]`, `sortBy:[date_posted]` and no keywords.
 - **My items:** the search with intents `SEARCH_MY_ITEMS_SAVED_POSTS`, `SEARCH_MY_ITEMS_LEARNING`,
   `SEARCH_MY_ITEMS_JOB_SEEKER` (+ `cardType`). The job tracker's stage names come from its own
   `?stage=` URLs. **LinkedIn does not validate `cardType`**: a misspelled stage returns zero jobs, not

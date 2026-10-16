@@ -8,6 +8,7 @@ import {
   wasApproved,
 } from './commands/approval.ts';
 import { runCacheStatus, runLocal, runPurge, runSourceRead } from './commands/cache.ts';
+import { runCompany } from './commands/company.ts';
 import type { ConfirmDeps } from './commands/confirm.ts';
 import { runDelete } from './commands/delete.ts';
 import { runEvent, runEvents } from './commands/events.ts';
@@ -295,6 +296,10 @@ function mine(command: string, args: ParsedArgs): Promise<Envelope> {
       output(args),
     );
   if (command === 'event') return runEvent(args.positionals, output(args));
+  if (command === 'company') {
+    const posts = num(args, 'posts');
+    return runCompany(args.positionals, posts !== undefined ? { posts } : {}, output(args));
+  }
   if (command === 'my-items') {
     const stage = str(args, 'stage');
     return runMyItems(
@@ -474,6 +479,7 @@ export async function dispatch(argv: string[], now: number): Promise<Envelope> {
       return runPeopleFilters(peopleRequest(args), output(args));
     case 'events':
     case 'event':
+    case 'company':
     case 'my-items':
     case 'network':
       return mine(command, args);

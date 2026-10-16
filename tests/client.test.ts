@@ -123,17 +123,27 @@ describe('contracts', () => {
     }
   });
 
-  // `company` returns 200 but with a projection carrying no name, tagline or
-  // description — the same trap as the thin profile projection. It stays
-  // unverified, so the command cannot ship, which is the rule working.
+  // No contract is merely discovered today (`company` was, until a projection
+  // with the About tab's fields was found), so the rule is shown on one added
+  // for the test.
   test('a merely discovered contract cannot back a command', () => {
-    expect(CONTRACTS.company?.provenance).toBe('discovered');
-    expect(contractFor('company')).toBeUndefined();
+    const table = CONTRACTS as Record<string, (typeof CONTRACTS)[string]>;
+    table.probe = {
+      ...(CONTRACTS.company as NonNullable<typeof CONTRACTS.company>),
+      name: 'probe',
+      provenance: 'discovered',
+    };
+    try {
+      expect(contractFor('probe')).toBeUndefined();
+    } finally {
+      delete table.probe;
+    }
   });
 
   test('a contract promoted to verified becomes available', () => {
     expect(CONTRACTS.comments?.provenance).toBe('verified');
     expect(contractFor('comments')).toBeDefined();
+    expect(contractFor('company')).toBeDefined();
   });
 
   test('every contract records when it was captured', () => {
