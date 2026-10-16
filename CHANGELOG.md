@@ -1,3 +1,10 @@
+# [3.20.0](https://github.com/gabros20/linkedin-relay/compare/v3.19.0...v3.20.0) (2026-10-16)
+
+
+### Features
+
+* **company:** a company page in full, and its newest posts ([f069c77](https://github.com/gabros20/linkedin-relay/commit/f069c77fd87bf5d77264ebaf13933310eab75519))
+
 # [3.19.0](https://github.com/gabros20/linkedin-relay/compare/v3.18.0...v3.19.0) (2026-10-14)
 
 
