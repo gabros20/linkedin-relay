@@ -4,8 +4,10 @@ A deep-research tool for LinkedIn — a TypeScript CLI (`lnrelay`) + a thin read
 (`linkedin-relay-mcp`) + a Claude Code skill. Sibling to `../x-relay`, `../github-relay` and
 `../youtube-context`; same stack, shape, and philosophy.
 
-**Current state: shipped and in use (v3.x).** Reads cover whoami, profile, search, feed, my-posts,
-connections, reactions and post threads. Writes are CLI-only: `share` (text, `--image`, `--video`),
+**Current state: shipped and in use (v3.x).** Reads cover whoami, profiles (in full, `--contact`),
+every search kind, people and jobs with all filters, job details and hiring teams, companies, events,
+feed, my-posts, connections, the owner's network, saved items, messages, profile viewers, reactions
+and post threads. Writes are CLI-only: `share` (text, `--image`, `--video`),
 `comment`, `reply`, `edit`, `react`, `delete`, approved per `lnrelay approval`. They go over Voyager or SDUI with the browser session, or
 over OAuth for text shares when a token exists. `docs/DECISION-writes.md` records how each write was
 discovered and verified. New writes are learned by capture first: `scripts/observe-write.ts` records

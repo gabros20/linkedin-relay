@@ -440,20 +440,19 @@ never re-escaped. Re-verified live afterwards: same endpoint, 200, 1,457,213 res
 
 ## 7. Still unknown
 
-1. **The comment-thread queryId.** Now the largest gap, and the one blocking `post` — the headline
-   research command. Comments load on interaction; observe a post that actually has some, with an
-   in-page action that expands them.
-2. **The full profile fan-out.** `voyagerIdentityDashProfiles` returns identity only, and three
-   distinct queryIds for that operation were observed (`b5c27c04…`, `e9b08094…`, `da93c92b…`) —
-   evidently different projections. Which calls assemble experience, education and skills is
-   unobserved.
-3. **queryId rotation cadence.** Substantially de-risked by §5a (a 21-month-old queryId still works),
+Updated 2026-10-17. Since resolved: comment threads (`post`), the full profile (§ profile above),
+saved items (`my-items`), contact info and profile viewers.
+
+1. **queryId rotation cadence.** Substantially de-risked by §5a (a 21-month-old queryId still works),
    but not measured. Run the 14-day `observe.ts` diff to confirm.
-4. **`li_at` lifetime.** Unmeasured. Record the issue date and watch for the first `AUTH_FAILED`.
-5. **Real throttle thresholds.** Still zero corroborated numbers. Our caps remain `guessed`, and
-   nothing in this session's traffic tested them — roughly 8 API calls were made in total.
-6. **Saved items and notifications.** `voyagerIdentityDashNotificationCards` was observed 🔍 but not
-   exercised; nothing resembling a saved-items endpoint has been seen at all.
+2. **`li_at` lifetime.** Unmeasured. Record the issue date and watch for the first `AUTH_FAILED`.
+3. **Real throttle thresholds.** Still zero corroborated numbers. Our caps remain `guessed`.
+4. **Notifications.** `voyagerIdentityDashNotificationCards` (`…CardsCollectionWithInjectionsNoPills-25`,
+   `q=filterVanityName`) loads on every page; not exercised.
+5. **Profile gaps.** Skills past the top 20 (`profileSkills?q=viewee` answered 400), recommendations,
+   and the sections empty in every profile read (certifications, languages, projects, courses,
+   organizations, patents, test scores; contact phone, address, Twitter).
+6. **More than 3 profile viewers.** A free account is shown 3; the list's next page was not exercised.
 
 ### Method note: observation alone is not enough
 
