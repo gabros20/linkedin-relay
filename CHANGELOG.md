@@ -1,3 +1,10 @@
+# [3.24.0](https://github.com/gabros20/linkedin-relay/compare/v3.23.0...v3.24.0) (2026-10-19)
+
+
+### Features
+
+* **edit:** photo and banner, replace your profile photo and cover image ([c04ee87](https://github.com/gabros20/linkedin-relay/commit/c04ee87b84563173d6124f8680733be2a48e0d15))
+
 # [3.23.0](https://github.com/gabros20/linkedin-relay/compare/v3.22.0...v3.23.0) (2026-10-16)
 
 
