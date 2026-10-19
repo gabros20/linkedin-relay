@@ -1,0 +1,403 @@
+{
+  "requestId": "com.linkedin.sdui.requests.profile.saveProfilePicture",
+  "serverRequest": {
+    "requestId": "com.linkedin.sdui.requests.profile.saveProfilePicture",
+    "requestedArguments": {
+      "$type": "proto.sdui.actions.requests.RequestedArguments",
+      "requestedStateKeys": [
+        {
+          "key": {
+            "value": {
+              "$case": "id",
+              "id": "auto-binding-736d6a37-dd00-4ae7-9310-2f49360086f1"
+            }
+          }
+        },
+        {
+          "key": {
+            "value": {
+              "$case": "id",
+              "id": "auto-binding-b60111cb-4b85-439d-815a-56b296a24870"
+            }
+          }
+        },
+        {
+          "key": {
+            "value": {
+              "$case": "id",
+              "id": "auto-binding-2ad72257-91e7-4ca0-8f0c-711586c32083"
+            }
+          }
+        },
+        {
+          "key": {
+            "value": {
+              "$case": "id",
+              "id": "ADD_PHOTOPROFILE_PHOTO_UPLOAD_IS_SAVING"
+            }
+          }
+        },
+        {
+          "key": {
+            "value": {
+              "$case": "id",
+              "id": "ProfileComponentStateLastPerformedActionRefperson-1ProfileComponentState"
+            }
+          }
+        }
+      ],
+      "payload": {
+        "profileId": "ACoAATESTPERSON1",
+        "vanityName": "person-1",
+        "newMedia": {
+          "key": "auto-binding-736d6a37-dd00-4ae7-9310-2f49360086f1",
+          "namespace": "MemoryNamespace"
+        },
+        "originalAssetUrns": {
+          "key": "auto-binding-b60111cb-4b85-439d-815a-56b296a24870",
+          "namespace": "MemoryNamespace"
+        },
+        "displayAssetUrns": {
+          "key": "auto-binding-2ad72257-91e7-4ca0-8f0c-711586c32083",
+          "namespace": "MemoryNamespace"
+        },
+        "isSavingProfilePhoto": {
+          "key": "ADD_PHOTOPROFILE_PHOTO_UPLOAD_IS_SAVING",
+          "namespace": "MemoryNamespace"
+        },
+        "focusableComponentRefKey": {
+          "key": "ProfileComponentStateLastPerformedActionRefperson-1ProfileComponentState",
+          "namespace": "MemoryNamespace"
+        }
+      },
+      "requestMetadata": {
+        "$type": "proto.sdui.common.RequestMetadata"
+      }
+    },
+    "isApfcEnabled": false,
+    "isStreaming": false,
+    "rumPageKey": ""
+  },
+  "states": [
+    {
+      "key": "auto-binding-736d6a37-dd00-4ae7-9310-2f49360086f1",
+      "namespace": "MemoryNamespace",
+      "value": {
+        "$type": "proto.sdui.media.MediaList",
+        "mediaFiles": [
+          {
+            "mediaAttributions": [],
+            "analysisData": {},
+            "fileName": "edited-image-2026-10-19T10-05-54-896Z.png",
+            "source": {
+              "$case": "localFile",
+              "localFile": {
+                "fileName": "edited-image-2026-10-19T10-05-54-896Z.png",
+                "mimeType": "image/png",
+                "filePointer": "97elc1n795c",
+                "size": "4792",
+                "shouldIncludeFileContents": false
+              }
+            },
+            "size": "4792",
+            "mimeType": "image/png",
+            "filePointer": "97elc1n795c",
+            "mediaFileId": "97elc1n795c",
+            "editData": {
+              "$type": "proto.sdui.media.MediaEditData",
+              "croppedRegion": {
+                "$type": "proto.sdui.common.Rect",
+                "topLeft": {
+                  "$type": "proto.sdui.common.Coordinate2D",
+                  "x": 0,
+                  "y": 0
+                },
+                "topRight": {
+                  "$type": "proto.sdui.common.Coordinate2D",
+                  "x": 1,
+                  "y": 2.4492935982947064e-16
+                },
+                "bottomLeft": {
+                  "$type": "proto.sdui.common.Coordinate2D",
+                  "x": -2.4492935982947064e-16,
+                  "y": 1
+                },
+                "bottomRight": {
+                  "$type": "proto.sdui.common.Coordinate2D",
+                  "x": 0.9999999999999997,
+                  "y": 1.0000000000000002
+                }
+              },
+              "scaleRatio": 0.9725,
+              "brightness": 0,
+              "contrast": 0,
+              "saturation": 0,
+              "vignette": 0,
+              "imageFilter": "ImageFilter_None"
+            },
+            "captions": [],
+            "thumbnails": []
+          }
+        ]
+      },
+      "originalProtoCase": "mediaListValue",
+      "protoKey": {
+        "$type": "proto.sdui.Key",
+        "value": {
+          "$case": "id",
+          "id": "auto-binding-736d6a37-dd00-4ae7-9310-2f49360086f1"
+        }
+      }
+    },
+    {
+      "key": "auto-binding-b60111cb-4b85-439d-815a-56b296a24870",
+      "namespace": "MemoryNamespace",
+      "value": ["D4DORIGINALPHOTO"],
+      "originalProtoCase": "stringListValue",
+      "protoKey": {
+        "$type": "proto.sdui.Key",
+        "value": {
+          "$case": "id",
+          "id": "auto-binding-b60111cb-4b85-439d-815a-56b296a24870"
+        }
+      }
+    },
+    {
+      "key": "auto-binding-2ad72257-91e7-4ca0-8f0c-711586c32083",
+      "namespace": "MemoryNamespace",
+      "value": ["D4DDISPLAYPHOTO"],
+      "originalProtoCase": "stringListValue",
+      "protoKey": {
+        "$type": "proto.sdui.Key",
+        "value": {
+          "$case": "id",
+          "id": "auto-binding-2ad72257-91e7-4ca0-8f0c-711586c32083"
+        }
+      }
+    },
+    {
+      "key": "ADD_PHOTOPROFILE_PHOTO_UPLOAD_IS_SAVING",
+      "namespace": "MemoryNamespace",
+      "value": true,
+      "originalProtoCase": "booleanValue",
+      "protoKey": {
+        "$type": "proto.sdui.Key",
+        "value": {
+          "$case": "id",
+          "id": "ADD_PHOTOPROFILE_PHOTO_UPLOAD_IS_SAVING"
+        }
+      }
+    },
+    {
+      "key": "ProfileComponentStateLastPerformedActionRefperson-1ProfileComponentState",
+      "namespace": "MemoryNamespace",
+      "value": "topcard-logo-image-referencekey",
+      "originalProtoCase": "stringValue",
+      "protoKey": {
+        "$type": "proto.sdui.Key",
+        "value": {
+          "$case": "id",
+          "id": "ProfileComponentStateLastPerformedActionRefperson-1ProfileComponentState"
+        }
+      }
+    }
+  ],
+  "requestedArguments": {
+    "$type": "proto.sdui.actions.requests.RequestedArguments",
+    "requestedStateKeys": [
+      {
+        "key": {
+          "value": {
+            "$case": "id",
+            "id": "auto-binding-736d6a37-dd00-4ae7-9310-2f49360086f1"
+          }
+        }
+      },
+      {
+        "key": {
+          "value": {
+            "$case": "id",
+            "id": "auto-binding-b60111cb-4b85-439d-815a-56b296a24870"
+          }
+        }
+      },
+      {
+        "key": {
+          "value": {
+            "$case": "id",
+            "id": "auto-binding-2ad72257-91e7-4ca0-8f0c-711586c32083"
+          }
+        }
+      },
+      {
+        "key": {
+          "value": {
+            "$case": "id",
+            "id": "ADD_PHOTOPROFILE_PHOTO_UPLOAD_IS_SAVING"
+          }
+        }
+      },
+      {
+        "key": {
+          "value": {
+            "$case": "id",
+            "id": "ProfileComponentStateLastPerformedActionRefperson-1ProfileComponentState"
+          }
+        }
+      }
+    ],
+    "payload": {
+      "profileId": "ACoAATESTPERSON1",
+      "vanityName": "person-1",
+      "newMedia": {
+        "key": "auto-binding-736d6a37-dd00-4ae7-9310-2f49360086f1",
+        "namespace": "MemoryNamespace"
+      },
+      "originalAssetUrns": {
+        "key": "auto-binding-b60111cb-4b85-439d-815a-56b296a24870",
+        "namespace": "MemoryNamespace"
+      },
+      "displayAssetUrns": {
+        "key": "auto-binding-2ad72257-91e7-4ca0-8f0c-711586c32083",
+        "namespace": "MemoryNamespace"
+      },
+      "isSavingProfilePhoto": {
+        "key": "ADD_PHOTOPROFILE_PHOTO_UPLOAD_IS_SAVING",
+        "namespace": "MemoryNamespace"
+      },
+      "focusableComponentRefKey": {
+        "key": "ProfileComponentStateLastPerformedActionRefperson-1ProfileComponentState",
+        "namespace": "MemoryNamespace"
+      }
+    },
+    "requestMetadata": {
+      "$type": "proto.sdui.common.RequestMetadata"
+    },
+    "states": [
+      {
+        "key": "auto-binding-736d6a37-dd00-4ae7-9310-2f49360086f1",
+        "namespace": "MemoryNamespace",
+        "value": {
+          "$type": "proto.sdui.media.MediaList",
+          "mediaFiles": [
+            {
+              "mediaAttributions": [],
+              "analysisData": {},
+              "fileName": "edited-image-2026-10-19T10-05-54-896Z.png",
+              "source": {
+                "$case": "localFile",
+                "localFile": {
+                  "fileName": "edited-image-2026-10-19T10-05-54-896Z.png",
+                  "mimeType": "image/png",
+                  "filePointer": "97elc1n795c",
+                  "size": "4792",
+                  "shouldIncludeFileContents": false
+                }
+              },
+              "size": "4792",
+              "mimeType": "image/png",
+              "filePointer": "97elc1n795c",
+              "mediaFileId": "97elc1n795c",
+              "editData": {
+                "$type": "proto.sdui.media.MediaEditData",
+                "croppedRegion": {
+                  "$type": "proto.sdui.common.Rect",
+                  "topLeft": {
+                    "$type": "proto.sdui.common.Coordinate2D",
+                    "x": 0,
+                    "y": 0
+                  },
+                  "topRight": {
+                    "$type": "proto.sdui.common.Coordinate2D",
+                    "x": 1,
+                    "y": 2.4492935982947064e-16
+                  },
+                  "bottomLeft": {
+                    "$type": "proto.sdui.common.Coordinate2D",
+                    "x": -2.4492935982947064e-16,
+                    "y": 1
+                  },
+                  "bottomRight": {
+                    "$type": "proto.sdui.common.Coordinate2D",
+                    "x": 0.9999999999999997,
+                    "y": 1.0000000000000002
+                  }
+                },
+                "scaleRatio": 0.9725,
+                "brightness": 0,
+                "contrast": 0,
+                "saturation": 0,
+                "vignette": 0,
+                "imageFilter": "ImageFilter_None"
+              },
+              "captions": [],
+              "thumbnails": []
+            }
+          ]
+        },
+        "originalProtoCase": "mediaListValue",
+        "protoKey": {
+          "$type": "proto.sdui.Key",
+          "value": {
+            "$case": "id",
+            "id": "auto-binding-736d6a37-dd00-4ae7-9310-2f49360086f1"
+          }
+        }
+      },
+      {
+        "key": "auto-binding-b60111cb-4b85-439d-815a-56b296a24870",
+        "namespace": "MemoryNamespace",
+        "value": ["D4DORIGINALPHOTO"],
+        "originalProtoCase": "stringListValue",
+        "protoKey": {
+          "$type": "proto.sdui.Key",
+          "value": {
+            "$case": "id",
+            "id": "auto-binding-b60111cb-4b85-439d-815a-56b296a24870"
+          }
+        }
+      },
+      {
+        "key": "auto-binding-2ad72257-91e7-4ca0-8f0c-711586c32083",
+        "namespace": "MemoryNamespace",
+        "value": ["D4DDISPLAYPHOTO"],
+        "originalProtoCase": "stringListValue",
+        "protoKey": {
+          "$type": "proto.sdui.Key",
+          "value": {
+            "$case": "id",
+            "id": "auto-binding-2ad72257-91e7-4ca0-8f0c-711586c32083"
+          }
+        }
+      },
+      {
+        "key": "ADD_PHOTOPROFILE_PHOTO_UPLOAD_IS_SAVING",
+        "namespace": "MemoryNamespace",
+        "value": true,
+        "originalProtoCase": "booleanValue",
+        "protoKey": {
+          "$type": "proto.sdui.Key",
+          "value": {
+            "$case": "id",
+            "id": "ADD_PHOTOPROFILE_PHOTO_UPLOAD_IS_SAVING"
+          }
+        }
+      },
+      {
+        "key": "ProfileComponentStateLastPerformedActionRefperson-1ProfileComponentState",
+        "namespace": "MemoryNamespace",
+        "value": "topcard-logo-image-referencekey",
+        "originalProtoCase": "stringValue",
+        "protoKey": {
+          "$type": "proto.sdui.Key",
+          "value": {
+            "$case": "id",
+            "id": "ProfileComponentStateLastPerformedActionRefperson-1ProfileComponentState"
+          }
+        }
+      }
+    ],
+    "screenId": "com.linkedin.sdui.flagshipnav.profile.ProfileAddPicture",
+    "knownTemplateIds": []
+  }
+}

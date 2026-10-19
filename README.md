@@ -52,7 +52,7 @@ claude mcp add linkedin-relay -s user -- bun "$(npm root -g)/linkedin-relay-mcp/
 | `sync` · `local` · `connections` · `my-posts` | fill a local cache, then query it for free |
 | `whoami` · `doctor` · `risk` · `budget` · `cache-status` | session, standing and spend |
 | `share` · `comment` · `reply` · `edit` · `react` · `delete` | writes to your feed — OAuth when available, private API otherwise |
-| `edit headline\|about` · `role` · `skill` | writes to your own profile |
+| `edit headline\|about\|photo\|banner` · `role` · `skill` | writes to your own profile: headline, About, photo, cover image, roles, skills |
 | `oauth` · `approval` | the write credential, and how writes are approved |
 | `purge` | delete cached data |
 

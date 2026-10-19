@@ -1,0 +1,363 @@
+{
+  "requestId": "com.linkedin.sdui.requests.profile.saveProfileBackgroundImage",
+  "serverRequest": {
+    "requestId": "com.linkedin.sdui.requests.profile.saveProfileBackgroundImage",
+    "requestedArguments": {
+      "$type": "proto.sdui.actions.requests.RequestedArguments",
+      "requestedStateKeys": [
+        {
+          "key": {
+            "value": {
+              "$case": "id",
+              "id": "auto-binding-fbc45ad7-9893-4247-a747-2fff1899cbf2"
+            }
+          }
+        },
+        {
+          "key": {
+            "value": {
+              "$case": "id",
+              "id": "auto-binding-d657ad4a-126c-436f-8c4d-7a3ba56e6e36"
+            }
+          }
+        },
+        {
+          "key": {
+            "value": {
+              "$case": "id",
+              "id": "auto-binding-e7052851-9919-47ff-b063-8f7743803fe8"
+            }
+          }
+        },
+        {
+          "key": {
+            "value": {
+              "$case": "id",
+              "id": "ProfileComponentStateLastPerformedActionRefperson-1ProfileComponentState"
+            }
+          }
+        }
+      ],
+      "payload": {
+        "vanityName": "person-1",
+        "profileId": "ACoAATESTPERSON1",
+        "editedMedia": {
+          "key": "auto-binding-fbc45ad7-9893-4247-a747-2fff1899cbf2",
+          "namespace": "MemoryNamespace"
+        },
+        "displayAssetUrns": {
+          "key": "auto-binding-d657ad4a-126c-436f-8c4d-7a3ba56e6e36",
+          "namespace": "MemoryNamespace"
+        },
+        "originalAssetUrns": {
+          "key": "auto-binding-e7052851-9919-47ff-b063-8f7743803fe8",
+          "namespace": "MemoryNamespace"
+        },
+        "focusableComponentRefKey": {
+          "key": "ProfileComponentStateLastPerformedActionRefperson-1ProfileComponentState",
+          "namespace": "MemoryNamespace"
+        },
+        "isSaving": {
+          "key": "auto-binding-d7115a8a-57b5-4b8c-ba6e-0dc4c58e67ce",
+          "namespace": "MemoryNamespace"
+        },
+        "omitDefaultPhotoFilterEditInfo": true
+      },
+      "requestMetadata": {
+        "$type": "proto.sdui.common.RequestMetadata"
+      }
+    },
+    "isApfcEnabled": false,
+    "isStreaming": false,
+    "rumPageKey": ""
+  },
+  "states": [
+    {
+      "key": "auto-binding-fbc45ad7-9893-4247-a747-2fff1899cbf2",
+      "namespace": "MemoryNamespace",
+      "value": {
+        "$type": "proto.sdui.media.MediaList",
+        "mediaFiles": [
+          {
+            "mediaAttributions": [],
+            "analysisData": {},
+            "fileName": "edited-image-2026-10-19T10-02-40-901Z.png",
+            "source": {
+              "$case": "localFile",
+              "localFile": {
+                "fileName": "edited-image-2026-10-19T10-02-40-901Z.png",
+                "mimeType": "image/png",
+                "filePointer": "xovoobnjt6",
+                "size": "13807",
+                "shouldIncludeFileContents": false
+              }
+            },
+            "size": "13807",
+            "mimeType": "image/png",
+            "filePointer": "xovoobnjt6",
+            "mediaFileId": "xovoobnjt6",
+            "editData": {
+              "$type": "proto.sdui.media.MediaEditData",
+              "croppedRegion": {
+                "$type": "proto.sdui.common.Rect",
+                "topLeft": {
+                  "$type": "proto.sdui.common.Coordinate2D",
+                  "x": 0,
+                  "y": 0
+                },
+                "topRight": {
+                  "$type": "proto.sdui.common.Coordinate2D",
+                  "x": 1,
+                  "y": 9.797174393178826e-16
+                },
+                "bottomLeft": {
+                  "$type": "proto.sdui.common.Coordinate2D",
+                  "x": -6.123233995736766e-17,
+                  "y": 1
+                },
+                "bottomRight": {
+                  "$type": "proto.sdui.common.Coordinate2D",
+                  "x": 1,
+                  "y": 1.000000000000001
+                }
+              },
+              "scaleRatio": 0.5555555555555556,
+              "brightness": 0,
+              "contrast": 0,
+              "saturation": 0,
+              "vignette": 0,
+              "imageFilter": "ImageFilter_None"
+            },
+            "captions": [],
+            "thumbnails": []
+          }
+        ]
+      },
+      "originalProtoCase": "mediaListValue",
+      "protoKey": {
+        "$type": "proto.sdui.Key",
+        "value": {
+          "$case": "id",
+          "id": "auto-binding-fbc45ad7-9893-4247-a747-2fff1899cbf2"
+        }
+      }
+    },
+    {
+      "key": "auto-binding-d657ad4a-126c-436f-8c4d-7a3ba56e6e36",
+      "namespace": "MemoryNamespace",
+      "value": ["D4DDISPLAYBANNER"],
+      "originalProtoCase": "stringListValue",
+      "protoKey": {
+        "$type": "proto.sdui.Key",
+        "value": {
+          "$case": "id",
+          "id": "auto-binding-d657ad4a-126c-436f-8c4d-7a3ba56e6e36"
+        }
+      }
+    },
+    {
+      "key": "auto-binding-e7052851-9919-47ff-b063-8f7743803fe8",
+      "namespace": "MemoryNamespace",
+      "value": ["D4DORIGINALBANNER"],
+      "originalProtoCase": "stringListValue",
+      "protoKey": {
+        "$type": "proto.sdui.Key",
+        "value": {
+          "$case": "id",
+          "id": "auto-binding-e7052851-9919-47ff-b063-8f7743803fe8"
+        }
+      }
+    },
+    {
+      "key": "ProfileComponentStateLastPerformedActionRefperson-1ProfileComponentState",
+      "namespace": "MemoryNamespace",
+      "value": "person-1_cover_edit_button",
+      "originalProtoCase": "stringValue",
+      "protoKey": {
+        "$type": "proto.sdui.Key",
+        "value": {
+          "$case": "id",
+          "id": "ProfileComponentStateLastPerformedActionRefperson-1ProfileComponentState"
+        }
+      }
+    }
+  ],
+  "requestedArguments": {
+    "$type": "proto.sdui.actions.requests.RequestedArguments",
+    "requestedStateKeys": [
+      {
+        "key": {
+          "value": {
+            "$case": "id",
+            "id": "auto-binding-fbc45ad7-9893-4247-a747-2fff1899cbf2"
+          }
+        }
+      },
+      {
+        "key": {
+          "value": {
+            "$case": "id",
+            "id": "auto-binding-d657ad4a-126c-436f-8c4d-7a3ba56e6e36"
+          }
+        }
+      },
+      {
+        "key": {
+          "value": {
+            "$case": "id",
+            "id": "auto-binding-e7052851-9919-47ff-b063-8f7743803fe8"
+          }
+        }
+      },
+      {
+        "key": {
+          "value": {
+            "$case": "id",
+            "id": "ProfileComponentStateLastPerformedActionRefperson-1ProfileComponentState"
+          }
+        }
+      }
+    ],
+    "payload": {
+      "vanityName": "person-1",
+      "profileId": "ACoAATESTPERSON1",
+      "editedMedia": {
+        "key": "auto-binding-fbc45ad7-9893-4247-a747-2fff1899cbf2",
+        "namespace": "MemoryNamespace"
+      },
+      "displayAssetUrns": {
+        "key": "auto-binding-d657ad4a-126c-436f-8c4d-7a3ba56e6e36",
+        "namespace": "MemoryNamespace"
+      },
+      "originalAssetUrns": {
+        "key": "auto-binding-e7052851-9919-47ff-b063-8f7743803fe8",
+        "namespace": "MemoryNamespace"
+      },
+      "focusableComponentRefKey": {
+        "key": "ProfileComponentStateLastPerformedActionRefperson-1ProfileComponentState",
+        "namespace": "MemoryNamespace"
+      },
+      "isSaving": {
+        "key": "auto-binding-d7115a8a-57b5-4b8c-ba6e-0dc4c58e67ce",
+        "namespace": "MemoryNamespace"
+      },
+      "omitDefaultPhotoFilterEditInfo": true
+    },
+    "requestMetadata": {
+      "$type": "proto.sdui.common.RequestMetadata"
+    },
+    "states": [
+      {
+        "key": "auto-binding-fbc45ad7-9893-4247-a747-2fff1899cbf2",
+        "namespace": "MemoryNamespace",
+        "value": {
+          "$type": "proto.sdui.media.MediaList",
+          "mediaFiles": [
+            {
+              "mediaAttributions": [],
+              "analysisData": {},
+              "fileName": "edited-image-2026-10-19T10-02-40-901Z.png",
+              "source": {
+                "$case": "localFile",
+                "localFile": {
+                  "fileName": "edited-image-2026-10-19T10-02-40-901Z.png",
+                  "mimeType": "image/png",
+                  "filePointer": "xovoobnjt6",
+                  "size": "13807",
+                  "shouldIncludeFileContents": false
+                }
+              },
+              "size": "13807",
+              "mimeType": "image/png",
+              "filePointer": "xovoobnjt6",
+              "mediaFileId": "xovoobnjt6",
+              "editData": {
+                "$type": "proto.sdui.media.MediaEditData",
+                "croppedRegion": {
+                  "$type": "proto.sdui.common.Rect",
+                  "topLeft": {
+                    "$type": "proto.sdui.common.Coordinate2D",
+                    "x": 0,
+                    "y": 0
+                  },
+                  "topRight": {
+                    "$type": "proto.sdui.common.Coordinate2D",
+                    "x": 1,
+                    "y": 9.797174393178826e-16
+                  },
+                  "bottomLeft": {
+                    "$type": "proto.sdui.common.Coordinate2D",
+                    "x": -6.123233995736766e-17,
+                    "y": 1
+                  },
+                  "bottomRight": {
+                    "$type": "proto.sdui.common.Coordinate2D",
+                    "x": 1,
+                    "y": 1.000000000000001
+                  }
+                },
+                "scaleRatio": 0.5555555555555556,
+                "brightness": 0,
+                "contrast": 0,
+                "saturation": 0,
+                "vignette": 0,
+                "imageFilter": "ImageFilter_None"
+              },
+              "captions": [],
+              "thumbnails": []
+            }
+          ]
+        },
+        "originalProtoCase": "mediaListValue",
+        "protoKey": {
+          "$type": "proto.sdui.Key",
+          "value": {
+            "$case": "id",
+            "id": "auto-binding-fbc45ad7-9893-4247-a747-2fff1899cbf2"
+          }
+        }
+      },
+      {
+        "key": "auto-binding-d657ad4a-126c-436f-8c4d-7a3ba56e6e36",
+        "namespace": "MemoryNamespace",
+        "value": ["D4DDISPLAYBANNER"],
+        "originalProtoCase": "stringListValue",
+        "protoKey": {
+          "$type": "proto.sdui.Key",
+          "value": {
+            "$case": "id",
+            "id": "auto-binding-d657ad4a-126c-436f-8c4d-7a3ba56e6e36"
+          }
+        }
+      },
+      {
+        "key": "auto-binding-e7052851-9919-47ff-b063-8f7743803fe8",
+        "namespace": "MemoryNamespace",
+        "value": ["D4DORIGINALBANNER"],
+        "originalProtoCase": "stringListValue",
+        "protoKey": {
+          "$type": "proto.sdui.Key",
+          "value": {
+            "$case": "id",
+            "id": "auto-binding-e7052851-9919-47ff-b063-8f7743803fe8"
+          }
+        }
+      },
+      {
+        "key": "ProfileComponentStateLastPerformedActionRefperson-1ProfileComponentState",
+        "namespace": "MemoryNamespace",
+        "value": "person-1_cover_edit_button",
+        "originalProtoCase": "stringValue",
+        "protoKey": {
+          "$type": "proto.sdui.Key",
+          "value": {
+            "$case": "id",
+            "id": "ProfileComponentStateLastPerformedActionRefperson-1ProfileComponentState"
+          }
+        }
+      }
+    ],
+    "screenId": "com.linkedin.sdui.flagshipnav.profile.ProfileAddBackgroundImage",
+    "knownTemplateIds": []
+  }
+}

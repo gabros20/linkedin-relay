@@ -8,7 +8,8 @@ A deep-research tool for LinkedIn — a TypeScript CLI (`lnrelay`) + a thin read
 every search kind, people and jobs with all filters, job details and hiring teams, companies, events,
 feed, my-posts, connections, the owner's network, saved items, messages, profile viewers, reactions
 and post threads. Writes are CLI-only: `share` (text, `--image`, `--video`),
-`comment`, `reply`, `edit`, `react`, `delete`, approved per `lnrelay approval`. They go over Voyager or SDUI with the browser session, or
+`comment`, `reply`, `edit` (posts, comments, headline, About, photo, cover image), `role`,
+`skill`, `react`, `delete`, approved per `lnrelay approval`. They go over Voyager or SDUI with the browser session, or
 over OAuth for text shares when a token exists. `docs/DECISION-writes.md` records how each write was
 discovered and verified. New writes are learned by capture first: `scripts/observe-write.ts` records
 what the browser sends (and receives) while you act by hand in the debug Chrome on port 9222.

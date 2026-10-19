@@ -255,6 +255,30 @@ back equal to the original both times):
 - **The About form's binding keys are per-load** (`auto-binding-<uuid>`); another reason to take them
   from the form rather than from a capture.
 
+### ✅ Profile photo and cover image — captured and verified 2026-10-19
+
+Captured by replacing each with a solid green image in the browser (the file chooser fed over CDP,
+`Page.setInterceptFileChooserDialog`), then done again with the tool in darker green and read back,
+then restored with the owner's original files the same way.
+
+- **Three steps, all SDUI server requests plus PUTs.** `profileImageRegister` describes the file
+  twice, as an original and a display image (`ProfileOriginalPhoto`/`ProfileDisplayPhoto`, or
+  `…Background`), each with an empty asset-urn state. The answer sets those states to two
+  `digitalmediaAsset` ids and gives each file pointer a `/dms-uploads/` URL with
+  `mediaTypeFamily: STILLIMAGE` (sent as the `media-type-family` header). Then a PUT per file, then
+  `saveProfilePicture` / `saveProfileBackgroundImage` naming the display image and both ids.
+- **The keys are the client's.** `auto-binding-<uuid>` state keys and the file pointers are chosen by
+  the client and echoed back; the answer is read by them. The photo editor's saving flag is a fixed
+  name (`ADD_PHOTOPROFILE_PHOTO_UPLOAD_IS_SAVING`).
+- **The browser uploads its editor's render** (cropped and scaled) as the display image. The tool
+  uploads the file itself as both, with the crop set to the whole image, so it refuses a photo that
+  is not square or a cover that is not 4:1, rather than letting LinkedIn stretch it.
+- **The photo flow also sends `validateAndUploadProfilePhoto`** first; it only opens the editor
+  (answers with an EditImage action), and the tool's saves landed without it.
+- **Read back** through the full profile: `profilePicture.displayImageUrn` /
+  `backgroundPicture.displayImageUrn` must be the new display id.
+- One edit is 4 writes (register, two PUTs, save) and 3 profile reads (whoami, before, after).
+
 ### ✅ Experience: add, edit, remove a role — captured 2026-10-14
 
 - **The save is not in the form.** Save fires `uploadPositionMedia` (carried by the form, screens

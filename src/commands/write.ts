@@ -55,6 +55,7 @@ import {
   reserve,
   terminalDeps,
 } from './gate.ts';
+import { runEditImage } from './profile-image.ts';
 import { loadToken, OAUTH_SETUP } from './token.ts';
 import { chooseTransport, type Transport } from './transport.ts';
 
@@ -895,6 +896,9 @@ export async function runEdit(
       'a comment urn and the new text are required',
       'lnrelay edit <comment-urn> "<text>"',
     );
+  }
+  if (commentUrn === 'photo' || commentUrn === 'banner') {
+    return runEditImage(commentUrn, text, now, deps);
   }
   const ref: CommentRef | null = parseCommentUrn(commentUrn);
   if (ref === null && !commentUrn.startsWith('urn:')) {

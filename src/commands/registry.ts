@@ -532,15 +532,18 @@ export const COMMANDS: CommandDef[] = [
     name: 'edit',
     cost: '1 read + 1 write',
     summary:
-      'Change the text of a comment or post you wrote, or your profile headline or About. Its ' +
+      'Change the text of a comment or post you wrote, your profile headline or About, or your ' +
+      'profile photo or cover image. Its ' +
       'own verb, so a comment urn can never be mistaken for something to comment ON.',
     usage:
       'lnrelay edit <comment-urn | share-urn | ugcPost-urn> "<text>"\n' +
       '       lnrelay edit headline|about ("<text>" | --file <path>)\n' +
+      '       lnrelay edit photo|banner <image.png|jpg>   (photo square, banner 4:1, max 8 MB)\n' +
       '       A post is edited by the urn it was created as (`share` prints it; `my-posts` lists\n' +
       '       it as shareUrn), not its activity urn. The whole text is replaced. A profile edit\n' +
       '       shows the current text beside the new one, sends every other profile field back as\n' +
-      '       LinkedIn holds it, and reads the profile back to confirm. Headline max 220 characters.',
+      '       LinkedIn holds it, and reads the profile back to confirm. Headline max 220 characters.\n' +
+      '       An image is uploaded as it is, uncropped, and read back: it must be the one showing.',
     audience: ['cli'],
     risk: 'write',
     implemented: true,

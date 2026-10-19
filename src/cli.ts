@@ -556,6 +556,8 @@ function edit(args: ParsedArgs, now: number, deps: ConfirmDeps): Promise<Envelop
   const [target, inline] = args.positionals;
   if (args.flags.file === true) return err('edit', 'INVALID_INPUT', '--file needs a path');
   const file = str(args, 'file');
+  // An image is passed as a path, never read here as text.
+  if (target === 'photo' || target === 'banner') return runEdit(target, file ?? inline, now, deps);
   if (file === undefined) return runEdit(target, inline, now, deps);
   if (inline !== undefined) {
     return err('edit', 'INVALID_INPUT', 'pass the new text inline or with --file, not both');
