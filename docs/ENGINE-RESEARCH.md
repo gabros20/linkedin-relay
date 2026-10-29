@@ -441,14 +441,16 @@ never re-escaped. Re-verified live afterwards: same endpoint, 200, 1,457,213 res
 ## 7. Still unknown
 
 Updated 2026-10-17. Since resolved: comment threads (`post`), the full profile (§ profile above),
-saved items (`my-items`), contact info and profile viewers.
+saved items (`my-items`), contact info, profile viewers and notifications.
 
 1. **queryId rotation cadence.** Substantially de-risked by §5a (a 21-month-old queryId still works),
    but not measured. Run the 14-day `observe.ts` diff to confirm.
 2. **`li_at` lifetime.** Unmeasured. Record the issue date and watch for the first `AUTH_FAILED`.
 3. **Real throttle thresholds.** Still zero corroborated numbers. Our caps remain `guessed`.
-4. **Notifications.** `voyagerIdentityDashNotificationCards` (`…CardsCollectionWithInjectionsNoPills-25`,
-   `q=filterVanityName`) loads on every page; not exercised.
+4. **Notification tabs.** The list itself is read (`notifications`, 2026-10-29:
+   `voyagerIdentityDashNotificationCards?q=filterVanityName`, paged by `metadata.nextStart`; the last
+   page has an empty-section card and no next start). The tabs are not: `filterVanityName=mentions`
+   answered as `all`, and capturing the real names means opening the page, which marks everything seen.
 5. **Profile gaps.** Skills past the top 20 (`profileSkills?q=viewee` answered 400), recommendations,
    and the sections empty in every profile read (certifications, languages, projects, courses,
    organizations, patents, test scores; contact phone, address, Twitter).

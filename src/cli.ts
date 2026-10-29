@@ -34,6 +34,7 @@ import {
 } from './commands/messaging.ts';
 import { runMyItems } from './commands/my-items.ts';
 import { runNetwork } from './commands/network.ts';
+import { runNotifications } from './commands/notifications.ts';
 import { runOauthLogin, runOauthLogout, runOauthStatus } from './commands/oauth.ts';
 import { type PeopleRequest, runPeople, runPeopleFilters } from './commands/people.ts';
 import { type PostsRequest, runPostsSearch } from './commands/posts-search.ts';
@@ -483,6 +484,11 @@ export async function dispatch(argv: string[], now: number): Promise<Envelope> {
       return runPeopleFilters(peopleRequest(args), output(args));
     case 'viewers':
       return runViewers(output(args));
+    case 'notifications':
+      return runNotifications(
+        { limit: num(args, 'limit') ?? 25, ...(bool(args, 'unread') ? { unread: true } : {}) },
+        output(args),
+      );
     case 'events':
     case 'event':
     case 'company':

@@ -1,0 +1,104 @@
+{
+  "data": {
+    "metadata": {
+      "numUnseen": 2,
+      "*notificationFilter": "urn:li:fsd_notificationFilter:ALL",
+      "*emptySectionCard": "urn:li:fsd_notificationCard:(emptySectionCard,empty_section_card)",
+      "emptySectionStyle": "EXPANDED",
+      "$recipeTypes": ["com.linkedin.deco.recipe.anonymous.Anon1562781182"],
+      "$type": "com.linkedin.voyager.dash.identity.notifications.NotificationsMetadata"
+    },
+    "entityUrn": "urn:li:collectionResponse:yWnjqHFJmaImyY6kDykn1wlU897hapYgIlEhvnpyxNM=",
+    "elements": [],
+    "paging": {
+      "count": 10,
+      "start": 10,
+      "links": [],
+      "$recipeTypes": ["com.linkedin.voyager.dash.deco.common.FullPaging"],
+      "$type": "com.linkedin.restli.common.CollectionMetadata"
+    },
+    "$type": "com.linkedin.restli.common.CollectionResponse"
+  },
+  "included": [
+    {
+      "entityUrn": "urn:li:collectionResponse:2Ly7EfCH/U4B9nfRHebxnZCT6BU7+oQDJPEQFovRD0s=",
+      "$recipeTypes": ["com.linkedin.deco.recipe.anonymous.Anon110953941"],
+      "elements": [],
+      "$type": "com.linkedin.restli.common.CollectionResponse"
+    },
+    {
+      "entityUrn": "urn:li:collectionResponse:5aeC9YHPGjomldkeu/tbTUjm/3MTjdQQbCwa6mjPf98=",
+      "$recipeTypes": ["com.linkedin.deco.recipe.anonymous.Anon1683906799"],
+      "elements": [],
+      "$type": "com.linkedin.restli.common.CollectionResponse"
+    },
+    {
+      "contentImages": null,
+      "objectUrn": "urn:li:emptySectionCard:empty_section_card",
+      "settingTooltipTrackingId": null,
+      "tertiaryAction": null,
+      "settingTooltipText": null,
+      "entityUrn": "urn:li:fsd_notificationCard:(emptySectionCard,empty_section_card)",
+      "headerImage": null,
+      "subHeadline": {
+        "textDirection": "USER_LOCALE",
+        "text": "We’ll update you on activity in your network as well as jobs, news and more.",
+        "attributesV2": [],
+        "$recipeTypes": ["com.linkedin.voyager.dash.deco.common.text.TextViewModelV2"],
+        "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+      },
+      "tertiaryImage": null,
+      "kickerIcon": null,
+      "kickerText": null,
+      "headline": {
+        "textDirection": "USER_LOCALE",
+        "text": "No notifications yet",
+        "attributesV2": [],
+        "$recipeTypes": ["com.linkedin.voyager.dash.deco.common.text.TextViewModelV2"],
+        "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+      },
+      "contentType": null,
+      "trackingId": "redacted",
+      "read": null,
+      "publishedAt": null,
+      "contentAccessibilityText": null,
+      "contentAction": null,
+      "insightType": null,
+      "$recipeTypes": ["com.linkedin.voyager.dash.deco.identity.notifications.FullCard"],
+      "surveyDisplayTrigger": null,
+      "socialActivityCountsUrn": null,
+      "$type": "com.linkedin.voyager.dash.identity.notifications.Card",
+      "insight": null,
+      "insightAction": null,
+      "contentSecondaryText": null,
+      "cardAction": {
+        "displayText": {
+          "textDirection": "USER_LOCALE",
+          "text": "Build your network",
+          "attributesV2": [],
+          "$recipeTypes": ["com.linkedin.voyager.dash.deco.common.text.TextViewModelV2"],
+          "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+        },
+        "actionTarget": "https://www.linkedin.com/mynetwork/",
+        "type": "DISPLAY",
+        "$recipeTypes": ["com.linkedin.voyager.dash.deco.identity.notifications.FullCardAction"],
+        "$type": "com.linkedin.voyager.dash.identity.notifications.CardAction"
+      },
+      "additionalContentImagesCount": null,
+      "settingOptions": null,
+      "contentPrimaryText": null,
+      "prompt": null,
+      "actions": null,
+      "tertiaryText": null,
+      "actionCaption": null
+    },
+    {
+      "vanityName": "all",
+      "*productEducations": "urn:li:collectionResponse:5aeC9YHPGjomldkeu/tbTUjm/3MTjdQQbCwa6mjPf98=",
+      "entityUrn": "urn:li:fsd_notificationFilter:ALL",
+      "*banners": "urn:li:collectionResponse:2Ly7EfCH/U4B9nfRHebxnZCT6BU7+oQDJPEQFovRD0s=",
+      "$recipeTypes": ["com.linkedin.deco.recipe.anonymous.Anon709852712"],
+      "$type": "com.linkedin.voyager.dash.notifications.NotificationFilter"
+    }
+  ]
+}

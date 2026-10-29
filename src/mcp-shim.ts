@@ -34,6 +34,7 @@ import {
 } from './commands/messaging.ts';
 import { runMyItems } from './commands/my-items.ts';
 import { runNetwork } from './commands/network.ts';
+import { runNotifications } from './commands/notifications.ts';
 import { type PeopleRequest, runPeople, runPeopleFilters } from './commands/people.ts';
 import { runPostsSearch } from './commands/posts-search.ts';
 import { runProfile } from './commands/profile.ts';
@@ -562,6 +563,26 @@ export function buildServer(): McpServer {
         await runMyItems(
           list,
           { limit: limit ?? 50, ...(stage !== undefined ? { stage } : {}) },
+          compact === true ? { compact: true } : {},
+        ),
+      ),
+  );
+
+  server.tool(
+    'notifications',
+    "The user's LinkedIn notifications, newest first: unseen (the bell's count), and items " +
+      "{kind (LinkedIn's name, e.g. FOLLOW_PAGE_HERO), text, detail, at (ISO), read, url, from " +
+      '(who or what it is about)}. Reading here does not mark them seen. 1 page call per 25. ' +
+      NO_RETRY,
+    {
+      unread: z.boolean().optional().describe('only the unread ones'),
+      limit: z.number().int().min(1).max(200).optional().describe('default 25'),
+      compact: z.boolean().optional().describe('one line each'),
+    },
+    async ({ unread, limit, compact }) =>
+      reply(
+        await runNotifications(
+          { limit: limit ?? 25, ...(unread === true ? { unread: true } : {}) },
           compact === true ? { compact: true } : {},
         ),
       ),

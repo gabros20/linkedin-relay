@@ -306,6 +306,17 @@ export const COMMANDS: CommandDef[] = [
     implemented: true,
   },
   {
+    name: 'notifications',
+    cost: '1 page call per 25',
+    summary:
+      'Your notifications, newest first: what each says, when, read or not, where it goes and ' +
+      'who it is about. Reading them here does not mark them seen.',
+    usage: 'lnrelay notifications [--unread] [--limit N] [--compact | --fields a,b,c]',
+    audience: ['cli', 'mcp'],
+    risk: 'read',
+    implemented: true,
+  },
+  {
     name: 'viewers',
     cost: '2 page calls',
     summary:

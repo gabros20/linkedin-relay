@@ -167,6 +167,19 @@ export const CONTRACTS: Record<string, OperationContract> = {
     capturedAt: '2026-10-16',
   },
 
+  // The owner's notifications, probed 2026-10-29: the cards the bell opens,
+  // newest first. The page itself also marks them seen; reading them here
+  // does not. See engine/notifications.ts.
+  notifications: {
+    name: 'notifications',
+    transport: 'voyager-restli',
+    path: `${VOYAGER}/voyagerIdentityDashNotificationCards`,
+    decorationId:
+      'com.linkedin.voyager.dash.deco.identity.notifications.CardsCollectionWithInjectionsNoPills-25',
+    provenance: 'verified',
+    capturedAt: '2026-10-29',
+  },
+
   // A company page, captured 2026-10-14. The GraphQL company query by
   // universalName answers only the company's urn, so this is the REST
   // resource: by id (`/<id>`) or by name (`q=universalName`). It carries the
