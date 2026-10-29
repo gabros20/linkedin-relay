@@ -271,9 +271,9 @@ Every filter LinkedIn offers for this query, each with its options' `value`, `la
 
 ### `profile` — mid. Read only the finalists.
 ```
-profile id:"<public-id | profile id | urn | linkedin.com/in/… URL>" [contact] [posts:N] [skills] [compact] [fields:"a,b"]
+profile id:"<public-id | profile id | urn | linkedin.com/in/… URL>" [contact] [posts:N] [skills] [recommendations] [compact] [fields:"a,b"]
 ```
-CLI: `lnrelay profile <id|url> [--contact] [--posts N] [--skills] [--compact | --fields a,b,c]`. The whole profile page: `name`,
+CLI: `lnrelay profile <id|url> [--contact] [--posts N] [--skills] [--recommendations] [--compact | --fields a,b,c]`. The whole profile page: `name`,
 `headline`, `about`, `location`, `industry`, the top card (`title`, `company`, `school`), and every
 section that has entries:
 - `experience`: every role, newest company first: `title`, `company`, `companyId` (what `company`
@@ -288,7 +288,11 @@ section that has entries:
 
 Descriptions make a full profile long. **`compact:true`** turns each role, school and entry into
 one line and drops descriptions (About stays); `fields:"name,experience"` keeps only those.
-Recommendations are not read.
+
+**`recommendations:true`** (`--recommendations`) adds `recommendations`: `received` and `given`, each
+`[{name, url, headline, degree, context, text}]`, where `context` is the date and how they worked
+together, in the user's LinkedIn language. 15 a page, both ways: 2 page calls for most people. The
+texts are long; use `fields` to keep only what you need. It failing leaves `recommendationsError`.
 
 **`contact:true`** (`--contact`) adds `contact`, the profile's Contact info as it shows to the user,
 for one more profile read: `email`, `websites` [{`url`, `type`}], `phones` [{`number`, `type`}],

@@ -19,12 +19,26 @@ const SKILLS_LAST = readFileSync(
 const SKILLS_SCREEN =
   '"payload":{"vanityName":"person-1","profileId":"ACoAATESTPERSON1","start":0,"count":10,' +
   '"filter":"ProfileSkillCategory_ALL"}';
+type Answer = Awaited<ReturnType<ProfileFetch>>;
+const RECS = readFileSync(
+  join(import.meta.dir, 'fixtures', 'profile-recommendations.rsc'),
+  'utf-8',
+);
+const recsPage = (body: unknown): Answer => {
+  const type = (
+    body as { paginationRequest: { requestedArguments: { payload: { type: string } } } }
+  ).paginationRequest.requestedArguments.payload.type;
+  // 8 received on one page; none given.
+  return {
+    ok: true,
+    raw: type === 'Received' ? RECS : '0:["$","div",null,{"isPartialPage":true}]',
+  };
+};
 const CONTACT = readFileSync(
   join(import.meta.dir, 'fixtures', 'profile-contact-connection.rsc'),
   'utf-8',
 );
 
-type Answer = Awaited<ReturnType<ProfileFetch>>;
 const skillsPage = (body: unknown): Answer => {
   const start = (
     body as { paginationRequest: { requestedArguments: { payload: { start: number } } } }
@@ -49,6 +63,7 @@ const ROUTES: {
     is: (u) => u.includes('pagers.profile.details.skills'),
     answer: skillsPage,
   },
+  { name: 'recommendations', is: (u) => u.includes('details.recommendations'), answer: recsPage },
   { name: 'posts', is: (_u, c) => c === 'search', answer: () => ({ ok: true, raw: POSTS }) },
   {
     name: 'contact',
@@ -188,6 +203,28 @@ describe('lnrelay profile', () => {
     const p = data(await runProfile('person-1', {}, linkedin(['skills']).fetch, { skills: true }));
     expect(p.skills).toHaveLength(20);
     expect(p.skillsError).toContain('BUDGET_EXHAUSTED');
+  });
+
+  test('--recommendations: received and given, on the page budget', async () => {
+    const { fetch, asked } = linkedin();
+    const p = data(await runProfile('person-1', {}, fetch, { recommendations: true }));
+    const calls = asked.filter((a) => a.url.includes('details.recommendations'));
+    expect(calls.map((a) => a.spendClass)).toEqual(['page', 'page']);
+    expect(JSON.stringify(calls[0]?.body)).toContain(String(p.id));
+    const recs = p.recommendations as { received: { name: string }[]; given: unknown[] };
+    expect(recs.received).toHaveLength(8);
+    expect(recs.received[0]?.name).toBe('Person 1');
+    expect(recs.given).toEqual([]);
+  });
+
+  test('the recommendations failing keeps the profile, and says so', async () => {
+    const p = data(
+      await runProfile('person-1', {}, linkedin(['recommendations']).fetch, {
+        recommendations: true,
+      }),
+    );
+    expect(p.recommendations).toBeUndefined();
+    expect(p.recommendationsError).toContain('BUDGET_EXHAUSTED');
   });
 
   test('nothing to read is refused before any call', async () => {

@@ -445,7 +445,9 @@ export function buildServer(): McpServer {
       '+1 per 50 more companies. contact: true adds contact {email, websites [{url, type}], ' +
       'phones, birthday, connectedSince, …} as the profile shows it to you, for 1 more profile ' +
       'read; it failing leaves contactError. posts: N adds posts, their N newest (the posts search, ' +
-      'from them; postsError if it fails). MEDIUM cost — use only on finalists surfaced by `people` or ' +
+      'from them; postsError if it fails). recommendations: true adds recommendations {received, ' +
+      'given}: [{name, url, headline, degree, context (when and how they worked together, in the ' +
+      "user's language), text}]. MEDIUM cost — use only on finalists surfaced by `people` or " +
       '`search`. compact: true makes each role, school and entry one line and drops ' +
       `descriptions; fields keeps only those named. ${NO_RETRY}`,
     {
@@ -464,8 +466,12 @@ export function buildServer(): McpServer {
         .boolean()
         .optional()
         .describe('read every skill, not just the top 20 (1 page call per 10)'),
+      recommendations: z
+        .boolean()
+        .optional()
+        .describe('also read the recommendations they received and gave (2+ page calls)'),
     },
-    async ({ id, compact, fields, contact, posts, skills }) =>
+    async ({ id, compact, fields, contact, posts, skills, recommendations }) =>
       reply(
         await runProfile(
           id,
@@ -477,6 +483,7 @@ export function buildServer(): McpServer {
           {
             contact: contact === true,
             skills: skills === true,
+            recommendations: recommendations === true,
             ...(posts !== undefined ? { posts } : {}),
           },
         ),

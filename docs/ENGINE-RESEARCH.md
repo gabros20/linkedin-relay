@@ -266,6 +266,17 @@ else's profile the rows carry no edit action, so each is found by its component,
 it; the name is that row's medium bold text. 47 of 47 in five pages. Endorsement lines come in the
 session's language and are not read.
 
+**Recommendations (2026-10-29).** Not in the full profile. The details page
+(`/in/<id>/details/recommendations/`) draws them from `pagers.profile.details.recommendations` with
+`{type: Received|Given, vanityName, profileId, start, detailScreenTabIndex: "0"|"1", count: 15}`, which
+the profile read already has. Each one is a header row (the recommender's name, headline and profile
+URL as the `profile_*_loading_state` values it sets on click; degree; the date-and-relationship line,
+in the session's language) and its text. The first sits in the root row with the others referenced
+after it; the rest each have a row; a text is what lies between its header and the next. Texts come
+as `$9` fragments, some in rows of their own, or, when long, as an RSC **text row**
+(`<id>:T<hex byte length>,<text>`) that is followed by the next row with no newline. The shared
+`Rows` splitter now reads those by length; before, it merged the text into the next row.
+
 **Contact info (2026-10-16).** The legacy `identity/profiles/<id>/profileContactInfo` answers 410
 Gone, and the full profile carries no email, phone or website. The page's "Contact info" link opens
 an SDUI overlay: `POST flagship-web/rsc-action/actions/navigation?screenId=com.linkedin.sdui.
@@ -459,8 +470,8 @@ saved items (`my-items`), contact info, profile viewers and notifications.
    `voyagerIdentityDashNotificationCards?q=filterVanityName`, paged by `metadata.nextStart`; the last
    page has an empty-section card and no next start). The tabs are not: `filterVanityName=mentions`
    answered as `all`, and capturing the real names means opening the page, which marks everything seen.
-5. **Profile gaps.** Recommendations,
-   and the sections empty in every profile read (certifications, languages, projects, courses,
+5. **Profile gaps.** The sections
+   empty in every profile read (certifications, languages, projects, courses,
    organizations, patents, test scores; contact phone, address, Twitter).
 6. **More than 3 profile viewers.** A free account is shown 3; the list's next page was not exercised.
 

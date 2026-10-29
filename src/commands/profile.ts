@@ -6,7 +6,8 @@
 // call on the profile budget. `--posts N` adds their newest posts: the posts
 // search, filtered to posts from them, on the search budget. `--skills` reads
 // every skill past the top 20, from the Skills screen's own list, 10 a page
-// on the page budget. `--compact` turns every role, school and entry into a
+// on the page budget. `--recommendations` reads those received and given, 15
+// a page on the page budget. `--compact` turns every role, school and entry into a
 // line and drops the descriptions; `--fields` keeps only the named fields.
 
 import {
@@ -27,6 +28,14 @@ import {
   type School,
 } from '../engine/full-profile.ts';
 import { createLiveClient } from '../engine/index.ts';
+import {
+  parseRecommendations,
+  RECOMMENDATIONS_PAGE,
+  RECOMMENDATIONS_URL,
+  type Recommendation,
+  type RecommendationKind,
+  recommendationsBody,
+} from '../engine/recommendations.ts';
 import { navBody } from '../engine/sdui-form.ts';
 import { NAV_URL } from '../engine/sdui-profile.ts';
 import {
@@ -94,6 +103,8 @@ type Read = FullProfile & {
   posts?: unknown[];
   postsError?: string;
   skillsError?: string;
+  recommendations?: Record<RecommendationKind, Recommendation[]>;
+  recommendationsError?: string;
   raw?: unknown;
 };
 
@@ -176,6 +187,32 @@ async function readAllSkills(get: ProfileFetch, p: Read): Promise<void> {
   else delete p.counts;
 }
 
+/** Pages of recommendations at most, each way: 15 a page. */
+const RECOMMENDATION_PAGES = 10;
+
+/** Every recommendation they received and gave, from the details page's own list. */
+async function readRecommendations(get: ProfileFetch, p: Read): Promise<void> {
+  if (p.publicId === undefined) {
+    p.recommendationsError = 'NOT_FOUND: the profile has no public id to ask with';
+    return;
+  }
+  const out: Record<RecommendationKind, Recommendation[]> = { received: [], given: [] };
+  for (const kind of ['received', 'given'] as const) {
+    for (let page = 0; page < RECOMMENDATION_PAGES; page++) {
+      const body = recommendationsBody(kind, p.publicId, p.id, out[kind].length);
+      const res = await get(RECOMMENDATIONS_URL, 'page', body);
+      const read = res.ok ? parseRecommendations(res.raw ?? '') : res;
+      if (!read.ok) {
+        p.recommendationsError = `${read.code}: ${read.message}`;
+        return;
+      }
+      out[kind].push(...read.items);
+      if (read.items.length < RECOMMENDATIONS_PAGE) break;
+    }
+  }
+  p.recommendations = out;
+}
+
 /** Their newest posts onto the profile; a failure says why on the profile. */
 async function readPosts(get: ProfileFetch, p: Read, n: number, compact: boolean): Promise<void> {
   const r = await runPostsSearch(
@@ -235,7 +272,7 @@ export async function runProfile(
   input: string | undefined,
   opts: OutputOpts = {},
   fetch?: ProfileFetch,
-  req: { contact?: boolean; posts?: number; skills?: boolean } = {},
+  req: { contact?: boolean; posts?: number; skills?: boolean; recommendations?: boolean } = {},
 ): Promise<Envelope> {
   if (input === undefined || input.trim() === '')
     return err(
@@ -254,6 +291,7 @@ export async function runProfile(
   const p: Read = parsed.profile;
   await readRestOfExperience(get, p);
   if (req.skills === true) await readAllSkills(get, p);
+  if (req.recommendations === true) await readRecommendations(get, p);
   if (req.contact === true) await readContact(get, p);
   if (req.posts !== undefined && req.posts > 0)
     await readPosts(get, p, req.posts, opts.compact === true);
