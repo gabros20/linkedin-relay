@@ -83,21 +83,63 @@ export function postsPagerBody(q: PostsQuery) {
 
 // ─── The stream's rows ────────────────────────────────────────────────────────
 
-/** An RSC stream split into its `<hex id>:<payload>` rows. */
+/** How many UTF-16 units `bytes` UTF-8 bytes take, starting at `from`. */
+function unitsFor(stream: string, from: number, bytes: number): number {
+  let i = from;
+  let left = bytes;
+  while (left > 0 && i < stream.length) {
+    const c = stream.codePointAt(i) as number;
+    left -= c < 0x80 ? 1 : c < 0x800 ? 2 : c < 0x10000 ? 3 : 4;
+    i += c > 0xffff ? 2 : 1;
+  }
+  return i - from;
+}
+
+/**
+ * An RSC stream split into its `<hex id>:<payload>` rows. A row ends at a
+ * newline, except a text row, `<id>:T<hex byte length>,<text>`, which is
+ * exactly that many bytes (newlines and all) with the next row straight after.
+ */
 export class Rows {
   readonly byId = new Map<string, string>();
   private readonly starts: { id: string; at: number }[] = [];
+  private readonly texts = new Set<string>();
 
   constructor(readonly stream: string) {
-    for (const m of stream.matchAll(/(?:^|\n)([0-9a-f]+):/g)) {
-      const at = (m.index ?? 0) + (m[0].startsWith('\n') ? 1 : 0);
-      this.starts.push({ id: m[1] as string, at });
+    const head = /([0-9a-f]+):(?:T([0-9a-f]+),)?/y;
+    let pos = 0;
+    while (pos < stream.length) {
+      if (stream[pos] === '\n') {
+        pos++;
+        continue;
+      }
+      head.lastIndex = pos;
+      const m = head.exec(stream);
+      if (m === null) {
+        // Not a row start: skip to the next line.
+        const nl = stream.indexOf('\n', pos);
+        pos = nl === -1 ? stream.length : nl + 1;
+        continue;
+      }
+      const id = m[1] as string;
+      const body = pos + m[0].length;
+      this.starts.push({ id, at: pos });
+      let end: number;
+      if (m[2] !== undefined) {
+        end = body + unitsFor(stream, body, Number.parseInt(m[2], 16));
+        this.texts.add(id);
+      } else {
+        const nl = stream.indexOf('\n', body);
+        end = nl === -1 ? stream.length : nl;
+      }
+      this.byId.set(id, stream.slice(body, end));
+      pos = end;
     }
-    for (let i = 0; i < this.starts.length; i++) {
-      const s = this.starts[i] as { id: string; at: number };
-      const end = this.starts[i + 1]?.at ?? stream.length;
-      this.byId.set(s.id, stream.slice(s.at + s.id.length + 1, end));
-    }
+  }
+
+  /** Whether a row is raw text (a `T` row) rather than JSON. */
+  isText(id: string): boolean {
+    return this.texts.has(id);
   }
 
   /** The row a stream position falls in. */
