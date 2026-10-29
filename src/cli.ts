@@ -463,6 +463,7 @@ export async function dispatch(argv: string[], now: number): Promise<Envelope> {
     case 'profile':
       return runProfile(args.positionals[0], output(args), undefined, {
         contact: bool(args, 'contact'),
+        ...(num(args, 'posts') !== undefined ? { posts: num(args, 'posts') } : {}),
       });
     case 'feed':
       return runFeed(num(args, 'limit') ?? 10, output(args));

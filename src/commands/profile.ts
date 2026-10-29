@@ -3,7 +3,8 @@
 // A profile in full; see engine/full-profile.ts. One call on the profile
 // budget, and one more per 50 position groups past the first 10, so the
 // experience is whole. `--contact` adds the contact info overlay, one more
-// call on the profile budget. `--compact` turns every role, school and entry into a
+// call on the profile budget. `--posts N` adds their newest posts: the posts
+// search, filtered to posts from them, on the search budget. `--compact` turns every role, school and entry into a
 // line and drops the descriptions; `--fields` keeps only the named fields.
 
 import {
@@ -30,13 +31,18 @@ import { err, ok } from '../output.ts';
 import type { Envelope } from '../types.ts';
 import type { OutputOpts } from './live.ts';
 import { line } from './paged.ts';
+import { runPostsSearch } from './posts-search.ts';
 
 type Fetched =
   | { ok: true; json?: unknown; raw?: string }
   | { ok: false; code: string; message: string; hint?: string };
 
 /** One accounted call: a POST when a body is given. Injectable so tests send nothing. */
-export type ProfileFetch = (url: string, spendClass: 'profile', body?: unknown) => Promise<Fetched>;
+export type ProfileFetch = (
+  url: string,
+  spendClass: 'profile' | 'search',
+  body?: unknown,
+) => Promise<Fetched>;
 
 function liveFetch(quiet: boolean): ProfileFetch | Envelope {
   const session = loadSession();
@@ -73,6 +79,8 @@ type Read = FullProfile & {
   experienceError?: string;
   contact?: ContactInfo;
   contactError?: string;
+  posts?: unknown[];
+  postsError?: string;
   raw?: unknown;
 };
 
@@ -110,6 +118,20 @@ async function readContact(get: ProfileFetch, p: Read): Promise<void> {
   const read = res.ok ? parseContactInfo(res.raw ?? '') : res;
   if (read.ok) p.contact = read.contact;
   else p.contactError = `${read.code}: ${read.message}`;
+}
+
+/** Their newest posts onto the profile; a failure says why on the profile. */
+async function readPosts(get: ProfileFetch, p: Read, n: number, compact: boolean): Promise<void> {
+  const r = await runPostsSearch(
+    { from: [p.id], sort: 'recent', limit: n },
+    compact ? { compact: true } : {},
+    async (url, body) => {
+      const res = await get(url, 'search', body);
+      return res.ok ? { ok: true, raw: res.raw ?? '' } : res;
+    },
+  );
+  if (r.ok) p.posts = (r.data as { items: unknown[] }).items;
+  else p.postsError = `${r.error.code}: ${r.error.message}`;
 }
 
 const span = (x: { start?: string; end?: string; current?: boolean }) =>
@@ -157,7 +179,7 @@ export async function runProfile(
   input: string | undefined,
   opts: OutputOpts = {},
   fetch?: ProfileFetch,
-  req: { contact?: boolean } = {},
+  req: { contact?: boolean; posts?: number } = {},
 ): Promise<Envelope> {
   if (input === undefined || input.trim() === '')
     return err(
@@ -176,6 +198,8 @@ export async function runProfile(
   const p: Read = parsed.profile;
   await readRestOfExperience(get, p);
   if (req.contact === true) await readContact(get, p);
+  if (req.posts !== undefined && req.posts > 0)
+    await readPosts(get, p, req.posts, opts.compact === true);
 
   if (opts.raw === true) return ok('profile', { ...p, raw: res.json });
   if (opts.fields !== undefined && opts.fields !== '')

@@ -442,7 +442,8 @@ export function buildServer(): McpServer {
       'organizations, patents, testScores. Empty sections are left out. 1 profile read (30 a day), ' +
       '+1 per 50 more companies. contact: true adds contact {email, websites [{url, type}], ' +
       'phones, birthday, connectedSince, …} as the profile shows it to you, for 1 more profile ' +
-      'read; it failing leaves contactError. MEDIUM cost — use only on finalists surfaced by `people` or ' +
+      'read; it failing leaves contactError. posts: N adds posts, their N newest (the posts search, ' +
+      'from them; postsError if it fails). MEDIUM cost — use only on finalists surfaced by `people` or ' +
       '`search`. compact: true makes each role, school and entry one line and drops ' +
       `descriptions; fields keeps only those named. ${NO_RETRY}`,
     {
@@ -450,8 +451,15 @@ export function buildServer(): McpServer {
       compact: z.boolean().optional().describe('one line per role, school and entry'),
       fields: z.string().optional().describe('comma-separated top-level fields to keep'),
       contact: z.boolean().optional().describe('also read the contact info (1 more profile read)'),
+      posts: z
+        .number()
+        .int()
+        .min(1)
+        .max(50)
+        .optional()
+        .describe('also read their N newest posts (1 search call per 20)'),
     },
-    async ({ id, compact, fields, contact }) =>
+    async ({ id, compact, fields, contact, posts }) =>
       reply(
         await runProfile(
           id,
@@ -460,7 +468,7 @@ export function buildServer(): McpServer {
             ...(fields !== undefined ? { fields } : {}),
           },
           undefined,
-          { contact: contact === true },
+          { contact: contact === true, ...(posts !== undefined ? { posts } : {}) },
         ),
       ),
   );

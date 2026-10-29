@@ -7,6 +7,7 @@ const fixture = (name: string) =>
   JSON.parse(readFileSync(join(import.meta.dir, 'fixtures', name), 'utf-8'));
 const FULL = fixture('profile-full.json');
 const PAGE = fixture('profile-positions-page.json');
+const POSTS = readFileSync(join(import.meta.dir, 'fixtures', 'search-posts.rsc'), 'utf-8');
 const CONTACT = readFileSync(
   join(import.meta.dir, 'fixtures', 'profile-contact-connection.rsc'),
   'utf-8',
@@ -16,6 +17,10 @@ function linkedin(fails: string[] = []) {
   const asked: { url: string; spendClass: string; body?: unknown }[] = [];
   const fetch: ProfileFetch = async (url, spendClass, body) => {
     asked.push({ url, spendClass, ...(body !== undefined ? { body } : {}) });
+    if (spendClass === 'search') {
+      if (fails.includes('posts')) return { ok: false, code: 'BUDGET_EXHAUSTED', message: 'spent' };
+      return { ok: true, raw: POSTS };
+    }
     if (url.includes('ContactDetailsOverlay')) {
       if (fails.includes('contact'))
         return { ok: false, code: 'BUDGET_EXHAUSTED', message: 'spent' };
@@ -108,6 +113,23 @@ describe('lnrelay profile', () => {
     expect(p.name).toBe('Person 1');
     expect(p.contact).toBeUndefined();
     expect(p.contactError).toBe('BUDGET_EXHAUSTED: spent');
+  });
+
+  test('--posts N: their newest posts, from them only, on the search budget', async () => {
+    const { fetch, asked } = linkedin();
+    const p = data(await runProfile('person-1', {}, fetch, { posts: 3 }));
+    const call = asked.find((a) => a.spendClass === 'search');
+    const body = JSON.stringify(call?.body);
+    // The profile id the profile answered with, and newest first.
+    expect(body).toContain(String(p.id));
+    expect(body).toContain('date_posted');
+    expect((p.posts as unknown[]).length).toBe(3);
+  });
+
+  test('the posts failing keeps the profile, and says so', async () => {
+    const p = data(await runProfile('person-1', {}, linkedin(['posts']).fetch, { posts: 3 }));
+    expect(p.name).toBe('Person 1');
+    expect(p.postsError).toContain('BUDGET_EXHAUSTED');
   });
 
   test('nothing to read is refused before any call', async () => {

@@ -271,9 +271,9 @@ Every filter LinkedIn offers for this query, each with its options' `value`, `la
 
 ### `profile` — mid. Read only the finalists.
 ```
-profile id:"<public-id | profile id | urn | linkedin.com/in/… URL>" [contact] [compact] [fields:"a,b"]
+profile id:"<public-id | profile id | urn | linkedin.com/in/… URL>" [contact] [posts:N] [compact] [fields:"a,b"]
 ```
-CLI: `lnrelay profile <id|url> [--contact] [--compact | --fields a,b,c]`. The whole profile page: `name`,
+CLI: `lnrelay profile <id|url> [--contact] [--posts N] [--compact | --fields a,b,c]`. The whole profile page: `name`,
 `headline`, `about`, `location`, `industry`, the top card (`title`, `company`, `school`), and every
 section that has entries:
 - `experience`: every role, newest company first: `title`, `company`, `companyId` (what `company`
@@ -295,6 +295,10 @@ for one more profile read: `email`, `websites` [{`url`, `type`}], `phones` [{`nu
 `twitter`, `address`, `birthday`, `connectedSince` (1st-degree only), and any other field under its
 own name. In the profiles read, only a connection showed an email. It failing leaves `contactError`
 and the rest of the profile. Ask for it only when the user wants to reach someone.
+
+**`posts:N`** (`--posts N`) adds `posts`, their N newest posts, as `search posts` rows: the posts
+search filtered to posts from them, newest first, on the search budget (1 call per 20). It failing
+leaves `postsError`. For their posts on a topic, use `search posts` with `from:[id]` and keywords.
 
 ### `feed` — mid. What the network is posting.
 ```
