@@ -76,14 +76,14 @@ export const COMMANDS: CommandDef[] = [
   },
   {
     name: 'profile',
-    cost: '1 profile read (+1 per 50 companies past the first 10; --contact +1; --posts +1 search)',
+    cost: '1 profile read (+1 per 50 companies past the first 10; --contact +1; --posts +1 search; --skills +1 page per 10)',
     summary:
       'A profile in full: name, headline, about, every role with dates and descriptions, ' +
       'education, skills, honors, publications, volunteering and the other sections. ' +
       '--contact adds contact info: email, websites, phone, birthday, connected since. ' +
-      '--posts N adds their N newest posts.',
+      '--posts N adds their N newest posts; --skills reads every skill past the top 20.',
     usage:
-      'lnrelay profile <public-id|profile-id|urn|url> [--contact] [--posts N]\n' +
+      'lnrelay profile <public-id|profile-id|urn|url> [--contact] [--posts N] [--skills]\n' +
       '       [--compact | --fields a,b,c] [--raw]',
     audience: ['cli', 'mcp'],
     risk: 'read',

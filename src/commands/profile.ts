@@ -4,7 +4,9 @@
 // budget, and one more per 50 position groups past the first 10, so the
 // experience is whole. `--contact` adds the contact info overlay, one more
 // call on the profile budget. `--posts N` adds their newest posts: the posts
-// search, filtered to posts from them, on the search budget. `--compact` turns every role, school and entry into a
+// search, filtered to posts from them, on the search budget. `--skills` reads
+// every skill past the top 20, from the Skills screen's own list, 10 a page
+// on the page budget. `--compact` turns every role, school and entry into a
 // line and drops the descriptions; `--fields` keeps only the named fields.
 
 import {
@@ -25,6 +27,16 @@ import {
   type School,
 } from '../engine/full-profile.ts';
 import { createLiveClient } from '../engine/index.ts';
+import { navBody } from '../engine/sdui-form.ts';
+import { NAV_URL } from '../engine/sdui-profile.ts';
+import {
+  listPayloadOf,
+  PAGER_URL,
+  pagerFrom,
+  SKILL,
+  skillNamesOf,
+  skillRowsOf,
+} from '../engine/sdui-skill.ts';
 import { loadSession } from '../engine/session.ts';
 import { project } from '../format.ts';
 import { err, ok } from '../output.ts';
@@ -40,7 +52,7 @@ type Fetched =
 /** One accounted call: a POST when a body is given. Injectable so tests send nothing. */
 export type ProfileFetch = (
   url: string,
-  spendClass: 'profile' | 'search',
+  spendClass: 'profile' | 'search' | 'page',
   body?: unknown,
 ) => Promise<Fetched>;
 
@@ -81,6 +93,7 @@ type Read = FullProfile & {
   contactError?: string;
   posts?: unknown[];
   postsError?: string;
+  skillsError?: string;
   raw?: unknown;
 };
 
@@ -118,6 +131,49 @@ async function readContact(get: ProfileFetch, p: Read): Promise<void> {
   const read = res.ok ? parseContactInfo(res.raw ?? '') : res;
   if (read.ok) p.contact = read.contact;
   else p.contactError = `${read.code}: ${read.message}`;
+}
+
+/** Skill pages at most: 10 skills each, and LinkedIn shows up to 100. */
+const SKILL_PAGES = 10;
+
+/** Every skill, from the Skills screen's own list, in place of the profile's top 20. */
+async function readAllSkills(get: ProfileFetch, p: Read): Promise<void> {
+  const fail = (code: string, message: string) => {
+    p.skillsError = `${code}: ${message}`;
+  };
+  if (p.publicId === undefined)
+    return fail('NOT_FOUND', 'the profile has no public id to ask with');
+  const screen = SKILL.listScreen;
+  const nav = await get(
+    `${NAV_URL}?screenId=${screen}&sduiid=${screen}`,
+    'page',
+    navBody(screen, { vanityName: p.publicId, isVanityNameResolved: true }),
+  );
+  if (!nav.ok) return fail(nav.code, nav.message);
+  const payload = listPayloadOf(nav.raw ?? '');
+  if (payload === null) return fail('SCHEMA_DRIFT', 'the Skills screen carried no list request');
+  const count = typeof payload.count === 'number' ? payload.count : 10;
+  const total = p.counts?.skills?.total;
+  const skills: string[] = [];
+  let start = 0;
+  for (let page = 0; page < SKILL_PAGES; page++) {
+    const res = await get(PAGER_URL, 'page', pagerFrom(payload, start));
+    if (!res.ok) return fail(res.code, res.message);
+    const rows = skillRowsOf(res.raw ?? '');
+    const names = skillNamesOf(res.raw ?? '');
+    if (rows > names.length)
+      return fail('SCHEMA_DRIFT', `${rows} skills were shown, ${names.length} read`);
+    skills.push(...names);
+    start += rows;
+    if (rows < count || (total !== undefined && start >= total)) break;
+  }
+  if (skills.length === 0) return fail('SCHEMA_DRIFT', 'the skills list held no skills');
+  p.skills = skills;
+  const counts = { ...p.counts };
+  if (total === undefined || skills.length >= total) delete counts.skills;
+  else counts.skills = { shown: skills.length, total };
+  if (Object.keys(counts).length > 0) p.counts = counts;
+  else delete p.counts;
 }
 
 /** Their newest posts onto the profile; a failure says why on the profile. */
@@ -179,7 +235,7 @@ export async function runProfile(
   input: string | undefined,
   opts: OutputOpts = {},
   fetch?: ProfileFetch,
-  req: { contact?: boolean; posts?: number } = {},
+  req: { contact?: boolean; posts?: number; skills?: boolean } = {},
 ): Promise<Envelope> {
   if (input === undefined || input.trim() === '')
     return err(
@@ -197,6 +253,7 @@ export async function runProfile(
   if (!parsed.ok) return err('profile', parsed.code, parsed.message, parsed.hint);
   const p: Read = parsed.profile;
   await readRestOfExperience(get, p);
+  if (req.skills === true) await readAllSkills(get, p);
   if (req.contact === true) await readContact(get, p);
   if (req.posts !== undefined && req.posts > 0)
     await readPosts(get, p, req.posts, opts.compact === true);

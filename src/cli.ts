@@ -464,6 +464,7 @@ export async function dispatch(argv: string[], now: number): Promise<Envelope> {
     case 'profile':
       return runProfile(args.positionals[0], output(args), undefined, {
         contact: bool(args, 'contact'),
+        skills: bool(args, 'skills'),
         ...(num(args, 'posts') !== undefined ? { posts: num(args, 'posts') } : {}),
       });
     case 'feed':

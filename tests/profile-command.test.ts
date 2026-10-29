@@ -8,29 +8,69 @@ const fixture = (name: string) =>
 const FULL = fixture('profile-full.json');
 const PAGE = fixture('profile-positions-page.json');
 const POSTS = readFileSync(join(import.meta.dir, 'fixtures', 'search-posts.rsc'), 'utf-8');
+const SKILLS_1 = readFileSync(
+  join(import.meta.dir, 'fixtures', 'profile-skills-page-1.rsc'),
+  'utf-8',
+);
+const SKILLS_LAST = readFileSync(
+  join(import.meta.dir, 'fixtures', 'profile-skills-page-last.rsc'),
+  'utf-8',
+);
+const SKILLS_SCREEN =
+  '"payload":{"vanityName":"person-1","profileId":"ACoAATESTPERSON1","start":0,"count":10,' +
+  '"filter":"ProfileSkillCategory_ALL"}';
 const CONTACT = readFileSync(
   join(import.meta.dir, 'fixtures', 'profile-contact-connection.rsc'),
   'utf-8',
 );
 
+type Answer = Awaited<ReturnType<ProfileFetch>>;
+const skillsPage = (body: unknown): Answer => {
+  const start = (
+    body as { paginationRequest: { requestedArguments: { payload: { start: number } } } }
+  ).paginationRequest.requestedArguments.payload.start;
+  // Four full pages of 10, then the last 7: 47, as the profile counts.
+  return { ok: true, raw: start >= 40 ? SKILLS_LAST : SKILLS_1 };
+};
+
+/** What LinkedIn answers, by what is asked; the name is what `fails` turns off. */
+const ROUTES: {
+  name: string;
+  is: (url: string, spendClass: string) => boolean;
+  answer: (body: unknown) => Answer;
+}[] = [
+  {
+    name: 'skills',
+    is: (u) => u.includes('ProfileSkillDetails'),
+    answer: () => ({ ok: true, raw: SKILLS_SCREEN }),
+  },
+  {
+    name: 'skill-pages',
+    is: (u) => u.includes('pagers.profile.details.skills'),
+    answer: skillsPage,
+  },
+  { name: 'posts', is: (_u, c) => c === 'search', answer: () => ({ ok: true, raw: POSTS }) },
+  {
+    name: 'contact',
+    is: (u) => u.includes('ContactDetailsOverlay'),
+    answer: () => ({ ok: true, raw: CONTACT }),
+  },
+  {
+    name: 'page',
+    is: (u) => u.includes('profilePositionGroups'),
+    answer: () => ({ ok: true, json: PAGE }),
+  },
+];
+
 function linkedin(fails: string[] = []) {
   const asked: { url: string; spendClass: string; body?: unknown }[] = [];
   const fetch: ProfileFetch = async (url, spendClass, body) => {
     asked.push({ url, spendClass, ...(body !== undefined ? { body } : {}) });
-    if (spendClass === 'search') {
-      if (fails.includes('posts')) return { ok: false, code: 'BUDGET_EXHAUSTED', message: 'spent' };
-      return { ok: true, raw: POSTS };
-    }
-    if (url.includes('ContactDetailsOverlay')) {
-      if (fails.includes('contact'))
-        return { ok: false, code: 'BUDGET_EXHAUSTED', message: 'spent' };
-      return { ok: true, raw: CONTACT };
-    }
-    if (url.includes('profilePositionGroups')) {
-      if (fails.includes('page')) return { ok: false, code: 'BUDGET_EXHAUSTED', message: 'spent' };
-      return { ok: true, json: PAGE };
-    }
-    return { ok: true, json: FULL };
+    const route = ROUTES.find((r) => r.is(url, spendClass));
+    if (route === undefined) return { ok: true, json: FULL };
+    if (fails.includes(route.name))
+      return { ok: false, code: 'BUDGET_EXHAUSTED', message: 'spent' };
+    return route.answer(body);
   };
   return { fetch, asked };
 }
@@ -130,6 +170,24 @@ describe('lnrelay profile', () => {
     const p = data(await runProfile('person-1', {}, linkedin(['posts']).fetch, { posts: 3 }));
     expect(p.name).toBe('Person 1');
     expect(p.postsError).toContain('BUDGET_EXHAUSTED');
+  });
+
+  test("--skills: every skill, past the profile's 20, on the page budget", async () => {
+    const { fetch, asked } = linkedin();
+    const p = data(await runProfile('person-1', {}, fetch, { skills: true }));
+    const pages = asked.filter((a) => a.url.includes('pagers.profile.details.skills'));
+    expect(pages).toHaveLength(5);
+    expect(pages.every((a) => a.spendClass === 'page')).toBe(true);
+    expect(p.skills).toHaveLength(47);
+    expect((p.skills as string[]).at(-1)).toBe('Technology Strategy');
+    // Whole now: nothing says there are more.
+    expect(p.counts).toBeUndefined();
+  });
+
+  test('the skills failing keeps the top 20, and says so', async () => {
+    const p = data(await runProfile('person-1', {}, linkedin(['skills']).fetch, { skills: true }));
+    expect(p.skills).toHaveLength(20);
+    expect(p.skillsError).toContain('BUDGET_EXHAUSTED');
   });
 
   test('nothing to read is refused before any call', async () => {

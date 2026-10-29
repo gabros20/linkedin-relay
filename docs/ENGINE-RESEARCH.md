@@ -254,9 +254,17 @@ is a `Position` outside every group). It holds the first 10 position groups and 
 true `paging.total`. The rest of the experience: `identity/dash/profilePositionGroups?q=viewee&
 profileUrn=…&decorationId=…FullProfilePositionGroup-50&start=10&count=50` (22 more groups in one
 call; `-75` answered the same). `profileSkills?q=viewee` answered 400 with two decorations tried, so
-skills report `shown`/`total`. Certifications, languages, projects, courses, organizations, patents
+skills report `shown`/`total`; `--skills` reads them all from the Skills page instead (below). Certifications, languages, projects, courses, organizations, patents
 and test scores were empty in all six profiles read; their field names are unverified. Not read:
 recommendations.
+
+**All skills (2026-10-29).** The Skills page (`ProfileSkillDetails`, opened with `{vanityName,
+isVanityNameResolved}`) hands out a pager payload (`pagers.profile.details.skills`, `{vanityName,
+profileId, start, count: 10, filter: ProfileSkillCategory_ALL}`) that works on any member. On someone
+else's profile the rows carry no edit action, so each is found by its component,
+`com.linkedin.sdui.profile.skill(<profile id>, N)`, whose `initialContent` points at the row that draws
+it; the name is that row's medium bold text. 47 of 47 in five pages. Endorsement lines come in the
+session's language and are not read.
 
 **Contact info (2026-10-16).** The legacy `identity/profiles/<id>/profileContactInfo` answers 410
 Gone, and the full profile carries no email, phone or website. The page's "Contact info" link opens
@@ -451,7 +459,7 @@ saved items (`my-items`), contact info, profile viewers and notifications.
    `voyagerIdentityDashNotificationCards?q=filterVanityName`, paged by `metadata.nextStart`; the last
    page has an empty-section card and no next start). The tabs are not: `filterVanityName=mentions`
    answered as `all`, and capturing the real names means opening the page, which marks everything seen.
-5. **Profile gaps.** Skills past the top 20 (`profileSkills?q=viewee` answered 400), recommendations,
+5. **Profile gaps.** Recommendations,
    and the sections empty in every profile read (certifications, languages, projects, courses,
    organizations, patents, test scores; contact phone, address, Twitter).
 6. **More than 3 profile viewers.** A free account is shown 3; the list's next page was not exercised.

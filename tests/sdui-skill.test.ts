@@ -3,11 +3,13 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import {
   addSkillBody,
+  listPayloadOf,
   pagerFrom,
   readSkillForm,
   removeSkillBody,
   SKILL,
   skillNameOf,
+  skillNamesOf,
   skillsFromPage,
 } from '../src/engine/sdui-skill.ts';
 
@@ -92,5 +94,40 @@ describe('removing a skill', () => {
     const form = readSkillForm(ADD_FORM);
     if (!form.ok) throw new Error(form.message);
     expect(removeSkillBody(form).ok).toBe(false);
+  });
+});
+
+describe("anyone's skills, by name", () => {
+  // Page 1 holds 10 skill components, the last page 7: 47 in all.
+  test('each skill component, in order, by the name its content row shows', () => {
+    const first = skillNamesOf(fixture('profile-skills-page-1.rsc'));
+    expect(first).toHaveLength(10);
+    expect(first.slice(0, 3)).toEqual(['CEOs', 'Founding', 'Early-Stage Startups']);
+    expect(first[9]).toBe('SaaS');
+    expect(skillNamesOf(fixture('profile-skills-page-last.rsc'))).toEqual([
+      'LinkedIn',
+      'Mentoring',
+      'Venture Philanthropy',
+      'Internet Business Strategy',
+      'Catalyst',
+      'Mobile',
+      'Technology Strategy',
+    ]);
+  });
+
+  test('the list request the Skills screen hands out', () => {
+    // As the screen carries it, on 2026-10-29.
+    const screen =
+      '"requestedArguments":{"$type":"proto.sdui.actions.requests.RequestedArguments",' +
+      '"requestedStateKeys":[],"payload":{"vanityName":"person-1","profileId":"ACoAATESTPERSON1",' +
+      '"start":0,"count":10,"filter":"ProfileSkillCategory_ALL"},"requestMetadata":{}}';
+    expect(listPayloadOf(screen)).toEqual({
+      vanityName: 'person-1',
+      profileId: 'ACoAATESTPERSON1',
+      start: 0,
+      count: 10,
+      filter: 'ProfileSkillCategory_ALL',
+    });
+    expect(listPayloadOf('nothing')).toBeNull();
   });
 });

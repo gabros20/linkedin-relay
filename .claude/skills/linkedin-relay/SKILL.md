@@ -271,9 +271,9 @@ Every filter LinkedIn offers for this query, each with its options' `value`, `la
 
 ### `profile` — mid. Read only the finalists.
 ```
-profile id:"<public-id | profile id | urn | linkedin.com/in/… URL>" [contact] [posts:N] [compact] [fields:"a,b"]
+profile id:"<public-id | profile id | urn | linkedin.com/in/… URL>" [contact] [posts:N] [skills] [compact] [fields:"a,b"]
 ```
-CLI: `lnrelay profile <id|url> [--contact] [--posts N] [--compact | --fields a,b,c]`. The whole profile page: `name`,
+CLI: `lnrelay profile <id|url> [--contact] [--posts N] [--skills] [--compact | --fields a,b,c]`. The whole profile page: `name`,
 `headline`, `about`, `location`, `industry`, the top card (`title`, `company`, `school`), and every
 section that has entries:
 - `experience`: every role, newest company first: `title`, `company`, `companyId` (what `company`
@@ -299,6 +299,11 @@ and the rest of the profile. Ask for it only when the user wants to reach someon
 **`posts:N`** (`--posts N`) adds `posts`, their N newest posts, as `search posts` rows: the posts
 search filtered to posts from them, newest first, on the search budget (1 call per 20). It failing
 leaves `postsError`. For their posts on a topic, use `search posts` with `from:[id]` and keywords.
+
+**`skills:true`** (`--skills`) reads every skill in place of the top 20, from the profile's Skills
+page: 1 page call per 10 skills (47 skills is 6 calls). Use it only when the skills decide
+something; `counts.skills` says how many there are. It failing keeps the top 20 and leaves
+`skillsError`.
 
 ### `feed` — mid. What the network is posting.
 ```

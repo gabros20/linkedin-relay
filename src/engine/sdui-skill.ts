@@ -7,6 +7,7 @@
 // A skill is added on its own: no links to roles, schools or projects.
 
 import type { Client } from './client.ts';
+import { Rows } from './posts.ts';
 import {
   balanced,
   type Failure,
@@ -75,6 +76,44 @@ export function skillsFromPage(stream: string): { ok: true; skills: Skill[] } | 
     from = end + text.length;
   }
   return { ok: true, skills };
+}
+
+// ─── Anyone's skills, by name ─────────────────────────────────────────────────
+//
+// Probed 2026-10-29 on another member's profile. Without edit actions the rows
+// are found by their component, `com.linkedin.sdui.profile.skill(<id>, N)`,
+// whose `initialContent` names the row that draws it; the skill's name is
+// that content's medium bold text. The full profile holds 20 skills; this
+// pager holds all of them, 10 a page.
+
+const SKILL_COMPONENT =
+  /"componentKey":"com\.linkedin\.sdui\.profile\.skill\([^)]+\)","children":\["\$","\$L[0-9a-f]+","[^"]+",\{"componentKey":"[^"]+","initialContent":"\$L([0-9a-f]+)"/g;
+const SKILL_NAME =
+  /"fontSize":"medium","fontStyle":"normal","fontWeight":"bold","lineHeight":"[^"]*","textAlign":"[^"]*","children":\["((?:[^"\\]|\\.)+)"\]/;
+
+/** Each skill on a page, in order, by name. A row whose name cannot be found is left out. */
+export function skillNamesOf(stream: string): string[] {
+  const rows = new Rows(stream);
+  return [...stream.matchAll(SKILL_COMPONENT)].flatMap((m) => {
+    const name = rows
+      .reach(m[1] as string)
+      .map((r) => rows.byId.get(r)?.match(SKILL_NAME)?.[1])
+      .find((n) => n !== undefined);
+    return name === undefined ? [] : [JSON.parse(`"${name}"`) as string];
+  });
+}
+
+/** How many skill rows a page draws, read or not. */
+export function skillRowsOf(stream: string): number {
+  return [...stream.matchAll(SKILL_COMPONENT)].length;
+}
+
+/** The "All" filter's first-page request, as the Skills screen hands it out. */
+export function listPayloadOf(screen: string): Record<string, unknown> | null {
+  const at = screen.indexOf('"filter":"ProfileSkillCategory_ALL"');
+  const open = at === -1 ? -1 : screen.lastIndexOf('"payload":{', at);
+  const text = open === -1 ? null : balanced(screen, open + '"payload":'.length);
+  return text === null ? null : (JSON.parse(text) as Record<string, unknown>);
 }
 
 /** The pager request for the page starting at `start`, from the screen's own payload. */
@@ -149,7 +188,7 @@ export function removeSkillBody(form: SkillForm): { ok: true; body: unknown } | 
 
 // ─── Over the wire ────────────────────────────────────────────────────────────
 
-const PAGER_URL = `https://www.linkedin.com/flagship-web/rsc-action/actions/pagination?sduiid=${SKILL.pager}`;
+export const PAGER_URL = `https://www.linkedin.com/flagship-web/rsc-action/actions/pagination?sduiid=${SKILL.pager}`;
 const MAX_PAGES = 10;
 
 /** Every skill: the Skills screen for the pager's payload, then its pages. */
@@ -164,12 +203,8 @@ export async function fetchSkills(
     'skills-screen',
   );
   if (typeof screen !== 'string') return screen;
-  // The "All" filter's first-page request, as the screen hands it out.
-  const at = screen.indexOf('"filter":"ProfileSkillCategory_ALL"');
-  const open = at === -1 ? -1 : screen.lastIndexOf('"payload":{', at);
-  const text = open === -1 ? null : balanced(screen, open + '"payload":'.length);
-  if (text === null) return drift('the Skills screen carried no list request');
-  const payload = JSON.parse(text) as Record<string, unknown>;
+  const payload = listPayloadOf(screen);
+  if (payload === null) return drift('the Skills screen carried no list request');
   const count = typeof payload.count === 'number' ? payload.count : 10;
 
   const skills: Skill[] = [];

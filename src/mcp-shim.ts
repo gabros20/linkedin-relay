@@ -438,7 +438,8 @@ export function buildServer(): McpServer {
     'Read one LinkedIn profile in full: name, headline, about, location, industry, the top card ' +
       '(title, company, school), and every section — experience [{title, company, companyId, ' +
       'employmentType, location, start, end | current, description}] whole (read on past the ' +
-      'first 10 companies), education, skills (top 20; counts.skills has the total), ' +
+      'first 10 companies), education, skills (top 20; counts.skills has the total; skills: ' +
+      'true reads them all), ' +
       'certifications, languages, honors, publications, projects, volunteering, courses, ' +
       'organizations, patents, testScores. Empty sections are left out. 1 profile read (30 a day), ' +
       '+1 per 50 more companies. contact: true adds contact {email, websites [{url, type}], ' +
@@ -459,8 +460,12 @@ export function buildServer(): McpServer {
         .max(50)
         .optional()
         .describe('also read their N newest posts (1 search call per 20)'),
+      skills: z
+        .boolean()
+        .optional()
+        .describe('read every skill, not just the top 20 (1 page call per 10)'),
     },
-    async ({ id, compact, fields, contact, posts }) =>
+    async ({ id, compact, fields, contact, posts, skills }) =>
       reply(
         await runProfile(
           id,
@@ -469,7 +474,11 @@ export function buildServer(): McpServer {
             ...(fields !== undefined ? { fields } : {}),
           },
           undefined,
-          { contact: contact === true, ...(posts !== undefined ? { posts } : {}) },
+          {
+            contact: contact === true,
+            skills: skills === true,
+            ...(posts !== undefined ? { posts } : {}),
+          },
         ),
       ),
   );
