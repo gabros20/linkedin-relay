@@ -473,7 +473,9 @@ saved items (`my-items`), contact info, profile viewers and notifications.
 5. **Profile gaps.** The sections
    empty in every profile read (certifications, languages, projects, courses,
    organizations, patents, test scores; contact phone, address, Twitter).
-6. **More than 3 profile viewers.** A free account is shown 3; the list's next page was not exercised.
+6. **More than 3 profile viewers.** Not possible on a free account: the list answers 3 named viewers
+   whatever `start`/`count` it is sent (2026-10-29), and `wvmp-entity-list-next-page-loaded` is a
+   page-view tracking marker, not a pager. The rest is behind Premium, server-side.
 
 ### Method note: observation alone is not enough
 
