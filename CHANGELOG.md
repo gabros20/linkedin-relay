@@ -1,3 +1,18 @@
+# [3.25.0](https://github.com/gabros20/linkedin-relay/compare/v3.24.0...v3.25.0) (2026-10-29)
+
+
+### Bug Fixes
+
+* **sdui:** read RSC text rows by their byte length ([3c8d932](https://github.com/gabros20/linkedin-relay/commit/3c8d932fc280d1ecad7be3861b284894bbe7fa95))
+
+
+### Features
+
+* **notifications:** your notifications, without marking them seen ([d84f743](https://github.com/gabros20/linkedin-relay/commit/d84f743417a5ce5ccb4e7d2b14edf8bc41ac50ca))
+* **profile:** --posts N, a person's newest posts ([2727664](https://github.com/gabros20/linkedin-relay/commit/2727664d37fab182dd668a9ec9a739e33d8f2741))
+* **profile:** --recommendations, those received and given ([61920b0](https://github.com/gabros20/linkedin-relay/commit/61920b0d21e95303ee0f12b4b8066395456ec516))
+* **profile:** --skills, every skill past the top 20 ([27f6c95](https://github.com/gabros20/linkedin-relay/commit/27f6c95933dae77df00e981a1c16db539eaca593))
+
 # [3.24.0](https://github.com/gabros20/linkedin-relay/compare/v3.23.0...v3.24.0) (2026-10-19)
 
 
