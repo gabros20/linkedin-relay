@@ -1,3 +1,15 @@
+# [3.27.0](https://github.com/gabros20/linkedin-relay/compare/v3.26.0...v3.27.0) (2026-11-22)
+
+
+### Bug Fixes
+
+* **client:** send a referer on page-data requests ([9e23811](https://github.com/gabros20/linkedin-relay/commit/9e23811e71cd3d4c8125efcbe10283e7f86f0efb))
+
+
+### Features
+
+* **jobs:** Premium hear-back jobs and job --match ([5e9ebc2](https://github.com/gabros20/linkedin-relay/commit/5e9ebc26972617e4c26a4e79c0a7854c4233d132))
+
 # [3.26.0](https://github.com/gabros20/linkedin-relay/compare/v3.25.0...v3.26.0) (2026-11-22)
 
 
