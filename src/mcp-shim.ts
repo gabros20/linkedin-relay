@@ -383,7 +383,9 @@ export function buildServer(): McpServer {
       "the place a typed location resolved to: check it. `meta.claimedCount` is LinkedIn's total; " +
       '`meta.next` is the start for the next page; LinkedIn serves at most 1000 per search. ' +
       'topApplicant: true (Premium) lists instead the jobs where LinkedIn says the user would be ' +
-      'a top applicant, 100 per call; it takes no keywords, location or filters. ' +
+      'a top applicant, 100 per call; hearBack: true (Premium) lists the jobs where the user ' +
+      'is more likely to hear back, 25 per job-search call plus a job read per 100 (rows are ' +
+      'full jobs, as `job` returns them). Neither takes keywords, location or filters. ' +
       `${READING_CONTRACT} ${NO_RETRY}`,
     {
       ...jobQuery,
@@ -391,18 +393,23 @@ export function buildServer(): McpServer {
         .boolean()
         .optional()
         .describe("Premium: LinkedIn's list of jobs where the user would be a top applicant"),
+      hearBack: z
+        .boolean()
+        .optional()
+        .describe("Premium: LinkedIn's list of jobs where the user is more likely to hear back"),
       limit: z.number().int().min(1).max(1000).optional().describe('per keyword set; default 25'),
       start: z.number().int().min(0).optional(),
       details: z.boolean().optional().describe('read each job: apply link, applicants'),
       description: z.boolean().optional().describe('with details, keep full descriptions'),
       compact: z.boolean().optional().describe('one line per job'),
     },
-    async ({ limit, start, details, description, compact, topApplicant, ...q }) =>
+    async ({ limit, start, details, description, compact, topApplicant, hearBack, ...q }) =>
       reply(
         await runJobs(
           {
             ...jobRequest(q, limit ?? 25),
             ...(topApplicant === true ? { collection: 'top-applicant' as const } : {}),
+            ...(hearBack === true ? { collection: 'hear-back' as const } : {}),
             ...(start !== undefined ? { start } : {}),
             ...(details !== undefined ? { details } : {}),
             ...(description !== undefined ? { description } : {}),
@@ -427,6 +434,10 @@ export function buildServer(): McpServer {
       "twoYearsAgo, growth1y (%)}, function {name, now, …} (the job's function), medianTenure, " +
       "competitors [{name, industry, url}], hiring, priorities, landscape (LinkedIn's generated " +
       'text)}}, one more job read per job; premiumError says why they could not be read. ' +
+      "match: true (Premium) asks LinkedIn's AI assistant how well the user fits each job, as " +
+      '"Show match details" does: match {summary (the verdict), met and missing (required ' +
+      "qualifications), text}, in the user's language; about 3 page calls and a few seconds per " +
+      "job, and the exchange is added to the user's assistant history. matchError says why not. " +
       NO_RETRY,
     {
       job: z
@@ -437,9 +448,19 @@ export function buildServer(): McpServer {
         .boolean()
         .optional()
         .describe("Premium: who applied, and the company's headcount and insights"),
+      match: z
+        .boolean()
+        .optional()
+        .describe("Premium: LinkedIn's AI assessment of how well the user fits each job"),
     },
-    async ({ job, team, insights }) =>
-      reply(await runJob(job, {}, undefined, { team: team === true, insights: insights === true })),
+    async ({ job, team, insights, match }) =>
+      reply(
+        await runJob(job, {}, undefined, {
+          team: team === true,
+          insights: insights === true,
+          match: match === true,
+        }),
+      ),
   );
 
   server.tool(

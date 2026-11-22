@@ -1,0 +1,49 @@
+{
+  "data": {
+    "data": {
+      "doMessageV2GuideDashMessage": {
+        "*result": "urn:li:fsu_guideMessageV2:2-MTc5NTM4NDI2OTE1NWIyNDIwOC0xMDAmY2UyZTczNDQtMDQxNS00NTVlLTlmZGEtZWM5Yzc0MjExOWE0XzIwMA==~urn:li:guideJobs:ACoAATESTOWNER1",
+        "$type": "com.linkedin.restli.common.ActionResponse"
+      }
+    }
+  },
+  "included": [
+    {
+      "disableInput": false,
+      "entityUrn": "urn:li:fsd_coachRealtimeResponse:hR7RFhxBoWFJuUFj68TQzg==",
+      "isSystemMessage": false,
+      "id": "\u001eÑ\u0016\u001cA¡aI¹AcëÄÐÎ",
+      "responseIntent": "GuideIntent_JOB_SEEKING_AGENT",
+      "responseV2": {
+        "upsellResponse": null,
+        "errorResponse": null,
+        "streamingResponse": {
+          "responseComponent": [],
+          "finalComponentPosition": null,
+          "$type": "com.linkedin.voyager.dash.common.coach.CoachStreamingResponse"
+        }
+      },
+      "$type": "com.linkedin.voyager.dash.common.coach.CoachRealtimeResponse"
+    },
+    {
+      "actorUrn": "urn:li:messagingActor:urn:li:chatbot:FLAGSHIP_GUIDE",
+      "isCanceled": false,
+      "originToken": null,
+      "content": {
+        "memberPrompt": null,
+        "*aiResponse": "urn:li:fsd_coachRealtimeResponse:hR7RFhxBoWFJuUFj68TQzg=="
+      },
+      "deliveredAt": 1795384269236,
+      "$type": "com.linkedin.voyager.dash.common.guide.GuideMessageV2",
+      "entityUrn": "urn:li:fsu_guideMessageV2:2-MTc5NTM4NDI2OTE1NWIyNDIwOC0xMDAmY2UyZTczNDQtMDQxNS00NTVlLTlmZGEtZWM5Yzc0MjExOWE0XzIwMA==~urn:li:guideJobs:ACoAATESTOWNER1",
+      "conversationV2Urn": "urn:li:fsu_guideConversationV2:urn:li:guide:ab12ab12ab12ab12ab12ab12ab12ab12ab12ab12ab12ab12ab12ab12ab12ab12~urn:li:guideJobs:ACoAATESTOWNER1",
+      "conversationMetadata": {
+        "guideMessageId": "2-MTc5NTM4NDI2OTE1NWIyNDIwOC0xMDAmY2UyZTczNDQtMDQxNS00NTVlLTlmZGEtZWM5Yzc0MjExOWE0XzIwMA==",
+        "userMessageId": "2-MTc5NTM4NDI2OTA2OGI3NzYyNC0xMDAmY2UyZTczNDQtMDQxNS00NTVlLTlmZGEtZWM5Yzc0MjExOWE0XzIwMA==",
+        "conversationId": "2-Y2UyZTczNDQtMDQxNS00NTVlLTlmZGEtZWM5Yzc0MjExOWE0XzIwMA==",
+        "$type": "com.linkedin.voyager.dash.common.guide.GuideConversationMetadata"
+      },
+      "streamingPosition": null
+    }
+  ]
+}

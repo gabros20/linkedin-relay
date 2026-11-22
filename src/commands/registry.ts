@@ -173,22 +173,27 @@ export const COMMANDS: CommandDef[] = [
       '       [--details [--description]] [--compact | --fields a,b,c]\n' +
       '       Ids for --company/--industry/--title/--place/--filter come from `job-filters`.\n' +
       '       The resolved place is in data.location: check it, "Vienna" may resolve narrow.\n' +
-      'lnrelay jobs --top-applicant [--limit N] [--details] [--compact | --fields a,b,c]\n' +
-      '       Premium: the jobs where LinkedIn says you would be a top applicant, 100 a call.',
+      'lnrelay jobs --top-applicant | --hear-back [--limit N] [--details] [--compact | --fields a,b,c]\n' +
+      '       Premium: the jobs where LinkedIn says you would be a top applicant (100 a call), or\n' +
+      '       where you are more likely to hear back (25 a call, then read in full).',
     audience: ['cli', 'mcp'],
     risk: 'read',
     implemented: true,
   },
   {
     name: 'job',
-    cost: '1 job read per 100 jobs; --team adds 1 page call per job; --insights 1 job read per job',
+    cost:
+      '1 job read per 100 jobs; --team adds 1 page call per job; --insights 1 job read per job; ' +
+      '--match about 3 page calls per job',
     summary:
       'Jobs in full: description, apply link (external or Easy Apply), applicants, state. ' +
       'Several ids are read together, 100 a call. --team adds who posted it and who is hiring. ' +
       '--insights (Premium) adds who applied (count, last day, seniority, education) and the ' +
-      "company's insights: headcount over two years, the job's function, tenure, competitors.",
+      "company's insights: headcount over two years, the job's function, tenure, competitors. " +
+      "--match (Premium) asks LinkedIn's AI how well you fit: verdict, met and missing qualifications.",
     usage:
-      'lnrelay job <id|job-url> [<id|job-url> ...] [--team] [--insights] [--compact | --fields a,b,c]',
+      'lnrelay job <id|job-url> [<id|job-url> ...] [--team] [--insights] [--match]\n' +
+      '       [--compact | --fields a,b,c]',
     audience: ['cli', 'mcp'],
     risk: 'read',
     implemented: true,

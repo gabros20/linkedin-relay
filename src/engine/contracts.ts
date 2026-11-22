@@ -271,6 +271,24 @@ export const CONTRACTS: Record<string, OperationContract> = {
     provenance: 'verified',
     capturedAt: '2026-11-22',
   },
+  // LinkedIn's AI assistant, as a job's "Show match details" asks it
+  // (2026-11-22). See engine/job-premium.ts.
+  guideMessage: {
+    name: 'guideMessage',
+    transport: 'voyager-graphql',
+    path: `${VOYAGER}/graphql`,
+    queryId: 'voyagerGuideDashMessage.7eaf64013d9f7cc6c5c32038dfc3fb81',
+    provenance: 'verified',
+    capturedAt: '2026-11-22',
+  },
+  guideMessages: {
+    name: 'guideMessages',
+    transport: 'voyager-graphql',
+    path: `${VOYAGER}/graphql`,
+    queryId: 'voyagerGuideDashBionicMessageV2.6c3ccc4bfc5030c09d28a50e5332ac06',
+    provenance: 'verified',
+    capturedAt: '2026-11-22',
+  },
   jobPosting: {
     name: 'jobPosting',
     transport: 'voyager-restli',

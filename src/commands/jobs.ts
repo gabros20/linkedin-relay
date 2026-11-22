@@ -14,11 +14,25 @@ import { createLiveClient } from '../engine/index.ts';
 import {
   COLLECTION_PAGE,
   type Collection,
+  HEAR_BACK_HEADERS,
+  HEAR_BACK_PAGE,
+  HOW_YOU_FIT_URL,
+  hearBackBody,
+  hearBackUrl,
+  howYouFitBody,
   type JobInsights,
   jobCollectionUrl,
   jobInsightsUrl,
+  type Match,
+  matchAnswerUrl,
+  matchMessageBody,
+  matchMessageUrl,
   parseJobCollection,
+  parseJobIds,
   parseJobInsights,
+  parseMatchAnswer,
+  parseMatchLink,
+  parseMatchSent,
 } from '../engine/job-premium.ts';
 import {
   BATCH_SIZE,
@@ -66,6 +80,7 @@ export type JobsFetch = (
   url: string,
   spendClass: 'jobSearch' | 'jobRead' | 'page',
   body?: unknown,
+  headers?: Record<string, string>,
 ) => Promise<Fetched>;
 
 function liveFetch(command: string, quiet: boolean): JobsFetch | Envelope {
@@ -73,10 +88,11 @@ function liveFetch(command: string, quiet: boolean): JobsFetch | Envelope {
   if (session.state !== 'ok')
     return err(command, 'AUTH_FAILED', 'no LinkedIn session — run `lnrelay login`');
   const client = createLiveClient(session.session, undefined, quiet);
-  return async (url, spendClass, body) => {
+  return async (url, spendClass, body, headers) => {
     const r = await client.request({
       url,
       ...(body !== undefined ? { method: 'POST' as const, body } : {}),
+      ...(headers !== undefined ? { headers } : {}),
       spendClass,
       operation: command,
     });
@@ -113,6 +129,9 @@ interface Teamed {
     unknownSections?: Record<string, number>;
   };
   premiumError?: string;
+  /** Premium (`--match`): LinkedIn's AI assessment of the user against the job. */
+  match?: Match;
+  matchError?: string;
 }
 
 type Row = Matched<JobCard & Partial<Omit<JobDetail, keyof JobCard>>> & Teamed;
@@ -207,7 +226,13 @@ export async function runJobs(
   opts: OutputOpts = {},
   fetch?: JobsFetch,
 ): Promise<Envelope> {
-  if (req.collection !== undefined) return runCollection(req, req.collection, opts, fetch);
+  if (req.collection !== undefined) {
+    const misuse = collectionMisuse(req, req.collection);
+    if (misuse !== null) return misuse;
+    return req.collection === 'hear-back'
+      ? runHearBack(req, opts, fetch)
+      : runCollection(req, req.collection, opts, fetch);
+  }
   const sets = keywordSets(req.keywords);
   const hasQuery =
     sets.length > 0 || [req.location, req.geoId].some((v) => v !== undefined && v !== '');
@@ -280,22 +305,82 @@ export async function runJobs(
   });
 }
 
-/** A Premium collection, 100 a call, the cards job search returns. */
-async function runCollection(
-  req: JobsRequest,
-  collection: Collection,
-  opts: OutputOpts,
-  fetch?: JobsFetch,
-): Promise<Envelope> {
+/** A collection is LinkedIn's own list: keywords, a place or filters would be ignored. */
+function collectionMisuse(req: JobsRequest, collection: Collection): Envelope | null {
   const searched = keywordSets(req.keywords).length > 0 || req.location || req.geoId;
   const selection = jobFilterSelection(req.filter ?? {});
   const filtered = !selection.ok || Object.keys(selection.filters).length > 0;
-  if (searched || filtered)
-    return err(
-      'jobs',
-      'INVALID_INPUT',
-      `--${collection} is LinkedIn's own list: it takes no keywords, location or filters`,
-    );
+  return searched || filtered
+    ? err(
+        'jobs',
+        'INVALID_INPUT',
+        `--${collection} is LinkedIn's own list: it takes no keywords, location or filters`,
+      )
+    : null;
+}
+
+/** The ids of the hear-back list, 25 a page, until a short page or `upTo`. */
+async function hearBackIds(get: JobsFetch, upTo: number) {
+  const ids: string[] = [];
+  for (let start = 0; start < PAGING.max; start += HEAR_BACK_PAGE) {
+    const res = await get(hearBackUrl(start), 'jobSearch', hearBackBody(), {
+      ...HEAR_BACK_HEADERS,
+    });
+    const page = res.ok ? parseJobIds(res.raw ?? '') : res;
+    if (!page.ok) return { ids, ended: false, failure: page };
+    const fresh = page.ids.filter((id) => !ids.includes(id));
+    ids.push(...fresh);
+    if (page.ids.length < HEAR_BACK_PAGE || fresh.length === 0) return { ids, ended: true };
+    if (ids.length >= upTo) return { ids, ended: false };
+  }
+  return { ids, ended: false };
+}
+
+/** "Jobs where you're more likely to hear back": the list's ids, then the jobs in full. */
+async function runHearBack(
+  req: JobsRequest,
+  opts: OutputOpts,
+  fetch?: JobsFetch,
+): Promise<Envelope> {
+  const get = fetch ?? liveFetch('jobs', opts.quiet === true);
+  if (typeof get !== 'function') return get;
+  const first = Math.max(0, req.start ?? 0);
+  const want = Math.max(1, Math.min(req.limit, PAGING.max - first));
+  const listed = await hearBackIds(get, first + want);
+  if (listed.ids.length === 0 && listed.failure !== undefined) {
+    const f = listed.failure;
+    return err('jobs', f.code, f.message, f.hint);
+  }
+  const slice = listed.ids.slice(first, first + want);
+  const read = await readJobs(get, slice);
+  const rows: (JobDetail & Teamed)[] = slice.flatMap((id) => read.jobs.get(id) ?? []);
+  const unread = slice.filter((id) => !read.jobs.has(id));
+  const whole = listed.ended && first + want >= listed.ids.length;
+  return ok('jobs', {
+    collection: 'hear-back',
+    items: shape(rows, opts, (j) =>
+      compactJob({ ...j, easyApply: j.apply?.type === 'easy-apply', promoted: false }),
+    ),
+    meta: {
+      state: whole && unread.length === 0 ? 'complete' : 'partial',
+      operation: 'jobs',
+      ...(listed.ended ? { claimedCount: listed.ids.length } : {}),
+      returnedCount: rows.length,
+      start: first,
+      ...(unread.length > 0 ? { unread } : {}),
+      ...(listed.failure !== undefined ? { stoppedBy: listed.failure.code } : {}),
+      ...(read.stoppedBy !== undefined ? { readStop: read.stoppedBy } : {}),
+    },
+  });
+}
+
+/** A Premium collection, 100 a call, the cards job search returns. */
+async function runCollection(
+  req: JobsRequest,
+  collection: 'top-applicant',
+  opts: OutputOpts,
+  fetch?: JobsFetch,
+): Promise<Envelope> {
   const get = fetch ?? liveFetch('jobs', opts.quiet === true);
   if (typeof get !== 'function') return get;
   const first = Math.max(0, req.start ?? 0);
@@ -331,6 +416,49 @@ async function runCollection(
   });
 }
 
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
+/** Polls for the assistant's answer this many times, `pollMs` apart. */
+const MATCH_POLLS = 8;
+
+/** Ask the assistant for one job's match and wait for its answer. */
+async function matchFor(
+  get: JobsFetch,
+  jobId: string,
+  pollMs: number,
+): Promise<{ ok: true; match: Match } | { ok: false; code: string; message: string }> {
+  const linked = await get(HOW_YOU_FIT_URL, 'page', howYouFitBody(jobId));
+  const link = linked.ok ? parseMatchLink(linked.raw ?? '', jobId) : linked;
+  if (!link.ok) return link;
+  const sentRes = await get(matchMessageUrl(), 'page', matchMessageBody(link.link, jobId));
+  const sent = sentRes.ok ? parseMatchSent(sentRes.json) : sentRes;
+  if (!sent.ok) return sent;
+  for (let i = 0; i < MATCH_POLLS; i++) {
+    await sleep(pollMs);
+    const res = await get(matchAnswerUrl(sent.conversation), 'page');
+    const answer = res.ok ? parseMatchAnswer(res.json, sent.response) : res;
+    if (!answer.ok) return answer;
+    if (answer.done) return { ok: true, match: answer.match };
+  }
+  return {
+    ok: false,
+    code: 'TIMEOUT',
+    message: `the assistant had not finished after ${MATCH_POLLS} looks; it may still be in its history`,
+  };
+}
+
+async function addMatches(
+  get: JobsFetch,
+  jobs: (JobDetail & Teamed)[],
+  pollMs: number,
+): Promise<void> {
+  for (const job of jobs) {
+    const r = await matchFor(get, job.id, pollMs);
+    if (r.ok) job.match = r.match;
+    else job.matchError = `${r.code}: ${r.message}`;
+  }
+}
+
 /** Each job's Premium insights, one job read each; a failed one says why. */
 async function addInsights(get: JobsFetch, jobs: (JobDetail & Teamed)[]): Promise<void> {
   for (const job of jobs) {
@@ -358,12 +486,21 @@ async function addTeams(get: JobsFetch, jobs: (JobDetail & Teamed)[]): Promise<v
   }
 }
 
+type JobExtras = { team?: boolean; insights?: boolean; match?: boolean; pollMs?: number };
+
+/** What `job` adds on request: the hiring team, Premium insights, the AI match. */
+async function enrich(get: JobsFetch, jobs: (JobDetail & Teamed)[], req: JobExtras) {
+  if (req.team === true) await addTeams(get, jobs);
+  if (req.insights === true) await addInsights(get, jobs);
+  if (req.match === true) await addMatches(get, jobs, req.pollMs ?? 4000);
+}
+
 /** One job by its own endpoint; several in batches of 100, one call each. */
 export async function runJob(
   input: string | string[] | undefined,
   opts: OutputOpts = {},
   fetch?: JobsFetch,
-  req: { team?: boolean; insights?: boolean } = {},
+  req: JobExtras = {},
 ): Promise<Envelope> {
   const given = input === undefined ? [] : Array.isArray(input) ? input : [input];
   const ids = [...new Set(given.map(jobIdOf))];
@@ -386,8 +523,7 @@ export async function runJob(
     const detail = parseJobDetail(res.json);
     if (!detail.ok) return err('job', detail.code, detail.message, detail.hint);
     const job: JobDetail & Teamed = detail.job;
-    if (req.team === true) await addTeams(get, [job]);
-    if (req.insights === true) await addInsights(get, [job]);
+    await enrich(get, [job], req);
     return ok('job', job);
   }
 
@@ -396,8 +532,7 @@ export async function runJob(
     return err('job', read.stoppedBy, 'no job could be read');
   const unread = wanted.filter((id) => !read.jobs.has(id));
   const jobs: (JobDetail & Teamed)[] = wanted.flatMap((id) => read.jobs.get(id) ?? []);
-  if (req.team === true) await addTeams(get, jobs);
-  if (req.insights === true) await addInsights(get, jobs);
+  await enrich(get, jobs, req);
   return ok('job', {
     items: shape(jobs, opts, (j) =>
       compactJob({ ...j, easyApply: j.apply?.type === 'easy-apply', promoted: false }),

@@ -140,6 +140,7 @@ export function jobsRequest(args: ParsedArgs): JobsRequest {
   if (bool(args, 'details')) req.details = true;
   if (bool(args, 'description')) req.description = true;
   if (bool(args, 'top-applicant')) req.collection = 'top-applicant';
+  if (bool(args, 'hear-back')) req.collection = 'hear-back';
   return req;
 }
 
@@ -492,6 +493,7 @@ export async function dispatch(argv: string[], now: number): Promise<Envelope> {
       return runJob(args.positionals, output(args), undefined, {
         team: bool(args, 'team'),
         insights: bool(args, 'insights'),
+        match: bool(args, 'match'),
       });
     case 'job-filters':
       return runJobFilters(jobsRequest(args), output(args));

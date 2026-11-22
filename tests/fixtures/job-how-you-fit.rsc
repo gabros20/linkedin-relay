@@ -1,0 +1,27 @@
+1:"71ad95267c605a34fefe1155a61e6ad3"
+2:"SduiTrackingProvenanceProvider"
+3:I["$1",[],"$2"]
+4:"030d6035cb3a997efb1cff7a008d2f89"
+5:I["$4",[],"default"]
+7:"e9e5744c902fddb98f0eb62aee5d400a"
+8:I["$7",[],"TracedComponent"]
+9:"f54a4d9f94904eb227a6c1307124edd6"
+a:I["$9",[],"ClientComponent"]
+b:"$Sreact.fragment"
+c:"bba75127906e646b219be74d12aea114"
+d:I["$c",[],"Carousel"]
+f:"9269139ca1de251625f7e3db4237b021"
+10:"SduiTrackingScopeWrapper"
+11:I["$f",[],"$10"]
+12:"e6bc3be678bd0f74780350224832cc6c"
+13:I["$12",[],"TriggerButton"]
+14:"b55b61101826bcdf8a734370f7480e4e"
+15:"VisibleItemsProvider"
+16:I["$14",[],"$15"]
+0:["$","$L3",null,{"version":"0.2.6425","children":[[["$","$L5",null,{"modelStates":[{"key":{"key":{"value":{"$case":"id","id":"GUIDE_H_SCROLL_CAROUSEL_CURRENT_PAGE_BINDING_hyf_4490422837"}}},"value":{"$case":"intValue","intValue":0}},{"key":{"key":{"value":{"$case":"id","id":"GUIDE_H_SCROLL_CAROUSEL_IS_BEGINNING_BINDING_hyf_4490422837"}}},"value":{"$case":"booleanValue","booleanValue":true}},{"key":{"key":{"value":{"$case":"id","id":"GUIDE_H_SCROLL_CAROUSEL_IS_END_BINDING_hyf_4490422837"}}},"value":{"$case":"booleanValue","booleanValue":false}}]}],"$undefined"],"$L6",["$","$L8",null,{"observabilityIdentifier":"com.linkedin.sdui.impl.jobseeker.jobdetails.components.howyoufit.howYouFitGuide","children":["$","$La",null,{"children":["$","div",null,{"className":"cfskdm cfsayy cfsg2e cfsh9k cfsh8z cfsh9a cfsg42 cfsghu cfskdg","children":[["$","$b","0",{"children":["$","$Ld",null,{"currentPageBindingKey":{"key":{"value":{"$case":"id","id":"GUIDE_H_SCROLL_CAROUSEL_CURRENT_PAGE_BINDING_hyf_4490422837"}}},"isEndBindingKey":{"key":{"value":{"$case":"id","id":"GUIDE_H_SCROLL_CAROUSEL_IS_END_BINDING_hyf_4490422837"}}},"isBeginningBindingKey":{"key":{"value":{"$case":"id","id":"GUIDE_H_SCROLL_CAROUSEL_IS_BEGINNING_BINDING_hyf_4490422837"}}},"pageSizes":0,"initialItemCount":1,"showInlineControlButtons":true,"itemWidthPercentage":null,"shouldShowPageIndicator":false,"gapSize":8,"onPrev":"$undefined","onNext":"$undefined","onShowAll":"$undefined","isInlineControlButtonStyleGradient":false,"isInlineControlButtonStyleOverlay":false,"tapTarget":"default","viewTrackingSpecs":"$undefined","paginationPageKey":"$undefined","contentInset":0,"showOverflow":false,"dismissKeys":[""],"scrollLength":250,"children":[["$","li","0",{"data-testid":"carousel-child-container","style":{"display":"contents"},"children":"$Le"}]]}]}]]}]}]}]]}]
+6:null
+e:["$","$L11",null,{"trackingScope":[{"contentTrackingId":"redacted","topicName":"GuideEntryPromptsServedEvent","transporterKeys":["default"]},{"contentTrackingId":"redacted","topicName":"GuideEntrypointBreadcrumb","breadcrumb":{"$type":"proto.sdui.tracking.TrackingBreadcrumb","breadcrumbType":"GUIDE_ENTRYPOINT","content":{"type":"Buffer","data":[123,34,105,110,116,101,114,97,99,116,105,111,110,73,100,34,58,34,57,98,89,99,77,106,65,107,112,70,78,65,104,116,83,86,34,44,34,117,115,101,67,97,115,101,34,58,34,74,79,66,95,83,69,69,75,69,82,95,72,83,67,82,79,76,76,34,125]}},"transporterKeys":["default"]}],"children":["$","$La",null,{"componentKey":"4175a265-0356-4bab-afbd-08616884caae","viewTrackingSpecs":{"viewName":"guide-entrypoint-button","impressionThresholds":[{"minDurationMs":300,"minVisibilityPercentage":0.5,"triggerOnStart":false}],"interactionTypes":["SHORT_PRESS"],"contentTrackingId":"redacted","trackingScope":"$e:props:trackingScope"},"children":["$","$L13",null,{"triggers":[{"$type":"proto.sdui.triggers.Trigger","type":{"$case":"click","click":{"$type":"proto.sdui.triggers.ClickTrigger"}},"action":{"actions":[{"$type":"proto.sdui.actions.core.Navigate","value":{"content":{"$case":"url","url":{"$type":"proto.sdui.actions.core.NavigateToUrl","openInNewTab":false,"interop":true,"clearBackStack":false,"urlValue":{"$case":"url","url":"/preload/guideOverlay/?interop=guideOverlay&query=Egyez%C3%A9s+r%C3%A9szleteinek+megjelen%C3%ADt%C3%A9se&originalThreadMailbox=urn%3Ali%3AguideJobs%3AACoAATESTOWNER1&conversationUrn=urn%3Ali%3Afsu_guideConversationV2%3Aurn%3Ali%3Aguide%3Aab12ab12ab12ab12ab12ab12ab12ab12ab12ab12ab12ab12ab12ab12ab12ab12%7Eurn%3Ali%3AguideJobs%3AACoAATESTOWNER1&contextUrns=urn%3Ali%3Aguide%3Aab12ab12ab12ab12ab12ab12ab12ab12ab12ab12ab12ab12ab12ab12ab12ab12&intent=GuideIntent_JOB_SEEKING_AGENT&originalIntent=GuideIntent_JOB_SEEKING_AGENT&trackingId=redacted&customContext=jobPostingId%7E%3A4490422837%2CsubIntent%7E%3AJobSeekerAgentIntent_JOB_FIT_EXPLANATION%2ChasHistory%7E%3Afalse&pageContextJobPostingUrns=urn%3Ali%3Afsd_jobPosting%3A4490422837"}}}}}]},"viewTrackingSpecs":"$e:props:children:props:viewTrackingSpecs"}],"viewTrackingSpecs":"$e:props:children:props:viewTrackingSpecs","componentkey":"4175a265-0356-4bab-afbd-08616884caae","children":["$","div",null,{"className":"cfsvo cfs0g cfs48 cfs90 cfsafm cfsake cfsao6 cfsaty cfsg3i cfsjj6 cfsjkn cfsjk4 cfsjll cfsayy cfsg2u cfsh9k cfsh8u cfsh9a cfsg42 cfscyp cfsaeg cfsa29 cfskdg","componentkey":"4175a265-0356-4bab-afbd-08616884caae","children":["$","$L16",null,{"direction":"horizontal","children":[["$","$b","0",{"children":"$L17"}],["$","$b","1",{"children":["$","p",null,{"className":"cfsjq5 cfsjw0 cfsjia cfsjqj cfsewa cfsjq3 cfsjzq","children":["Egyezés részleteinek megjelenítése"]}]}]]}]}]}]}]}]
+18:"751254b78322ecbca05b8b812421de5e"
+19:"DesignSystemImage"
+1a:I["$18",[],"$19"]
+17:["$","$L1a",null,{"display":"block","imageId":677,"aria-label":"","aria-hidden":true,"enableForcedColorStyles":false,"className":"cfskhf"}]
