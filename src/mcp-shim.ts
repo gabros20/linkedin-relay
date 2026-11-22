@@ -382,20 +382,27 @@ export function buildServer(): McpServer {
       'Ids for company/industry/title/place/filter come from `job_filters`. `data.location` is ' +
       "the place a typed location resolved to: check it. `meta.claimedCount` is LinkedIn's total; " +
       '`meta.next` is the start for the next page; LinkedIn serves at most 1000 per search. ' +
+      'topApplicant: true (Premium) lists instead the jobs where LinkedIn says the user would be ' +
+      'a top applicant, 100 per call; it takes no keywords, location or filters. ' +
       `${READING_CONTRACT} ${NO_RETRY}`,
     {
       ...jobQuery,
+      topApplicant: z
+        .boolean()
+        .optional()
+        .describe("Premium: LinkedIn's list of jobs where the user would be a top applicant"),
       limit: z.number().int().min(1).max(1000).optional().describe('per keyword set; default 25'),
       start: z.number().int().min(0).optional(),
       details: z.boolean().optional().describe('read each job: apply link, applicants'),
       description: z.boolean().optional().describe('with details, keep full descriptions'),
       compact: z.boolean().optional().describe('one line per job'),
     },
-    async ({ limit, start, details, description, compact, ...q }) =>
+    async ({ limit, start, details, description, compact, topApplicant, ...q }) =>
       reply(
         await runJobs(
           {
             ...jobRequest(q, limit ?? 25),
+            ...(topApplicant === true ? { collection: 'top-applicant' as const } : {}),
             ...(start !== undefined ? { start } : {}),
             ...(details !== undefined ? { details } : {}),
             ...(description !== undefined ? { description } : {}),
@@ -414,14 +421,25 @@ export function buildServer(): McpServer {
       `one call. meta.unread lists ids LinkedIn did not return. team: true adds hiringTeam ` +
       '[{name, id, url, headline, degree, role ("Job poster"), verified}] per job — who posted ' +
       'it and who is hiring — one page call (60 a day) per job; [] means LinkedIn shows no one, ' +
-      `and hiringTeamError says why one could not be read. ${NO_RETRY}`,
+      'and hiringTeamError says why one could not be read. insights: true (Premium) adds ' +
+      'premium {applicants {total, lastDay, seniority [{level, share, count}], education ' +
+      '[{degree, share}]}, company {name, headcount {asOf, now, sixMonthsAgo, yearAgo, ' +
+      "twoYearsAgo, growth1y (%)}, function {name, now, …} (the job's function), medianTenure, " +
+      "competitors [{name, industry, url}], hiring, priorities, landscape (LinkedIn's generated " +
+      'text)}}, one more job read per job; premiumError says why they could not be read. ' +
+      NO_RETRY,
     {
       job: z
         .union([z.string().min(1), z.array(z.string().min(1)).min(1)])
         .describe('job id, /jobs/view/ URL or ?currentJobId= URL, or a list of them'),
       team: z.boolean().optional().describe("also read each job's hiring team"),
+      insights: z
+        .boolean()
+        .optional()
+        .describe("Premium: who applied, and the company's headcount and insights"),
     },
-    async ({ job, team }) => reply(await runJob(job, {}, undefined, { team: team === true })),
+    async ({ job, team, insights }) =>
+      reply(await runJob(job, {}, undefined, { team: team === true, insights: insights === true })),
   );
 
   server.tool(

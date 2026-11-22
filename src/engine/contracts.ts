@@ -253,6 +253,24 @@ export const CONTRACTS: Record<string, OperationContract> = {
     provenance: 'verified',
     capturedAt: '2026-10-14',
   },
+  // Premium job reads, captured 2026-11-22 from /jobs/collections/top-applicant/
+  // and a job's detail pane. See engine/job-premium.ts.
+  jobCollection: {
+    name: 'jobCollection',
+    transport: 'voyager-graphql',
+    path: `${VOYAGER}/graphql`,
+    queryId: 'voyagerJobsDashJobCards.fc1f897bcf2dc9afd5184ef3e9ed589b',
+    provenance: 'verified',
+    capturedAt: '2026-11-22',
+  },
+  jobDetailSections: {
+    name: 'jobDetailSections',
+    transport: 'voyager-graphql',
+    path: `${VOYAGER}/graphql`,
+    queryId: 'voyagerJobsDashJobPostingDetailSections.bc2eee77d01abc6616b8c8855344dfd5',
+    provenance: 'verified',
+    capturedAt: '2026-11-22',
+  },
   jobPosting: {
     name: 'jobPosting',
     transport: 'voyager-restli',

@@ -212,10 +212,12 @@ function readCards(elements: Node[], included: Node[]) {
   const unknownTypes: Record<string, number> = {};
   let unresolved = 0;
   for (const el of elements) {
-    const union = (el.jobCardUnion ?? {}) as Record<string, unknown>;
+    // Search calls it `jobCardUnion`; a collection, `jobCard`, with every other kind null.
+    const union = (el.jobCardUnion ?? el.jobCard ?? {}) as Record<string, unknown>;
     const ref = union['*jobPostingCard'];
     if (typeof ref !== 'string') {
-      for (const kind of Object.keys(union)) unknownTypes[kind] = (unknownTypes[kind] ?? 0) + 1;
+      for (const [kind, v] of Object.entries(union))
+        if (v !== null && !kind.startsWith('$')) unknownTypes[kind] = (unknownTypes[kind] ?? 0) + 1;
       continue;
     }
     const card = byUrn.get(ref);

@@ -1,0 +1,688 @@
+{
+  "data": {
+    "data": {
+      "jobsDashJobCardsByJobCollections": {
+        "metadata": {
+          "resultsCountHeader": {
+            "textDirection": "USER_LOCALE",
+            "text": "83 results",
+            "attributesV2": [],
+            "accessibilityTextAttributesV2": [],
+            "accessibilityText": null,
+            "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+          }
+        },
+        "paging": {
+          "count": 25,
+          "start": 0,
+          "total": 83,
+          "$type": "com.linkedin.restli.common.CollectionMetadata"
+        },
+        "elements": [
+          {
+            "jobCard": {
+              "promotionalCard": null,
+              "endOfResultsCard": null,
+              "internalOpportunitiesCard": null,
+              "jobPostingCardWrapper": null,
+              "inlineResultCard": null,
+              "jobSearchSuggestion": null,
+              "premiumUpsellSlot": null,
+              "freemiumJobInsightsCard": null,
+              "feedbackCard": null,
+              "newCollectionHeaderCard": null,
+              "errorStateCard": null,
+              "careerEnrichmentCard": null,
+              "*jobPostingCard": "urn:li:fsd_jobPostingCard:(4490422837,JOB_COLLECTIONS_TOP_APPLICANT)",
+              "noResultsCard": null,
+              "seeAllCard": null,
+              "blurredJobPostingCard": null
+            },
+            "$type": "com.linkedin.voyager.dash.jobs.JobCard"
+          },
+          {
+            "jobCard": {
+              "promotionalCard": null,
+              "endOfResultsCard": null,
+              "internalOpportunitiesCard": null,
+              "jobPostingCardWrapper": null,
+              "inlineResultCard": null,
+              "jobSearchSuggestion": null,
+              "premiumUpsellSlot": null,
+              "freemiumJobInsightsCard": null,
+              "feedbackCard": null,
+              "newCollectionHeaderCard": null,
+              "errorStateCard": null,
+              "careerEnrichmentCard": null,
+              "*jobPostingCard": "urn:li:fsd_jobPostingCard:(4492738054,JOB_COLLECTIONS_TOP_APPLICANT)",
+              "noResultsCard": null,
+              "seeAllCard": null,
+              "blurredJobPostingCard": null
+            },
+            "$type": "com.linkedin.voyager.dash.jobs.JobCard"
+          },
+          {
+            "jobCard": {
+              "promotionalCard": null,
+              "endOfResultsCard": null,
+              "internalOpportunitiesCard": null,
+              "jobPostingCardWrapper": null,
+              "inlineResultCard": null,
+              "jobSearchSuggestion": null,
+              "premiumUpsellSlot": null,
+              "freemiumJobInsightsCard": null,
+              "feedbackCard": null,
+              "newCollectionHeaderCard": null,
+              "errorStateCard": null,
+              "careerEnrichmentCard": null,
+              "*jobPostingCard": "urn:li:fsd_jobPostingCard:(4458162429,JOB_COLLECTIONS_TOP_APPLICANT)",
+              "noResultsCard": null,
+              "seeAllCard": null,
+              "blurredJobPostingCard": null
+            },
+            "$type": "com.linkedin.voyager.dash.jobs.JobCard"
+          }
+        ],
+        "$type": "com.linkedin.restli.common.CollectionResponse"
+      }
+    }
+  },
+  "included": [
+    {
+      "preDashNormalizedJobPostingUrn": "urn:li:fs_normalized_jobPosting:4458162429",
+      "primaryActions": [
+        {
+          "dismissJobAction": {
+            "jobActionInfo": {
+              "controlNameDefault": "collections_taj_job_action_dismiss",
+              "accessibilityNameDefault": "Dismiss Full Stack Engineer job",
+              "iconDefault": "SYS_ICN_CLOSE_SMALL",
+              "iconSelected": "SYS_ICN_UNDO_SMALL",
+              "controlNameSelected": "collections_taj_job_action_dismiss_undo",
+              "accessibilityNameSelected": "Full Stack Engineer job is dismissed, undo",
+              "$type": "com.linkedin.voyager.dash.jobs.JobActionInfo"
+            },
+            "dismissUndoControlName": "collections_taj_job_action_dismiss_undo",
+            "channel": "JOB_COLLECTIONS_TOP_APPLICANT",
+            "dismissControlName": "collections_taj_job_action_dismiss",
+            "*jobPostingRelevanceFeedback": "urn:li:fsd_jobPostingRelevanceFeedback:urn:li:fsd_jobPosting:4458162429",
+            "$type": "com.linkedin.voyager.dash.jobs.DismissJobAction"
+          },
+          "overflowAction": null
+        }
+      ],
+      "jobInsightsV2ResolutionResults": [],
+      "title": {
+        "textDirection": "USER_LOCALE",
+        "text": "Full Stack Engineer  ",
+        "attributesV2": [
+          {
+            "start": 0,
+            "length": 19,
+            "detailData": {
+              "jobPostingName": null,
+              "hyperlink": null,
+              "profileFamiliarName": null,
+              "color": null,
+              "companyName": null,
+              "icon": null,
+              "epoch": null,
+              "systemImage": null,
+              "textLink": null,
+              "listItemStyle": null,
+              "groupName": null,
+              "hyperlinkOpenExternally": null,
+              "listStyle": null,
+              "profileFullName": null,
+              "stringFieldReference": null,
+              "learningCourseName": null,
+              "profileMention": null,
+              "style": "BOLD",
+              "schoolName": null,
+              "hashtag": null
+            },
+            "$type": "com.linkedin.voyager.dash.common.text.TextAttribute"
+          },
+          {
+            "start": 20,
+            "length": 1,
+            "detailData": {
+              "jobPostingName": null,
+              "hyperlink": null,
+              "profileFamiliarName": null,
+              "color": null,
+              "companyName": null,
+              "icon": null,
+              "systemImage": "SYS_ICN_VERIFIED_SMALL",
+              "epoch": null,
+              "textLink": null,
+              "listItemStyle": null,
+              "groupName": null,
+              "hyperlinkOpenExternally": null,
+              "listStyle": null,
+              "profileFullName": null,
+              "stringFieldReference": null,
+              "learningCourseName": null,
+              "profileMention": null,
+              "style": null,
+              "schoolName": null,
+              "hashtag": null
+            },
+            "$type": "com.linkedin.voyager.dash.common.text.TextAttribute"
+          },
+          {
+            "start": 20,
+            "length": 1,
+            "detailData": {
+              "jobPostingName": null,
+              "hyperlink": null,
+              "profileFamiliarName": null,
+              "color": "LOW_EMPHASIS",
+              "companyName": null,
+              "icon": null,
+              "epoch": null,
+              "systemImage": null,
+              "textLink": null,
+              "listItemStyle": null,
+              "groupName": null,
+              "hyperlinkOpenExternally": null,
+              "listStyle": null,
+              "profileFullName": null,
+              "stringFieldReference": null,
+              "learningCourseName": null,
+              "profileMention": null,
+              "style": null,
+              "schoolName": null,
+              "hashtag": null
+            },
+            "$type": "com.linkedin.voyager.dash.common.text.TextAttribute"
+          }
+        ],
+        "accessibilityTextAttributesV2": [],
+        "accessibilityText": "Full Stack Engineer with verification",
+        "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+      },
+      "primaryActionV2": {
+        "dismissJobAction": null,
+        "saveJobAction": null,
+        "applyJobAction": null
+      },
+      "entityUrn": "urn:li:fsd_jobPostingCard:(4458162429,JOB_COLLECTIONS_TOP_APPLICANT)",
+      "*jobPosting": "urn:li:fsd_jobPosting:4458162429",
+      "blurred": false,
+      "footerItems": [
+        {
+          "text": null,
+          "type": "LISTED_DATE",
+          "timeAt": 1795081061000,
+          "$type": "com.linkedin.voyager.dash.jobs.JobPostingCardFooterItem"
+        },
+        {
+          "text": {
+            "textDirection": "USER_LOCALE",
+            "text": "Easy Apply",
+            "attributesV2": [],
+            "accessibilityTextAttributesV2": [],
+            "accessibilityText": null,
+            "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+          },
+          "type": "EASY_APPLY_TEXT",
+          "timeAt": null,
+          "$type": "com.linkedin.voyager.dash.jobs.JobPostingCardFooterItem"
+        }
+      ],
+      "jobPostingTitle": "Full Stack Engineer",
+      "*jobSeekerJobState": "urn:li:fsd_jobSeekerJobState:4458162429",
+      "primaryDescription": {
+        "textDirection": "USER_LOCALE",
+        "text": "AZ9 Group",
+        "attributesV2": [],
+        "accessibilityTextAttributesV2": [],
+        "accessibilityText": null,
+        "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+      },
+      "relevanceInsight": {
+        "image": {
+          "attributes": [
+            {
+              "scalingType": null,
+              "detailData": {
+                "profilePictureWithoutFrame": null,
+                "profilePictureWithRingStatus": null,
+                "companyLogo": null,
+                "icon": null,
+                "systemImage": "SYS_ICN_RESPONSIVE_MEDIUM",
+                "nonEntityGroupLogo": null,
+                "vectorImage": null,
+                "nonEntityProfessionalEventLogo": null,
+                "profilePicture": null,
+                "imageUrl": null,
+                "professionalEventLogo": null,
+                "nonEntityCompanyLogo": null,
+                "nonEntitySchoolLogo": null,
+                "groupLogo": null,
+                "schoolLogo": null,
+                "ghostImage": null,
+                "nonEntityProfilePicture": null
+              },
+              "tintColor": "SIGNAL_POSITIVE",
+              "tapTargets": [],
+              "displayAspectRatio": null,
+              "$type": "com.linkedin.voyager.dash.common.image.ImageAttribute"
+            }
+          ],
+          "editableAccessibilityText": false,
+          "actionTarget": null,
+          "accessibilityTextAttributes": [],
+          "totalCount": null,
+          "accessibilityText": "Actively reviewing applicants",
+          "$type": "com.linkedin.voyager.dash.common.image.ImageViewModel"
+        },
+        "text": {
+          "textDirection": "USER_LOCALE",
+          "text": "Actively reviewing applicants",
+          "attributesV2": [],
+          "accessibilityTextAttributesV2": [],
+          "accessibilityText": null,
+          "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+        },
+        "$type": "com.linkedin.voyager.dash.common.ux.InsightViewModel"
+      },
+      "cardActionV2": null,
+      "$type": "com.linkedin.voyager.dash.jobs.JobPostingCard",
+      "secondaryDescription": {
+        "textDirection": "USER_LOCALE",
+        "text": "Budapest, Hungary (Hybrid)",
+        "attributesV2": [],
+        "accessibilityTextAttributesV2": [],
+        "accessibilityText": null,
+        "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+      },
+      "cardAction": null,
+      "tertiaryDescription": null,
+      "tertiaryActionsV2ResolutionResults": []
+    },
+    {
+      "preDashNormalizedJobPostingUrn": "urn:li:fs_normalized_jobPosting:4490422837",
+      "primaryActions": [
+        {
+          "dismissJobAction": {
+            "jobActionInfo": {
+              "controlNameDefault": "collections_taj_job_action_dismiss",
+              "accessibilityNameDefault": "Dismiss Senior Full Stack Developer (Angular / Java) job",
+              "iconDefault": "SYS_ICN_CLOSE_SMALL",
+              "iconSelected": "SYS_ICN_UNDO_SMALL",
+              "controlNameSelected": "collections_taj_job_action_dismiss_undo",
+              "accessibilityNameSelected": "Senior Full Stack Developer (Angular / Java) job is dismissed, undo",
+              "$type": "com.linkedin.voyager.dash.jobs.JobActionInfo"
+            },
+            "dismissUndoControlName": "collections_taj_job_action_dismiss_undo",
+            "channel": "JOB_COLLECTIONS_TOP_APPLICANT",
+            "dismissControlName": "collections_taj_job_action_dismiss",
+            "*jobPostingRelevanceFeedback": "urn:li:fsd_jobPostingRelevanceFeedback:urn:li:fsd_jobPosting:4490422837",
+            "$type": "com.linkedin.voyager.dash.jobs.DismissJobAction"
+          },
+          "overflowAction": null
+        }
+      ],
+      "jobInsightsV2ResolutionResults": [],
+      "title": {
+        "textDirection": "USER_LOCALE",
+        "text": "Senior Full Stack Developer (Angular / Java)  ",
+        "attributesV2": [
+          {
+            "start": 0,
+            "length": 44,
+            "detailData": {
+              "jobPostingName": null,
+              "hyperlink": null,
+              "profileFamiliarName": null,
+              "color": null,
+              "companyName": null,
+              "icon": null,
+              "epoch": null,
+              "systemImage": null,
+              "textLink": null,
+              "listItemStyle": null,
+              "groupName": null,
+              "hyperlinkOpenExternally": null,
+              "listStyle": null,
+              "profileFullName": null,
+              "stringFieldReference": null,
+              "learningCourseName": null,
+              "profileMention": null,
+              "style": "BOLD",
+              "schoolName": null,
+              "hashtag": null
+            },
+            "$type": "com.linkedin.voyager.dash.common.text.TextAttribute"
+          },
+          {
+            "start": 45,
+            "length": 1,
+            "detailData": {
+              "jobPostingName": null,
+              "hyperlink": null,
+              "profileFamiliarName": null,
+              "color": null,
+              "companyName": null,
+              "icon": null,
+              "systemImage": "SYS_ICN_VERIFIED_SMALL",
+              "epoch": null,
+              "textLink": null,
+              "listItemStyle": null,
+              "groupName": null,
+              "hyperlinkOpenExternally": null,
+              "listStyle": null,
+              "profileFullName": null,
+              "stringFieldReference": null,
+              "learningCourseName": null,
+              "profileMention": null,
+              "style": null,
+              "schoolName": null,
+              "hashtag": null
+            },
+            "$type": "com.linkedin.voyager.dash.common.text.TextAttribute"
+          },
+          {
+            "start": 45,
+            "length": 1,
+            "detailData": {
+              "jobPostingName": null,
+              "hyperlink": null,
+              "profileFamiliarName": null,
+              "color": "LOW_EMPHASIS",
+              "companyName": null,
+              "icon": null,
+              "epoch": null,
+              "systemImage": null,
+              "textLink": null,
+              "listItemStyle": null,
+              "groupName": null,
+              "hyperlinkOpenExternally": null,
+              "listStyle": null,
+              "profileFullName": null,
+              "stringFieldReference": null,
+              "learningCourseName": null,
+              "profileMention": null,
+              "style": null,
+              "schoolName": null,
+              "hashtag": null
+            },
+            "$type": "com.linkedin.voyager.dash.common.text.TextAttribute"
+          }
+        ],
+        "accessibilityTextAttributesV2": [],
+        "accessibilityText": "Senior Full Stack Developer (Angular / Java) with verification",
+        "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+      },
+      "primaryActionV2": {
+        "dismissJobAction": null,
+        "saveJobAction": null,
+        "applyJobAction": null
+      },
+      "entityUrn": "urn:li:fsd_jobPostingCard:(4490422837,JOB_COLLECTIONS_TOP_APPLICANT)",
+      "*jobPosting": "urn:li:fsd_jobPosting:4490422837",
+      "blurred": false,
+      "footerItems": [
+        {
+          "text": null,
+          "type": "LISTED_DATE",
+          "timeAt": 1794913040000,
+          "$type": "com.linkedin.voyager.dash.jobs.JobPostingCardFooterItem"
+        },
+        {
+          "text": {
+            "textDirection": "USER_LOCALE",
+            "text": "Easy Apply",
+            "attributesV2": [],
+            "accessibilityTextAttributesV2": [],
+            "accessibilityText": null,
+            "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+          },
+          "type": "EASY_APPLY_TEXT",
+          "timeAt": null,
+          "$type": "com.linkedin.voyager.dash.jobs.JobPostingCardFooterItem"
+        }
+      ],
+      "jobPostingTitle": "Senior Full Stack Developer (Angular / Java)",
+      "*jobSeekerJobState": "urn:li:fsd_jobSeekerJobState:4490422837",
+      "primaryDescription": {
+        "textDirection": "USER_LOCALE",
+        "text": "TEKsystems",
+        "attributesV2": [],
+        "accessibilityTextAttributesV2": [],
+        "accessibilityText": null,
+        "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+      },
+      "relevanceInsight": {
+        "image": {
+          "attributes": [
+            {
+              "scalingType": null,
+              "detailData": {
+                "profilePictureWithoutFrame": null,
+                "profilePictureWithRingStatus": null,
+                "companyLogo": null,
+                "icon": null,
+                "systemImage": "SYS_ICN_RESPONSIVE_MEDIUM",
+                "nonEntityGroupLogo": null,
+                "vectorImage": null,
+                "nonEntityProfessionalEventLogo": null,
+                "profilePicture": null,
+                "imageUrl": null,
+                "professionalEventLogo": null,
+                "nonEntityCompanyLogo": null,
+                "nonEntitySchoolLogo": null,
+                "groupLogo": null,
+                "schoolLogo": null,
+                "ghostImage": null,
+                "nonEntityProfilePicture": null
+              },
+              "tintColor": "SIGNAL_POSITIVE",
+              "tapTargets": [],
+              "displayAspectRatio": null,
+              "$type": "com.linkedin.voyager.dash.common.image.ImageAttribute"
+            }
+          ],
+          "editableAccessibilityText": false,
+          "actionTarget": null,
+          "accessibilityTextAttributes": [],
+          "totalCount": null,
+          "accessibilityText": "Actively reviewing applicants",
+          "$type": "com.linkedin.voyager.dash.common.image.ImageViewModel"
+        },
+        "text": {
+          "textDirection": "USER_LOCALE",
+          "text": "Actively reviewing applicants",
+          "attributesV2": [],
+          "accessibilityTextAttributesV2": [],
+          "accessibilityText": null,
+          "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+        },
+        "$type": "com.linkedin.voyager.dash.common.ux.InsightViewModel"
+      },
+      "cardActionV2": null,
+      "$type": "com.linkedin.voyager.dash.jobs.JobPostingCard",
+      "secondaryDescription": {
+        "textDirection": "USER_LOCALE",
+        "text": "Budapest, Hungary (Hybrid)",
+        "attributesV2": [],
+        "accessibilityTextAttributesV2": [],
+        "accessibilityText": null,
+        "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+      },
+      "cardAction": null,
+      "tertiaryDescription": null,
+      "tertiaryActionsV2ResolutionResults": []
+    },
+    {
+      "preDashNormalizedJobPostingUrn": "urn:li:fs_normalized_jobPosting:4492738054",
+      "primaryActions": [
+        {
+          "dismissJobAction": {
+            "jobActionInfo": {
+              "controlNameDefault": "collections_taj_job_action_dismiss",
+              "accessibilityNameDefault": "Dismiss Full Stack Engineer job",
+              "iconDefault": "SYS_ICN_CLOSE_SMALL",
+              "iconSelected": "SYS_ICN_UNDO_SMALL",
+              "controlNameSelected": "collections_taj_job_action_dismiss_undo",
+              "accessibilityNameSelected": "Full Stack Engineer job is dismissed, undo",
+              "$type": "com.linkedin.voyager.dash.jobs.JobActionInfo"
+            },
+            "dismissUndoControlName": "collections_taj_job_action_dismiss_undo",
+            "channel": "JOB_COLLECTIONS_TOP_APPLICANT",
+            "dismissControlName": "collections_taj_job_action_dismiss",
+            "*jobPostingRelevanceFeedback": "urn:li:fsd_jobPostingRelevanceFeedback:urn:li:fsd_jobPosting:4492738054",
+            "$type": "com.linkedin.voyager.dash.jobs.DismissJobAction"
+          },
+          "overflowAction": null
+        }
+      ],
+      "jobInsightsV2ResolutionResults": [],
+      "title": {
+        "textDirection": "USER_LOCALE",
+        "text": "Full Stack Engineer  ",
+        "attributesV2": [
+          {
+            "start": 0,
+            "length": 19,
+            "detailData": {
+              "jobPostingName": null,
+              "hyperlink": null,
+              "profileFamiliarName": null,
+              "color": null,
+              "companyName": null,
+              "icon": null,
+              "epoch": null,
+              "systemImage": null,
+              "textLink": null,
+              "listItemStyle": null,
+              "groupName": null,
+              "hyperlinkOpenExternally": null,
+              "listStyle": null,
+              "profileFullName": null,
+              "stringFieldReference": null,
+              "learningCourseName": null,
+              "profileMention": null,
+              "style": "BOLD",
+              "schoolName": null,
+              "hashtag": null
+            },
+            "$type": "com.linkedin.voyager.dash.common.text.TextAttribute"
+          },
+          {
+            "start": 20,
+            "length": 1,
+            "detailData": {
+              "jobPostingName": null,
+              "hyperlink": null,
+              "profileFamiliarName": null,
+              "color": null,
+              "companyName": null,
+              "icon": null,
+              "systemImage": "SYS_ICN_VERIFIED_SMALL",
+              "epoch": null,
+              "textLink": null,
+              "listItemStyle": null,
+              "groupName": null,
+              "hyperlinkOpenExternally": null,
+              "listStyle": null,
+              "profileFullName": null,
+              "stringFieldReference": null,
+              "learningCourseName": null,
+              "profileMention": null,
+              "style": null,
+              "schoolName": null,
+              "hashtag": null
+            },
+            "$type": "com.linkedin.voyager.dash.common.text.TextAttribute"
+          },
+          {
+            "start": 20,
+            "length": 1,
+            "detailData": {
+              "jobPostingName": null,
+              "hyperlink": null,
+              "profileFamiliarName": null,
+              "color": "LOW_EMPHASIS",
+              "companyName": null,
+              "icon": null,
+              "epoch": null,
+              "systemImage": null,
+              "textLink": null,
+              "listItemStyle": null,
+              "groupName": null,
+              "hyperlinkOpenExternally": null,
+              "listStyle": null,
+              "profileFullName": null,
+              "stringFieldReference": null,
+              "learningCourseName": null,
+              "profileMention": null,
+              "style": null,
+              "schoolName": null,
+              "hashtag": null
+            },
+            "$type": "com.linkedin.voyager.dash.common.text.TextAttribute"
+          }
+        ],
+        "accessibilityTextAttributesV2": [],
+        "accessibilityText": "Full Stack Engineer with verification",
+        "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+      },
+      "primaryActionV2": {
+        "dismissJobAction": null,
+        "saveJobAction": null,
+        "applyJobAction": null
+      },
+      "entityUrn": "urn:li:fsd_jobPostingCard:(4492738054,JOB_COLLECTIONS_TOP_APPLICANT)",
+      "*jobPosting": "urn:li:fsd_jobPosting:4492738054",
+      "blurred": false,
+      "footerItems": [
+        {
+          "text": null,
+          "type": "LISTED_DATE",
+          "timeAt": 1795127811000,
+          "$type": "com.linkedin.voyager.dash.jobs.JobPostingCardFooterItem"
+        },
+        {
+          "text": {
+            "textDirection": "USER_LOCALE",
+            "text": "Easy Apply",
+            "attributesV2": [],
+            "accessibilityTextAttributesV2": [],
+            "accessibilityText": null,
+            "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+          },
+          "type": "EASY_APPLY_TEXT",
+          "timeAt": null,
+          "$type": "com.linkedin.voyager.dash.jobs.JobPostingCardFooterItem"
+        }
+      ],
+      "jobPostingTitle": "Full Stack Engineer",
+      "*jobSeekerJobState": "urn:li:fsd_jobSeekerJobState:4492738054",
+      "primaryDescription": {
+        "textDirection": "USER_LOCALE",
+        "text": "XML International",
+        "attributesV2": [],
+        "accessibilityTextAttributesV2": [],
+        "accessibilityText": null,
+        "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+      },
+      "cardActionV2": null,
+      "relevanceInsight": null,
+      "$type": "com.linkedin.voyager.dash.jobs.JobPostingCard",
+      "secondaryDescription": {
+        "textDirection": "USER_LOCALE",
+        "text": "Budapest, Hungary (On-site)",
+        "attributesV2": [],
+        "accessibilityTextAttributesV2": [],
+        "accessibilityText": null,
+        "$type": "com.linkedin.voyager.dash.common.text.TextViewModel"
+      },
+      "cardAction": null,
+      "tertiaryDescription": null,
+      "tertiaryActionsV2ResolutionResults": []
+    }
+  ]
+}

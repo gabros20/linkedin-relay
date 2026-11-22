@@ -139,6 +139,7 @@ export function jobsRequest(args: ParsedArgs): JobsRequest {
   if (start !== undefined) req.start = start;
   if (bool(args, 'details')) req.details = true;
   if (bool(args, 'description')) req.description = true;
+  if (bool(args, 'top-applicant')) req.collection = 'top-applicant';
   return req;
 }
 
@@ -488,7 +489,10 @@ export async function dispatch(argv: string[], now: number): Promise<Envelope> {
     case 'jobs':
       return runJobs(jobsRequest(args), output(args));
     case 'job':
-      return runJob(args.positionals, output(args), undefined, { team: bool(args, 'team') });
+      return runJob(args.positionals, output(args), undefined, {
+        team: bool(args, 'team'),
+        insights: bool(args, 'insights'),
+      });
     case 'job-filters':
       return runJobFilters(jobsRequest(args), output(args));
     case 'people':

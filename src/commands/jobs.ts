@@ -5,8 +5,21 @@
 // spends the job-read budget. `--details` is opt-in because full descriptions
 // are large: search wide with cards, then read the finalists. `job --team`
 // adds each job's hiring team, one page call per job.
+//
+// Premium (engine/job-premium.ts): `jobs --top-applicant` lists the jobs
+// where LinkedIn says you would be a top applicant, and `job --insights` adds
+// who applied and the company's insights, one more job read per job.
 
 import { createLiveClient } from '../engine/index.ts';
+import {
+  COLLECTION_PAGE,
+  type Collection,
+  type JobInsights,
+  jobCollectionUrl,
+  jobInsightsUrl,
+  parseJobCollection,
+  parseJobInsights,
+} from '../engine/job-premium.ts';
 import {
   BATCH_SIZE,
   HIRING_TEAM_URL,
@@ -84,6 +97,8 @@ export interface JobsRequest {
   /** With `details`, keep each job's full description. */
   description?: boolean;
   filter?: JobFilterOptions;
+  /** A Premium collection instead of a search: it takes no keywords or filters. */
+  collection?: Collection;
 }
 
 /** LinkedIn serves no further than 1000 into any one job search. */
@@ -93,6 +108,11 @@ interface Teamed {
   hiringTeam?: HiringMember[];
   /** Why the team could not be read; the job itself was. */
   hiringTeamError?: string;
+  /** Premium (`--insights`): who applied, and the company's insights. */
+  premium?: Omit<JobInsights, 'ok' | 'unknownSections'> & {
+    unknownSections?: Record<string, number>;
+  };
+  premiumError?: string;
 }
 
 type Row = Matched<JobCard & Partial<Omit<JobDetail, keyof JobCard>>> & Teamed;
@@ -187,6 +207,7 @@ export async function runJobs(
   opts: OutputOpts = {},
   fetch?: JobsFetch,
 ): Promise<Envelope> {
+  if (req.collection !== undefined) return runCollection(req, req.collection, opts, fetch);
   const sets = keywordSets(req.keywords);
   const hasQuery =
     sets.length > 0 || [req.location, req.geoId].some((v) => v !== undefined && v !== '');
@@ -259,6 +280,74 @@ export async function runJobs(
   });
 }
 
+/** A Premium collection, 100 a call, the cards job search returns. */
+async function runCollection(
+  req: JobsRequest,
+  collection: Collection,
+  opts: OutputOpts,
+  fetch?: JobsFetch,
+): Promise<Envelope> {
+  const searched = keywordSets(req.keywords).length > 0 || req.location || req.geoId;
+  const selection = jobFilterSelection(req.filter ?? {});
+  const filtered = !selection.ok || Object.keys(selection.filters).length > 0;
+  if (searched || filtered)
+    return err(
+      'jobs',
+      'INVALID_INPUT',
+      `--${collection} is LinkedIn's own list: it takes no keywords, location or filters`,
+    );
+  const get = fetch ?? liveFetch('jobs', opts.quiet === true);
+  if (typeof get !== 'function') return get;
+  const first = Math.max(0, req.start ?? 0);
+  const want = Math.max(1, Math.min(req.limit, PAGING.max - first));
+  const fetchPage: PageFetch<JobCard> = async (_keywords, start) => {
+    const res = await get(jobCollectionUrl(collection, start, COLLECTION_PAGE), 'jobSearch');
+    const page = res.ok ? parseJobCollection(res.json) : res;
+    if (!page.ok) return page;
+    return {
+      ok: true,
+      items: page.jobs,
+      ...(page.total !== undefined ? { total: page.total } : {}),
+      unknownTypes: page.unknownTypes,
+    };
+  };
+  const merged = await searchAll(fetchPage, [undefined], first, want, PAGING);
+  if (merged.rows.length === 0 && merged.failure !== undefined) {
+    const f = merged.failure;
+    return err('jobs', f.code, f.message, f.hint);
+  }
+  let extra = {};
+  if (req.details === true) {
+    const added = await addDetails(get, merged.rows, req.description === true);
+    extra = {
+      unread: added.unread,
+      ...(added.stoppedBy !== undefined ? { readStop: added.stoppedBy } : {}),
+    };
+  }
+  return ok('jobs', {
+    collection,
+    items: shape(merged.rows as Row[], opts, compactJob),
+    meta: metaOf('jobs', merged, true, first, { unread: 0, ...extra }),
+  });
+}
+
+/** Each job's Premium insights, one job read each; a failed one says why. */
+async function addInsights(get: JobsFetch, jobs: (JobDetail & Teamed)[]): Promise<void> {
+  for (const job of jobs) {
+    const res = await get(jobInsightsUrl(job.id), 'jobRead');
+    const read = res.ok ? parseJobInsights(res.json) : res;
+    if (!read.ok) {
+      job.premiumError = `${read.code}: ${read.message}`;
+      continue;
+    }
+    const { ok: _ok, unknownSections, ...insights } = read;
+    job.premium = {
+      ...insights,
+      ...(Object.keys(unknownSections).length > 0 ? { unknownSections } : {}),
+    };
+  }
+}
+
 /** Each job's hiring team, one call each, onto the job; a failed one says why. */
 async function addTeams(get: JobsFetch, jobs: (JobDetail & Teamed)[]): Promise<void> {
   for (const job of jobs) {
@@ -274,7 +363,7 @@ export async function runJob(
   input: string | string[] | undefined,
   opts: OutputOpts = {},
   fetch?: JobsFetch,
-  req: { team?: boolean } = {},
+  req: { team?: boolean; insights?: boolean } = {},
 ): Promise<Envelope> {
   const given = input === undefined ? [] : Array.isArray(input) ? input : [input];
   const ids = [...new Set(given.map(jobIdOf))];
@@ -296,8 +385,10 @@ export async function runJob(
     if (!res.ok) return err('job', res.code, res.message, res.hint);
     const detail = parseJobDetail(res.json);
     if (!detail.ok) return err('job', detail.code, detail.message, detail.hint);
-    if (req.team === true) await addTeams(get, [detail.job]);
-    return ok('job', detail.job);
+    const job: JobDetail & Teamed = detail.job;
+    if (req.team === true) await addTeams(get, [job]);
+    if (req.insights === true) await addInsights(get, [job]);
+    return ok('job', job);
   }
 
   const read = await readJobs(get, wanted);
@@ -306,6 +397,7 @@ export async function runJob(
   const unread = wanted.filter((id) => !read.jobs.has(id));
   const jobs: (JobDetail & Teamed)[] = wanted.flatMap((id) => read.jobs.get(id) ?? []);
   if (req.team === true) await addTeams(get, jobs);
+  if (req.insights === true) await addInsights(get, jobs);
   return ok('job', {
     items: shape(jobs, opts, (j) =>
       compactJob({ ...j, easyApply: j.apply?.type === 'easy-apply', promoted: false }),
