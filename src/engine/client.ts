@@ -150,6 +150,10 @@ async function fetchRaw(
   // exactly the six headers that were verified against live traffic.
   const requestHeaders = buildHeaders(session);
   if (spec.body !== undefined) requestHeaders['content-type'] = 'application/json; charset=UTF-8';
+  // The page-data endpoints answer 500 without a referer (2026-11), as no
+  // browser ever sends them one. Any LinkedIn page will do; a caller may name its own.
+  if (spec.url.includes('linkedin.com/flagship-web/'))
+    requestHeaders.referer = 'https://www.linkedin.com/feed/';
   Object.assign(requestHeaders, spec.headers);
   const body = encodeBody(spec);
 

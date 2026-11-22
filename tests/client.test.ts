@@ -369,6 +369,38 @@ describe('request bodies', () => {
     expect(headers?.['content-type']).toBeUndefined();
   });
 
+  // 2026-11: the page-data endpoints (flagship-web) answer 500 without a
+  // referer: the viewers list, a job's hiring team, its match details.
+  test('a page-data request carries a LinkedIn referer; the caller may name its own', async () => {
+    const { client, seen } = recording();
+    const sdui = 'https://www.linkedin.com/flagship-web/rsc-action/actions/component?componentId=x';
+    await client.request({
+      url: sdui,
+      method: 'POST',
+      body: {},
+      spendClass: 'page',
+      operation: 'x',
+    });
+    await client.request({
+      url: sdui,
+      method: 'POST',
+      body: {},
+      headers: { referer: 'https://www.linkedin.com/jobs/' },
+      spendClass: 'page',
+      operation: 'x',
+    });
+    await client.request({
+      url: 'https://www.linkedin.com/voyager/api/me',
+      spendClass: 'profile',
+      operation: 'me',
+    });
+    const referer = (i: number) =>
+      (seen[i]?.headers as Record<string, string> | undefined)?.referer;
+    expect(referer(0)).toBe('https://www.linkedin.com/feed/');
+    expect(referer(1)).toBe('https://www.linkedin.com/jobs/');
+    expect(referer(2)).toBeUndefined();
+  });
+
   // The auth headers are the same on a write; losing them would 401, but
   // losing them SILENTLY on the write path only is the kind of asymmetry that
   // survives a test suite that only ever exercises reads.
