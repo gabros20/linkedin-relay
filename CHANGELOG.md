@@ -1,3 +1,16 @@
+# [3.26.0](https://github.com/gabros20/linkedin-relay/compare/v3.25.0...v3.26.0) (2026-11-22)
+
+
+### Bug Fixes
+
+* **classify:** a challenge is an HTML page, not a word in data ([d28779e](https://github.com/gabros20/linkedin-relay/commit/d28779ee78aa6550d0a671c515cd968ef6aaf43b))
+
+
+### Features
+
+* **jobs:** Premium top-applicant jobs and job --insights ([32c0992](https://github.com/gabros20/linkedin-relay/commit/32c09924e9759da1cf973ba4ee2d8a3e5e2092b2))
+* **viewers:** Premium viewers, --days, highlights and companies ([c1e7104](https://github.com/gabros20/linkedin-relay/commit/c1e710450be1dbcccb6d5b3a6e34665cd7bb711a))
+
 # [3.25.0](https://github.com/gabros20/linkedin-relay/compare/v3.24.0...v3.25.0) (2026-10-29)
 
 
