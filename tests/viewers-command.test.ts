@@ -7,16 +7,25 @@ const stream = (name: string) => readFileSync(join(import.meta.dir, 'fixtures', 
 const LIST = stream('profile-viewers.rsc');
 const TOTALS = stream('profile-viewers-analytics.rsc');
 
-function linkedin(fails: string[] = []) {
-  const asked: { url: string; spendClass: string }[] = [];
-  const fetch: ViewersFetch = async (url, _body, spendClass) => {
-    asked.push({ url, spendClass });
+function linkedin(fails: string[] = [], answers = { list: LIST, totals: TOTALS }) {
+  const asked: { url: string; spendClass: string; range: unknown }[] = [];
+  const fetch: ViewersFetch = async (url, body, spendClass) => {
+    asked.push({
+      url,
+      spendClass,
+      range: (body as { states: { value: unknown }[] }).states[0]?.value,
+    });
     const which = url.includes('WvmpAnalytics') ? 'totals' : 'list';
     if (fails.includes(which)) return { ok: false, code: 'BUDGET_EXHAUSTED', message: 'spent' };
-    return { ok: true, raw: which === 'totals' ? TOTALS : LIST };
+    return { ok: true, raw: answers[which] };
   };
   return { fetch, asked };
 }
+
+const PREMIUM = {
+  list: stream('profile-viewers-premium.rsc'),
+  totals: stream('profile-viewers-analytics-premium.rsc'),
+};
 
 const data = (e: Awaited<ReturnType<typeof runViewers>>) => {
   if (!e.ok) throw new Error(e.error.message);
@@ -44,6 +53,30 @@ describe('lnrelay viewers', () => {
     expect(d.items[2]).toBe(
       'anonymous | Founder in the Szoftverfejlesztés industry from Budapest Metropolitan Area | 1 hónapja megtekintve',
     );
+  });
+
+  test('Premium, --days 365: every viewer, the highlights, and the companies', async () => {
+    const { fetch, asked } = linkedin([], PREMIUM);
+    const d = data(await runViewers({ days: 365 }, fetch));
+    expect(asked.map((a) => a.range)).toEqual([
+      ['WvmpSearchFilterTimeRange_LAST_365_DAYS'],
+      ['WvmpSearchFilterTimeRange_LAST_365_DAYS'],
+    ]);
+    expect(d.days).toBe(365);
+    expect(d.total).toBe(10);
+    expect(d.items).toHaveLength(5);
+    expect(d.privateViewers).toBe(4);
+    expect(d.highlights).toHaveLength(3);
+    expect(d.companies).toHaveLength(4);
+    // 5 named and 4 private of 10: one view LinkedIn counts but does not list.
+    expect(d.meta).toMatchObject({ state: 'partial', returnedCount: 5 });
+  });
+
+  test('the named and the private together make the total: complete', async () => {
+    const totals = PREMIUM.totals.replace('["10"]', '["9"]');
+    // 5 named and 4 private.
+    const d = data(await runViewers({}, linkedin([], { ...PREMIUM, totals }).fetch));
+    expect(d.meta.state).toBe('complete');
   });
 
   test('the total failing keeps the viewers, and says so', async () => {

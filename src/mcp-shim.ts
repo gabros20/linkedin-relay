@@ -606,14 +606,28 @@ export function buildServer(): McpServer {
 
   server.tool(
     'viewers',
-    "Who viewed the user's profile, as their profile-views page shows it: total (over period, " +
-      "LinkedIn's words), privateViewers (a count only), and items — named viewers {name, id, " +
-      'url, degree, headline, viewed} and anonymous ones {anonymous, description, viewed, ' +
-      'searchUrl}. A free account is shown up to 3, so meta.state is partial when total is ' +
-      "higher. Degree and times are in the user's language. 2 page calls. " +
-      NO_RETRY,
-    { compact: z.boolean().optional().describe('one line a viewer') },
-    async ({ compact }) => reply(await runViewers(compact === true ? { compact: true } : {})),
+    "Who viewed the user's profile, as their profile-views page shows it: total, " +
+      'privateViewers (a count only), and items — named viewers {name, id, url, degree, ' +
+      'headline, viewed} and anonymous ones {anonymous, description, viewed, searchUrl}. ' +
+      "Premium names every viewer, takes days (7, 14, 28, 90 or 365; default the page's 90) " +
+      'and adds highlights [{label, value}] (top location, industry, company) and companies ' +
+      '[{name, share}]. A free account is shown up to 3. meta.state is complete only when the ' +
+      "named and private add up to total. Degree, labels and times are in the user's language. " +
+      `2 page calls. ${NO_RETRY}`,
+    {
+      days: z
+        .union([z.literal(7), z.literal(14), z.literal(28), z.literal(90), z.literal(365)])
+        .optional()
+        .describe('the range in days (Premium)'),
+      compact: z.boolean().optional().describe('one line a viewer'),
+    },
+    async ({ days, compact }) =>
+      reply(
+        await runViewers({
+          ...(compact === true ? { compact: true } : {}),
+          ...(days !== undefined ? { days } : {}),
+        }),
+      ),
   );
 
   server.tool(

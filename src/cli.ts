@@ -58,6 +58,7 @@ import type { JobFilterOptions } from './engine/jobs.ts';
 import type { Folder } from './engine/messaging.ts';
 import type { Stage } from './engine/my-items.ts';
 import type { PeopleFilterOptions } from './engine/people.ts';
+import { VIEW_RANGES, type ViewRange } from './engine/profile-views.ts';
 import { SEARCH_KINDS, type SearchKindName } from './engine/search.ts';
 import { shouldRunAsEntry } from './entry.ts';
 import { err, exitCodeFor, toJson } from './output.ts';
@@ -84,6 +85,16 @@ function many(args: ParsedArgs, name: string): string[] {
 }
 
 /** `jobs` and `job-filters` flags. Pure, so the whole surface is testable. */
+function viewersCommand(args: ParsedArgs): Promise<Envelope> | Envelope {
+  const days = num(args, 'days');
+  if (days !== undefined && !(VIEW_RANGES as readonly number[]).includes(days))
+    return err('viewers', 'INVALID_INPUT', `--days takes ${VIEW_RANGES.join(', ')}`);
+  return runViewers({
+    ...output(args),
+    ...(days !== undefined ? { days: days as ViewRange } : {}),
+  });
+}
+
 export function jobsRequest(args: ParsedArgs): JobsRequest {
   const filter: JobFilterOptions = {};
   const distance = num(args, 'distance');
@@ -485,7 +496,7 @@ export async function dispatch(argv: string[], now: number): Promise<Envelope> {
     case 'people-filters':
       return runPeopleFilters(peopleRequest(args), output(args));
     case 'viewers':
-      return runViewers(output(args));
+      return viewersCommand(args);
     case 'notifications':
       return runNotifications(
         { limit: num(args, 'limit') ?? 25, ...(bool(args, 'unread') ? { unread: true } : {}) },

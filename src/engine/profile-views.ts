@@ -15,6 +15,13 @@
 //
 // A free account shows up to 3 viewers; the list has a next-page marker
 // (`wvmp-entity-list-next-page-loaded`) that was not exercised.
+//
+// Premium (captured 2026-11-22) names every viewer in the range, in one
+// answer, and takes a date range: 7, 14, 28, 90 or 365 days, the value of the
+// range state (`WvmpSearchFilterTimeRange_LAST_365_DAYS`). Its totals add
+// highlights (top location, industry, company: value then label, between the
+// `highlights` and `details` markers) and the companies viewers work at, each
+// a name and "(25%)". Since then both requests answer 500 without a referer.
 
 import { Rows } from './posts.ts';
 import type { Failure } from './sdui-form.ts';
@@ -23,15 +30,27 @@ const SERVER_REQUEST = 'https://www.linkedin.com/flagship-web/rsc-action/actions
 export const VIEWERS_URL = `${SERVER_REQUEST}?sduiid=WvmpEntityList`;
 export const VIEW_TOTALS_URL = `${SERVER_REQUEST}?sduiid=WvmpAnalytics`;
 
+/** Both requests answer 500 without a referer (since 2026-11); any LinkedIn page will do. */
+export const VIEWERS_REFERER = 'https://www.linkedin.com/analytics/profile-views/';
+
+/** The ranges the page offers, in days. */
+export const VIEW_RANGES = [7, 14, 28, 90, 365] as const;
+export type ViewRange = (typeof VIEW_RANGES)[number];
+
 const RANGE = 'WvmpSearchFilterType_DATE_RANGE';
 const META = { $type: 'proto.sdui.common.RequestMetadata' } as const;
 
 /** The page's own request: its id, payload, and the date-range state it is keyed by. */
-function serverRequest(requestId: string, stateKey: string, payload: Record<string, unknown>) {
+function serverRequest(
+  requestId: string,
+  stateKey: string,
+  payload: Record<string, unknown>,
+  days: ViewRange | undefined,
+) {
   const state = {
     key: stateKey,
     namespace: 'MemoryNamespace',
-    value: [],
+    value: days === undefined ? [] : [`WvmpSearchFilterTimeRange_LAST_${days}_DAYS`],
     originalProtoCase: 'stringListValue',
     protoKey: { $type: 'proto.sdui.Key', value: { $case: 'id', id: stateKey } },
   };
@@ -64,23 +83,31 @@ function serverRequest(requestId: string, stateKey: string, payload: Record<stri
   };
 }
 
-export function viewersBody() {
-  return serverRequest('WvmpEntityList', `entityListQueryFilterPrefix${RANGE}`, {
-    sortType: 'ProfileViewSortType_TIME_DESCENDING',
-  });
+export function viewersBody(days?: ViewRange) {
+  return serverRequest(
+    'WvmpEntityList',
+    `entityListQueryFilterPrefix${RANGE}`,
+    { sortType: 'ProfileViewSortType_TIME_DESCENDING' },
+    days,
+  );
 }
 
-export function viewTotalsBody() {
-  return serverRequest('WvmpAnalytics', `analyticsFieldsFilterPrefix${RANGE}`, {
-    highlightCardDimensions: [
-      'DimensionType_LOCATION',
-      'DimensionType_INDUSTRY',
-      'DimensionType_ORGANIZATION',
-    ],
-    detailsCardDimensions: ['DimensionType_ORGANIZATION'],
-    highlightCardResultCount: 4,
-    detailsCardResultCount: 23,
-  });
+export function viewTotalsBody(days?: ViewRange) {
+  return serverRequest(
+    'WvmpAnalytics',
+    `analyticsFieldsFilterPrefix${RANGE}`,
+    {
+      highlightCardDimensions: [
+        'DimensionType_LOCATION',
+        'DimensionType_INDUSTRY',
+        'DimensionType_ORGANIZATION',
+      ],
+      detailsCardDimensions: ['DimensionType_ORGANIZATION'],
+      highlightCardResultCount: 4,
+      detailsCardResultCount: 23,
+    },
+    days,
+  );
 }
 
 export type Viewer =
@@ -110,8 +137,9 @@ const STR = '((?:[^"\\\\]|\\\\.)+)';
 
 const ITEM =
   /"viewName":"viewer-list-item"(?:,"impressionThresholds":\[[^\]]*\])?[^{}]*"semanticPosition"/;
+/** Size and weight, whatever style props sit between them and the text (Premium adds two). */
 const TEXT_PROPS =
-  /"textProps":\{"fontFamily":"[^"]*","fontSize":"(\w+)","fontStyle":"[^"]*","fontWeight":"(\w+)","lineHeight":"[^"]*","textAlign":"[^"]*","children":/g;
+  /"textProps":\{"fontFamily":"[^"]*","fontSize":"(\w+)","fontStyle":"[^"]*","fontWeight":"(\w+)"(?:,"\w+":"[^"]*")*?,"children":/g;
 const OWN_TEXT = new RegExp(`^\\["${STR}"\\]`);
 const NESTED_TEXT = new RegExp(`\\[null,"${STR}"`);
 const LINK = new RegExp(`"urlValue":\\{"\\$case":"url","url":"${STR}"`);
@@ -186,21 +214,27 @@ function idUnder(rows: Rows, ref: string, items: Set<string>): string | undefine
 }
 
 /**
- * Each viewer's profile id, from the action the list references after their
- * row and before the next viewer's.
+ * Each viewer's profile id, from the action that follows their row: written
+ * inline after the reference to it (Premium), or in a row referenced there.
  */
 function idsByViewer(rows: Rows, items: Set<string>): Map<string, string> {
   const ids = new Map<string, string>();
   for (const row of rows.byId.values()) {
     let current: string | undefined;
+    let from = 0;
+    // The first id found after a viewer's reference, inline or referenced, is theirs.
+    const settle = (id: string | undefined) => {
+      if (current !== undefined && id !== undefined && !ids.has(current)) ids.set(current, id);
+    };
     for (const m of row.matchAll(REF)) {
       const ref = m[1] as string;
+      const at = m.index ?? 0;
+      settle(row.slice(from, at).match(PROFILE_ID)?.[0]);
+      from = at + m[0].length;
       if (items.has(ref)) current = ref;
-      else if (current !== undefined && !ids.has(current)) {
-        const id = idUnder(rows, ref, items);
-        if (id !== undefined) ids.set(current, id);
-      }
+      else if (current !== undefined && !ids.has(current)) settle(idUnder(rows, ref, items));
     }
+    settle(row.slice(from).match(PROFILE_ID)?.[0]);
   }
   return ids;
 }
@@ -235,13 +269,57 @@ export function parseViewers(
     : { ok: true, viewers, privateViewers };
 }
 
-export function parseViewTotals(
-  stream: string,
-): { ok: true; total: number; period?: string } | Failure {
-  const texts = [...stream.matchAll(PLAIN_TEXT)].map((m) => unquote(m[1] as string).trim());
+export interface ViewTotals {
+  ok: true;
+  total: number;
+  /** The total's own label, when it names the period ("… in the past 90 days"). */
+  period?: string;
+  /** Premium: top location, industry and company, labelled as LinkedIn words it. */
+  highlights?: { label: string; value: string }[];
+  /** Premium: the companies viewers work at, with their share in percent. */
+  companies?: { name: string; share: number }[];
+}
+
+const textsIn = (s: string) =>
+  [...s.matchAll(PLAIN_TEXT)].map((m) => unquote(m[1] as string).trim());
+
+/** Value, label, value, label…, after the section's heading. */
+function highlightsOf(stream: string): { label: string; value: string }[] {
+  const from = stream.indexOf('"viewName":"highlights"');
+  if (from === -1) return [];
+  const to = stream.indexOf('"viewName":"details"', from);
+  const texts = textsIn(stream.slice(from, to === -1 ? undefined : to)).slice(1);
+  const out: { label: string; value: string }[] = [];
+  for (let i = 0; i + 1 < texts.length; i += 2)
+    out.push({ value: texts[i] as string, label: texts[i + 1] as string });
+  return out;
+}
+
+/** Each name followed by "(N%)", once. */
+function companiesOf(texts: string[]): { name: string; share: number }[] {
+  const seen = new Map<string, number>();
+  texts.forEach((t, i) => {
+    const share = t.match(/^\((\d+)\s*%\)$/)?.[1];
+    const name = texts[i - 1];
+    if (share !== undefined && name !== undefined && !seen.has(name)) seen.set(name, Number(share));
+  });
+  return [...seen].map(([name, share]) => ({ name, share }));
+}
+
+export function parseViewTotals(stream: string): ViewTotals | Failure {
+  const texts = textsIn(stream);
   const at = texts.findIndex((t) => /^\d[\d.,\s]*$/.test(t));
   if (at === -1) return drift('the profile view totals carried no number');
   const total = Number((texts[at] as string).replace(/\D/g, ''));
-  const period = texts[at + 1];
-  return period === undefined ? { ok: true, total } : { ok: true, total, period };
+  // The free page labels its total with the period; Premium only "profile viewers".
+  const label = texts[at + 1];
+  const highlights = highlightsOf(stream);
+  const companies = companiesOf(texts);
+  return {
+    ok: true,
+    total,
+    ...(label !== undefined && /\d/.test(label) ? { period: label } : {}),
+    ...(highlights.length > 0 ? { highlights } : {}),
+    ...(companies.length > 0 ? { companies } : {}),
+  };
 }
