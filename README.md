@@ -157,6 +157,8 @@ lnrelay job <id> <id> <id>                                            # finalist
 lnrelay job <id> --team                                               # + who posted it, who is hiring
 lnrelay job <id> --insights                                           # Premium: who applied, company headcount and insights
 lnrelay jobs --top-applicant --compact                                # Premium: jobs where you'd be a top applicant
+lnrelay jobs --hear-back --compact                                    # Premium: jobs where you're more likely to hear back
+lnrelay job <id> --match                                              # Premium: LinkedIn's AI on how well you fit
 ```
 
 - **Every filter the jobs page has:** location or exact geo id, distance, date posted, experience,

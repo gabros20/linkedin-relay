@@ -129,6 +129,17 @@ and `lnrelay job 4479248573 4475225930 4476083905`.
   (`--top-applicant`). LinkedIn's own list of jobs where it says the user would be a top
   applicant: job cards as `jobs` returns them, 100 a call, usually all in one. It takes no
   keywords, location or filters; rank and read finalists as with any search.
+- **Jobs where the user is more likely to hear back (Premium): `jobs` with `hearBack:true`**
+  (`--hear-back`). LinkedIn ranks these by the profile, the job's criteria and how recruiters
+  answered similar applicants. 25 per job-search call, then read in full (a job read per 100), so
+  the rows are whole jobs with apply links, as `job` returns them. No keywords or filters.
+- **Does the user fit this job (Premium): `job` with `match:true`** (`--match`). Asks LinkedIn's AI
+  assistant, as the job page's "Show match details" does, and adds `match`: `summary` (the
+  verdict, "Job match is high"), `met` and `missing` (the required qualifications, in the
+  assistant's words), and `text` (the whole answer, a paragraph a line). In the user's language.
+  About 3 page calls and a few seconds per job, and each question is added to the user's
+  assistant history on LinkedIn, so finalists only. `matchError` says why there is none (not
+  every job offers it).
 
 - **Put every keyword set in one `jobs` call**, never one call per keyword: the tool merges them by
   job id, so you read each job once and `job` reads it once. Separate calls leave the merging to you

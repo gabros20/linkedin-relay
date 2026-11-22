@@ -8,7 +8,8 @@ A deep-research tool for LinkedIn — a TypeScript CLI (`lnrelay`) + a thin read
 every search kind, people and jobs with all filters, job details and hiring teams, companies, events,
 feed, my-posts, connections, the owner's network, saved items, messages, notifications, profile
 viewers, reactions and post threads. Premium reads (the owner has Premium since 2026-11): every
-profile viewer over up to 365 days, top-applicant jobs, and a job's applicant and company insights. Writes are CLI-only: `share` (text, `--image`, `--video`),
+profile viewer over up to 365 days, top-applicant and more-likely-to-hear-back jobs, a job's
+applicant and company insights, and LinkedIn's AI match for a job. Writes are CLI-only: `share` (text, `--image`, `--video`),
 `comment`, `reply`, `edit` (posts, comments, headline, About, photo, cover image), `role`,
 `skill`, `react`, `delete`, approved per `lnrelay approval`. They go over Voyager or SDUI with the browser session, or
 over OAuth for text shares when a token exists. `docs/DECISION-writes.md` records how each write was

@@ -396,12 +396,37 @@ and for the job's function, median tenure), `headcountAIQInsights`, `strategicPr
 alumni, hires, job openings, function headcount, highlights. `HOW_YOU_MATCH_CARD` answers only a
 Premium upsell slot; the match itself is the AI assistant (below).
 
-Not built: the jobs home's "more likely to hear back" (`origin=QUALIFICATION_LANDING`) and "based
-on your preferences" lists are SDUI search pages (`flagship-web/jobs/search-results/`), not
-collections; "Show match details" opens LinkedIn's AI assistant (`voyagerGuideDashMessage`
-`action=execute`), a conversation on the account, not a read. The new job page draws the same
-insights as SDUI components (`premiumApplicantInsightsForJobDetails`,
-`premiumCompanyInsightsForJobDetails`); the GraphQL reads above are used instead.
+**"More likely to hear back"** is the new job search page, not a collection: `POST
+flagship-web/jobs/search-results/?showHowYouFit=HOW_YOU_FIT&origin=QUALIFICATION_LANDING&start=N`,
+body `{requestedArguments: {payload: {origin: JobSearchOrigin_QUALIFICATION_LANDING, …}, states: [],
+screenId: …SemanticJobDetails}}`. It answers the whole HTML page (and ignores `start`) unless the
+request carries `x-li-rsc-stream: true`; the browser's page index state did nothing. 25 cards a
+page, each with componentKey `job-card-component-ref-<id>`; the card text sits deep in markup, so
+the ids are read and the jobs batch-read. Keywords and geo changed nothing (84 jobs, 25+25+25+9).
+`origin=PREFERENCES_LANDING` ("based on your preferences") answers a different list the same way;
+not built.
+
+**"Show match details"** asks LinkedIn's AI assistant. The job's `howYouFitGuide` component (needs
+a referer) links `/preload/guideOverlay/?query=…&originalThreadMailbox=urn:li:guideJobs:<profile>
+&contextUrns=urn:li:guide:<64 hex>&customContext=subIntent~:JobSeekerAgentIntent_JOB_FIT_EXPLANATION,
+jobPostingId~:<id>,hasHistory~:false`; the question is in the session's language and the guide urn
+differed between the browser and a replayed session, so both are read from the link each time.
+`POST graphql?action=execute&queryId=voyagerGuideDashMessage.7eaf6401…` with those, plus random
+16-byte `guideInteractionId` and `guideSessionId`; without `contextUrns` and
+`originalThreadMailbox` it answers a GraphQL 500. The answer streams over realtime; the
+conversation's messages (`voyagerGuideDashBionicMessageV2`, `guideConversationV2Urn`) hold it once
+its `CoachRealtimeResponse` has `finalComponentPosition`, about 4 seconds later. The text comes with
+PARAGRAPH and BOLD spans; met qualifications start "✓", missing ones "?". Each question is added to
+the user's assistant history.
+
+The new job page draws applicant and company insights as SDUI components too
+(`premiumApplicantInsightsForJobDetails`, `premiumCompanyInsightsForJobDetails`); the GraphQL reads
+above are used instead.
+
+**Referer (2026-11-22).** The page-data endpoints (`flagship-web/…`) now answer 500 without a
+referer: the viewers list, a job's hiring team, the how-you-fit component. Browsers always send one;
+the client now sends `https://www.linkedin.com/feed/` on every flagship-web request unless the
+caller names its own.
 
 ## 5g. People search — ✅ verified 2026-10-14
 
