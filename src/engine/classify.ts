@@ -66,6 +66,9 @@ function classifyRedirect(location: string): Classification {
  * skip the challenge check just because its body is not a read contract.
  */
 function challengeIn(body: string): Classification | null {
+  // A challenge is an HTML page. JSON and RSC answers are data, and data says
+  // "challenges" (a job description opened an indefinite cooldown, 2026-11-22).
+  if (!/^\s*</.test(body)) return null;
   if (!CHALLENGE_MARKERS.test(body.slice(0, 4000))) return null;
   return fail('CHALLENGE_DETECTED', 'a challenge page was returned with status 200', {
     cooldown: 'CHALLENGE_DETECTED',

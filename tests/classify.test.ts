@@ -62,6 +62,21 @@ describe('challenges', () => {
     });
     expect(r.code).toBe('CHALLENGE_DETECTED');
   });
+
+  // 2026-11-22: a Citi job read ("...meet the world's toughest challenges")
+  // opened an indefinite cooldown. A challenge is a page, never data.
+  test('the word in JSON data is not a challenge', () => {
+    const job = JSON.stringify({
+      data: { description: { text: "We help clients meet the world's toughest challenges." } },
+      included: [],
+    });
+    expect(classify({ status: 200, body: job }).outcome).toBe('ok');
+  });
+
+  test('the word in an RSC stream is not a challenge', () => {
+    const stream = '0:["$","p",null,{"children":["Security checkpoint at the event"]}]\n';
+    expect(classify({ status: 200, body: stream }, { expectJson: false }).outcome).toBe('ok');
+  });
 });
 
 describe('auth', () => {
