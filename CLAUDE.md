@@ -6,8 +6,9 @@ A deep-research tool for LinkedIn — a TypeScript CLI (`lnrelay`) + a thin read
 
 **Current state: shipped and in use (v3.x).** Reads cover whoami, profiles (in full, `--contact`),
 every search kind, people and jobs with all filters, job details and hiring teams, companies, events,
-feed, my-posts, connections, the owner's network, saved items, messages, profile viewers, reactions
-and post threads. Writes are CLI-only: `share` (text, `--image`, `--video`),
+feed, my-posts, connections, the owner's network, saved items, messages, notifications, profile
+viewers, reactions and post threads. Premium reads (the owner has Premium since 2026-11): every
+profile viewer over up to 365 days, top-applicant jobs, and a job's applicant and company insights. Writes are CLI-only: `share` (text, `--image`, `--video`),
 `comment`, `reply`, `edit` (posts, comments, headline, About, photo, cover image), `role`,
 `skill`, `react`, `delete`, approved per `lnrelay approval`. They go over Voyager or SDUI with the browser session, or
 over OAuth for text shares when a token exists. `docs/DECISION-writes.md` records how each write was

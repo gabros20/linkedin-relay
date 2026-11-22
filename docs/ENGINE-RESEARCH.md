@@ -302,6 +302,17 @@ viewers are a bare count. A free account is shown 3 viewers of the total; the ne
 `wvmp-entity-list-next-page-loaded` was not exercised. The replayed answer came back in Hungarian
 where the browser showed English, so nothing reads LinkedIn's words but the "•" before a degree.
 
+**Premium (2026-11-22).** With Premium the same two requests name every viewer in the range, in one
+answer, and take a range: the date-range state's value, `["WvmpSearchFilterTimeRange_LAST_365_DAYS"]`
+(7, 14, 28, 90, 365). The page keys its states by a long `WVMP_SEARCH_FILTER_SearchFilter(…)` string
+and sends five filter types; the short key with only the date range answers the same. Totals add a
+`highlights` section (value then label, three times, between the `highlights` and `details` view
+markers) and the companies viewers work at, each a name then "(25%)". Three changes came with it:
+both requests answer **500 without a referer** (any linkedin.com page; the client never sent one),
+text props carry `typeStyle` and `typeStyleClassName` before `textAlign`, and a viewer's profile id
+can be written inline in the row that references the viewer, after the reference (Message for 1st
+degree) or after the row's last reference. 365 days: 10 total, 5 named, 4 private.
+
 Location, current position and education arrive as URN references into `included[]`, so the profile
 node alone is mostly pointers — `shapeProfile()` takes the index and dereferences them.
 
@@ -362,6 +373,35 @@ a card row (profile link, name, a Verified icon, `• <degree>`, headline, and a
 "Job poster" when there is one) beside a Message button whose compose URL names their profile id
 (`recipient=`). No team answers `0:null`, which was 22 of 29 jobs probed. The answer is in the
 session's language: the degree came back as "Harmadik" (Hungarian), the role line in English.
+
+**Premium job reads (2026-11-22).** Both Voyager GraphQL, plain JSON:
+
+| What | Call |
+|---|---|
+| a job collection | `voyagerJobsDashJobCards.fc1f897b…` `(count:100,jobCollectionSlug:top-applicant,query:(origin:GENERIC_JOB_COLLECTIONS_LANDING),start:0)` |
+| applicant + company insights | `voyagerJobsDashJobPostingDetailSections.bc2eee77…` `(cardSectionTypes:List(JOB_APPLICANT_INSIGHTS,COMPANY_INSIGHTS_CARD),jobPostingUrn:…,includeSecondaryActionsV2:true)` |
+
+The collection's cards are job search's, under `elements[].jobCard` (every other kind null) instead
+of `jobCardUnion`. `top-applicant` answered 83, then 80, all in one call of 100. `recommended`
+answered none, as it does in the browser for this account; `still-hiring` and
+`hiring-in-your-network` answer a GraphQL error. The REST finder takes `jobCollectionSlug` and
+ignores it (241 generic jobs), so it is not used.
+
+`JobApplicantInsights`: `applicantCount`, `applicantsInPastDay`, `seniorityDetails` and
+`degreeDetails` (shares, URNs into `StandardizedSeniority`/`StandardizedDegree`),
+`applicantRankPercentile` (null so far), `skillDetails` and `locationDetails` (empty so far).
+`CompanyInsightsCard` sections: `jobPostingCompanyInsights` (25 months of headcount for the company
+and for the job's function, median tenure), `headcountAIQInsights`, `strategicPrioritiesAIQInsights`,
+`competitiveLandscapeAIQInsights` (competitors and generated text). Other sections seen null:
+alumni, hires, job openings, function headcount, highlights. `HOW_YOU_MATCH_CARD` answers only a
+Premium upsell slot; the match itself is the AI assistant (below).
+
+Not built: the jobs home's "more likely to hear back" (`origin=QUALIFICATION_LANDING`) and "based
+on your preferences" lists are SDUI search pages (`flagship-web/jobs/search-results/`), not
+collections; "Show match details" opens LinkedIn's AI assistant (`voyagerGuideDashMessage`
+`action=execute`), a conversation on the account, not a read. The new job page draws the same
+insights as SDUI components (`premiumApplicantInsightsForJobDetails`,
+`premiumCompanyInsightsForJobDetails`); the GraphQL reads above are used instead.
 
 ## 5g. People search — ✅ verified 2026-10-14
 
@@ -475,7 +515,7 @@ saved items (`my-items`), contact info, profile viewers and notifications.
    organizations, patents, test scores; contact phone, address, Twitter).
 6. **More than 3 profile viewers.** Not possible on a free account: the list answers 3 named viewers
    whatever `start`/`count` it is sent (2026-10-29), and `wvmp-entity-list-next-page-loaded` is a
-   page-view tracking marker, not a pager. The rest is behind Premium, server-side.
+   page-view tracking marker, not a pager. Premium names them all (`viewers`, 2026-11-22).
 
 ### Method note: observation alone is not enough
 

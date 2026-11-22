@@ -118,6 +118,17 @@ and `lnrelay job 4479248573 4475225930 4476083905`.
   name, profile id, profile URL, headline, connection degree, `role` ("Job poster") and `verified`.
   It costs one page call per job (60 a day), so ask only for the finalists. `[]` means LinkedIn
   shows no one for that job, which is most jobs; `hiringTeamError` means it could not be read.
+- **How crowded a job is, and the company behind it (Premium): `job` with `insights:true`**
+  (`--insights`). Each job gains `premium`: `applicants` {`total` who clicked apply, `lastDay`,
+  `seniority` [{level, share, count}], `education` [{degree, share}]} and `company` {`name`,
+  `headcount` {asOf, now, sixMonthsAgo, yearAgo, twoYearsAgo, `growth1y` in %}, `function` (the
+  job's own function there: name and the same counts), `medianTenure`, `competitors` [{name,
+  industry, url}], and LinkedIn's generated `hiring`, `priorities` and `landscape` text}. One more
+  job read per job (60 a day), so finalists only. `premiumError` says why it could not be read.
+- **Jobs where the user would stand out (Premium): `jobs` with `topApplicant:true`**
+  (`--top-applicant`). LinkedIn's own list of jobs where it says the user would be a top
+  applicant: job cards as `jobs` returns them, 100 a call, usually all in one. It takes no
+  keywords, location or filters; rank and read finalists as with any search.
 
 - **Put every keyword set in one `jobs` call**, never one call per keyword: the tool merges them by
   job id, so you read each job once and `job` reads it once. Separate calls leave the merging to you
@@ -457,15 +468,19 @@ count), and items as `kind` (LinkedIn's own name, e.g. `FOLLOW_PAGE_HERO`, `LEAR
 ### `viewers` — 2 page calls. Who viewed the user's profile.
 ```
 viewers [compact]
+viewers days:365
 ```
-CLI: `lnrelay viewers [--compact]`. As the user's profile-views page shows it: `total` over
-`period` (LinkedIn's words, past 90 days), `privateViewers` (private-mode viewers are a count, no
-names), and `items`: named viewers as `name`, `id` (what `profile`, `messages` and `connectionOf`
-take), `url`, `degree`, `headline`, `viewed` ("2d ago"); anonymous ones as `anonymous: true`,
-`description` ("Founder in the Software industry from Budapest"), `viewed`, `searchUrl`.
-- A free account is shown up to 3 viewers, so `meta.state` is `partial` whenever `total` is higher.
-  The rest is behind Premium; this does not get around that.
-- Degree and times come in the session's language, which may not be English.
+CLI: `lnrelay viewers [--days 7|14|28|90|365] [--compact]`. As the user's profile-views page shows
+it: `total`, `privateViewers` (private-mode viewers are a count, no names), and `items`: named
+viewers as `name`, `id` (what `profile`, `messages` and `connectionOf` take), `url`, `degree`,
+`headline`, `viewed` ("2d ago"); anonymous ones as `anonymous: true`, `description` ("Founder in the
+Software industry from Budapest"), `viewed`, `searchUrl`.
+- **Premium** names every viewer in the range and takes `days` (default the page's 90; 365 is the
+  longest). It adds `highlights` [{label, value}]: top location, industry and company, and
+  `companies` [{name, share}]: where viewers work, with their share in percent.
+- A free account is shown up to 3 viewers and the total is labelled with its `period`.
+- `meta.state` is `complete` only when the named and private viewers add up to `total`.
+- Degree, labels and times come in the session's language, which may not be English.
 
 ### `inbox` — 1 page call per 20 conversations. The user's messages.
 ```
